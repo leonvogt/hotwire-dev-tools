@@ -1,3 +1,10 @@
-#container {
-  background-color: red;
+#lists {
+  width: 80%;
+}
+
+#turbo-frame-list .turbo-frame {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
 }

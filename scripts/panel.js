@@ -1,20 +1,13 @@
-const types = {};
-chrome.devtools.inspectedWindow.getResources((resources) => {
-  resources.forEach((resource) => {
-    if (!(resource.type in types)) {
-      types[resource.type] = 0;
-    }
-    types[resource.type] += 1;
-  });
-  let result = `Resources on this page:
-  ${Object.entries(types)
-    .map((entry) => {
-      const [type, count] = entry;
-      return `${type}: ${count}`;
-    })
-    .join('\n')}`;
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  document.getElementById("turbo-frame-list").innerHTML = "";
+  const frames = request.frames;
+  frames.forEach((frame) => {
+    const template = document.getElementById("turbo-frame-template");
+    const clone = template.content.cloneNode(true);
 
-  let div = document.createElement('div');
-  div.innerText = result;
-  document.getElementById("container").appendChild(div);
+    const frameIdElement = clone.querySelector(".turbo-frame-id");
+    frameIdElement.innerText = frame.id;
+
+    document.getElementById("turbo-frame-list").appendChild(clone);
+  });
 });

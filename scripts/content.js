@@ -7,3 +7,20 @@ document.querySelectorAll("turbo-frame").forEach((frame) => {
   infoBadge.textContent = `#${frame.id}`
   frame.insertAdjacentElement("afterbegin", infoBadge);
 });
+
+const sendFrames = async () => {
+  chrome.runtime.sendMessage({
+    type: "FRAMES",
+    frames: Array.from(document.querySelectorAll("turbo-frame")).map((frame) => {
+      return {
+        id: frame.id,
+        src: frame.src
+      };
+    }),
+  });
+}
+
+const events = ["DOMContentLoaded", "turbo:load", "turbolinks:load", "turbo:frame-load"];
+events.forEach(event => {
+  document.addEventListener(event, sendFrames);
+});
