@@ -1,3 +1,7 @@
+#turbo-frame-tab {
+  display: flex;
+}
+
 #lists {
   width: 80%;
 }

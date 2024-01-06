@@ -1,22 +1,38 @@
-document.querySelectorAll("turbo-frame").forEach((frame) => {
-  frame.style.border = "1px #5CD8E5 solid";
-  frame.style.borderRadius = "5px";
-  frame.style.display = "block";
-
-  const infoBadge = document.createElement("span");
-  infoBadge.textContent = `#${frame.id}`
-  frame.insertAdjacentElement("afterbegin", infoBadge);
+const port = chrome.runtime.connect({name: "knockknock"});
+port.onMessage.addListener(function(msg) {
+  switch (msg.type) {
+    case "FRAME_DETAILS":
+      sendFrameDetails(msg.frameId);
+      break;
+  }
 });
 
 const sendFrames = async () => {
+  const frames = Array.from(document.querySelectorAll("turbo-frame")).map((frame) => {
+    return {
+      id: frame.id,
+      src: frame.src
+    };
+  });
+
+  // This will be the first request. Because we can't be sure that the port is
+  // already connected, we'll use chrome.runtime.sendMessage instead of port.postMessage.
   chrome.runtime.sendMessage({
-    type: "FRAMES",
-    frames: Array.from(document.querySelectorAll("turbo-frame")).map((frame) => {
-      return {
-        id: frame.id,
-        src: frame.src
-      };
-    }),
+    type: "FRAME_LIST",
+    frames: frames
+  });
+}
+
+const sendFrameDetails = async (frameId) => {
+  const frame = document.getElementById(frameId);
+  const frameDetails = {
+    id: frame.id,
+    src: frame.src
+  };
+
+  port.postMessage({
+    type: "FRAME_DETAILS",
+    frameDetails: frameDetails
   });
 }
 
