@@ -16,6 +16,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case "FRAME_LIST":
       populateFrameList(request.frames);
       break;
+    case "TURBO_STREAMS":
+      populateTurboStreamList(request.turboStreams);
+      break;
   }
 });
 
@@ -56,4 +59,16 @@ const populateFrameDetails = (frameDetails) => {
 
   document.getElementById("turbo-frame-details").innerHTML = "";
   document.getElementById("turbo-frame-details").appendChild(clone);
+}
+
+const populateTurboStreamList = (turboStreams) => {
+  turboStreams.forEach((turboStream) => {
+    const template = document.getElementById("turbo-stream-template");
+    const clone = template.content.cloneNode(true);
+
+    const turboStreamContentElement = clone.querySelector(".turbo-stream-content");
+    turboStreamContentElement.innerText = turboStream;
+
+    document.getElementById("turbo-stream-list").appendChild(clone);
+  });
 }
