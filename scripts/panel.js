@@ -53,14 +53,31 @@ const populateFrameDetails = (frameDetails) => {
 
 const populateTurboStreamList = (turboStreams) => {
   turboStreams.forEach((turboStream) => {
+    const parsedTurboStreamContent = parseHTMLString(turboStream);
+    const parsedTurboStream = parsedTurboStreamContent.querySelector("turbo-stream");
+    const action = parsedTurboStream.getAttribute("action");
+    const target = parsedTurboStream.getAttribute("target");
+
+    console.log("turboStream", turboStream);
+    console.log("turboStream Parsed", parsedTurboStream);
+    console.log("turboStream Parsed Action", action);
     const template = document.getElementById("turbo-stream-template");
     const clone = template.content.cloneNode(true);
 
-    const turboStreamContentElement = clone.querySelector(".turbo-stream-content");
-    turboStreamContentElement.innerText = turboStream;
+    const turboStreamActionElement = clone.querySelector(".turbo-stream-action");
+    turboStreamActionElement.innerText = action;
+
+    const turboStreamTargetElement = clone.querySelector(".turbo-stream-target");
+    turboStreamTargetElement.innerText = target;
 
     document.getElementById("turbo-stream-list").appendChild(clone);
   });
+}
+
+const parseHTMLString = (htmlString) => {
+  const template = document.createElement('template');
+  template.innerHTML = htmlString;
+  return template.content;
 }
 
 // Handle tab navigation
