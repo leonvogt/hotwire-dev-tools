@@ -1,13 +1,28 @@
-const port = chrome.runtime.connect({name: "knockknock"});
-port.onMessage.addListener(function(msg) {
-  switch (msg.type) {
+const connectionPort = chrome.runtime.connect({name: "knockknock"});
+let connected = false;
+
+connectionPort.onMessage.addListener(function(message) {
+  console.log("content.js: Received message:", message);
+  switch (message.type) {
+    case "CONNECTED":
+      console.debug("content.js: Connected ...");
+      connected = true;
+      break;
+    case "FRAME_LIST":
+        sendFrames();
+        break;
     case "FRAME_DETAILS":
-      sendFrameDetails(msg.frameId);
+      sendFrameDetails(message.frameId);
       break;
   }
 });
 
 const sendFrames = async () => {
+  if (!connected) {
+    console.debug("content.js#sendFrames: Not connected yet");
+    return;
+  }
+
   const frames = Array.from(document.querySelectorAll("turbo-frame")).map((frame) => {
     return {
       id: frame.id,
@@ -17,20 +32,25 @@ const sendFrames = async () => {
 
   // This will be the first request. Because we can't be sure that the port is
   // already connected, we'll use chrome.runtime.sendMessage instead of port.postMessage.
-  chrome.runtime.sendMessage({
+  connectionPort.postMessage({
     type: "FRAME_LIST",
     frames: frames
   });
 }
 
 const sendFrameDetails = async (frameId) => {
+  if (!connected) {
+    console.debug("content.js#sendFrameDetails: Not connected yet");
+    return;
+  }
+
   const frame = document.getElementById(frameId);
   const frameDetails = {
     id: frame.id,
     src: frame.src
   };
 
-  port.postMessage({
+  connectionPort.postMessage({
     type: "FRAME_DETAILS",
     frameDetails: frameDetails
   });

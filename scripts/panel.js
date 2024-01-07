@@ -1,23 +1,25 @@
-let activePort = {}
+let connectionPort = {}
 
 chrome.runtime.onConnect.addListener(function(port) {
-  activePort = port;
-  port.onMessage.addListener(function(request) {
-    switch (request.type) {
+  console.debug("panel.js: Connected ...");
+  connectionPort = port;
+  connectionPort.postMessage({ type: "CONNECTED" });
+  connectionPort.onMessage.addListener(function(message) {
+    switch (message.type) {
       case "FRAME_DETAILS":
-        populateFrameDetails(request.frameDetails);
+        populateFrameDetails(message.frameDetails);
+        break;
+      case "FRAME_LIST":
+        populateFrameList(message.frames);
         break;
     }
   });
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  switch (request.type) {
-    case "FRAME_LIST":
-      populateFrameList(request.frames);
-      break;
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  switch (message.type) {
     case "TURBO_STREAMS":
-      populateTurboStreamList(request.turboStreams);
+      populateTurboStreamList(message.turboStreams);
       break;
   }
 });
@@ -97,7 +99,7 @@ document.getElementById("turbo-frame-list").addEventListener("click", (e) => {
   if (!e.target.dataset.frameId) return;
 
   const frameId = e.target.dataset.frameId;
-  activePort.postMessage({
+  connectionPort.postMessage({
     type: "FRAME_DETAILS",
     frameId: frameId
   });
