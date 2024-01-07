@@ -14,6 +14,9 @@ connectionPort.onMessage.addListener(function(message) {
     case "FRAME_DETAILS":
       sendFrameDetails(message.frameId);
       break;
+    case "STIMULUS_LIST":
+      sendStimulusList();
+      break;
   }
 });
 
@@ -56,7 +59,30 @@ const sendFrameDetails = async (frameId) => {
   });
 }
 
+const sendStimulusList = async () => {
+  if (!connected) {
+    console.debug("content.js#sendStimulusList: Not connected yet");
+    return;
+  }
+
+  const stimulusControllers = Array.from(document.querySelectorAll("[data-controller]")).map((element) => {
+    return {
+      id: element.dataset.controller
+    };
+  });
+
+  connectionPort.postMessage({
+    type: "STIMULUS_LIST",
+    stimulusControllers: stimulusControllers
+  });
+}
+
+const sendCurrentState = async () => {
+  sendFrames();
+  sendStimulusList();
+}
+
 const events = ["DOMContentLoaded", "turbo:load", "turbolinks:load", "turbo:frame-load"];
 events.forEach(event => {
-  document.addEventListener(event, sendFrames);
+  document.addEventListener(event, sendCurrentState);
 });

@@ -68,7 +68,9 @@ button {
   width: 80%;
 }
 
-#turbo-frame-list .turbo-frame, #turbo-stream-list .turbo-stream {
+#turbo-frame-list .turbo-frame,
+#turbo-stream-list .turbo-stream,
+#stimulus-list .stimulus {
   padding-top: 1em;
   padding-bottom: 1em;
   border-bottom: 1px solid #ddd;

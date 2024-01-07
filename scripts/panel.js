@@ -5,12 +5,16 @@ chrome.runtime.onConnect.addListener(function(port) {
   connectionPort = port;
   connectionPort.postMessage({ type: "CONNECTED" });
   connectionPort.onMessage.addListener(function(message) {
+    console.log("panel.js: Received message:", message);
     switch (message.type) {
       case "FRAME_DETAILS":
         populateFrameDetails(message.frameDetails);
         break;
       case "FRAME_LIST":
         populateFrameList(message.frames);
+        break;
+      case "STIMULUS_LIST":
+        populateStimulusList(message.stimulusControllers);
         break;
     }
   });
@@ -60,9 +64,6 @@ const populateTurboStreamList = (turboStreams) => {
     const action = parsedTurboStream.getAttribute("action");
     const target = parsedTurboStream.getAttribute("target");
 
-    console.log("turboStream", turboStream);
-    console.log("turboStream Parsed", parsedTurboStream);
-    console.log("turboStream Parsed Action", action);
     const template = document.getElementById("turbo-stream-template");
     const clone = template.content.cloneNode(true);
 
@@ -74,6 +75,31 @@ const populateTurboStreamList = (turboStreams) => {
 
     document.getElementById("turbo-stream-list").appendChild(clone);
   });
+}
+
+const populateStimulusList = (stimulusControllerElements) => {
+  document.getElementById("stimulus-list").innerHTML = "";
+
+  const groupedStimulusControllerElements = stimulusControllerElements.reduce((acc, stimulusControllerElement) => {
+    const stimulusControllerId = stimulusControllerElement.id;
+    if (!acc[stimulusControllerId]) {
+      acc[stimulusControllerId] = [];
+    }
+    acc[stimulusControllerId].push(stimulusControllerElement);
+    return acc;
+  })
+
+  Object.keys(groupedStimulusControllerElements).forEach((stimulusControllerId) => {
+    const stimulusControllerElements = groupedStimulusControllerElements[stimulusControllerId];
+
+    const template = document.getElementById("stimulus-template");
+    const clone = template.content.cloneNode(true);
+
+    const stimulusIdElement = clone.querySelector(".stimulus-id");
+    stimulusIdElement.innerText = `${stimulusControllerId} (${stimulusControllerElements.length})`;
+
+    document.getElementById("stimulus-list").appendChild(clone);
+  })
 }
 
 const parseHTMLString = (htmlString) => {
@@ -108,4 +134,7 @@ document.getElementById("turbo-frame-list").addEventListener("click", (e) => {
 // Handle refresh calls
 document.querySelector(".refresh-turbo-frames").addEventListener("click", () => {
   connectionPort.postMessage({ type: "FRAME_LIST" });
+})
+document.querySelector(".refresh-stimulus").addEventListener("click", () => {
+  connectionPort.postMessage({ type: "STIMULUS_LIST" });
 })
