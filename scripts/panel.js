@@ -104,3 +104,8 @@ document.getElementById("turbo-frame-list").addEventListener("click", (e) => {
     frameId: frameId
   });
 })
+
+// Handle refresh calls
+document.querySelector(".refresh-turbo-frames").addEventListener("click", () => {
+  connectionPort.postMessage({ type: "FRAME_LIST" });
+})
