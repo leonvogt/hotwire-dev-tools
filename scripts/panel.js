@@ -22,16 +22,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-document.getElementById("turbo-frame-list").addEventListener("click", (e) => {
-  if (!e.target.dataset.frameId) return;
-
-  const frameId = e.target.dataset.frameId;
-  activePort.postMessage({
-    type: "FRAME_DETAILS",
-    frameId: frameId
-  });
-})
-
 const populateFrameList = (frames) => {
   document.getElementById("turbo-frame-list").innerHTML = "";
 
@@ -72,3 +62,26 @@ const populateTurboStreamList = (turboStreams) => {
     document.getElementById("turbo-stream-list").appendChild(clone);
   });
 }
+
+// Handle tab navigation
+document.querySelector(".tablist").addEventListener("click", (event) => {
+  document.querySelectorAll(".tabcontent, .tablinks").forEach((tab) => {
+    tab.className = tab.className.replace(" active", "");
+  });
+
+  const clickedTab = event.target;
+  const desiredTabContent = document.getElementById(event.target.dataset.tabId);
+  clickedTab.className += " active";
+  desiredTabContent.className += " active";
+})
+
+// Handle frame selection
+document.getElementById("turbo-frame-list").addEventListener("click", (e) => {
+  if (!e.target.dataset.frameId) return;
+
+  const frameId = e.target.dataset.frameId;
+  activePort.postMessage({
+    type: "FRAME_DETAILS",
+    frameId: frameId
+  });
+})

@@ -6,30 +6,40 @@
   </head>
   <body>
     <div id="container">
-      <div id="turbo-frame-tab">
-        <div class="lists">
-          <div id="turbo-frame-list">
-          </div>
-          <template id="turbo-frame-template">
-            <div class="turbo-frame">
-              <div class="turbo-frame-id"></div>
-            </div>
-          </template>
-        </div>
+      <div class="tablist">
+        <button class="tablinks active" data-tab-id="turbo-frame-tab">Turbo Frames</button>
+        <button class="tablinks" data-tab-id="turbo-stream-tab">Turbo Streams</button>
+        <button class="tablinks" data-tab-id="stimulus-tab">Stimulus</button>
+      </div>
 
-        <div class="details">
-          <div id="turbo-frame-details">
-          </div>
-          <template id="turbo-frame-details-template">
-            <div class="turbo-frame">
-              <div class="turbo-frame-id"></div>
-              <div class="turbo-frame-src"></div>
+      <div id="turbo-frame-tab" class="tabcontent active">
+        <h2>Turbo Frames</h2>
+        <div class="turbo-frame-content">
+          <div class="lists">
+            <div id="turbo-frame-list">
             </div>
-          </template>
+            <template id="turbo-frame-template">
+              <div class="turbo-frame">
+                <div class="turbo-frame-id"></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="details">
+            <div id="turbo-frame-details">
+            </div>
+            <template id="turbo-frame-details-template">
+              <div class="turbo-frame">
+                <div class="turbo-frame-id"></div>
+                <div class="turbo-frame-src"></div>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
 
-      <div id="turbo-stream-tab">
+      <div id="turbo-stream-tab" class="tabcontent">
+        <h2>Turbo Streams</h2>
         <div class="lists">
           <div id="turbo-stream-list">
           </div>
@@ -39,6 +49,10 @@
             </div>
           </template>
         </div>
+      </div>
+
+      <div id="stimulus-tab" class="tabcontent">
+        <h2>Stimulus</h2>
       </div>
     </div>
 
