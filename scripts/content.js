@@ -90,22 +90,27 @@ const highlightTurboFrames = async () => {
     // Set the frame's outline color
     frame.style.outline = `1px solid ${frameColor}`;
 
-    // Add a badge to the frame
-    const badgeContainer = document.createElement("div");
-    badgeContainer.classList.add("turbo-frame-info-badge-container");
-    badgeContainer.dataset.turboTemporary = true;
+    // Add a badge to the frame (or update the existing one)
+    const badgeClass = "turbo-frame-info-badge"
+    const existingBadge = frame.querySelector(`.${badgeClass}`)
+    if (existingBadge) {
+      existingBadge.style.backgroundColor = frameColor;
+    } else {
+      const badgeContainer = document.createElement("div");
+      badgeContainer.classList.add("turbo-frame-info-badge-container");
+      badgeContainer.dataset.turboTemporary = true;
 
-    const infoBadge = document.createElement("span");
-    infoBadge.textContent = `ʘ #${frame.id}`
-    infoBadge.classList.add("turbo-frame-info-badge");
-    infoBadge.style.backgroundColor = frameColor;
+      const badgeContent = document.createElement("span");
+      badgeContent.textContent = `ʘ #${frame.id}`
+      badgeContent.classList.add(badgeClass);
+      badgeContent.style.backgroundColor = frameColor;
 
-    if (frame.hasAttribute("src")) {
-      infoBadge.classList.add("frame-with-src");
+      if (frame.hasAttribute("src")) {
+        badgeContent.classList.add("frame-with-src");
+      }
+      badgeContainer.appendChild(badgeContent);
+      frame.insertAdjacentElement("afterbegin", badgeContainer);
     }
-    badgeContainer.appendChild(infoBadge);
-
-    frame.insertAdjacentElement("afterbegin", badgeContainer);
   });
 }
 
