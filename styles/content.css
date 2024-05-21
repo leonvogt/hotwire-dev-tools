@@ -1,7 +1,5 @@
 body.watch-turbo-frames {
   & turbo-frame {
-    outline: 1px #5cd8e5 solid;
-
     display: block;
     border-radius: 5px;
   }
@@ -15,7 +13,6 @@ body.watch-turbo-frames {
     z-index: 1000;
     top: -20px;
     height: 20px;
-    background-color: #5cd8e5;
     color: #fff;
     padding: 0 5px;
     border-radius: 5px;

@@ -82,8 +82,15 @@ const sendCurrentState = async () => {
   sendStimulusList();
 }
 
-const addInfoBadgesToTurboFrames = () => {
+const highlightTurboFrames = async () => {
+  const options = await getOptions();
+  const frameColor = options?.frameColor || "#5cd8e5";
+
   document.querySelectorAll("turbo-frame").forEach((frame) => {
+    // Set the frame's outline color
+    frame.style.outline = `1px solid ${frameColor}`;
+
+    // Add a badge to the frame
     const badgeContainer = document.createElement("div");
     badgeContainer.classList.add("turbo-frame-info-badge-container");
     badgeContainer.dataset.turboTemporary = true;
@@ -91,6 +98,8 @@ const addInfoBadgesToTurboFrames = () => {
     const infoBadge = document.createElement("span");
     infoBadge.textContent = `ʘ #${frame.id}`
     infoBadge.classList.add("turbo-frame-info-badge");
+    infoBadge.style.backgroundColor = frameColor;
+
     if (frame.hasAttribute("src")) {
       infoBadge.classList.add("frame-with-src");
     }
@@ -106,10 +115,11 @@ const removeInfoBadgesFromTurboFrames = () => {
   });
 }
 
-const watchTurboFrames = (watchFrames) => {
-  if (watchFrames) {
+const watchTurboFrames = async () => {
+  const options = await getOptions();
+  if (Boolean(options.frames)) {
     document.body.classList.add("watch-turbo-frames");
-    addInfoBadgesToTurboFrames();
+    highlightTurboFrames();
   } else {
     document.body.classList.remove("watch-turbo-frames");
     removeInfoBadgesFromTurboFrames();
@@ -118,17 +128,26 @@ const watchTurboFrames = (watchFrames) => {
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'sync' && changes.options?.newValue) {
-    const watchFrames = Boolean(changes.options.newValue.frames);
-    watchTurboFrames(watchFrames);
+    saveOptions(changes.options.newValue);
+    document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed", { detail: changes.options.newValue }));
   }
 });
 
-const init = async () => {
-  const data = await chrome.storage.sync.get("options");
-  watchTurboFrames(Boolean(data.options?.frames));
+const saveOptions = async (options) => {
+  localStorage.setItem("options", JSON.stringify(options));
 }
 
-const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load"];
+const getOptions = async () => {
+  return JSON.parse(localStorage.getItem("options"));
+}
+
+const init = async () => {
+  const data = await chrome.storage.sync.get("options");
+  saveOptions(data.options);
+  watchTurboFrames();
+}
+
+const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"];
 events.forEach((event) => {
   document.addEventListener(event, sendCurrentState);
   document.addEventListener(event, init);
