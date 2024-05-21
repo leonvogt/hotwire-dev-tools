@@ -2,7 +2,6 @@ chrome.devtools.panels.create('Hotwire Dev Tools', 'images/icon-128.png', 'panel
   console.log('User switched to the panel');
 });
 
-
 chrome.devtools.network.onRequestFinished.addListener(request => {
   request.getContent((body) => {
     if (body === null || body === undefined) {

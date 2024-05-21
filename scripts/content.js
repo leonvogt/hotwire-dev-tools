@@ -1,7 +1,7 @@
-const connectionPort = chrome.runtime.connect({name: "knockknock"});
+const connectionPort = chrome.runtime.connect({ name: "knockknock" });
 let connected = false;
 
-connectionPort.onMessage.addListener(function(message) {
+connectionPort.onMessage.addListener(function (message) {
   console.log("content.js: Received message:", message);
   switch (message.type) {
     case "CONNECTED":
@@ -9,8 +9,8 @@ connectionPort.onMessage.addListener(function(message) {
       connected = true;
       break;
     case "FRAME_LIST":
-        sendFrames();
-        break;
+      sendFrames();
+      break;
     case "FRAME_DETAILS":
       sendFrameDetails(message.frameId);
       break;

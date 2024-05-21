@@ -1,10 +1,10 @@
 let connectionPort = {}
 
-chrome.runtime.onConnect.addListener(function(port) {
+chrome.runtime.onConnect.addListener(function (port) {
   console.debug("panel.js: Connected ...");
   connectionPort = port;
   connectionPort.postMessage({ type: "CONNECTED" });
-  connectionPort.onMessage.addListener(function(message) {
+  connectionPort.onMessage.addListener(function (message) {
     console.log("panel.js: Received message:", message);
     switch (message.type) {
       case "FRAME_DETAILS":
