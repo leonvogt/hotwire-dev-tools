@@ -86,6 +86,7 @@ const addInfoBadgesToTurboFrames = () => {
   document.querySelectorAll("turbo-frame").forEach((frame) => {
     const badgeContainer = document.createElement("div");
     badgeContainer.classList.add("turbo-frame-info-badge-container");
+    badgeContainer.dataset.turboTemporary = true;
 
     const infoBadge = document.createElement("span");
     infoBadge.textContent = `ʘ #${frame.id}`
@@ -106,7 +107,6 @@ const removeInfoBadgesFromTurboFrames = () => {
 }
 
 const watchTurboFrames = (watchFrames) => {
-  console.log("watchTurboFrames", watchFrames);
   if (watchFrames) {
     document.body.classList.add("watch-turbo-frames");
     addInfoBadgesToTurboFrames();
