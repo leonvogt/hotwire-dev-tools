@@ -139,11 +139,11 @@ chrome.storage.onChanged.addListener((changes, area) => {
 });
 
 const saveOptions = async (options) => {
-  localStorage.setItem("options", JSON.stringify(options));
+  localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(options));
 }
 
 const getOptions = () => {
-  const options = localStorage.getItem("options")
+  const options = localStorage.getItem("hotwire-dev-tools-options")
   if (options === "undefined") return {};
   return JSON.parse(options);
 }
