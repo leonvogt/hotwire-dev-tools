@@ -82,7 +82,54 @@ const sendCurrentState = async () => {
   sendStimulusList();
 }
 
-const events = ["DOMContentLoaded", "turbo:load", "turbolinks:load", "turbo:frame-load"];
-events.forEach(event => {
+const addInfoBadgesToTurboFrames = () => {
+  document.querySelectorAll("turbo-frame").forEach((frame) => {
+    const badgeContainer = document.createElement("div");
+    badgeContainer.classList.add("turbo-frame-info-badge-container");
+
+    const infoBadge = document.createElement("span");
+    infoBadge.textContent = `ʘ #${frame.id}`
+    infoBadge.classList.add("turbo-frame-info-badge");
+    if (frame.hasAttribute("src")) {
+      infoBadge.classList.add("frame-with-src");
+    }
+    badgeContainer.appendChild(infoBadge);
+
+    frame.insertAdjacentElement("afterbegin", badgeContainer);
+  });
+}
+
+const removeInfoBadgesFromTurboFrames = () => {
+  document.querySelectorAll("turbo-frame").forEach((frame) => {
+    frame.querySelector(".turbo-frame-info-badge-container")?.remove();
+  });
+}
+
+const watchTurboFrames = (watchFrames) => {
+  console.log("watchTurboFrames", watchFrames);
+  if (watchFrames) {
+    document.body.classList.add("watch-turbo-frames");
+    addInfoBadgesToTurboFrames();
+  } else {
+    document.body.classList.remove("watch-turbo-frames");
+    removeInfoBadgesFromTurboFrames();
+  }
+}
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'sync' && changes.options?.newValue) {
+    const watchFrames = Boolean(changes.options.newValue.frames);
+    watchTurboFrames(watchFrames);
+  }
+});
+
+const init = async () => {
+  const data = await chrome.storage.sync.get("options");
+  watchTurboFrames(Boolean(data.options?.frames));
+}
+
+const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load"];
+events.forEach((event) => {
   document.addEventListener(event, sendCurrentState);
+  document.addEventListener(event, init);
 });

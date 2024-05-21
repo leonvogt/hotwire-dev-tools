@@ -16,8 +16,17 @@
       ],
       "js": [
         "scripts/content.js"
+      ],
+      "css": [
+        "styles/content.css"
       ]
     }
   ],
-  "devtools_page": "devtools.html"
+  "permissions": [
+    "storage"
+  ],
+  "devtools_page": "devtools.html",
+  "action": {
+    "default_popup": "popup.html"
+  }
 }

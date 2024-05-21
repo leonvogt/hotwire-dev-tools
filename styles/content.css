@@ -1,0 +1,40 @@
+body.watch-turbo-frames {
+  & turbo-frame {
+    outline: 1px #5cd8e5 solid;
+
+    display: block;
+    border-radius: 5px;
+  }
+
+  & .turbo-frame-info-badge-container {
+    position: relative;
+  }
+
+  & .turbo-frame-info-badge {
+    position: absolute;
+    z-index: 1000;
+    top: -20px;
+    height: 20px;
+    background-color: #5cd8e5;
+    color: #fff;
+    padding: 0 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 18px;
+    opacity: 0.1;
+    transition: 0.3s;
+  }
+
+  & .turbo-frame-info-badge:hover {
+    opacity: 1;
+    width: fit-content;
+  }
+
+  & .turbo-frame-info-badge.frame-with-src {
+    background-color: #5cd8e5;
+  }
+}

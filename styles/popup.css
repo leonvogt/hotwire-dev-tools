@@ -1,0 +1,27 @@
+body {
+  width: 20rem;
+  background-color: #eee;
+}
+
+.title-container {
+  display: flex;
+  justify-content: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+p,
+label {
+  font:
+    1rem 'Fira Sans',
+    sans-serif;
+}
+
+input {
+  margin: 0.4rem;
+}
