@@ -142,8 +142,10 @@ const saveOptions = async (options) => {
   localStorage.setItem("options", JSON.stringify(options));
 }
 
-const getOptions = async () => {
-  return JSON.parse(localStorage.getItem("options"));
+const getOptions = () => {
+  const options = localStorage.getItem("options")
+  if (options === "undefined") return {};
+  return JSON.parse(options);
 }
 
 const init = async () => {
