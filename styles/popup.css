@@ -3,6 +3,17 @@ body {
   background-color: #eee;
 }
 
+p,
+label {
+  font:
+    1rem 'Fira Sans',
+    sans-serif;
+}
+
+input {
+  margin: 0.4rem;
+}
+
 .title-container {
   display: flex;
   justify-content: center;
@@ -15,17 +26,18 @@ body {
   margin-bottom: 1rem;
 }
 
-p,
-label {
-  font:
-    1rem 'Fira Sans',
-    sans-serif;
-}
-
-input {
-  margin: 0.4rem;
+.watch-frames-wrapper {
+  min-height: 40px;
 }
 
 .d-none {
   display: none;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
 }

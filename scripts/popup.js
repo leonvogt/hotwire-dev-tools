@@ -1,4 +1,4 @@
-const optionsForm = document.getElementById("optionsForm");
+const optionsForm = document.getElementById("options-form");
 const watchFramesInput = document.getElementById("watch-frames");
 const frameColorInput = document.getElementById("frames-color");
 
