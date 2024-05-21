@@ -27,6 +27,17 @@
   ],
   "devtools_page": "devtools.html",
   "action": {
+    "default_title": "Click or press Alt+Shift+A to launch Dev Tools",
     "default_popup": "popup.html"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "windows": "Alt+Shift+A",
+        "mac": "Alt+Shift+A",
+        "chromeos": "Alt+Shift+A",
+        "linux": "Alt+Shift+A"
+      }
+    }
   }
 }
