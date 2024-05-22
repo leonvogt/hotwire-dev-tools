@@ -85,8 +85,10 @@ const sendCurrentState = async () => {
 const highlightTurboFrames = async () => {
   const options = await getOptions();
   const frameColor = options?.frameColor || "#5cd8e5";
+  const frameBlacklist = options?.frameBlacklist || [];
 
-  document.querySelectorAll("turbo-frame").forEach((frame) => {
+  const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter(frame => !frameBlacklist.includes(frame.id));
+  turboFrames.forEach((frame) => {
     // Set the frame's outline color
     frame.style.outline = `1px solid ${frameColor}`;
 

@@ -14,6 +14,14 @@ input {
   margin: 0.4rem;
 }
 
+input[type="text"] {
+  width: 100%;
+  padding: 7px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .title-container {
   display: flex;
   justify-content: center;
@@ -40,4 +48,8 @@ input {
 
 .align-items-center {
   align-items: center;
+}
+
+.m-0 {
+  margin: 0;
 }
