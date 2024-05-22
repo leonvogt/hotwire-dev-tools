@@ -124,7 +124,7 @@ const removeInfoBadgesFromTurboFrames = () => {
 
 const watchTurboFrames = async () => {
   const options = await getOptions();
-  if (Boolean(options.frames)) {
+  if (options.frames) {
     document.body.classList.add("watch-turbo-frames");
     highlightTurboFrames();
   } else {
@@ -156,8 +156,59 @@ const init = async () => {
   watchTurboFrames();
 }
 
+const turboFrameEntry = (turboFrame) => {
+  const action = turboFrame.getAttribute("action");
+  const target = turboFrame.getAttribute("target");
+
+  const turboFrameEntry = document.createElement("div");
+  turboFrameEntry.classList.add("hotwire-dev-tools-turbo-stream-entry");
+
+  const turboFrameDetail1 = document.createElement("span");
+  turboFrameDetail1.classList.add("hotwire-dev-tools-turbo-stream-detail");
+  turboFrameDetail1.innerText = action;
+  turboFrameEntry.appendChild(turboFrameDetail1);
+
+  const turboFrameDetail2 = document.createElement("span");
+  turboFrameDetail2.classList.add("hotwire-dev-tools-turbo-stream-detail");
+  turboFrameDetail2.innerText = target;
+  turboFrameEntry.appendChild(turboFrameDetail2);
+
+  return turboFrameEntry;
+}
+
+const renderTurboStream = async (event) => {
+  const options = await getOptions();
+  if (!options.streams) return;
+
+  const turboFrame = event.target;
+  const target = turboFrame.getAttribute("target");
+
+  const existingContainer = document.getElementById("hotwire-dev-tools-turbo-stream-container");
+  if (existingContainer) {
+    existingContainer.querySelector(".hotwire-dev-tools-turbo-stream-content").appendChild(turboFrameEntry(turboFrame));
+  } else {
+    const container = document.createElement("div");
+    container.id = "hotwire-dev-tools-turbo-stream-container";
+    container.classList.add("hotwire-dev-tools-turbo-stream-container");
+
+    const header = document.createElement("div");
+    header.classList.add("hotwire-dev-tools-turbo-stream-header");
+    header.innerText = "Turbo Streams";
+    container.appendChild(header);
+
+    const content = document.createElement("div");
+    content.classList.add("hotwire-dev-tools-turbo-stream-content");
+    content.appendChild(turboFrameEntry(turboFrame));
+
+    container.appendChild(content);
+    document.body.appendChild(container);
+  }
+}
+
 const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"];
 events.forEach((event) => {
   document.addEventListener(event, sendCurrentState);
   document.addEventListener(event, init);
 });
+
+document.addEventListener("turbo:before-stream-render", renderTurboStream);

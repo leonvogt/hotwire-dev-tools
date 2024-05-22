@@ -35,3 +35,38 @@ body.watch-turbo-frames {
     background-color: #5cd8e5;
   }
 }
+
+#hotwire-dev-tools-turbo-stream-container {
+  position: fixed;
+  bottom: 0em;
+  right: 0em;
+  z-index: 1000;
+  width: clamp(20rem, 30rem, 100vw);
+  background: white;
+
+  & .hotwire-dev-tools-turbo-stream-header {
+    height: 2.5rem;
+    background: #808080;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+  }
+
+  & .hotwire-dev-tools-turbo-stream-content {
+    max-height: 10em;
+    overflow-y: auto;
+  }
+
+  & .hotwire-dev-tools-turbo-stream-entry {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5em;
+    cursor: pointer;
+  }
+
+  & .hotwire-dev-tools-turbo-stream-entry:hover {
+    background: #ccc;
+  }
+}
