@@ -84,8 +84,8 @@ const sendCurrentState = async () => {
 
 const highlightTurboFrames = async () => {
   const options = await getOptions();
-  const frameColor = options?.frameColor || "#5cd8e5";
-  const frameBlacklist = options?.frameBlacklist || "";
+  const frameColor = options.frameColor;
+  const frameBlacklist = options.frameBlacklist;
 
   let blacklistedFrames = [];
   try {
@@ -155,9 +155,17 @@ const saveOptions = async (options) => {
 }
 
 const getOptions = () => {
+  const defaultOptions = { frames: false, streams: false, frameColor: "#5cd8e5", frameBlacklist: "" };
+
   const options = localStorage.getItem("hotwire-dev-tools-options")
-  if (options === "undefined") return {};
-  return JSON.parse(options);
+  if (options === "undefined") return defaultOptions;
+
+  try {
+    return JSON.parse(options);
+  } catch (error) {
+    console.warn("Hotwire Dev Tools: Invalid options:", options);
+    return defaultOptions;
+  }
 }
 
 const init = async () => {
