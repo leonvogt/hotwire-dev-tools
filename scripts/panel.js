@@ -81,7 +81,7 @@ const populateStimulusList = (stimulusControllerElements) => {
   document.getElementById("stimulus-list").innerHTML = "";
 
   const groupedStimulusControllerElements = stimulusControllerElements.reduce((acc, stimulusControllerElement) => {
-    const stimulusControllerId = stimulusControllerElement.id;
+    const stimulusControllerId = stimulusControllerElement.dataset.controller;
     if (!acc[stimulusControllerId]) {
       acc[stimulusControllerId] = [];
     }

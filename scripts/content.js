@@ -145,6 +145,140 @@ const watchTurboFrames = async () => {
   }
 }
 
+const createDetailBoxContainer = () => {
+  const existingContainer = document.getElementById("hotwire-dev-tools-detail-box-container");
+  if (existingContainer) {
+    return existingContainer;
+  }
+  const container = document.createElement("div");
+  container.id = "hotwire-dev-tools-detail-box-container";
+  container.dataset.turboPermanent = true;
+  return container;
+}
+
+const createStimulusTab = () => {
+  const existingTab = document.querySelector("[data-tab-id='stimulus-tab']");
+
+  if (existingTab) {
+    return existingTab;
+  }
+  const stimulusTab = document.createElement("button");
+  stimulusTab.classList.add("active");
+  stimulusTab.dataset.tabId = "stimulus-tab";
+  stimulusTab.innerText = "Stimulus";
+  return stimulusTab;
+}
+
+const createTurboStreamTab = () => {
+  const existingTab = document.querySelector("[data-tab-id='turbo-stream-tab']");
+
+  if (existingTab) {
+    return existingTab;
+  }
+  const turboStreamTab = document.createElement("button");
+  turboStreamTab.dataset.tabId = "turbo-stream-tab";
+  turboStreamTab.innerText = "Streams";
+  return turboStreamTab;
+}
+
+const createTurboFrameTab = () => {
+  const existingTab = document.querySelector("[data-tab-id='turbo-frame-tab']");
+
+  if (existingTab) {
+    return existingTab;
+  }
+  const turboFrameTab = document.createElement("button");
+  turboFrameTab.dataset.tabId = "turbo-frame-tab";
+  turboFrameTab.innerText = "Frames";
+  return turboFrameTab;
+}
+
+const createDetailBoxHeader = () => {
+  const existingHeader = document.querySelector(".hotwire-dev-tools-detail-box-header");
+  if (existingHeader) {
+    return existingHeader;
+  }
+  const header = document.createElement("div");
+  header.classList.add("hotwire-dev-tools-detail-box-header");
+  return header;
+}
+
+const createDetailBoxCloseButton = () => {
+  const existingCloseButton = document.querySelector(".hotwire-dev-tools-close-button");
+  if (existingCloseButton) {
+    return existingCloseButton;
+  }
+  const closeButton = document.createElement("button");
+  closeButton.classList.add("hotwire-dev-tools-close-button");
+  closeButton.innerText = "↓";
+  return closeButton;
+}
+
+const createDetailBoxTabList = () => {
+  const existingTablist = document.querySelector(".hotwire-dev-tools-tablist");
+  if (existingTablist) {
+    return existingTablist;
+  }
+  const tablist = document.createElement("div");
+  tablist.classList.add("hotwire-dev-tools-tablist");
+  return tablist;
+}
+
+const createDetailBoxTabs = () => {
+  const tablist = createDetailBoxTabList();
+  tablist.appendChild(createStimulusTab());
+  tablist.appendChild(createTurboFrameTab());
+  tablist.appendChild(createTurboStreamTab());
+  return tablist;
+}
+
+const groupedStimulusControllerElements = () => {
+  const groupedStimulusControllerElements = Array.from(document.querySelectorAll("[data-controller]")).reduce((acc, stimulusControllerElement) => {
+    const stimulusControllerId = stimulusControllerElement.dataset.controller;
+    if (!acc[stimulusControllerId]) {
+      acc[stimulusControllerId] = [];
+    }
+    acc[stimulusControllerId].push(stimulusControllerElement);
+    return acc;
+  })
+
+  return groupedStimulusControllerElements;
+}
+
+const createStimulusDetailBoxContent = () => {
+  const existingStimulusContent = document.querySelector(".hotwire-dev-tools-content");
+  if (existingStimulusContent) {
+    existingStimulusContent.remove();
+  }
+
+  const content = document.createElement("div");
+  content.classList.add("hotwire-dev-tools-content");
+
+  const groupedStimulusControllers = groupedStimulusControllerElements();
+  Object.keys(groupedStimulusControllers).sort().forEach((stimulusControllerId) => {
+    const stimulusControllerElements = groupedStimulusControllers[stimulusControllerId];
+    const entry = document.createElement("div");
+    entry.classList.add("hotwire-dev-tools-entry");
+    entry.appendChild(Object.assign(document.createElement("span"), { innerText: stimulusControllerId }));
+    entry.appendChild(Object.assign(document.createElement("span"), { innerText: stimulusControllerElements.length }));
+
+    content.appendChild(entry);
+  })
+
+  return content
+}
+
+const renderDetailBox = () => {
+  const container = createDetailBoxContainer();
+  const header = createDetailBoxHeader();
+  header.appendChild(createDetailBoxTabs());
+  header.appendChild(createDetailBoxCloseButton());
+
+  container.appendChild(header);
+  container.appendChild(createStimulusDetailBoxContent());
+  document.body.appendChild(container);
+}
+
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'sync' && changes.options?.newValue) {
     saveOptions(changes.options.newValue);
@@ -170,18 +304,12 @@ const getOptions = () => {
   }
 }
 
-const init = async () => {
-  const data = await chrome.storage.sync.get("options");
-  saveOptions(data.options);
-  watchTurboFrames();
-}
-
 const turboFrameEntry = (turboFrame) => {
   const action = turboFrame.getAttribute("action");
   const target = turboFrame.getAttribute("target");
 
   const turboFrameEntry = document.createElement("div");
-  turboFrameEntry.classList.add("hotwire-dev-tools-turbo-stream-entry");
+  turboFrameEntry.classList.add("hotwire-dev-tools-entry");
 
   const turboFrameDetail1 = document.createElement("span");
   turboFrameDetail1.classList.add("hotwire-dev-tools-turbo-stream-detail");
@@ -201,28 +329,34 @@ const renderTurboStream = async (event) => {
   if (!options.streams) return;
 
   const turboFrame = event.target;
-  const target = turboFrame.getAttribute("target");
 
-  const existingContainer = document.getElementById("hotwire-dev-tools-turbo-stream-container");
+  const existingContainer = document.getElementById("hotwire-dev-tools-detail-box-container");
   if (existingContainer) {
-    existingContainer.querySelector(".hotwire-dev-tools-turbo-stream-content").appendChild(turboFrameEntry(turboFrame));
+    existingContainer.querySelector(".hotwire-dev-tools-content").appendChild(turboFrameEntry(turboFrame));
   } else {
     const container = document.createElement("div");
-    container.id = "hotwire-dev-tools-turbo-stream-container";
-    container.classList.add("hotwire-dev-tools-turbo-stream-container");
+    container.id = "hotwire-dev-tools-detail-box-container";
+    container.classList.add("hotwire-dev-tools-detail-box-container");
 
     const header = document.createElement("div");
-    header.classList.add("hotwire-dev-tools-turbo-stream-header");
+    header.classList.add("hotwire-dev-tools-detail-box-header");
     header.innerText = "Turbo Streams";
     container.appendChild(header);
 
     const content = document.createElement("div");
-    content.classList.add("hotwire-dev-tools-turbo-stream-content");
+    content.classList.add("hotwire-dev-tools-content");
     content.appendChild(turboFrameEntry(turboFrame));
 
     container.appendChild(content);
     document.body.appendChild(container);
   }
+}
+
+const init = async () => {
+  const data = await chrome.storage.sync.get("options");
+  saveOptions(data.options);
+  watchTurboFrames();
+  renderDetailBox();
 }
 
 const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"];
