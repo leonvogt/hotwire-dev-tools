@@ -85,9 +85,16 @@ const sendCurrentState = async () => {
 const highlightTurboFrames = async () => {
   const options = await getOptions();
   const frameColor = options?.frameColor || "#5cd8e5";
-  const frameBlacklist = options?.frameBlacklist || [];
+  const frameBlacklist = options?.frameBlacklist || "";
 
-  const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter(frame => !frameBlacklist.includes(frame.id));
+  let blacklistedFrames = [];
+  try {
+    blacklistedFrames = Array.from(document.querySelectorAll(frameBlacklist));
+  } catch (error) {
+    console.warn("Hotwire Dev Tools: Invalid frameBlacklist selector:", frameBlacklist);
+  }
+  const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter((frame) => !blacklistedFrames.includes(frame));
+
   turboFrames.forEach((frame) => {
     // Set the frame's outline color
     frame.style.outline = `1px solid ${frameColor}`;

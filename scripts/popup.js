@@ -15,12 +15,12 @@ const toggleFrameColorInput = (show) => {
 
 // Initialize the form with the user's options
 const data = await chrome.storage.sync.get("options");
-const options = data.options || { frames: false, streams: false, frameColor: "#5cd8e5", frameBlacklist: [] };
+const options = data.options || { frames: false, streams: false, frameColor: "#5cd8e5", frameBlacklist: "" };
 
 watchFramesInput.checked = options.frames;
 watchStreamsInput.checked = options.streams;
 frameColorInput.value = options.frameColor;
-frameBlacklistInput.value = options.frameBlacklist.join(",");
+frameBlacklistInput.value = options.frameBlacklist;
 toggleFrameColorInput(options.frames);
 
 // Event listeners to persist selected options
@@ -41,6 +41,6 @@ frameColorInput.addEventListener("change", (event) => {
 });
 
 frameBlacklistInput.addEventListener("input", (event) => {
-  options.frameBlacklist = event.target.value.replace(/\s+/g, '').split(",");
+  options.frameBlacklist = event.target.value;
   chrome.storage.sync.set({ options });
 })
