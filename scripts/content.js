@@ -106,6 +106,9 @@ const highlightTurboFrames = async () => {
       badgeContent.textContent = `ʘ #${frame.id}`
       badgeContent.classList.add(badgeClass);
       badgeContent.style.backgroundColor = frameColor;
+      badgeContent.onclick = () => {
+        navigator.clipboard.writeText(frame.id);
+      }
 
       if (frame.hasAttribute("src")) {
         badgeContent.classList.add("frame-with-src");
