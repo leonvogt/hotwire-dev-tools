@@ -1,6 +1,7 @@
 const optionsForm = document.getElementById("options-form");
 const watchFramesInput = document.getElementById("watch-frames");
 const watchStreamsInput = document.getElementById("watch-streams");
+const watchStimulusInput = document.getElementById("watch-stimulus");
 const frameColorInput = document.getElementById("frames-color");
 const frameBlacklistInput = document.getElementById("frames-blacklist");
 const watchFramesToggles = document.querySelectorAll(".watch-frames-toggle-elements");
@@ -15,10 +16,11 @@ const toggleFrameColorInput = (show) => {
 
 // Initialize the form with the user's options
 const data = await chrome.storage.sync.get("options");
-const options = data.options || { frames: false, streams: false, frameColor: "#5cd8e5", frameBlacklist: "" };
+const options = data.options || { frames: false, streams: false, stimulus: false, frameColor: "#5cd8e5", frameBlacklist: "" };
 
 watchFramesInput.checked = options.frames;
 watchStreamsInput.checked = options.streams;
+watchStimulusInput.checked = options.stimulus;
 frameColorInput.value = options.frameColor;
 frameBlacklistInput.value = options.frameBlacklist;
 toggleFrameColorInput(options.frames);
@@ -32,6 +34,11 @@ watchFramesInput.addEventListener("change", (event) => {
 
 watchStreamsInput.addEventListener("change", (event) => {
   options.streams = event.target.checked;
+  chrome.storage.sync.set({ options });
+});
+
+watchStimulusInput.addEventListener("change", (event) => {
+  options.stimulus = event.target.checked;
   chrome.storage.sync.set({ options });
 });
 

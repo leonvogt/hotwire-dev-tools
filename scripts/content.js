@@ -157,7 +157,7 @@ const saveOptions = async (options) => {
 }
 
 const getOptions = () => {
-  const defaultOptions = { frames: false, streams: false, frameColor: "#5cd8e5", frameBlacklist: "" };
+  const defaultOptions = { frames: false, streams: false, stimulus: false, frameColor: "#5cd8e5", frameBlacklist: "" };
 
   const options = localStorage.getItem("hotwire-dev-tools-options")
   if (options === "undefined") return defaultOptions;
