@@ -202,7 +202,9 @@ const createDetailBoxCloseButton = () => {
   }
   const closeButton = document.createElement("button");
   closeButton.classList.add("hotwire-dev-tools-close-button");
-  closeButton.innerText = "↓";
+  closeButton.onclick = () => {
+    document.getElementById("hotwire-dev-tools-detail-box-container").classList.toggle("collapsed");
+  }
   return closeButton;
 }
 

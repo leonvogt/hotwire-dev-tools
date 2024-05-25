@@ -70,10 +70,6 @@ body.watch-turbo-frames {
       transition: 0.3s;
     }
 
-    & button:hover {
-      background-color: #ddd;
-    }
-
     & button.active {
       background-color: #ccc;
     }
@@ -111,5 +107,30 @@ body.watch-turbo-frames {
 
   & .hotwire-dev-tools-entry:hover {
     background: #ccc;
+  }
+
+  &.collapsed {
+    height: 8px;
+    transition: height .25s ease-out;
+
+    .hotwire-dev-tools-close-button:after {
+      content: '\2191';
+    }
+  }
+
+  &.collapsed:hover {
+    height: 2.5rem;
+  }
+}
+
+#hotwire-dev-tools-detail-box-container:not(.collapsed) {
+  .hotwire-dev-tools-tablist {
+    & button:hover {
+      background-color: #ddd;
+    }
+  }
+
+  .hotwire-dev-tools-close-button:after {
+    content: '\2193';
   }
 }
