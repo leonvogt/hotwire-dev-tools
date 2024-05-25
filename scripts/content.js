@@ -230,21 +230,21 @@ const createDetailBoxTabs = () => {
   return tablist;
 }
 
-const groupedStimulusControllerElements = () => {
-  const stimulusControllerElements = Array.from(document.querySelectorAll("[data-controller]"));
+function groupedStimulusControllerElements() {
+  const stimulusControllerElements = document.querySelectorAll('[data-controller]');
   if (stimulusControllerElements.length === 0) return {};
 
-  const groupedStimulusControllerElements = stimulusControllerElements.reduce((acc, stimulusControllerElement) => {
-    stimulusControllerElement.dataset.controller.split(" ").forEach((stimulusControllerId) => {
-      if (!acc[stimulusControllerId]) {
-        acc[stimulusControllerId] = [];
+  const groupedElements = {};
+  stimulusControllerElements.forEach(element => {
+    element.dataset.controller.split(" ").forEach((stimulusControllerId) => {
+      if (!groupedElements[stimulusControllerId]) {
+        groupedElements[stimulusControllerId] = [];
       }
-      acc[stimulusControllerId].push(stimulusControllerElement);
+      groupedElements[stimulusControllerId].push(element);
     });
-    return acc;
-  })
+  });
 
-  return groupedStimulusControllerElements;
+  return groupedElements;
 }
 
 const addTurboStreamToDetailBox = (event) => {
@@ -304,7 +304,7 @@ const createStimulusDetailBoxContent = () => {
   content.id = "hotwire-dev-tools-stimulus-tab";
 
   const groupedStimulusControllers = groupedStimulusControllerElements();
-  Object.keys(groupedStimulusControllers).sort().forEach((stimulusControllerId) => {
+  for (const stimulusControllerId in groupedStimulusControllers) {
     const stimulusControllerElements = groupedStimulusControllers[stimulusControllerId];
     const entry = document.createElement("div");
     entry.classList.add("hotwire-dev-tools-entry");
@@ -331,7 +331,7 @@ const createStimulusDetailBoxContent = () => {
     }
 
     content.appendChild(entry);
-  })
+  }
 
   return content
 }
