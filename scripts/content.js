@@ -235,11 +235,12 @@ const groupedStimulusControllerElements = () => {
   if (stimulusControllerElements.length === 0) return {};
 
   const groupedStimulusControllerElements = stimulusControllerElements.reduce((acc, stimulusControllerElement) => {
-    const stimulusControllerId = stimulusControllerElement.dataset.controller;
-    if (!acc[stimulusControllerId]) {
-      acc[stimulusControllerId] = [];
-    }
-    acc[stimulusControllerId].push(stimulusControllerElement);
+    stimulusControllerElement.dataset.controller.split(" ").forEach((stimulusControllerId) => {
+      if (!acc[stimulusControllerId]) {
+        acc[stimulusControllerId] = [];
+      }
+      acc[stimulusControllerId].push(stimulusControllerElement);
+    });
     return acc;
   })
 
