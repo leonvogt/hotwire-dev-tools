@@ -77,7 +77,7 @@ const sendStimulusList = async () => {
   });
 }
 
-const sendCurrentState = async () => {
+const sendCurrentStateToPanel = async () => {
   sendFrames();
   sendStimulusList();
 }
@@ -157,38 +157,40 @@ const createDetailBoxContainer = () => {
 }
 
 const createStimulusTab = () => {
-  const existingTab = document.querySelector("[data-tab-id='stimulus-tab']");
+  const existingTab = document.querySelector("[data-tab-id='hotwire-dev-tools-stimulus-tab']");
 
   if (existingTab) {
     return existingTab;
   }
   const stimulusTab = document.createElement("button");
-  stimulusTab.classList.add("active");
-  stimulusTab.dataset.tabId = "stimulus-tab";
+  stimulusTab.classList.add("hotwire-dev-tools-tablink");
+  stimulusTab.dataset.tabId = "hotwire-dev-tools-stimulus-tab";
   stimulusTab.innerText = "Stimulus";
   return stimulusTab;
 }
 
 const createTurboStreamTab = () => {
-  const existingTab = document.querySelector("[data-tab-id='turbo-stream-tab']");
+  const existingTab = document.querySelector("[data-tab-id='hotwire-dev-tools-turbo-stream-tab']");
 
   if (existingTab) {
     return existingTab;
   }
   const turboStreamTab = document.createElement("button");
-  turboStreamTab.dataset.tabId = "turbo-stream-tab";
+  turboStreamTab.classList.add("hotwire-dev-tools-tablink", "active");
+  turboStreamTab.dataset.tabId = "hotwire-dev-tools-turbo-stream-tab";
   turboStreamTab.innerText = "Streams";
   return turboStreamTab;
 }
 
 const createTurboFrameTab = () => {
-  const existingTab = document.querySelector("[data-tab-id='turbo-frame-tab']");
+  const existingTab = document.querySelector("[data-tab-id='hotwire-dev-tools-turbo-frame-tab']");
 
   if (existingTab) {
     return existingTab;
   }
   const turboFrameTab = document.createElement("button");
-  turboFrameTab.dataset.tabId = "turbo-frame-tab";
+  turboFrameTab.classList.add("hotwire-dev-tools-tablink");
+  turboFrameTab.dataset.tabId = "hotwire-dev-tools-turbo-frame-tab";
   turboFrameTab.innerText = "Frames";
   return turboFrameTab;
 }
@@ -226,9 +228,9 @@ const createDetailBoxTabList = () => {
 
 const createDetailBoxTabs = () => {
   const tablist = createDetailBoxTabList();
-  tablist.appendChild(createStimulusTab());
-  tablist.appendChild(createTurboFrameTab());
   tablist.appendChild(createTurboStreamTab());
+  tablist.appendChild(createTurboFrameTab());
+  tablist.appendChild(createStimulusTab());
   return tablist;
 }
 
@@ -245,14 +247,67 @@ const groupedStimulusControllerElements = () => {
   return groupedStimulusControllerElements;
 }
 
-const createStimulusDetailBoxContent = () => {
-  const existingStimulusContent = document.querySelector(".hotwire-dev-tools-content");
-  if (existingStimulusContent) {
-    existingStimulusContent.remove();
+const createTurboStreamDetailBoxContent = (event) => {
+  // const options = await getOptions();
+  // if (!options.streams) return;
+
+  // const turboStream = event.target;
+  // const action = turboStream.getAttribute("action");
+  // const target = turboStream.getAttribute("target");
+
+  // const content = document.createElement("div");
+  // content.classList.add("hotwire-dev-tools-tab-content");
+
+  // const entry = document.createElement("div");
+  // entry.classList.add("hotwire-dev-tools-entry");
+  // entry.appendChild(Object.assign(document.createElement("span"), { innerText: action }));
+  // entry.appendChild(Object.assign(document.createElement("span"), { innerText: target }));
+
+  // content.appendChild(entry);
+  const existingContent = document.getElementById("hotwire-dev-tools-turbo-stream-tab");
+  if (existingContent) {
+    existingContent.remove();
   }
 
   const content = document.createElement("div");
-  content.classList.add("hotwire-dev-tools-content");
+  content.classList.add("hotwire-dev-tools-tab-content", "active");
+  content.id = "hotwire-dev-tools-turbo-stream-tab";
+
+  const entry = document.createElement("div");
+  entry.classList.add("hotwire-dev-tools-entry");
+  entry.appendChild(Object.assign(document.createElement("span"), { innerText: "Turbo Stream Tab" }));
+  content.appendChild(entry);
+
+  return content
+}
+
+const createTurboFrameDetailBoxContent = () => {
+  const existingContent = document.getElementById("hotwire-dev-tools-turbo-frame-tab");
+  if (existingContent) {
+    existingContent.remove();
+  }
+
+  const content = document.createElement("div");
+  content.classList.add("hotwire-dev-tools-tab-content");
+  content.id = "hotwire-dev-tools-turbo-frame-tab";
+
+  const entry = document.createElement("div");
+  entry.classList.add("hotwire-dev-tools-entry");
+  entry.appendChild(Object.assign(document.createElement("span"), { innerText: "Turbo Frame Tab" }));
+  content.appendChild(entry);
+
+  return content
+}
+
+const createStimulusDetailBoxContent = () => {
+  const existingContent = document.getElementById("hotwire-dev-tools-stimulus-tab");
+  if (existingContent) {
+    existingContent.remove();
+  }
+
+  const content = document.createElement("div");
+  content.classList.add("hotwire-dev-tools-tab-content");
+  content.id = "hotwire-dev-tools-stimulus-tab";
 
   const groupedStimulusControllers = groupedStimulusControllerElements();
   Object.keys(groupedStimulusControllers).sort().forEach((stimulusControllerId) => {
@@ -276,15 +331,30 @@ const renderDetailBox = () => {
 
   container.appendChild(header);
   container.appendChild(createStimulusDetailBoxContent());
+  container.appendChild(createTurboStreamDetailBoxContent());
+  container.appendChild(createTurboFrameDetailBoxContent());
   document.body.appendChild(container);
+
+  listenForTabNavigation();
 }
 
-chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'sync' && changes.options?.newValue) {
-    saveOptions(changes.options.newValue);
-    document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed", { detail: changes.options.newValue }));
-  }
-});
+const listenForTabNavigation = () => {
+  const tablist = document.querySelector(".hotwire-dev-tools-tablist");
+  tablist.addEventListener("click", (event) => {
+    document.querySelectorAll(".hotwire-dev-tools-tablink, .hotwire-dev-tools-tab-content").forEach((tab) => {
+      tab.classList.remove("active");
+    });
+
+    const clickedTab = event.target;
+    const desiredTabContent = document.getElementById(event.target.dataset.tabId);
+    console.log(`Switching to tab: ${clickedTab.dataset.tabId}`);
+    console.log(`desiredTabContent: ${desiredTabContent.id}`);
+
+
+    clickedTab.classList.add("active");
+    desiredTabContent.classList.add("active");
+  })
+}
 
 const saveOptions = async (options) => {
   localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(options));
@@ -304,54 +374,6 @@ const getOptions = () => {
   }
 }
 
-const turboFrameEntry = (turboFrame) => {
-  const action = turboFrame.getAttribute("action");
-  const target = turboFrame.getAttribute("target");
-
-  const turboFrameEntry = document.createElement("div");
-  turboFrameEntry.classList.add("hotwire-dev-tools-entry");
-
-  const turboFrameDetail1 = document.createElement("span");
-  turboFrameDetail1.classList.add("hotwire-dev-tools-turbo-stream-detail");
-  turboFrameDetail1.innerText = action;
-  turboFrameEntry.appendChild(turboFrameDetail1);
-
-  const turboFrameDetail2 = document.createElement("span");
-  turboFrameDetail2.classList.add("hotwire-dev-tools-turbo-stream-detail");
-  turboFrameDetail2.innerText = target;
-  turboFrameEntry.appendChild(turboFrameDetail2);
-
-  return turboFrameEntry;
-}
-
-const renderTurboStream = async (event) => {
-  const options = await getOptions();
-  if (!options.streams) return;
-
-  const turboFrame = event.target;
-
-  const existingContainer = document.getElementById("hotwire-dev-tools-detail-box-container");
-  if (existingContainer) {
-    existingContainer.querySelector(".hotwire-dev-tools-content").appendChild(turboFrameEntry(turboFrame));
-  } else {
-    const container = document.createElement("div");
-    container.id = "hotwire-dev-tools-detail-box-container";
-    container.classList.add("hotwire-dev-tools-detail-box-container");
-
-    const header = document.createElement("div");
-    header.classList.add("hotwire-dev-tools-detail-box-header");
-    header.innerText = "Turbo Streams";
-    container.appendChild(header);
-
-    const content = document.createElement("div");
-    content.classList.add("hotwire-dev-tools-content");
-    content.appendChild(turboFrameEntry(turboFrame));
-
-    container.appendChild(content);
-    document.body.appendChild(container);
-  }
-}
-
 const init = async () => {
   const data = await chrome.storage.sync.get("options");
   saveOptions(data.options);
@@ -361,8 +383,15 @@ const init = async () => {
 
 const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"];
 events.forEach((event) => {
-  document.addEventListener(event, sendCurrentState);
+  document.addEventListener(event, sendCurrentStateToPanel);
   document.addEventListener(event, init);
 });
 
-document.addEventListener("turbo:before-stream-render", renderTurboStream);
+// document.addEventListener("turbo:before-stream-render", createTurboStreamDetailBoxContent);
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'sync' && changes.options?.newValue) {
+    saveOptions(changes.options.newValue);
+    document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed", { detail: changes.options.newValue }));
+  }
+});

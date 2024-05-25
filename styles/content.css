@@ -79,6 +79,14 @@ body.watch-turbo-frames {
     }
   }
 
+  .hotwire-dev-tools-tab-content {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+
   .hotwire-dev-tools-close-button {
     background: #808080;
     color: white;
@@ -88,7 +96,7 @@ body.watch-turbo-frames {
     padding-left: 0.5em;
   }
 
-  & .hotwire-dev-tools-content {
+  & .hotwire-dev-tools-tab-content {
     max-height: 10em;
     overflow-y: auto;
     overscroll-behavior: contain;
