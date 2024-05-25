@@ -227,7 +227,10 @@ const createDetailBoxTabs = () => {
 }
 
 const groupedStimulusControllerElements = () => {
-  const groupedStimulusControllerElements = Array.from(document.querySelectorAll("[data-controller]")).reduce((acc, stimulusControllerElement) => {
+  const stimulusControllerElements = Array.from(document.querySelectorAll("[data-controller]"));
+  if (stimulusControllerElements.length === 0) return {};
+
+  const groupedStimulusControllerElements = stimulusControllerElements.reduce((acc, stimulusControllerElement) => {
     const stimulusControllerId = stimulusControllerElement.dataset.controller;
     if (!acc[stimulusControllerId]) {
       acc[stimulusControllerId] = [];
