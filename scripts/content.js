@@ -86,8 +86,8 @@ const sendCurrentStateToPanel = async () => {
   sendStimulusList();
 }
 
-const highlightTurboFrames = async () => {
-  const options = await getOptions();
+const highlightTurboFrames = () => {
+  const options = getOptions();
   if (!options.frames) {
     document.body.classList.remove("watch-turbo-frames");
     document.querySelectorAll("turbo-frame").forEach((frame) => {
@@ -339,9 +339,9 @@ const createStimulusDetailBoxContent = () => {
   return content
 }
 
-const renderDetailBox = async () => {
+const renderDetailBox = () => {
   const container = createDetailBoxContainer();
-  const options = await getOptions();
+  const options = getOptions();
   if (!options.detailBox) {
     container.remove();
     return;
@@ -402,8 +402,8 @@ const injectedScriptMessageHandler = (event) => {
   }
 }
 
-const saveOptions = async (options) => {
-  const currentOptions = await getOptions();
+const saveOptions = (options) => {
+  const currentOptions = getOptions();
   const newOptions = { ...currentOptions, ...options };
   localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(newOptions));
 }
