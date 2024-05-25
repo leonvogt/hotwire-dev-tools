@@ -134,3 +134,9 @@ body.watch-turbo-frames {
     content: '\2193';
   }
 }
+
+#hotwire-dev-tools-detail-box-container,
+.hotwire-dev-tools-detail-box-header,
+.hotwire-dev-tools-tablink:first-child {
+  border-top-left-radius: 10px;
+}
