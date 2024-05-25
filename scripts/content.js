@@ -20,6 +20,10 @@ connectionPort.onMessage.addListener(function (message) {
   }
 });
 
+const state = {
+  stimulusControllers: []
+}
+
 const sendFrames = async () => {
   if (!connected) {
     console.debug("content.js#sendFrames: Not connected yet");
@@ -291,7 +295,7 @@ const createTurboFrameDetailBoxContent = () => {
 const createStimulusDetailBoxContent = () => {
   const existingContent = document.getElementById("hotwire-dev-tools-stimulus-tab");
   if (existingContent) {
-    return existingContent;
+    existingContent.remove();
   }
 
   const content = document.createElement("div");
@@ -304,15 +308,27 @@ const createStimulusDetailBoxContent = () => {
     const entry = document.createElement("div");
     entry.classList.add("hotwire-dev-tools-entry");
 
+    // Stimulus controller identifier
     const stimulusIdentifierSpan = document.createElement("span");
     stimulusIdentifierSpan.innerText = stimulusControllerId;
+
+    // Amount of elements with the same controller
     if (stimulusControllerElements.length > 1) {
       const stimulusIdentifierAmount = document.createElement("sup");
       stimulusIdentifierAmount.innerText = stimulusControllerElements.length;
       stimulusIdentifierSpan.appendChild(stimulusIdentifierAmount);
     }
-
     entry.appendChild(stimulusIdentifierSpan);
+
+    // Indicator if the controller is not registered
+    if (state.stimulusControllers.length > 0 && !state.stimulusControllers.includes(stimulusControllerId)) {
+      const registeredIndicator = document.createElement("span");
+      registeredIndicator.innerText = "✗";
+      registeredIndicator.style.color = "red";
+      registeredIndicator.title = "Controller not registered";
+      entry.appendChild(registeredIndicator);
+    }
+
     content.appendChild(entry);
   })
 
@@ -355,6 +371,31 @@ const listenForTabNavigation = () => {
   })
 }
 
+
+const injectCustomScript = () => {
+  const existingScript = document.getElementById("hotwire-dev-tools-inject-script");
+  if (existingScript) return;
+
+  const script = document.createElement("script");
+  script.src = chrome.runtime.getURL("scripts/inject.js");
+  script.id = "hotwire-dev-tools-inject-script";
+  document.documentElement.appendChild(script);
+}
+
+const injectedScriptMessageHandler = (event) => {
+  if (event.origin !== window.location.origin) return;
+  if (event.data.source !== "inject") return;
+
+  switch (event.data.message) {
+    case "stimulusController":
+      if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
+        state.stimulusControllers = event.data.registeredControllers;
+        renderDetailBox();
+      }
+      break;
+  }
+}
+
 const saveOptions = async (options) => {
   localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(options));
 }
@@ -378,6 +419,7 @@ const init = async () => {
   saveOptions(data.options);
   highlightTurboFrames();
   renderDetailBox();
+  injectCustomScript();
 }
 
 const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"];
@@ -387,6 +429,10 @@ events.forEach((event) => {
 });
 document.addEventListener("turbo:before-stream-render", addTurboStreamToDetailBox);
 
+// Listen for potential message from the injected script
+window.addEventListener("message", injectedScriptMessageHandler);
+
+// Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'sync' && changes.options?.newValue) {
     saveOptions(changes.options.newValue);

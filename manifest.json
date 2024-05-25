@@ -30,6 +30,16 @@
     "default_title": "Click or press Alt+Shift+A to launch Dev Tools",
     "default_popup": "popup.html"
   },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "scripts/inject.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
   "commands": {
     "_execute_action": {
       "suggested_key": {
