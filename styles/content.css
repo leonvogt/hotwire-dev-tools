@@ -92,6 +92,10 @@ body.watch-turbo-frames {
     padding-left: 0.5em;
   }
 
+  .hotwire-dev-tools-close-button:hover {
+    color: black;
+  }
+
   & .hotwire-dev-tools-tab-content {
     max-height: 10em;
     overflow-y: auto;
@@ -124,10 +128,8 @@ body.watch-turbo-frames {
 }
 
 #hotwire-dev-tools-detail-box-container:not(.collapsed) {
-  .hotwire-dev-tools-tablist {
-    & button:hover {
-      background-color: #ddd;
-    }
+  .hotwire-dev-tools-tablist button:hover {
+    background-color: #ddd;
   }
 
   .hotwire-dev-tools-close-button:after {
