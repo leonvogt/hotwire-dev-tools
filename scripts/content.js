@@ -247,36 +247,28 @@ const groupedStimulusControllerElements = () => {
   return groupedStimulusControllerElements;
 }
 
-const createTurboStreamDetailBoxContent = (event) => {
-  // const options = await getOptions();
-  // if (!options.streams) return;
+const addTurboStreamToDetailBox = (event) => {
+  const turboStream = event.target;
+  const action = turboStream.getAttribute("action");
+  const target = turboStream.getAttribute("target");
 
-  // const turboStream = event.target;
-  // const action = turboStream.getAttribute("action");
-  // const target = turboStream.getAttribute("target");
+  const entry = document.createElement("div");
+  entry.classList.add("hotwire-dev-tools-entry");
+  entry.appendChild(Object.assign(document.createElement("span"), { innerText: action }));
+  entry.appendChild(Object.assign(document.createElement("span"), { innerText: target }));
 
-  // const content = document.createElement("div");
-  // content.classList.add("hotwire-dev-tools-tab-content");
+  document.getElementById("hotwire-dev-tools-turbo-stream-tab").appendChild(entry);
+}
 
-  // const entry = document.createElement("div");
-  // entry.classList.add("hotwire-dev-tools-entry");
-  // entry.appendChild(Object.assign(document.createElement("span"), { innerText: action }));
-  // entry.appendChild(Object.assign(document.createElement("span"), { innerText: target }));
-
-  // content.appendChild(entry);
+const createTurboStreamDetailBoxContent = () => {
   const existingContent = document.getElementById("hotwire-dev-tools-turbo-stream-tab");
   if (existingContent) {
-    existingContent.remove();
+    return existingContent;
   }
 
   const content = document.createElement("div");
   content.classList.add("hotwire-dev-tools-tab-content", "active");
   content.id = "hotwire-dev-tools-turbo-stream-tab";
-
-  const entry = document.createElement("div");
-  entry.classList.add("hotwire-dev-tools-entry");
-  entry.appendChild(Object.assign(document.createElement("span"), { innerText: "Turbo Stream Tab" }));
-  content.appendChild(entry);
 
   return content
 }
@@ -284,17 +276,19 @@ const createTurboStreamDetailBoxContent = (event) => {
 const createTurboFrameDetailBoxContent = () => {
   const existingContent = document.getElementById("hotwire-dev-tools-turbo-frame-tab");
   if (existingContent) {
-    existingContent.remove();
+    return existingContent;
   }
 
   const content = document.createElement("div");
   content.classList.add("hotwire-dev-tools-tab-content");
   content.id = "hotwire-dev-tools-turbo-frame-tab";
 
-  const entry = document.createElement("div");
-  entry.classList.add("hotwire-dev-tools-entry");
-  entry.appendChild(Object.assign(document.createElement("span"), { innerText: "Turbo Frame Tab" }));
-  content.appendChild(entry);
+  document.querySelectorAll("turbo-frame").forEach((frame) => {
+    const entry = document.createElement("div");
+    entry.classList.add("hotwire-dev-tools-entry");
+    entry.appendChild(Object.assign(document.createElement("span"), { innerText: frame.id }));
+    content.appendChild(entry);
+  })
 
   return content
 }
@@ -302,7 +296,7 @@ const createTurboFrameDetailBoxContent = () => {
 const createStimulusDetailBoxContent = () => {
   const existingContent = document.getElementById("hotwire-dev-tools-stimulus-tab");
   if (existingContent) {
-    existingContent.remove();
+    return existingContent;
   }
 
   const content = document.createElement("div");
@@ -347,9 +341,6 @@ const listenForTabNavigation = () => {
 
     const clickedTab = event.target;
     const desiredTabContent = document.getElementById(event.target.dataset.tabId);
-    console.log(`Switching to tab: ${clickedTab.dataset.tabId}`);
-    console.log(`desiredTabContent: ${desiredTabContent.id}`);
-
 
     clickedTab.classList.add("active");
     desiredTabContent.classList.add("active");
@@ -386,8 +377,7 @@ events.forEach((event) => {
   document.addEventListener(event, sendCurrentStateToPanel);
   document.addEventListener(event, init);
 });
-
-// document.addEventListener("turbo:before-stream-render", createTurboStreamDetailBoxContent);
+document.addEventListener("turbo:before-stream-render", addTurboStreamToDetailBox);
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'sync' && changes.options?.newValue) {
