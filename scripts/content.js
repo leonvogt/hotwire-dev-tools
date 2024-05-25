@@ -163,7 +163,7 @@ const createStimulusTab = () => {
     return existingTab;
   }
   const stimulusTab = document.createElement("button");
-  stimulusTab.classList.add("hotwire-dev-tools-tablink");
+  stimulusTab.classList.add("hotwire-dev-tools-tablink", "active");
   stimulusTab.dataset.tabId = "hotwire-dev-tools-stimulus-tab";
   stimulusTab.innerText = "Stimulus";
   return stimulusTab;
@@ -176,7 +176,7 @@ const createTurboStreamTab = () => {
     return existingTab;
   }
   const turboStreamTab = document.createElement("button");
-  turboStreamTab.classList.add("hotwire-dev-tools-tablink", "active");
+  turboStreamTab.classList.add("hotwire-dev-tools-tablink");
   turboStreamTab.dataset.tabId = "hotwire-dev-tools-turbo-stream-tab";
   turboStreamTab.innerText = "Streams";
   return turboStreamTab;
@@ -228,9 +228,9 @@ const createDetailBoxTabList = () => {
 
 const createDetailBoxTabs = () => {
   const tablist = createDetailBoxTabList();
-  tablist.appendChild(createTurboStreamTab());
-  tablist.appendChild(createTurboFrameTab());
   tablist.appendChild(createStimulusTab());
+  tablist.appendChild(createTurboFrameTab());
+  tablist.appendChild(createTurboStreamTab());
   return tablist;
 }
 
@@ -257,7 +257,7 @@ const addTurboStreamToDetailBox = (event) => {
   entry.appendChild(Object.assign(document.createElement("span"), { innerText: action }));
   entry.appendChild(Object.assign(document.createElement("span"), { innerText: target }));
 
-  document.getElementById("hotwire-dev-tools-turbo-stream-tab").appendChild(entry);
+  document.getElementById("hotwire-dev-tools-turbo-stream-tab").prepend(entry);
 }
 
 const createTurboStreamDetailBoxContent = () => {
@@ -267,7 +267,7 @@ const createTurboStreamDetailBoxContent = () => {
   }
 
   const content = document.createElement("div");
-  content.classList.add("hotwire-dev-tools-tab-content", "active");
+  content.classList.add("hotwire-dev-tools-tab-content");
   content.id = "hotwire-dev-tools-turbo-stream-tab";
 
   return content
@@ -300,7 +300,7 @@ const createStimulusDetailBoxContent = () => {
   }
 
   const content = document.createElement("div");
-  content.classList.add("hotwire-dev-tools-tab-content");
+  content.classList.add("hotwire-dev-tools-tab-content", "active");
   content.id = "hotwire-dev-tools-stimulus-tab";
 
   const groupedStimulusControllers = groupedStimulusControllerElements();
@@ -308,9 +308,16 @@ const createStimulusDetailBoxContent = () => {
     const stimulusControllerElements = groupedStimulusControllers[stimulusControllerId];
     const entry = document.createElement("div");
     entry.classList.add("hotwire-dev-tools-entry");
-    entry.appendChild(Object.assign(document.createElement("span"), { innerText: stimulusControllerId }));
-    entry.appendChild(Object.assign(document.createElement("span"), { innerText: stimulusControllerElements.length }));
 
+    const stimulusIdentifierSpan = document.createElement("span");
+    stimulusIdentifierSpan.innerText = stimulusControllerId;
+    if (stimulusControllerElements.length > 1) {
+      const stimulusIdentifierAmount = document.createElement("sup");
+      stimulusIdentifierAmount.innerText = stimulusControllerElements.length;
+      stimulusIdentifierSpan.appendChild(stimulusIdentifierAmount);
+    }
+
+    entry.appendChild(stimulusIdentifierSpan);
     content.appendChild(entry);
   })
 
