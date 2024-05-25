@@ -1,44 +1,37 @@
 const optionsForm = document.getElementById("options-form");
-const watchFramesInput = document.getElementById("watch-frames");
-const watchStreamsInput = document.getElementById("watch-streams");
-const watchStimulusInput = document.getElementById("watch-stimulus");
+const highlightFramesInput = document.getElementById("highlight-frames");
+const displayDetailBoxInput = document.getElementById("display-detail-box");
 const frameColorInput = document.getElementById("frames-color");
 const frameBlacklistInput = document.getElementById("frames-blacklist");
-const watchFramesToggles = document.querySelectorAll(".watch-frames-toggle-elements");
+const highlightFramesToggles = document.querySelectorAll(".highlight-frames-toggle-elements");
 
 const toggleFrameColorInput = (show) => {
   if (show) {
-    watchFramesToggles.forEach((element) => element.classList.remove("d-none"));
+    highlightFramesToggles.forEach((element) => element.classList.remove("d-none"));
   } else {
-    watchFramesToggles.forEach((element) => element.classList.add("d-none"));
+    highlightFramesToggles.forEach((element) => element.classList.add("d-none"));
   }
 }
 
 // Initialize the form with the user's options
 const data = await chrome.storage.sync.get("options");
-const options = data.options || { frames: false, streams: false, stimulus: false, frameColor: "#5cd8e5", frameBlacklist: "" };
+const options = data.options || { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "" };
 
-watchFramesInput.checked = options.frames;
-watchStreamsInput.checked = options.streams;
-watchStimulusInput.checked = options.stimulus;
+highlightFramesInput.checked = options.frames;
+displayDetailBoxInput.checked = options.detailBox;
 frameColorInput.value = options.frameColor;
 frameBlacklistInput.value = options.frameBlacklist;
 toggleFrameColorInput(options.frames);
 
 // Event listeners to persist selected options
-watchFramesInput.addEventListener("change", (event) => {
+highlightFramesInput.addEventListener("change", (event) => {
   toggleFrameColorInput(event.target.checked);
   options.frames = event.target.checked;
   chrome.storage.sync.set({ options });
 });
 
-watchStreamsInput.addEventListener("change", (event) => {
-  options.streams = event.target.checked;
-  chrome.storage.sync.set({ options });
-});
-
-watchStimulusInput.addEventListener("change", (event) => {
-  options.stimulus = event.target.checked;
+displayDetailBoxInput.addEventListener("change", (event) => {
+  options.detailBox = event.target.checked;
   chrome.storage.sync.set({ options });
 });
 

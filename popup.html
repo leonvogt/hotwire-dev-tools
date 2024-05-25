@@ -16,21 +16,16 @@
   <fieldset>
     <legend>Choose which Hotwire components to watch</legend>
     <form id="options-form">
-      <div class="watch-frames-wrapper d-flex align-items-center">
-        <input type="checkbox" id="watch-frames" name="frames" />
-        <label for="watch-frames">Turbo Frames</label>
-        <input type="color" class="watch-frames-toggle-elements" id="frames-color" name="frames-color" />
+      <div class="highlight-frames-wrapper d-flex align-items-center">
+        <input type="checkbox" id="highlight-frames" name="frames" />
+        <label for="highlight-frames">Highlight Turbo Frames</label>
+        <input type="color" class="highlight-frames-toggle-elements" id="frames-color" name="frames-color" />
       </div>
-      <input type="text" class="watch-frames-toggle-elements m-0" id="frames-blacklist" name="frames-blacklist" placeholder="CSS selector to ignore specific frames" />
+      <input type="text" class="highlight-frames-toggle-elements m-0" id="frames-blacklist" name="frames-blacklist" placeholder="CSS selector to ignore specific frames" />
 
       <div class="d-flex align-items-center">
-        <input type="checkbox" id="watch-streams" name="watch-streams" />
-        <label for="watch-streams">Turbo Streams</label>
-      </div>
-
-      <div class="d-flex align-items-center">
-        <input type="checkbox" id="watch-stimulus" name="watch-stimulus" />
-        <label for="watch-stimulus">Stimulus</label>
+        <input type="checkbox" id="display-detail-box" name="display-detail-box" />
+        <label for="display-detail-box">Detail Panel</label>
       </div>
     </form>
   </fieldset>

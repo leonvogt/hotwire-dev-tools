@@ -84,8 +84,15 @@ const sendCurrentStateToPanel = async () => {
 
 const highlightTurboFrames = async () => {
   const options = await getOptions();
-  const frameColor = options.frameColor;
-  const frameBlacklist = options.frameBlacklist;
+  if (!options.frames) {
+    document.body.classList.remove("watch-turbo-frames");
+    document.querySelectorAll("turbo-frame").forEach((frame) => {
+      frame.querySelector(".turbo-frame-info-badge-container")?.remove();
+    });
+  }
+
+  document.body.classList.add("watch-turbo-frames");
+  const { frameColor, frameBlacklist } = options;
 
   let blacklistedFrames = [];
   if (frameBlacklist) {
@@ -126,23 +133,6 @@ const highlightTurboFrames = async () => {
       frame.insertAdjacentElement("afterbegin", badgeContainer);
     }
   });
-}
-
-const removeInfoBadgesFromTurboFrames = () => {
-  document.querySelectorAll("turbo-frame").forEach((frame) => {
-    frame.querySelector(".turbo-frame-info-badge-container")?.remove();
-  });
-}
-
-const watchTurboFrames = async () => {
-  const options = await getOptions();
-  if (options.frames) {
-    document.body.classList.add("watch-turbo-frames");
-    highlightTurboFrames();
-  } else {
-    document.body.classList.remove("watch-turbo-frames");
-    removeInfoBadgesFromTurboFrames();
-  }
 }
 
 const createDetailBoxContainer = () => {
@@ -324,8 +314,14 @@ const createStimulusDetailBoxContent = () => {
   return content
 }
 
-const renderDetailBox = () => {
+const renderDetailBox = async () => {
   const container = createDetailBoxContainer();
+  const options = await getOptions();
+  if (!options.detailBox) {
+    container.remove();
+    return;
+  }
+
   const header = createDetailBoxHeader();
   header.appendChild(createDetailBoxTabs());
   header.appendChild(createDetailBoxCloseButton());
@@ -359,7 +355,7 @@ const saveOptions = async (options) => {
 }
 
 const getOptions = () => {
-  const defaultOptions = { frames: false, streams: false, stimulus: false, frameColor: "#5cd8e5", frameBlacklist: "" };
+  const defaultOptions = { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "" };
 
   const options = localStorage.getItem("hotwire-dev-tools-options")
   if (options === "undefined") return defaultOptions;
@@ -375,7 +371,7 @@ const getOptions = () => {
 const init = async () => {
   const data = await chrome.storage.sync.get("options");
   saveOptions(data.options);
-  watchTurboFrames();
+  highlightTurboFrames();
   renderDetailBox();
 }
 
