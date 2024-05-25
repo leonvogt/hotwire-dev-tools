@@ -83,7 +83,7 @@ body.watch-turbo-frames {
     }
   }
 
-  .hotwire-dev-tools-close-button {
+  .hotwire-dev-tools-collapse-button {
     background: #808080;
     color: white;
     border: none;
@@ -92,7 +92,7 @@ body.watch-turbo-frames {
     padding-left: 0.5em;
   }
 
-  .hotwire-dev-tools-close-button:hover {
+  .hotwire-dev-tools-collapse-button:hover {
     color: black;
   }
 
@@ -117,7 +117,7 @@ body.watch-turbo-frames {
     height: 8px;
     transition: height .25s ease-out;
 
-    .hotwire-dev-tools-close-button:after {
+    .hotwire-dev-tools-collapse-button:after {
       content: '\2191';
     }
   }
@@ -132,7 +132,7 @@ body.watch-turbo-frames {
     background-color: #ddd;
   }
 
-  .hotwire-dev-tools-close-button:after {
+  .hotwire-dev-tools-collapse-button:after {
     content: '\2193';
   }
 }

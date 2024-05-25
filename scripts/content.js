@@ -93,6 +93,7 @@ const highlightTurboFrames = async () => {
     document.querySelectorAll("turbo-frame").forEach((frame) => {
       frame.querySelector(".turbo-frame-info-badge-container")?.remove();
     });
+    return
   }
 
   document.body.classList.add("watch-turbo-frames");
@@ -199,15 +200,17 @@ const createDetailBoxHeader = () => {
   return header;
 }
 
-const createDetailBoxCloseButton = () => {
-  const existingCloseButton = document.querySelector(".hotwire-dev-tools-close-button");
+const createDetailBoxCollapseButton = () => {
+  const existingCloseButton = document.querySelector(".hotwire-dev-tools-collapse-button");
   if (existingCloseButton) {
     return existingCloseButton;
   }
   const closeButton = document.createElement("button");
-  closeButton.classList.add("hotwire-dev-tools-close-button");
+  closeButton.classList.add("hotwire-dev-tools-collapse-button");
   closeButton.onclick = () => {
-    document.getElementById("hotwire-dev-tools-detail-box-container").classList.toggle("collapsed");
+    const container = document.getElementById("hotwire-dev-tools-detail-box-container")
+    container.classList.toggle("collapsed");
+    saveOptions({ detailBoxCollapsed: container.classList.contains("collapsed") });
   }
   return closeButton;
 }
@@ -343,10 +346,13 @@ const renderDetailBox = async () => {
     container.remove();
     return;
   }
+  if (options.detailBoxCollapsed) {
+    container.classList.add("collapsed");
+  }
 
   const header = createDetailBoxHeader();
   header.appendChild(createDetailBoxTabs());
-  header.appendChild(createDetailBoxCloseButton());
+  header.appendChild(createDetailBoxCollapseButton());
 
   container.appendChild(header);
   container.appendChild(createStimulusDetailBoxContent());
@@ -371,7 +377,6 @@ const listenForTabNavigation = () => {
     desiredTabContent.classList.add("active");
   })
 }
-
 
 const injectCustomScript = () => {
   const existingScript = document.getElementById("hotwire-dev-tools-inject-script");
@@ -398,11 +403,13 @@ const injectedScriptMessageHandler = (event) => {
 }
 
 const saveOptions = async (options) => {
-  localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(options));
+  const currentOptions = await getOptions();
+  const newOptions = { ...currentOptions, ...options };
+  localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(newOptions));
 }
 
 const getOptions = () => {
-  const defaultOptions = { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "" };
+  const defaultOptions = { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "", detailBoxCollapsed: false };
 
   const options = localStorage.getItem("hotwire-dev-tools-options")
   if (options === "undefined") return defaultOptions;
