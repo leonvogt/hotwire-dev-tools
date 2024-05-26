@@ -297,7 +297,7 @@ const injectCustomScript = () => {
   if (existingScript) return;
 
   const script = document.createElement("script");
-  script.src = chrome.runtime.getURL("scripts/inject.js");
+  script.src = chrome.runtime.getURL("dist/inject.js");
   script.id = "hotwire-dev-tools-inject-script";
   document.documentElement.appendChild(script);
 }
