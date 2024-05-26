@@ -1,5 +1,5 @@
 const sendRegisteredControllers = () => {
-  const registeredControllers = window.Stimulus?.controllers.map(controller => controller.scope.identifier);
+  const registeredControllers = Array.from(window.Stimulus?.router.modulesByIdentifier.keys())
   window.postMessage({ source: "inject", message: "stimulusController", registeredControllers: registeredControllers }, window.location.origin);
 }
 
