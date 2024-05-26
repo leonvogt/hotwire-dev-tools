@@ -111,7 +111,7 @@ const highlightTurboFrames = () => {
   const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter(frame => !blacklistedFrames.includes(frame));
   turboFrames.forEach((frame) => {
     // Set the frame's outline color
-    frame.style.outline = `1px dashed ${frameColor}`;
+    frame.style.outline = `2px dashed ${frameColor}`;
 
     // Add a badge to the frame (or update the existing one)
     const badgeClass = "turbo-frame-info-badge"
@@ -317,11 +317,9 @@ const createStimulusDetailBoxContent = () => {
     stimulusIdentifierSpan.innerText = stimulusControllerId;
 
     // Amount of elements with the same controller
-    if (stimulusControllerElements.length > 1) {
-      const stimulusIdentifierAmount = document.createElement("sup");
-      stimulusIdentifierAmount.innerText = stimulusControllerElements.length;
-      stimulusIdentifierSpan.appendChild(stimulusIdentifierAmount);
-    }
+    const stimulusIdentifierAmount = document.createElement("sup");
+    stimulusIdentifierAmount.innerText = stimulusControllerElements.length;
+    stimulusIdentifierSpan.appendChild(stimulusIdentifierAmount);
     entry.appendChild(stimulusIdentifierSpan);
 
     // Indicator if the controller is not registered
