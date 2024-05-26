@@ -39,6 +39,11 @@
       ]
     }
   ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "hotwire_dev_tools@browser_extension"
+    }
+  },
   "commands": {
     "_execute_action": {
       "suggested_key": {
