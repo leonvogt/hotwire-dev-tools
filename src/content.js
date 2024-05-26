@@ -1,7 +1,6 @@
 import {
   createDetailBoxContainer,
   createDetailBoxHeader,
-  createDetailBoxCollapseButton,
   createDetailBoxTabs,
 } from "./lib/element_creation";
 
@@ -165,6 +164,21 @@ const createStimulusDetailBoxContent = () => {
   }
 
   return content
+}
+
+const createDetailBoxCollapseButton = () => {
+  const existingCloseButton = document.querySelector(".hotwire-dev-tools-collapse-button");
+  if (existingCloseButton) {
+    return existingCloseButton;
+  }
+  const closeButton = document.createElement("button");
+  closeButton.classList.add("hotwire-dev-tools-collapse-button");
+  closeButton.onclick = () => {
+    const container = document.getElementById("hotwire-dev-tools-detail-box-container")
+    container.classList.toggle("collapsed");
+    saveOptions({ detailBoxCollapsed: container.classList.contains("collapsed") });
+  }
+  return closeButton;
 }
 
 const renderDetailBox = () => {

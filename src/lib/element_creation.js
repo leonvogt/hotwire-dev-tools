@@ -58,21 +58,6 @@ export const createDetailBoxHeader = () => {
   return header;
 }
 
-export const createDetailBoxCollapseButton = () => {
-  const existingCloseButton = document.querySelector(".hotwire-dev-tools-collapse-button");
-  if (existingCloseButton) {
-    return existingCloseButton;
-  }
-  const closeButton = document.createElement("button");
-  closeButton.classList.add("hotwire-dev-tools-collapse-button");
-  closeButton.onclick = () => {
-    const container = document.getElementById("hotwire-dev-tools-detail-box-container")
-    container.classList.toggle("collapsed");
-    saveOptions({ detailBoxCollapsed: container.classList.contains("collapsed") });
-  }
-  return closeButton;
-}
-
 export const createDetailBoxTabList = () => {
   const existingTablist = document.querySelector(".hotwire-dev-tools-tablist");
   if (existingTablist) {
