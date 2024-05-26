@@ -42,7 +42,7 @@ body.watch-turbo-frames {
   position: fixed;
   bottom: 0em;
   right: 0em;
-  z-index: 1000;
+  z-index: 99999;
   width: clamp(20rem, 30rem, 100vw);
   background: white;
 
