@@ -15,7 +15,7 @@
         "<all_urls>"
       ],
       "js": [
-        "scripts/content.js"
+        "dist/content.js"
       ],
       "css": [
         "styles/content.css"
@@ -32,7 +32,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "scripts/inject.js"
+        "dist/inject.js"
       ],
       "matches": [
         "<all_urls>"

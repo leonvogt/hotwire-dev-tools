@@ -1,0 +1,13 @@
+{
+  "name": "hotwire-dev-tools",
+  "version": "0.0.1",
+  "description": "Hotwire Dev Tools for Turbo and Stimulus",
+  "author": "Leon Vogt",
+  "scripts": {
+    "build": "NODE_ENV=\"production\" node esbuild.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "esbuild": "^0.21.4"
+  }
+}

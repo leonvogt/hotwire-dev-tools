@@ -13,15 +13,18 @@ const toggleFrameColorInput = (show) => {
   }
 }
 
-// Initialize the form with the user's options
-const data = await chrome.storage.sync.get("options");
-const options = data.options || { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "" };
+const init = () => {
+  const data = chrome.storage.sync.get("options");
+  const options = data.options || { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "" };
 
-highlightFramesInput.checked = options.frames;
-displayDetailBoxInput.checked = options.detailBox;
-frameColorInput.value = options.frameColor;
-frameBlacklistInput.value = options.frameBlacklist;
-toggleFrameColorInput(options.frames);
+  highlightFramesInput.checked = options.frames;
+  displayDetailBoxInput.checked = options.detailBox;
+  frameColorInput.value = options.frameColor;
+  frameBlacklistInput.value = options.frameBlacklist;
+  toggleFrameColorInput(options.frames);
+}
+
+init()
 
 // Event listeners to persist selected options
 highlightFramesInput.addEventListener("change", (event) => {
