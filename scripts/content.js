@@ -111,7 +111,7 @@ const highlightTurboFrames = () => {
   const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter(frame => !blacklistedFrames.includes(frame));
   turboFrames.forEach((frame) => {
     // Set the frame's outline color
-    frame.style.outline = `1px solid ${frameColor}`;
+    frame.style.outline = `1px dashed ${frameColor}`;
 
     // Add a badge to the frame (or update the existing one)
     const badgeClass = "turbo-frame-info-badge"
