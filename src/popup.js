@@ -13,10 +13,7 @@ const toggleFrameColorInput = (show) => {
   }
 }
 
-const init = () => {
-  const data = chrome.storage.sync.get("options");
-  const options = data.options || { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "" };
-
+const initializeForm = (options) => {
   highlightFramesInput.checked = options.frames;
   displayDetailBoxInput.checked = options.detailBox;
   frameColorInput.value = options.frameColor;
@@ -24,26 +21,31 @@ const init = () => {
   toggleFrameColorInput(options.frames);
 }
 
-init()
+(async () => {
+  const data = await chrome.storage.sync.get("options");
+  const options = data.options || { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "" };
 
-// Event listeners to persist selected options
-highlightFramesInput.addEventListener("change", (event) => {
-  toggleFrameColorInput(event.target.checked);
-  options.frames = event.target.checked;
-  chrome.storage.sync.set({ options });
-});
+  initializeForm(options);
 
-displayDetailBoxInput.addEventListener("change", (event) => {
-  options.detailBox = event.target.checked;
-  chrome.storage.sync.set({ options });
-});
+  // Event listeners to persist selected options
+  highlightFramesInput.addEventListener("change", (event) => {
+    toggleFrameColorInput(event.target.checked);
+    options.frames = event.target.checked;
+    chrome.storage.sync.set({ options });
+  });
 
-frameColorInput.addEventListener("change", (event) => {
-  options.frameColor = event.target.value;
-  chrome.storage.sync.set({ options });
-});
+  displayDetailBoxInput.addEventListener("change", (event) => {
+    options.detailBox = event.target.checked;
+    chrome.storage.sync.set({ options });
+  });
 
-frameBlacklistInput.addEventListener("input", (event) => {
-  options.frameBlacklist = event.target.value;
-  chrome.storage.sync.set({ options });
-})
+  frameColorInput.addEventListener("change", (event) => {
+    options.frameColor = event.target.value;
+    chrome.storage.sync.set({ options });
+  });
+
+  frameBlacklistInput.addEventListener("input", (event) => {
+    options.frameBlacklist = event.target.value;
+    chrome.storage.sync.set({ options });
+  })
+})();
