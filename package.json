@@ -4,7 +4,8 @@
   "description": "Hotwire Dev Tools for Turbo and Stimulus",
   "author": "Leon Vogt",
   "scripts": {
-    "build": "NODE_ENV=\"production\" node esbuild.js"
+    "build": "NODE_ENV=\"production\" node esbuild.js",
+    "dev": "NODE_ENV=\"development\" node esbuild.js --watch"
   },
   "dependencies": {},
   "devDependencies": {
