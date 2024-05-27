@@ -75,6 +75,20 @@ body.watch-turbo-frames {
     }
   }
 
+  .tablink-with-icon {
+    width: fit-content !important;
+    padding-left: 1em;
+    padding-right: 1em;
+
+    & svg {
+      height: 50%;
+    }
+
+    & path {
+      fill: white;
+    }
+  }
+
   .hotwire-dev-tools-tab-content {
     display: none;
 
@@ -124,6 +138,32 @@ body.watch-turbo-frames {
 
   &.collapsed:hover {
     height: 2.5rem;
+  }
+}
+
+& .info-tab-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em;
+
+  .info-tab-content-stimulus,
+  .info-tab-content-turbo {
+    min-width: 45%;
+  }
+
+  & .info-title {
+    font-size: 1.2em;
+  }
+
+  & .info-title {
+    font-size: 1.1em;
+  }
+
+  & pre {
+    margin: 0;
+    white-space: no-wrap;
+    display: flex;
+    justify-content: space-between;
   }
 }
 
