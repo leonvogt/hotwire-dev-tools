@@ -1,5 +1,6 @@
 import { html, render } from "lit-html";
 import { getMetaContent } from "./lib/utils";
+import Devtool from "./lib/devtool";
 
 import {
   createDetailBoxContainer,
@@ -7,14 +8,15 @@ import {
   createDetailBoxTabs,
 } from "./lib/element_creation";
 
+const devTool = new Devtool();
+
 const state = {
   stimulusControllers: [],
   turboDetails: {},
 }
 
 const highlightTurboFrames = () => {
-  const options = getOptions();
-  if (!options.frames) {
+  if (!devTool.options.frames) {
     document.body.classList.remove("watch-turbo-frames");
     document.querySelectorAll("turbo-frame").forEach((frame) => {
       frame.querySelector(".turbo-frame-info-badge-container")?.remove();
@@ -23,7 +25,7 @@ const highlightTurboFrames = () => {
   }
 
   document.body.classList.add("watch-turbo-frames");
-  const { frameColor, frameBlacklist } = options;
+  const { frameColor, frameBlacklist } = devTool.options;
 
   let blacklistedFrames = [];
   if (frameBlacklist) {
@@ -232,19 +234,18 @@ const createDetailBoxCollapseButton = () => {
   closeButton.onclick = () => {
     const container = document.getElementById("hotwire-dev-tools-detail-box-container")
     container.classList.toggle("collapsed");
-    saveOptions({ detailBoxCollapsed: container.classList.contains("collapsed") });
+    devTool.saveOptions({ detailBoxCollapsed: container.classList.contains("collapsed") });
   }
   return closeButton;
 }
 
 const renderDetailBox = () => {
   const container = createDetailBoxContainer();
-  const options = getOptions();
-  if (!options.detailBox) {
+  if (!devTool.options.detailBox) {
     container.remove();
     return;
   }
-  if (options.detailBoxCollapsed) {
+  if (devTool.options.detailBoxCollapsed) {
     container.classList.add("collapsed");
   }
 
@@ -305,29 +306,9 @@ const injectedScriptMessageHandler = (event) => {
   }
 }
 
-const saveOptions = (options) => {
-  const currentOptions = getOptions();
-  const newOptions = { ...currentOptions, ...options };
-  localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(newOptions));
-}
-
-const getOptions = () => {
-  const defaultOptions = { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "", detailBoxCollapsed: false };
-
-  const options = localStorage.getItem("hotwire-dev-tools-options")
-  if (options === "undefined") return defaultOptions;
-
-  try {
-    return JSON.parse(options);
-  } catch (error) {
-    console.warn("Hotwire Dev Tools: Invalid options:", options);
-    return defaultOptions;
-  }
-}
-
 const init = async () => {
   const data = await chrome.storage.sync.get("options");
-  saveOptions(data.options);
+  devTool.saveOptions(data.options);
   highlightTurboFrames();
   renderDetailBox();
   injectCustomScript();
@@ -343,7 +324,7 @@ window.addEventListener("message", injectedScriptMessageHandler);
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'sync' && changes.options?.newValue) {
-    saveOptions(changes.options.newValue);
+    devTool.saveOptions(changes.options.newValue);
     document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed", { detail: changes.options.newValue }));
   }
 });
