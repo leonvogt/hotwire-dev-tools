@@ -8,7 +8,8 @@ import {
 } from "./lib/element_creation";
 
 const state = {
-  stimulusControllers: []
+  stimulusControllers: [],
+  turboDetails: {},
 }
 
 const highlightTurboFrames = () => {
@@ -172,7 +173,7 @@ const createStimulusDetailBoxContent = () => {
 const createInfoBoxContent = () => {
   const existingContent = document.getElementById("hotwire-dev-tools-info-tab");
   if (existingContent) {
-    return existingContent;
+    existingContent.remove();
   }
 
   const content = document.createElement("div");
@@ -185,6 +186,10 @@ const createInfoBoxContent = () => {
         <pre>
           <span>Turbo Frames:</span>
           <span>${document.querySelectorAll("turbo-frame").length}</span>
+        </pre>
+        <pre>
+          <span>Turbo Drive:</span>
+          <span>${state.turboDetails.turboDriveEnabled ? "On" : "Off"}</span>
         </pre>
         <pre>
           <span>Link Prefetch:</span>
@@ -292,6 +297,10 @@ const injectedScriptMessageHandler = (event) => {
         state.stimulusControllers = event.data.registeredControllers;
         renderDetailBox();
       }
+      break;
+    case "turboDetails":
+      state.turboDetails = event.data.details;
+      renderDetailBox();
       break;
   }
 }
