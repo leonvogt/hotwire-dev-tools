@@ -1,3 +1,6 @@
+import { html, render } from "lit-html";
+import { getMetaContent } from "./lib/utils";
+
 import {
   createDetailBoxContainer,
   createDetailBoxHeader,
@@ -166,6 +169,54 @@ const createStimulusDetailBoxContent = () => {
   return content
 }
 
+const createInfoBoxContent = () => {
+  const existingContent = document.getElementById("hotwire-dev-tools-info-tab");
+  if (existingContent) {
+    return existingContent;
+  }
+
+  const content = document.createElement("div");
+  content.classList.add("hotwire-dev-tools-tab-content");
+  content.id = "hotwire-dev-tools-info-tab";
+
+  const turboContent = html`
+    <div class="info-tab-content">
+      <div class="info-tab-content-turbo">
+        <pre>
+          <span>Turbo Frames:</span>
+          <span>${document.querySelectorAll("turbo-frame").length}</span>
+        </pre>
+        <pre>
+          <span>Link Prefetch:</span>
+          <span>${getMetaContent("turbo-prefetch") !== "false" ? "On" : "Off"}</span>
+        </pre>
+        <pre>
+          <span>Refresh Control:</span>
+          <span>${getMetaContent("turbo-refresh-method") || "-"}</span>
+        </pre>
+        <pre>
+          <span>Vist Control:</span>
+          <span>${getMetaContent("turbo-visit-control") || "-"}</span>
+        </pre>
+        <pre>
+          <span>Cache Control:</span>
+          <span>${getMetaContent("turbo-cache-control") || "-"}</span>
+        </pre>
+      </div>
+
+      <div class="info-tab-content-stimulus">
+        <pre>
+          <span>Stimulus Controllers:</span>
+          <span>${document.querySelectorAll("[data-controller]").length}</span>
+        </pre>
+      </div>
+    </div>
+  `;
+  render(turboContent, content);
+
+  return content
+}
+
 const createDetailBoxCollapseButton = () => {
   const existingCloseButton = document.querySelector(".hotwire-dev-tools-collapse-button");
   if (existingCloseButton) {
@@ -200,6 +251,7 @@ const renderDetailBox = () => {
   container.appendChild(createStimulusDetailBoxContent());
   container.appendChild(createTurboStreamDetailBoxContent());
   container.appendChild(createTurboFrameDetailBoxContent());
+  container.appendChild(createInfoBoxContent());
   document.body.appendChild(container);
 
   listenForTabNavigation();
@@ -212,8 +264,8 @@ const listenForTabNavigation = () => {
       tab.classList.remove("active");
     });
 
-    const clickedTab = event.target;
-    const desiredTabContent = document.getElementById(event.target.dataset.tabId);
+    const clickedTab = event.target.closest(".hotwire-dev-tools-tablink");
+    const desiredTabContent = document.getElementById(clickedTab.dataset.tabId);
 
     clickedTab.classList.add("active");
     desiredTabContent.classList.add("active");
