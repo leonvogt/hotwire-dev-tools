@@ -214,7 +214,10 @@ const createTurboFrameDetailBoxContent = () => {
   content.id = "hotwire-dev-tools-turbo-frame-tab";
   devTool.options.currentTab == "hotwire-dev-tools-turbo-frame-tab" && content.classList.add("active");
 
-  document.querySelectorAll("turbo-frame").forEach((frame) => {
+  const frames = Array.from(document.querySelectorAll("turbo-frame"));
+  frames.sort((a, b) => a.id.localeCompare(b.id));
+
+  frames.forEach((frame) => {
     const entry = document.createElement("div");
     entry.classList.add("hotwire-dev-tools-entry");
     entry.appendChild(Object.assign(document.createElement("span"), { innerText: frame.id }));
@@ -236,7 +239,9 @@ const createStimulusDetailBoxContent = () => {
   devTool.options.currentTab == "hotwire-dev-tools-stimulus-tab" && content.classList.add("active");
 
   const groupedStimulusControllers = groupedStimulusControllerElements();
-  for (const stimulusControllerId in groupedStimulusControllers) {
+  const sortedControllerIds = Object.keys(groupedStimulusControllers).sort();
+
+  sortedControllerIds.forEach((stimulusControllerId) => {
     const stimulusControllerElements = groupedStimulusControllers[stimulusControllerId];
     const entry = document.createElement("div");
     entry.classList.add("hotwire-dev-tools-entry");
@@ -261,7 +266,7 @@ const createStimulusDetailBoxContent = () => {
     }
 
     content.appendChild(entry);
-  }
+  });
 
   return content
 }
