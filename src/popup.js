@@ -10,9 +10,9 @@ const highlightFramesToggles = document.querySelectorAll(".highlight-frames-togg
 
 const toggleFrameColorInput = (show) => {
   if (show) {
-    highlightFramesToggles.forEach((element) => element.classList.remove("d-none"));
+    highlightFramesToggles.forEach(element => element.classList.remove("d-none"));
   } else {
-    highlightFramesToggles.forEach((element) => element.classList.add("d-none"));
+    highlightFramesToggles.forEach(element => element.classList.add("d-none"));
   }
 }
 
