@@ -6,6 +6,7 @@
   "scripts": {
     "build": "NODE_ENV=\"production\" node esbuild.js",
     "dev": "NODE_ENV=\"development\" node esbuild.js --watch",
+    "lint": "npx prettier --check .",
     "format": "npx prettier --write ."
   },
   "dependencies": {
