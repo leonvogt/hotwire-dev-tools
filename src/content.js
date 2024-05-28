@@ -1,5 +1,5 @@
 import { html, render } from "lit-html";
-import { getMetaContent } from "./lib/utils";
+import { getMetaContent, debounce } from "./lib/utils";
 import * as Icons from './lib/icons'
 import Devtool from "./lib/devtool";
 
@@ -334,7 +334,7 @@ const createDetailBoxCollapseButton = () => {
   return closeButton;
 }
 
-const renderDetailBox = () => {
+const renderDetailBox = debounce(() => {
   const container = createDetailBoxContainer();
   if (!devTool.options.detailBox) {
     container.remove();
@@ -356,7 +356,7 @@ const renderDetailBox = () => {
   document.body.appendChild(container);
 
   listenForTabNavigation();
-}
+}, 100)
 
 const listenForTabNavigation = () => {
   const tablist = document.querySelector(".hotwire-dev-tools-tablist");
