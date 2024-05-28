@@ -58,23 +58,23 @@ const highlightTurboFrames = () => {
   });
 }
 
-const createDetailBoxContainer = () => {
-  const existingContainer = document.getElementById("hotwire-dev-tools-detail-box-container");
+const createDetailPanelContainer = () => {
+  const existingContainer = document.getElementById("hotwire-dev-tools-detail-panel-container");
   if (existingContainer) {
     return existingContainer;
   }
   const container = document.createElement("div");
-  container.id = "hotwire-dev-tools-detail-box-container";
+  container.id = "hotwire-dev-tools-detail-panel-container";
   container.dataset.turboPermanent = true;
   return container;
 }
 
-const renderDetailBox = debounce(() => {
-  const container = createDetailBoxContainer();
+const renderDetailPanel = debounce(() => {
+  const container = createDetailPanelContainer();
   container.innerHTML = detailPanel.html;
   document.body.appendChild(container);
 
-  container.classList.toggle("collapsed", devTool.options.detailBoxCollapsed);
+  container.classList.toggle("collapsed", devTool.options.detailPanelCollapsed);
   listenForTabNavigation();
   listenForCollapse();
 }, 100)
@@ -98,9 +98,9 @@ const listenForTabNavigation = () => {
 
 const listenForCollapse = () => {
   document.querySelector(".hotwire-dev-tools-collapse-button").addEventListener("click", () => {
-    const container = document.getElementById("hotwire-dev-tools-detail-box-container")
+    const container = document.getElementById("hotwire-dev-tools-detail-panel-container")
     container.classList.toggle("collapsed");
-    devTool.saveOptions({ detailBoxCollapsed: container.classList.contains("collapsed") });
+    devTool.saveOptions({ detailPanelCollapsed: container.classList.contains("collapsed") });
   })
 }
 
@@ -122,25 +122,25 @@ const injectedScriptMessageHandler = (event) => {
     case "stimulusController":
       if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
         devTool.stimulusControllers = event.data.registeredControllers;
-        renderDetailBox();
+        renderDetailPanel();
       }
       break;
     case "turboDetails":
       detailPanel.turboDetails = event.data.details;
-      renderDetailBox();
+      renderDetailPanel();
       break;
   }
 }
 
 const init = async () => {
   highlightTurboFrames();
-  renderDetailBox();
+  renderDetailPanel();
   injectCustomScript();
 }
 
 const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"];
 events.forEach(event => document.addEventListener(event, init));
-document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailBox);
+document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailPanel);
 
 // Listen for potential message from the injected script
 window.addEventListener("message", injectedScriptMessageHandler);

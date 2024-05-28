@@ -24,6 +24,6 @@ export default class Devtool {
   }
 
   get defaultOptions() {
-    return { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "", detailBoxCollapsed: false, currentTab: "hotwire-dev-tools-stimulus-tab" };
+    return { frames: false, detailPanel: false, frameColor: "#5cd8e5", frameBlacklist: "", detailPanelCollapsed: false, currentTab: "hotwire-dev-tools-stimulus-tab" };
   }
 }

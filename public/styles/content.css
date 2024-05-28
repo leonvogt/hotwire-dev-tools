@@ -37,8 +37,8 @@ body.watch-turbo-frames {
   }
 }
 
-/* Detail Box */
-#hotwire-dev-tools-detail-box-container {
+/* Detail Panel */
+#hotwire-dev-tools-detail-panel-container {
   position: fixed;
   bottom: 0em;
   right: 0em;
@@ -46,7 +46,7 @@ body.watch-turbo-frames {
   width: clamp(20rem, 30rem, 100vw);
   background: white;
 
-  .hotwire-dev-tools-detail-box-header {
+  .hotwire-dev-tools-detail-panel-header {
     height: 2.5rem;
     background: #808080;
     color: white;
@@ -167,7 +167,7 @@ body.watch-turbo-frames {
   }
 }
 
-#hotwire-dev-tools-detail-box-container:not(.collapsed) {
+#hotwire-dev-tools-detail-panel-container:not(.collapsed) {
   .hotwire-dev-tools-tablist button:hover {
     background-color: #ddd;
   }
@@ -177,8 +177,8 @@ body.watch-turbo-frames {
   }
 }
 
-#hotwire-dev-tools-detail-box-container,
-.hotwire-dev-tools-detail-box-header,
+#hotwire-dev-tools-detail-panel-container,
+.hotwire-dev-tools-detail-panel-header,
 .hotwire-dev-tools-tablink:first-child {
   border-top-left-radius: 10px;
 }

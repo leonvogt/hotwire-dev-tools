@@ -3,7 +3,7 @@ import Devtool from "./lib/devtool";
 const devTool = new Devtool();
 
 const highlightFramesInput = document.getElementById("highlight-frames");
-const displayDetailBoxInput = document.getElementById("display-detail-box");
+const displayDetailPanelInput = document.getElementById("display-detail-panel");
 const frameColorInput = document.getElementById("frames-color");
 const frameBlacklistInput = document.getElementById("frames-blacklist");
 const highlightFramesToggles = document.querySelectorAll(".highlight-frames-toggle-elements");
@@ -18,7 +18,7 @@ const toggleFrameColorInput = (show) => {
 
 const initializeForm = (options) => {
   highlightFramesInput.checked = options.frames;
-  displayDetailBoxInput.checked = options.detailBox;
+  displayDetailPanelInput.checked = options.detailPanel;
   frameColorInput.value = options.frameColor;
   frameBlacklistInput.value = options.frameBlacklist;
   toggleFrameColorInput(options.frames);
@@ -37,8 +37,8 @@ const initializeForm = (options) => {
     chrome.storage.sync.set({ options });
   });
 
-  displayDetailBoxInput.addEventListener("change", (event) => {
-    options.detailBox = event.target.checked;
+  displayDetailPanelInput.addEventListener("change", (event) => {
+    options.detailPanel = event.target.checked;
     chrome.storage.sync.set({ options });
   });
 

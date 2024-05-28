@@ -15,7 +15,7 @@ export default class DetailPanel {
     ];
 
     return `
-      <div class="hotwire-dev-tools-detail-box-header">
+      <div class="hotwire-dev-tools-detail-panel-header">
         <div class="hotwire-dev-tools-tablist">
           ${tabs.map(tab => `
             <button class="hotwire-dev-tools-tablink ${this.currentTab === tab.id ? "active" : ""} ${tab.icon ? "tablink-with-icon" : ""}" data-tab-id="${tab.id}">
@@ -134,7 +134,7 @@ export default class DetailPanel {
     `;
   }
 
-  addTurboStreamToDetailBox = (event) => {
+  addTurboStreamToDetailPanel = (event) => {
     const turboStream = event.target;
     const action = turboStream.getAttribute("action");
     const target = turboStream.getAttribute("target");
