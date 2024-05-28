@@ -129,10 +129,10 @@ body.watch-turbo-frames {
 
   &.collapsed {
     height: 8px;
-    transition: height .25s ease-out;
+    transition: height 0.25s ease-out;
 
     .hotwire-dev-tools-collapse-button:after {
-      content: '\2191';
+      content: "\2191";
     }
   }
 
@@ -173,7 +173,7 @@ body.watch-turbo-frames {
   }
 
   .hotwire-dev-tools-collapse-button:after {
-    content: '\2193';
+    content: "\2193";
   }
 }
 

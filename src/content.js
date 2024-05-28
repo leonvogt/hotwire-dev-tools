@@ -1,154 +1,160 @@
-import { debounce } from "./lib/utils";
-import Devtool from "./lib/devtool";
-import DetailPanel from "./components/detail_panel";
+import { debounce } from "./lib/utils"
+import Devtool from "./lib/devtool"
+import DetailPanel from "./components/detail_panel"
 
-const devTool = new Devtool();
-const detailPanel = new DetailPanel(devTool);
+const devTool = new Devtool()
+const detailPanel = new DetailPanel(devTool)
 
 const highlightTurboFrames = () => {
   if (!devTool.options.frames) {
-    document.body.classList.remove("watch-turbo-frames");
+    document.body.classList.remove("watch-turbo-frames")
     document.querySelectorAll("turbo-frame").forEach((frame) => {
-      frame.querySelector(".turbo-frame-info-badge-container")?.remove();
-    });
+      frame.querySelector(".turbo-frame-info-badge-container")?.remove()
+    })
     return
   }
 
-  document.body.classList.add("watch-turbo-frames");
-  const { frameColor, frameBlacklist } = devTool.options;
+  document.body.classList.add("watch-turbo-frames")
+  const { frameColor, frameBlacklist } = devTool.options
 
-  let blacklistedFrames = [];
+  let blacklistedFrames = []
   if (frameBlacklist) {
     try {
-      blacklistedFrames = Array.from(document.querySelectorAll(frameBlacklist));
+      blacklistedFrames = Array.from(document.querySelectorAll(frameBlacklist))
     } catch (error) {
-      console.warn("Hotwire Dev Tools: Invalid frameBlacklist selector:", frameBlacklist);
+      console.warn("Hotwire Dev Tools: Invalid frameBlacklist selector:", frameBlacklist)
     }
   }
 
-  const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter(frame => !blacklistedFrames.includes(frame));
+  const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter((frame) => !blacklistedFrames.includes(frame))
   turboFrames.forEach((frame) => {
     // Set the frame's outline color
-    frame.style.outline = `2px dashed ${frameColor}`;
+    frame.style.outline = `2px dashed ${frameColor}`
 
     // Add a badge to the frame (or update the existing one)
     const badgeClass = "turbo-frame-info-badge"
     const existingBadge = frame.querySelector(`.${badgeClass}`)
     if (existingBadge) {
-      existingBadge.style.backgroundColor = frameColor;
+      existingBadge.style.backgroundColor = frameColor
     } else {
-      const badgeContainer = document.createElement("div");
-      badgeContainer.classList.add("turbo-frame-info-badge-container");
-      badgeContainer.dataset.turboTemporary = true;
+      const badgeContainer = document.createElement("div")
+      badgeContainer.classList.add("turbo-frame-info-badge-container")
+      badgeContainer.dataset.turboTemporary = true
 
-      const badgeContent = document.createElement("span");
+      const badgeContent = document.createElement("span")
       badgeContent.textContent = `ʘ #${frame.id}`
-      badgeContent.classList.add(badgeClass);
-      badgeContent.style.backgroundColor = frameColor;
+      badgeContent.classList.add(badgeClass)
+      badgeContent.style.backgroundColor = frameColor
       badgeContent.onclick = () => {
-        navigator.clipboard.writeText(frame.id);
+        navigator.clipboard.writeText(frame.id)
       }
 
       if (frame.hasAttribute("src")) {
-        badgeContent.classList.add("frame-with-src");
+        badgeContent.classList.add("frame-with-src")
       }
-      badgeContainer.appendChild(badgeContent);
-      frame.insertAdjacentElement("afterbegin", badgeContainer);
+      badgeContainer.appendChild(badgeContent)
+      frame.insertAdjacentElement("afterbegin", badgeContainer)
     }
-  });
+  })
 }
 
 const createDetailPanelContainer = () => {
-  const existingContainer = document.getElementById("hotwire-dev-tools-detail-panel-container");
+  const existingContainer = document.getElementById("hotwire-dev-tools-detail-panel-container")
   if (existingContainer) {
-    return existingContainer;
+    return existingContainer
   }
-  const container = document.createElement("div");
-  container.id = "hotwire-dev-tools-detail-panel-container";
-  container.dataset.turboPermanent = true;
-  return container;
+  const container = document.createElement("div")
+  container.id = "hotwire-dev-tools-detail-panel-container"
+  container.dataset.turboPermanent = true
+  return container
 }
 
 const renderDetailPanel = debounce(() => {
-  const container = createDetailPanelContainer();
-  container.innerHTML = detailPanel.html;
-  document.body.appendChild(container);
+  const container = createDetailPanelContainer()
+  container.innerHTML = detailPanel.html
+  document.body.appendChild(container)
 
-  container.classList.toggle("collapsed", devTool.options.detailPanelCollapsed);
-  listenForTabNavigation();
-  listenForCollapse();
+  container.classList.toggle("collapsed", devTool.options.detailPanelCollapsed)
+  listenForTabNavigation()
+  listenForCollapse()
 }, 100)
 
 const listenForTabNavigation = () => {
-  const tablist = document.querySelector(".hotwire-dev-tools-tablist");
+  const tablist = document.querySelector(".hotwire-dev-tools-tablist")
   tablist.addEventListener("click", (event) => {
     document.querySelectorAll(".hotwire-dev-tools-tablink, .hotwire-dev-tools-tab-content").forEach((tab) => {
-      tab.classList.remove("active");
-    });
+      tab.classList.remove("active")
+    })
 
-    const clickedTab = event.target.closest(".hotwire-dev-tools-tablink");
-    const desiredTabContent = document.getElementById(clickedTab.dataset.tabId);
+    const clickedTab = event.target.closest(".hotwire-dev-tools-tablink")
+    const desiredTabContent = document.getElementById(clickedTab.dataset.tabId)
 
-    clickedTab.classList.add("active");
-    desiredTabContent.classList.add("active");
+    clickedTab.classList.add("active")
+    desiredTabContent.classList.add("active")
 
-    devTool.saveOptions({ currentTab: clickedTab.dataset.tabId });
+    devTool.saveOptions({ currentTab: clickedTab.dataset.tabId })
   })
 }
 
 const listenForCollapse = () => {
   document.querySelector(".hotwire-dev-tools-collapse-button").addEventListener("click", () => {
     const container = document.getElementById("hotwire-dev-tools-detail-panel-container")
-    container.classList.toggle("collapsed");
-    devTool.saveOptions({ detailPanelCollapsed: container.classList.contains("collapsed") });
+    container.classList.toggle("collapsed")
+    devTool.saveOptions({
+      detailPanelCollapsed: container.classList.contains("collapsed"),
+    })
   })
 }
 
 const injectCustomScript = () => {
-  const existingScript = document.getElementById("hotwire-dev-tools-inject-script");
-  if (existingScript) return;
+  const existingScript = document.getElementById("hotwire-dev-tools-inject-script")
+  if (existingScript) return
 
-  const script = document.createElement("script");
-  script.src = chrome.runtime.getURL("dist/inject.js");
-  script.id = "hotwire-dev-tools-inject-script";
-  document.documentElement.appendChild(script);
+  const script = document.createElement("script")
+  script.src = chrome.runtime.getURL("dist/inject.js")
+  script.id = "hotwire-dev-tools-inject-script"
+  document.documentElement.appendChild(script)
 }
 
 const injectedScriptMessageHandler = (event) => {
-  if (event.origin !== window.location.origin) return;
-  if (event.data.source !== "inject") return;
+  if (event.origin !== window.location.origin) return
+  if (event.data.source !== "inject") return
 
   switch (event.data.message) {
     case "stimulusController":
       if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
-        devTool.stimulusControllers = event.data.registeredControllers;
-        renderDetailPanel();
+        devTool.stimulusControllers = event.data.registeredControllers
+        renderDetailPanel()
       }
-      break;
+      break
     case "turboDetails":
-      detailPanel.turboDetails = event.data.details;
-      renderDetailPanel();
-      break;
+      detailPanel.turboDetails = event.data.details
+      renderDetailPanel()
+      break
   }
 }
 
 const init = async () => {
-  highlightTurboFrames();
-  renderDetailPanel();
-  injectCustomScript();
+  highlightTurboFrames()
+  renderDetailPanel()
+  injectCustomScript()
 }
 
-const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"];
-events.forEach(event => document.addEventListener(event, init));
-document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailPanel);
+const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
+events.forEach((event) => document.addEventListener(event, init))
+document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailPanel)
 
 // Listen for potential message from the injected script
-window.addEventListener("message", injectedScriptMessageHandler);
+window.addEventListener("message", injectedScriptMessageHandler)
 
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'sync' && changes.options?.newValue) {
-    devTool.saveOptions(changes.options.newValue);
-    document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed", { detail: changes.options.newValue }));
+  if (area === "sync" && changes.options?.newValue) {
+    devTool.saveOptions(changes.options.newValue)
+    document.dispatchEvent(
+      new CustomEvent("hotwire-dev-tools:options-changed", {
+        detail: changes.options.newValue,
+      }),
+    )
   }
-});
+})
