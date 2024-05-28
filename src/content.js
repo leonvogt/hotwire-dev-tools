@@ -1,5 +1,6 @@
 import { html, render } from "lit-html";
 import { getMetaContent } from "./lib/utils";
+import * as Icons from './lib/icons'
 import Devtool from "./lib/devtool";
 
 const devTool = new Devtool();
@@ -72,7 +73,7 @@ const createInfoTab = () => {
   infoTab.classList.add("hotwire-dev-tools-tablink", "tablink-with-icon");
   devTool.options.currentTab == "hotwire-dev-tools-info-tab" && infoTab.classList.add("active");
   infoTab.dataset.tabId = "hotwire-dev-tools-info-tab";
-  infoTab.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>`;
+  infoTab.innerHTML = Icons.info;
   return infoTab;
 }
 
