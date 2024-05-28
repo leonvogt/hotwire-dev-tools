@@ -7,21 +7,21 @@ export default class DetailPanel {
   }
 
   get header() {
+    const tabs = [
+      { id: "hotwire-dev-tools-stimulus-tab", label: "Stimulus" },
+      { id: "hotwire-dev-tools-turbo-frame-tab", label: "Frames" },
+      { id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams" },
+      { id: "hotwire-dev-tools-info-tab", label: Icons.info, icon: true }
+    ];
+
     return `
       <div class="hotwire-dev-tools-detail-box-header">
         <div class="hotwire-dev-tools-tablist">
-          <button class="hotwire-dev-tools-tablink ${this.currentTab === "hotwire-dev-tools-stimulus-tab" ? "active" : ""}" data-tab-id="hotwire-dev-tools-stimulus-tab">
-            Stimulus
-          </button>
-          <button class="hotwire-dev-tools-tablink ${this.currentTab === "hotwire-dev-tools-turbo-frame-tab" ? "active" : ""}" data-tab-id="hotwire-dev-tools-turbo-frame-tab">
-            Frames
-          </button>
-          <button class="hotwire-dev-tools-tablink ${this.currentTab === "hotwire-dev-tools-turbo-stream-tab" ? "active" : ""}" data-tab-id="hotwire-dev-tools-turbo-stream-tab">
-            Streams
-          </button>
-          <button class="hotwire-dev-tools-tablink tablink-with-icon ${this.currentTab === "hotwire-dev-tools-info-tab" ? "active" : ""}" data-tab-id="hotwire-dev-tools-info-tab">
-            ${Icons.info}
-          </button>
+          ${tabs.map(tab => `
+            <button class="hotwire-dev-tools-tablink ${this.currentTab === tab.id ? "active" : ""} ${tab.icon ? "tablink-with-icon" : ""}" data-tab-id="${tab.id}">
+              ${tab.label}
+            </button>
+          `).join('')}
         </div>
         <button class="hotwire-dev-tools-collapse-button"></button>
       </div>
@@ -51,19 +51,12 @@ export default class DetailPanel {
   }
 
   get turboFrameTabContent() {
-    const entries = [];
-    const frames = Array.from(document.querySelectorAll("turbo-frame"));
-    frames.sort((a, b) => a.id.localeCompare(b.id));
-    frames.forEach((frame) => {
-      const entry = `
-        <div class="hotwire-dev-tools-entry">
-          <span>${frame.id}</span>
-        </div>
-      `;
-      entries.push(entry);
-    })
-
-    return entries.join('')
+    const frames = Array.from(document.querySelectorAll("turbo-frame")).sort((a, b) => a.id.localeCompare(b.id));
+    return frames.map(frame => `
+      <div class="hotwire-dev-tools-entry">
+        <span>${frame.id}</span>
+      </div>
+    `).join('');
   }
 
   get infoTabContent() {
@@ -124,20 +117,21 @@ export default class DetailPanel {
   }
 
   get html() {
+    const tabContents = [
+      { id: "hotwire-dev-tools-stimulus-tab", content: this.stimulusTabContent },
+      { id: "hotwire-dev-tools-turbo-frame-tab", content: this.turboFrameTabContent },
+      { id: "hotwire-dev-tools-turbo-stream-tab", content: "" }, // Assuming the content is empty as in the original code
+      { id: "hotwire-dev-tools-info-tab", content: this.infoTabContent }
+    ];
+
     return `
       ${this.header}
-      <div class="hotwire-dev-tools-tab-content ${this.currentTab === "hotwire-dev-tools-stimulus-tab" ? "active" : ""}" id="hotwire-dev-tools-stimulus-tab">
-        ${this.stimulusTabContent}
-      </div>
-      <div class="hotwire-dev-tools-tab-content ${this.currentTab === "hotwire-dev-tools-turbo-frame-tab" ? "active" : ""}" id="hotwire-dev-tools-turbo-frame-tab">
-        ${this.turboFrameTabContent}
-      </div>
-      <div class="hotwire-dev-tools-tab-content ${this.currentTab === "hotwire-dev-tools-turbo-stream-tab" ? "active" : ""}" id="hotwire-dev-tools-turbo-stream-tab">
-      </div>
-      <div class="hotwire-dev-tools-tab-content ${this.currentTab === "hotwire-dev-tools-info-tab" ? "active" : ""}" id="hotwire-dev-tools-info-tab">
-        ${this.infoTabContent}
-      </div>
-    `
+      ${tabContents.map(tab => `
+        <div class="hotwire-dev-tools-tab-content ${this.currentTab === tab.id ? "active" : ""}" id="${tab.id}">
+          ${tab.content}
+        </div>
+      `).join('')}
+    `;
   }
 
   addTurboStreamToDetailBox = (event) => {
@@ -151,6 +145,5 @@ export default class DetailPanel {
     entry.appendChild(Object.assign(document.createElement("span"), { innerText: target }));
 
     document.getElementById("hotwire-dev-tools-turbo-stream-tab").prepend(entry);
-
   }
 }
