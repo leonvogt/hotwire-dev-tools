@@ -1,4 +1,7 @@
-const optionsForm = document.getElementById("options-form");
+import Devtool from "./lib/devtool";
+
+const devTool = new Devtool();
+
 const highlightFramesInput = document.getElementById("highlight-frames");
 const displayDetailBoxInput = document.getElementById("display-detail-box");
 const frameColorInput = document.getElementById("frames-color");
@@ -23,7 +26,7 @@ const initializeForm = (options) => {
 
 (async () => {
   const data = await chrome.storage.sync.get("options");
-  const options = data.options || { frames: false, detailBox: false, frameColor: "#5cd8e5", frameBlacklist: "" };
+  const options = data.options || devTool.defaultOptions;
 
   initializeForm(options);
 
