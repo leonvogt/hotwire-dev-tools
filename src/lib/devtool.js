@@ -7,7 +7,7 @@ export default class Devtool {
 
   getOptions = () => {
     const options = localStorage.getItem("hotwire-dev-tools-options")
-    if (options === "undefined") return this.defaultOptions;
+    if (!options) return this.defaultOptions;
 
     try {
       return JSON.parse(options);
