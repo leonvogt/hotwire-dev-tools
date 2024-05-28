@@ -29,26 +29,22 @@ export default class DetailPanel {
   }
 
   get stimulusTabContent() {
-    const groupedStimulusControllers = this.groupedStimulusControllerElements();
-    const sortedControllerIds = Object.keys(groupedStimulusControllers).sort();
+    const sortedControllerIds = Object.keys(this.groupedStimulusControllerElements).sort();
 
     const entries = [];
     sortedControllerIds.forEach((stimulusControllerId) => {
       let indicator = "";
       if (this.devTool.stimulusControllers.length > 0 && !this.devTool.stimulusControllers.includes(stimulusControllerId)) {
-        indicator = `
-          <span style="color: red;" title="Controller not registered">✗</span>
-        `
+        indicator = `<span style="color: red;" title="Controller not registered">✗</span>`
       }
 
-      const stimulusControllerElements = groupedStimulusControllers[stimulusControllerId];
-      const entry = `
+      const stimulusControllerElements = this.groupedStimulusControllerElements[stimulusControllerId];
+      entries.push(`
         <div class="hotwire-dev-tools-entry">
           <span>${stimulusControllerId}<sup>${stimulusControllerElements.length}</sup></span>
           ${indicator}
         </div>
-      `;
-      entries.push(entry);
+      `);
     });
 
     return entries.join('')
@@ -106,6 +102,23 @@ export default class DetailPanel {
     `
   }
 
+  get groupedStimulusControllerElements() {
+    const stimulusControllerElements = document.querySelectorAll('[data-controller]');
+    if (stimulusControllerElements.length === 0) return {};
+
+    const groupedElements = {};
+    stimulusControllerElements.forEach(element => {
+      element.dataset.controller.split(" ").forEach((stimulusControllerId) => {
+        if (!groupedElements[stimulusControllerId]) {
+          groupedElements[stimulusControllerId] = [];
+        }
+        groupedElements[stimulusControllerId].push(element);
+      });
+    });
+
+    return groupedElements;
+  }
+
   get currentTab() {
     return this.devTool.options.currentTab;
   }
@@ -139,22 +152,5 @@ export default class DetailPanel {
 
     document.getElementById("hotwire-dev-tools-turbo-stream-tab").prepend(entry);
 
-  }
-
-  groupedStimulusControllerElements = () => {
-    const stimulusControllerElements = document.querySelectorAll('[data-controller]');
-    if (stimulusControllerElements.length === 0) return {};
-
-    const groupedElements = {};
-    stimulusControllerElements.forEach(element => {
-      element.dataset.controller.split(" ").forEach((stimulusControllerId) => {
-        if (!groupedElements[stimulusControllerId]) {
-          groupedElements[stimulusControllerId] = [];
-        }
-        groupedElements[stimulusControllerId].push(element);
-      });
-    });
-
-    return groupedElements;
   }
 }
