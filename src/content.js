@@ -409,8 +409,6 @@ const injectedScriptMessageHandler = (event) => {
 }
 
 const init = async () => {
-  const data = await chrome.storage.sync.get("options");
-  devTool.saveOptions(data.options);
   highlightTurboFrames();
   renderDetailBox();
   injectCustomScript();
