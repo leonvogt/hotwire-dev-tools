@@ -1,6 +1,8 @@
 export default class Devtool {
   constructor() {
     this.options = this.getOptions();
+    this.stimulusControllers = []
+    this.turboDetails = {}
   }
 
   getOptions = () => {
