@@ -67,10 +67,12 @@ export default class DetailPanel {
             <span>Turbo Frames:</span>
             <span>${document.querySelectorAll("turbo-frame").length}</span>
           </pre>
-          <pre>
-            <span>Link Prefetch:</span>
-            <span>${getMetaContent("turbo-prefetch") !== "false" ? "On" : "Off"}</span>
-          </pre>
+          ${getMetaContent("turbo-prefetch") === "false" ? `
+            <pre>
+              <span>Link Prefetch:</span>
+              <span>Off</span>
+            </pre>
+          ` : ''}
           <pre>
             <span>Refresh Control:</span>
             <span>${getMetaContent("turbo-refresh-method") || "-"}</span>
