@@ -176,7 +176,6 @@ export default class DetailPanel {
     }
     const container = document.createElement("div")
     container.id = "hotwire-dev-tools-detail-panel-container"
-    container.dataset.turboPermanent = true
     return container
   }
 

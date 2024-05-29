@@ -95,6 +95,13 @@ const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:fram
 events.forEach((event) => document.addEventListener(event, init))
 document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailPanel)
 
+// When Turbo Drive renders a new page, we wanna copy over the existing detail panel - shadow container - to the new page,
+// so we can keep the detail panel open, without flickering, when navigating between pages.
+// (The normal data-turbo-permanent way doesn't work for this, because the new page won't have the detail panel in the DOM yet)
+window.addEventListener("turbo:before-render", (event) => {
+  event.target.appendChild(document.getElementById("hotwire-dev-tools-shadow-container"))
+})
+
 // Listen for potential message from the injected script
 window.addEventListener("message", injectedScriptMessageHandler)
 
