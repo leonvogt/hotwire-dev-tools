@@ -107,15 +107,7 @@ export default class DetailPanel {
 
   get turboFrameTabContent() {
     const frames = Array.from(document.querySelectorAll("turbo-frame")).sort((a, b) => a.id.localeCompare(b.id))
-    return frames
-      .map(
-        (frame) => `
-      <div class="hotwire-dev-tools-entry">
-        <span>${frame.id}</span>
-      </div>
-    `,
-      )
-      .join("")
+    return frames.map((frame) => `<div class="hotwire-dev-tools-entry"><span>${frame.id}</span></div>`).join("")
   }
 
   get infoTabContent() {
@@ -202,15 +194,7 @@ export default class DetailPanel {
   get html() {
     return `
       ${this.panelHeader}
-      ${this.tabs
-        .map(
-          (tab) => `
-        <div class="hotwire-dev-tools-tab-content ${this.currentTab === tab.id ? "active" : ""}" id="${tab.id}">
-          ${tab.content}
-        </div>
-      `,
-        )
-        .join("")}
+      ${this.tabs.map((tab) => `<div id="${tab.id}" class="hotwire-dev-tools-tab-content ${this.currentTab === tab.id ? "active" : ""}">${tab.content}</div>`).join("")}
     `
   }
 
