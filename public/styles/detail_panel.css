@@ -1,6 +1,7 @@
 :host {
   all: initial;
   font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color: black;
 }
 
 sup {
@@ -22,8 +23,8 @@ sup {
 
   .hotwire-dev-tools-detail-panel-header {
     height: 2.5rem;
-    background: #808080;
-    color: white;
+    background: #29292e;
+    color: #e7e9f5;
     display: flex;
 
     & svg {
@@ -50,11 +51,21 @@ sup {
       outline: none;
       width: 100%;
       height: 100%;
+      color: #dddddd;
     }
+  }
 
-    & button.active {
-      background-color: #ccc;
-    }
+  .hotwire-dev-tools-tablink.active[data-tab-id="hotwire-dev-tools-turbo-frame-tab"],
+  .hotwire-dev-tools-tablink.active[data-tab-id="hotwire-dev-tools-turbo-stream-tab"] {
+    color: #5cd8e5;
+  }
+
+  .hotwire-dev-tools-tablink.active[data-tab-id="hotwire-dev-tools-stimulus-tab"] {
+    color: #77e8b9;
+  }
+
+  .hotwire-dev-tools-tablink.active[data-tab-id="hotwire-dev-tools-info-tab"] path {
+    fill: #ff9b40;
   }
 
   .hotwire-dev-tools-tablink:has(svg) {
@@ -95,6 +106,7 @@ sup {
     justify-content: space-between;
     padding: 0.5em;
     cursor: pointer;
+    color: black;
   }
 
   & .hotwire-dev-tools-entry sup {
@@ -147,8 +159,8 @@ sup {
 }
 
 #hotwire-dev-tools-detail-panel-container:not(.collapsed) {
-  .hotwire-dev-tools-tablist button:hover {
-    background-color: #ddd;
+  button.hotwire-dev-tools-tablink:not(.active):hover {
+    color: #777;
   }
 }
 
