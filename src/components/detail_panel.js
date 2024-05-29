@@ -73,25 +73,10 @@ export default class DetailPanel {
   }
 
   get panelHeader() {
-    const tabs = [
-      { id: "hotwire-dev-tools-stimulus-tab", label: "Stimulus" },
-      { id: "hotwire-dev-tools-turbo-frame-tab", label: "Frames" },
-      { id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams" },
-      { id: "hotwire-dev-tools-info-tab", label: Icons.info, icon: true },
-    ]
-
     return `
       <div class="hotwire-dev-tools-detail-panel-header">
         <div class="hotwire-dev-tools-tablist">
-          ${tabs
-            .map(
-              (tab) => `
-            <button class="hotwire-dev-tools-tablink ${this.currentTab === tab.id ? "active" : ""} ${tab.icon ? "tablink-with-icon" : ""}" data-tab-id="${tab.id}">
-              ${tab.label}
-            </button>
-          `,
-            )
-            .join("")}
+          ${this.tabs.map((tab) => `<button class="hotwire-dev-tools-tablink ${this.currentTab === tab.id ? "active" : ""} ${tab.icon ? "tablink-with-icon" : ""}" data-tab-id="${tab.id}">${tab.label}</button>`).join("")}
         </div>
         <button class="hotwire-dev-tools-collapse-button"></button>
       </div>
@@ -215,22 +200,9 @@ export default class DetailPanel {
   }
 
   get html() {
-    const tabContents = [
-      {
-        id: "hotwire-dev-tools-stimulus-tab",
-        content: this.stimulusTabContent,
-      },
-      {
-        id: "hotwire-dev-tools-turbo-frame-tab",
-        content: this.turboFrameTabContent,
-      },
-      { id: "hotwire-dev-tools-turbo-stream-tab", content: "" }, // Assuming the content is empty as in the original code
-      { id: "hotwire-dev-tools-info-tab", content: this.infoTabContent },
-    ]
-
     return `
       ${this.panelHeader}
-      ${tabContents
+      ${this.tabs
         .map(
           (tab) => `
         <div class="hotwire-dev-tools-tab-content ${this.currentTab === tab.id ? "active" : ""}" id="${tab.id}">
@@ -240,6 +212,15 @@ export default class DetailPanel {
         )
         .join("")}
     `
+  }
+
+  get tabs() {
+    return [
+      { id: "hotwire-dev-tools-stimulus-tab", label: "Stimulus", content: this.stimulusTabContent },
+      { id: "hotwire-dev-tools-turbo-frame-tab", label: "Frames", content: this.turboFrameTabContent },
+      { id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams", content: "" },
+      { id: "hotwire-dev-tools-info-tab", label: Icons.info, content: this.infoTabContent, icon: true },
+    ]
   }
 
   get currentTab() {
