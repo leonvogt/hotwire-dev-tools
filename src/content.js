@@ -91,7 +91,7 @@ const init = async () => {
   detailPanel.render()
 }
 
-const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
+const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
 events.forEach((event) => document.addEventListener(event, init))
 document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailPanel)
 
@@ -109,10 +109,10 @@ window.addEventListener("message", injectedScriptMessageHandler)
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "sync" && changes.options?.newValue) {
     devTool.saveOptions(changes.options.newValue)
-    document.dispatchEvent(
-      new CustomEvent("hotwire-dev-tools:options-changed", {
-        detail: changes.options.newValue,
-      }),
-    )
+    document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed"))
   }
 })
+
+// On pages without Turbo, there doesn't seem to be an event that informs us when the page has fully loaded.
+// Therefore, we call init as soon as this content.js file is loaded through the browser extension API.
+init()
