@@ -1,6 +1,6 @@
 # Hotwire Dev Tools
 
-The Hotwire Dev Tool is designed to enhance the development experience for applications using Turbo or Stimulus.
+Hotwire Dev Tools is a browser extension that provides a set of features for visualizing Turbo Frames, Turbo Streams and Stimulus controllers on a page.
 
 Features:
 
