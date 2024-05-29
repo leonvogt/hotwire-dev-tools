@@ -70,9 +70,159 @@ const createDetailPanelContainer = () => {
 }
 
 const renderDetailPanel = debounce(() => {
+  console.log("renderDetailPanel")
+
   const container = createDetailPanelContainer()
   container.innerHTML = detailPanel.html
-  document.body.appendChild(container)
+
+  const shadowContainer = document.createElement("div")
+  document.body.appendChild(shadowContainer)
+
+  shadowContainer.attachShadow({ mode: "open" })
+  if (shadowContainer?.shadowRoot) {
+    shadowContainer.shadowRoot.innerHTML = `
+      <style>
+        :host {all: initial;}
+        #hotwire-dev-tools-detail-panel-container {
+          position: fixed;
+          bottom: 0em;
+          right: 0em;
+          z-index: 99999;
+          width: clamp(20rem, 30rem, 100vw);
+          background: white;
+
+          .hotwire-dev-tools-detail-panel-header {
+            height: 2.5rem;
+            background: #808080;
+            color: white;
+            display: flex;
+          }
+
+          /* Tabs */
+          .hotwire-dev-tools-tablist {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+
+            & button {
+              background-color: inherit;
+              border: none;
+              outline: none;
+              width: 100%;
+              height: 100%;
+              transition: 0.3s;
+            }
+
+            & button.active {
+              background-color: #ccc;
+            }
+          }
+
+          .tablink-with-icon {
+            width: fit-content !important;
+            padding-left: 1em;
+            padding-right: 1em;
+
+            & svg {
+              height: 50%;
+            }
+
+            & path {
+              fill: white;
+            }
+          }
+
+          .hotwire-dev-tools-tab-content {
+            display: none;
+
+            &.active {
+              display: block;
+            }
+          }
+
+          .hotwire-dev-tools-collapse-button {
+            background: #808080;
+            color: white;
+            border: none;
+            outline: none;
+            padding-right: 0.5em;
+            padding-left: 0.5em;
+          }
+
+          .hotwire-dev-tools-collapse-button:hover {
+            color: black;
+          }
+
+          & .hotwire-dev-tools-tab-content {
+            max-height: 10em;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+          }
+
+          & .hotwire-dev-tools-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5em;
+            cursor: pointer;
+          }
+
+          & .hotwire-dev-tools-entry:hover {
+            background: #ccc;
+          }
+
+          &.collapsed {
+            height: 8px;
+            transition: height 0.25s ease-out;
+          }
+
+          &.collapsed:hover {
+            height: 2.5rem;
+          }
+        }
+
+        & .info-tab-content {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.5em;
+
+          .info-tab-content-stimulus,
+          .info-tab-content-turbo {
+            min-width: 45%;
+          }
+
+          & .info-title {
+            font-size: 1.2em;
+          }
+
+          & .info-title {
+            font-size: 1.1em;
+          }
+
+          & pre {
+            margin: 0;
+            white-space: no-wrap;
+            display: flex;
+            justify-content: space-between;
+          }
+        }
+
+        #hotwire-dev-tools-detail-panel-container:not(.collapsed) {
+          .hotwire-dev-tools-tablist button:hover {
+            background-color: #ddd;
+          }
+        }
+
+        #hotwire-dev-tools-detail-panel-container,
+        .hotwire-dev-tools-detail-panel-header,
+        .hotwire-dev-tools-tablink:first-child {
+          border-top-left-radius: 10px;
+        }
+      </style>
+    `
+    shadowContainer.shadowRoot.appendChild(container)
+  }
 
   container.classList.toggle("collapsed", devTool.options.detailPanelCollapsed)
   listenForTabNavigation()
