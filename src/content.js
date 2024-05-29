@@ -1,4 +1,3 @@
-import { debounce } from "./lib/utils"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
 
@@ -58,83 +57,6 @@ const highlightTurboFrames = () => {
   })
 }
 
-const createDetailPanelContainer = () => {
-  const existingContainer = shadowRoot().getElementById("hotwire-dev-tools-detail-panel-container")
-  if (existingContainer) {
-    return existingContainer
-  }
-  const container = document.createElement("div")
-  container.id = "hotwire-dev-tools-detail-panel-container"
-  container.dataset.turboPermanent = true
-  return container
-}
-
-const shadowContainer = () => {
-  const existingShadowContainer = document.getElementById("hotwire-dev-tools-shadow-container")
-  if (existingShadowContainer) {
-    return existingShadowContainer
-  }
-  const shadowContainer = document.createElement("div")
-  shadowContainer.id = "hotwire-dev-tools-shadow-container"
-  document.body.appendChild(shadowContainer)
-  return shadowContainer
-}
-
-const shadowRoot = () => {
-  const container = shadowContainer()
-  return container?.shadowRoot || container.attachShadow({ mode: "open" })
-}
-
-const renderDetailPanel = debounce(async () => {
-  // Inject CSS to the shadow root
-  if (!shadowRoot().querySelector("style")) {
-    console.log("no style")
-    const style = document.createElement("style")
-    style.textContent = await devTool.detailPanelCSS()
-    shadowRoot().appendChild(style)
-  }
-
-  // Create or update the detail panel
-  const container = createDetailPanelContainer()
-  container.innerHTML = detailPanel.html
-  shadowRoot().appendChild(container)
-
-  container.classList.toggle("collapsed", devTool.options.detailPanelCollapsed)
-  listenForTabNavigation()
-  listenForCollapse()
-}, 100)
-
-const listenForTabNavigation = () => {
-  const tablist = shadowRoot().querySelector(".hotwire-dev-tools-tablist")
-  tablist.addEventListener("click", (event) => {
-    shadowRoot()
-      .querySelectorAll(".hotwire-dev-tools-tablink, .hotwire-dev-tools-tab-content")
-      .forEach((tab) => {
-        tab.classList.remove("active")
-      })
-
-    const clickedTab = event.target.closest(".hotwire-dev-tools-tablink")
-    const desiredTabContent = shadowRoot().getElementById(clickedTab.dataset.tabId)
-
-    clickedTab.classList.add("active")
-    desiredTabContent.classList.add("active")
-
-    devTool.saveOptions({ currentTab: clickedTab.dataset.tabId })
-  })
-}
-
-const listenForCollapse = () => {
-  shadowRoot()
-    .querySelector(".hotwire-dev-tools-collapse-button")
-    .addEventListener("click", () => {
-      const container = shadowRoot().getElementById("hotwire-dev-tools-detail-panel-container")
-      container.classList.toggle("collapsed")
-      devTool.saveOptions({
-        detailPanelCollapsed: container.classList.contains("collapsed"),
-      })
-    })
-}
-
 const injectCustomScript = () => {
   const existingScript = document.getElementById("hotwire-dev-tools-inject-script")
   if (existingScript) return
@@ -153,20 +75,20 @@ const injectedScriptMessageHandler = (event) => {
     case "stimulusController":
       if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
         devTool.stimulusControllers = event.data.registeredControllers
-        renderDetailPanel()
+        detailPanel.render()
       }
       break
     case "turboDetails":
       detailPanel.turboDetails = event.data.details
-      renderDetailPanel()
+      detailPanel.render()
       break
   }
 }
 
 const init = async () => {
-  highlightTurboFrames()
-  renderDetailPanel()
   injectCustomScript()
+  highlightTurboFrames()
+  detailPanel.render()
 }
 
 const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
