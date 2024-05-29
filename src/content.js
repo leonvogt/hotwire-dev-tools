@@ -71,22 +71,34 @@ const createDetailPanelContainer = () => {
   return container
 }
 
+const createShadowContainer = () => {
+  const existingShadowContainer = document.getElementById("hotwire-dev-tools-shadow-container")
+  if (existingShadowContainer) {
+    return existingShadowContainer
+  }
+  const shadowContainer = document.createElement("div")
+  shadowContainer.id = "hotwire-dev-tools-shadow-container"
+  document.body.appendChild(shadowContainer)
+  return shadowContainer
+}
+
 const renderDetailPanel = debounce(async () => {
+  // Create a shadow root to encapsulate the detail panel
+  if (!shadowRoot) {
+    const shadowContainer = createShadowContainer()
+    shadowRoot = shadowContainer.attachShadow({ mode: "open" })
+  }
+
+  // Inject CSS to the shadow root
+  if (!shadowRoot.querySelector("style")) {
+    const style = document.createElement("style")
+    style.textContent = await devTool.detailPanelCSS()
+    shadowRoot.appendChild(style)
+  }
+
   // Create or update the detail panel
   const container = createDetailPanelContainer()
   container.innerHTML = detailPanel.html
-
-  // Create a shadow root to encapsulate the detail panel
-  const shadowContainer = document.createElement("div")
-  document.body.appendChild(shadowContainer)
-  shadowRoot = shadowContainer.attachShadow({ mode: "open" })
-
-  // Inject CSS to the shadow root
-  const style = document.createElement("style")
-  style.textContent = await devTool.detailPanelCSS()
-
-  // Update the shadow root, to effectively render the detail panel
-  shadowRoot.appendChild(style)
   shadowRoot.appendChild(container)
 
   container.classList.toggle("collapsed", devTool.options.detailPanelCollapsed)
