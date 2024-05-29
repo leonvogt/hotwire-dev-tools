@@ -1,6 +1,13 @@
 :host {
   all: initial;
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
+
+sup {
+  font-size: 0.75em;
+  line-height: 0;
+}
+
 #hotwire-dev-tools-detail-panel-container {
   position: fixed;
   bottom: 0em;
@@ -8,6 +15,10 @@
   z-index: 99999;
   width: clamp(20rem, 30rem, 100vw);
   background: white;
+
+  & button {
+    cursor: pointer;
+  }
 
   .hotwire-dev-tools-detail-panel-header {
     height: 2.5rem;
@@ -26,11 +37,11 @@
 
     & button {
       background-color: inherit;
+      font-size: 1em;
       border: none;
       outline: none;
       width: 100%;
       height: 100%;
-      transition: 0.3s;
     }
 
     & button.active {
@@ -86,6 +97,10 @@
     cursor: pointer;
   }
 
+  & .hotwire-dev-tools-entry sup {
+    font-weight: 200;
+  }
+
   & .hotwire-dev-tools-entry:hover {
     background: #ccc;
   }
@@ -104,7 +119,7 @@
   }
 }
 
-& .info-tab-content {
+.info-tab-content {
   display: flex;
   justify-content: space-between;
   padding: 0.5em;
@@ -112,6 +127,9 @@
   .info-tab-content-stimulus,
   .info-tab-content-turbo {
     min-width: 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
   }
 
   & .info-title {
@@ -122,11 +140,13 @@
     font-size: 1.1em;
   }
 
-  & pre {
-    margin: 0;
-    white-space: no-wrap;
-    display: flex;
+  & .info-tab-content-wrapper {
     justify-content: space-between;
+    font-family: monospace;
+    unicode-bidi: isolate;
+    white-space: nowrap;
+    display: flex;
+    margin: 0;
   }
 }
 

@@ -64,10 +64,7 @@ export default class DetailPanel {
 
     const entry = document.createElement("div")
     entry.classList.add("hotwire-dev-tools-entry")
-    entry.innerHTML = `
-      <span>${action}</span>
-      <span>${target}</span>
-    `
+    entry.innerHTML = `<span>${action}</span><span>${target}</span>`
 
     this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab").prepend(entry)
   }
@@ -114,39 +111,39 @@ export default class DetailPanel {
     return `
       <div class="info-tab-content">
         <div class="info-tab-content-turbo">
-          <pre>
+          <div class="info-tab-content-wrapper">
             <span>Turbo Frames:</span>
             <span>${document.querySelectorAll("turbo-frame").length}</span>
-          </pre>
+          </div>
           ${
             getMetaContent("turbo-prefetch") === "false"
               ? `
-            <pre>
+            <div class="info-tab-content-wrapper">
               <span>Link Prefetch:</span>
               <span>Off</span>
-            </pre>
+            </div>
           `
               : ""
           }
-          <pre>
+          <div class="info-tab-content-wrapper">
             <span>Refresh Control:</span>
             <span>${getMetaContent("turbo-refresh-method") || "-"}</span>
-          </pre>
-          <pre>
+          </div>
+          <div class="info-tab-content-wrapper">
             <span>Vist Control:</span>
             <span>${getMetaContent("turbo-visit-control") || "-"}</span>
-          </pre>
-          <pre>
+          </div>
+          <div class="info-tab-content-wrapper">
             <span>Cache Control:</span>
             <span>${getMetaContent("turbo-cache-control") || "-"}</span>
-          </pre>
+          </div>
         </div>
 
         <div class="info-tab-content-stimulus">
-          <pre>
+          <div class="info-tab-content-wrapper">
             <span>Stimulus Controllers:</span>
             <span>${document.querySelectorAll("[data-controller]").length}</span>
-          </pre>
+          </div>
         </div>
       </div>
     `
