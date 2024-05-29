@@ -158,12 +158,15 @@ export default class DetailPanel {
 
     const groupedElements = {}
     stimulusControllerElements.forEach((element) => {
-      element.dataset.controller.split(" ").forEach((stimulusControllerId) => {
-        if (!groupedElements[stimulusControllerId]) {
-          groupedElements[stimulusControllerId] = []
-        }
-        groupedElements[stimulusControllerId].push(element)
-      })
+      element.dataset.controller
+        .split(" ")
+        .filter((stimulusControllerId) => stimulusControllerId.trim() !== "")
+        .forEach((stimulusControllerId) => {
+          if (!groupedElements[stimulusControllerId]) {
+            groupedElements[stimulusControllerId] = []
+          }
+          groupedElements[stimulusControllerId].push(element)
+        })
     })
 
     return groupedElements
