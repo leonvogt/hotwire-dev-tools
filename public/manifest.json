@@ -23,7 +23,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["dist/inject.js"],
+      "resources": ["dist/inject.js", "styles/detail_panel.css"],
       "matches": ["<all_urls>"]
     }
   ],

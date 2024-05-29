@@ -1,8 +1,11 @@
+import { loadCSS } from "./utils"
+
 export default class Devtool {
   constructor() {
     this.options = this.getOptions()
     this.stimulusControllers = []
     this.turboDetails = {}
+    this.detailPanelCSSText = null
   }
 
   getOptions = () => {
@@ -21,6 +24,13 @@ export default class Devtool {
     const newOptions = { ...this.options, ...options }
     localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(newOptions))
     this.options = newOptions
+  }
+
+  detailPanelCSS = async () => {
+    if (this.detailPanelCSSText) return this.detailPanelCSSText
+
+    this.detailPanelCSSText = await loadCSS(chrome.runtime.getURL("styles/detail_panel.css"))
+    return this.detailPanelCSSText
   }
 
   get defaultOptions() {

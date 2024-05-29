@@ -16,3 +16,10 @@ export const debounce = (fn, delay) => {
     timeoutId = setTimeout(callback, delay)
   }
 }
+
+export const loadCSS = async (url) => {
+  return fetch(url)
+    .then((response) => response.text())
+    .then((css) => css)
+    .catch((error) => console.error("Hotwire Dev Tools: Error loading CSS", error))
+}
