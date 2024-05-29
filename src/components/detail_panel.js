@@ -27,7 +27,9 @@ export default class DetailPanel {
     const container = this.detailPanelContainer
     container.innerHTML = this.html
     this.shadowRoot.appendChild(container)
+
     container.classList.toggle("collapsed", this.devTool.options.detailPanelCollapsed)
+    this.toggleCollapse()
   }
 
   listenForTabNavigation() {
@@ -54,6 +56,7 @@ export default class DetailPanel {
       this.devTool.saveOptions({
         detailPanelCollapsed: container.classList.contains("collapsed"),
       })
+      this.toggleCollapse()
     })
   }
 
@@ -69,13 +72,26 @@ export default class DetailPanel {
     this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab").prepend(entry)
   }
 
+  toggleCollapse = () => {
+    if (this.devTool.options.detailPanelCollapsed) {
+      this.shadowRoot.querySelector(".collapse-icon").style.display = "none"
+      this.shadowRoot.querySelector(".expand-icon").style.display = "contents"
+    } else {
+      this.shadowRoot.querySelector(".collapse-icon").style.display = "contents"
+      this.shadowRoot.querySelector(".expand-icon").style.display = "none"
+    }
+  }
+
   get panelHeader() {
     return `
       <div class="hotwire-dev-tools-detail-panel-header">
         <div class="hotwire-dev-tools-tablist">
-          ${this.tabs.map((tab) => `<button class="hotwire-dev-tools-tablink ${this.currentTab === tab.id ? "active" : ""} ${tab.icon ? "tablink-with-icon" : ""}" data-tab-id="${tab.id}">${tab.label}</button>`).join("")}
+          ${this.tabs.map((tab) => `<button class="hotwire-dev-tools-tablink ${this.currentTab === tab.id ? "active" : ""}" data-tab-id="${tab.id}">${tab.label}</button>`).join("")}
         </div>
-        <button class="hotwire-dev-tools-collapse-button"></button>
+        <button class="hotwire-dev-tools-collapse-button">
+          <span class="collapse-icon">${Icons.xmark}</span>
+          <span class="expand-icon">${Icons.arrowUp}</span>
+        </button>
       </div>
     `
   }
@@ -202,7 +218,7 @@ export default class DetailPanel {
       { id: "hotwire-dev-tools-stimulus-tab", label: "Stimulus", content: this.stimulusTabContent },
       { id: "hotwire-dev-tools-turbo-frame-tab", label: "Frames", content: this.turboFrameTabContent },
       { id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams", content: "" },
-      { id: "hotwire-dev-tools-info-tab", label: Icons.info, content: this.infoTabContent, icon: true },
+      { id: "hotwire-dev-tools-info-tab", label: Icons.info, content: this.infoTabContent },
     ]
   }
 
