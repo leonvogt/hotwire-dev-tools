@@ -93,6 +93,10 @@
   &.collapsed {
     height: 8px;
     transition: height 0.25s ease-out;
+
+    .hotwire-dev-tools-collapse-button:after {
+      content: "\2191";
+    }
   }
 
   &.collapsed:hover {
@@ -129,6 +133,10 @@
 #hotwire-dev-tools-detail-panel-container:not(.collapsed) {
   .hotwire-dev-tools-tablist button:hover {
     background-color: #ddd;
+  }
+
+  .hotwire-dev-tools-collapse-button:after {
+    content: "\2193";
   }
 }
 
