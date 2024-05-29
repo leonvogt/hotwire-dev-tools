@@ -5,6 +5,8 @@ import DetailPanel from "./components/detail_panel"
 const devTool = new Devtool()
 const detailPanel = new DetailPanel(devTool)
 
+let shadowRoot
+
 const highlightTurboFrames = () => {
   if (!devTool.options.frames) {
     document.body.classList.remove("watch-turbo-frames")
@@ -59,7 +61,7 @@ const highlightTurboFrames = () => {
 }
 
 const createDetailPanelContainer = () => {
-  const existingContainer = document.getElementById("hotwire-dev-tools-detail-panel-container")
+  const existingContainer = shadowRoot.getElementById("hotwire-dev-tools-detail-panel-container")
   if (existingContainer) {
     return existingContainer
   }
@@ -70,17 +72,15 @@ const createDetailPanelContainer = () => {
 }
 
 const renderDetailPanel = debounce(() => {
-  console.log("renderDetailPanel")
-
   const container = createDetailPanelContainer()
   container.innerHTML = detailPanel.html
 
   const shadowContainer = document.createElement("div")
   document.body.appendChild(shadowContainer)
 
-  shadowContainer.attachShadow({ mode: "open" })
-  if (shadowContainer?.shadowRoot) {
-    shadowContainer.shadowRoot.innerHTML = `
+  shadowRoot = shadowContainer.attachShadow({ mode: "open" })
+  if (shadowRoot) {
+    shadowRoot.innerHTML = `
       <style>
         :host {all: initial;}
         #hotwire-dev-tools-detail-panel-container {
@@ -221,7 +221,7 @@ const renderDetailPanel = debounce(() => {
         }
       </style>
     `
-    shadowContainer.shadowRoot.appendChild(container)
+    shadowRoot.appendChild(container)
   }
 
   container.classList.toggle("collapsed", devTool.options.detailPanelCollapsed)
@@ -230,14 +230,14 @@ const renderDetailPanel = debounce(() => {
 }, 100)
 
 const listenForTabNavigation = () => {
-  const tablist = document.querySelector(".hotwire-dev-tools-tablist")
+  const tablist = shadowRoot.querySelector(".hotwire-dev-tools-tablist")
   tablist.addEventListener("click", (event) => {
-    document.querySelectorAll(".hotwire-dev-tools-tablink, .hotwire-dev-tools-tab-content").forEach((tab) => {
+    shadowRoot.querySelectorAll(".hotwire-dev-tools-tablink, .hotwire-dev-tools-tab-content").forEach((tab) => {
       tab.classList.remove("active")
     })
 
     const clickedTab = event.target.closest(".hotwire-dev-tools-tablink")
-    const desiredTabContent = document.getElementById(clickedTab.dataset.tabId)
+    const desiredTabContent = shadowRoot.getElementById(clickedTab.dataset.tabId)
 
     clickedTab.classList.add("active")
     desiredTabContent.classList.add("active")
@@ -247,8 +247,8 @@ const listenForTabNavigation = () => {
 }
 
 const listenForCollapse = () => {
-  document.querySelector(".hotwire-dev-tools-collapse-button").addEventListener("click", () => {
-    const container = document.getElementById("hotwire-dev-tools-detail-panel-container")
+  shadowRoot.querySelector(".hotwire-dev-tools-collapse-button").addEventListener("click", () => {
+    const container = shadowRoot.getElementById("hotwire-dev-tools-detail-panel-container")
     container.classList.toggle("collapsed")
     devTool.saveOptions({
       detailPanelCollapsed: container.classList.contains("collapsed"),
