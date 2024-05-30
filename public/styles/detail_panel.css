@@ -182,6 +182,7 @@ sup {
     font-family: monospace;
     unicode-bidi: isolate;
     white-space: nowrap;
+    font-size: 0.8em;
     display: flex;
     margin: 0;
   }
