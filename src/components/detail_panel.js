@@ -37,30 +37,11 @@ export default class DetailPanel {
 
   listenForTabNavigation() {
     const tablist = this.shadowRoot.querySelector(".hotwire-dev-tools-tablist")
-    tablist.addEventListener("click", (event) => {
-      this.shadowRoot.querySelectorAll(".hotwire-dev-tools-tablink, .hotwire-dev-tools-tab-content").forEach((tab) => {
-        tab.classList.remove("active")
-      })
-
-      const clickedTab = event.target.closest(".hotwire-dev-tools-tablink")
-      const desiredTabContent = this.shadowRoot.getElementById(clickedTab.dataset.tabId)
-
-      clickedTab.classList.add("active")
-      desiredTabContent.classList.add("active")
-
-      this.devTool.saveOptions({ currentTab: clickedTab.dataset.tabId })
-    })
+    tablist.addEventListener("click", this.#handleClickTab)
   }
 
   listenForCollapse() {
-    this.shadowRoot.querySelector(".hotwire-dev-tools-collapse-button").addEventListener("click", () => {
-      const container = this.shadowRoot.getElementById("hotwire-dev-tools-detail-panel-container")
-      container.classList.toggle("collapsed")
-      this.devTool.saveOptions({
-        detailPanelCollapsed: container.classList.contains("collapsed"),
-      })
-      this.toggleCollapse()
-    })
+    this.shadowRoot.querySelector(".hotwire-dev-tools-collapse-button").addEventListener("click", this.#handleClickCollapse)
   }
 
   addTurboStreamToDetailPanel = (event) => {
@@ -71,6 +52,7 @@ export default class DetailPanel {
 
     const entry = document.createElement("div")
     entry.classList.add("hotwire-dev-tools-entry", "flex-column")
+    entry.dataset.target = target
     entry.innerHTML = `
       <div class="hotwire-dev-tools-entry-time">
         <small>${time}</small>
@@ -87,15 +69,9 @@ export default class DetailPanel {
 
     if (!target) return
 
-    const selector = `#${target}`
-    if (document.querySelector(selector)) {
-      entry.addEventListener("mouseenter", () => {
-        addHighlightOverlay(selector, "hotwire-dev-tools-turbo-stream-highlight-overlay")
-      })
-
-      entry.addEventListener("mouseleave", () => {
-        removeHighlightOverlay(".hotwire-dev-tools-turbo-stream-highlight-overlay")
-      })
+    if (document.querySelector(`#${target}`)) {
+      entry.addEventListener("mouseenter", this.#handleMouseEnterTurboStream)
+      entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboStream)
     } else {
       entry.classList.add("hotwire-dev-tools-entry-warning")
       entry.title = "Target not found"
@@ -114,28 +90,66 @@ export default class DetailPanel {
 
   listenForStimulusControllerHover = () => {
     this.shadowRoot.querySelectorAll("#hotwire-dev-tools-stimulus-tab .hotwire-dev-tools-entry").forEach((entry) => {
-      entry.addEventListener("mouseenter", (event) => {
-        const controllerId = event.currentTarget.getAttribute("data-stimulus-controller-id")
-        addHighlightOverlay(`[data-controller="${controllerId}"]`, "hotwire-dev-tools-stimulus-highlight-overlay")
-      })
-
-      entry.addEventListener("mouseleave", () => {
-        removeHighlightOverlay(".hotwire-dev-tools-stimulus-highlight-overlay")
-      })
+      entry.addEventListener("mouseenter", this.#handleMouseEnterStimulusController)
+      entry.addEventListener("mouseleave", this.#handleMouseLeaveStimulusController)
     })
   }
 
   listenForTurboFrameHover = () => {
     this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-frame-tab .hotwire-dev-tools-entry").forEach((entry) => {
-      entry.addEventListener("mouseenter", (event) => {
-        const frameId = event.currentTarget.getAttribute("data-turbo-frame-id")
-        addHighlightOverlay(`#${frameId}`, "hotwire-dev-tools-turbo-frame-highlight-overlay")
-      })
-
-      entry.addEventListener("mouseleave", () => {
-        removeHighlightOverlay(".hotwire-dev-tools-turbo-frame-highlight-overlay")
-      })
+      entry.addEventListener("mouseenter", this.#handleMouseEnterTurboFrame)
+      entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboFrame)
     })
+  }
+
+  #handleClickTab = (event) => {
+    this.shadowRoot.querySelectorAll(".hotwire-dev-tools-tablink, .hotwire-dev-tools-tab-content").forEach((tab) => {
+      tab.classList.remove("active")
+    })
+
+    const clickedTab = event.target.closest(".hotwire-dev-tools-tablink")
+    const desiredTabContent = this.shadowRoot.getElementById(clickedTab.dataset.tabId)
+
+    clickedTab.classList.add("active")
+    desiredTabContent.classList.add("active")
+
+    this.devTool.saveOptions({ currentTab: clickedTab.dataset.tabId })
+  }
+
+  #handleClickCollapse = () => {
+    const container = this.shadowRoot.getElementById("hotwire-dev-tools-detail-panel-container")
+    container.classList.toggle("collapsed")
+    this.devTool.saveOptions({
+      detailPanelCollapsed: container.classList.contains("collapsed"),
+    })
+    this.toggleCollapse()
+  }
+
+  #handleMouseEnterTurboStream = (event) => {
+    const target = event.currentTarget.dataset.target
+    addHighlightOverlay(`#${target}`, "hotwire-dev-tools-turbo-stream-highlight-overlay")
+  }
+
+  #handleMouseLeaveTurboStream = () => {
+    removeHighlightOverlay(".hotwire-dev-tools-turbo-stream-highlight-overlay")
+  }
+
+  #handleMouseEnterStimulusController = (event) => {
+    const controllerId = event.currentTarget.getAttribute("data-stimulus-controller-id")
+    addHighlightOverlay(`[data-controller="${controllerId}"]`, "hotwire-dev-tools-stimulus-highlight-overlay")
+  }
+
+  #handleMouseLeaveStimulusController = () => {
+    removeHighlightOverlay(".hotwire-dev-tools-stimulus-highlight-overlay")
+  }
+
+  #handleMouseEnterTurboFrame = (event) => {
+    const frameId = event.currentTarget.getAttribute("data-turbo-frame-id")
+    addHighlightOverlay(`#${frameId}`, "hotwire-dev-tools-turbo-frame-highlight-overlay")
+  }
+
+  #handleMouseLeaveTurboFrame = () => {
+    removeHighlightOverlay(".hotwire-dev-tools-turbo-frame-highlight-overlay")
   }
 
   get panelHeader() {
