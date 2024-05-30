@@ -86,7 +86,7 @@ export default class DetailPanel {
         removeHighlightOverlay(".hotwire-dev-tools-turbo-stream-highlight-overlay")
       })
     } else {
-      entry.style.color = "red"
+      entry.classList.add("hotwire-dev-tools-entry-warning")
       entry.title = "Target not found"
     }
   }
@@ -165,7 +165,22 @@ export default class DetailPanel {
 
   get turboFrameTabContent() {
     const frames = Array.from(document.querySelectorAll("turbo-frame")).sort((a, b) => a.id.localeCompare(b.id))
-    return frames.map((frame) => `<div class="hotwire-dev-tools-entry" data-turbo-frame-id="${frame.id}"><span>${frame.id}</span></div>`).join("")
+    const entries = []
+    frames.forEach((frame) => {
+      const nonUniqueFrameId = frames.filter((f) => f.id === frame.id).length > 1
+      let className = "hotwire-dev-tools-entry"
+      let title = ""
+      if (nonUniqueFrameId) {
+        className += " hotwire-dev-tools-entry-warning"
+        title = "Multiple frames with the same id"
+      }
+      entries.push(`
+        <div class="${className}" data-turbo-frame-id="${frame.id}" title="${title}">
+          <span>${frame.id}</span>
+        </div>
+      `)
+    })
+    return entries.join("")
   }
 
   get infoTabContent() {

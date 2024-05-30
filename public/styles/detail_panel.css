@@ -109,6 +109,10 @@ sup {
     color: black;
   }
 
+  & .hotwire-dev-tools-entry.hotwire-dev-tools-entry-warning {
+    color: #ff0000;
+  }
+
   & .hotwire-dev-tools-entry sup {
     font-weight: 200;
   }
