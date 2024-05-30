@@ -66,11 +66,20 @@ export default class DetailPanel {
   addTurboStreamToDetailPanel = (event) => {
     const turboStream = event.target
     const action = turboStream.getAttribute("action")
-    const target = turboStream.getAttribute("target")
+    const target = turboStream.getAttribute("target") || ""
+    const time = new Date().toLocaleTimeString()
 
     const entry = document.createElement("div")
     entry.classList.add("hotwire-dev-tools-entry")
-    entry.innerHTML = `<span>${action}</span><span>${target}</span>`
+    entry.innerHTML = `
+      <div class="hotwire-dev-tools-entry-time">
+        <small>${time}</small>
+      </div>
+      <div class="hotwire-dev-tools-entry-content">
+        <span>${action}</span>
+        <span>${target}</span>
+      </div>
+    `
 
     const streamTab = this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab")
     streamTab.prepend(entry)

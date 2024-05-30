@@ -2,6 +2,7 @@
   all: initial;
   font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color: black;
+  --hotwire-dev-tools-muted-color: rgba(33, 37, 41, 0.749);
 }
 
 sup {
@@ -104,6 +105,7 @@ sup {
   & .hotwire-dev-tools-entry {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     padding: 0.5em;
     cursor: pointer;
     color: black;
@@ -126,8 +128,18 @@ sup {
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    color: #212529bf;
+    color: var(--hotwire-dev-tools-muted-color);
     padding: 1em;
+  }
+
+  & .hotwire-dev-tools-entry-time {
+    text-align: right;
+    color: var(--hotwire-dev-tools-muted-color);
+  }
+
+  & .hotwire-dev-tools-entry-content {
+    display: flex;
+    justify-content: space-between;
   }
 
   &.collapsed {
