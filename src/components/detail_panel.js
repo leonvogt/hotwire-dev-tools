@@ -206,7 +206,7 @@ export default class DetailPanel {
       entries.push(`
         <div class="${className}" data-turbo-frame-id="${frame.id}" title="${title}">
           <span>${frame.id}</span>
-          ${frame.hasAttribute("src") ? `<span class="frame-with-src" title="Asynchron Turbo Frame - ${frame.getAttribute("src")}">${Icons.clock}</span>` : ""}
+          ${frame.hasAttribute("src") ? `<span class="frame-with-src" title="Asynchronous Turbo Frame - ${frame.getAttribute("src")}">${Icons.clock}</span>` : ""}
         </div>
       `)
     })
