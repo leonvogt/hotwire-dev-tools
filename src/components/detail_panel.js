@@ -15,6 +15,7 @@ export default class DetailPanel {
     this.listenForTabNavigation()
     this.listenForCollapse()
     this.listenForStimulusControllerHover()
+    this.listenForTurboFrameHover()
   }, 150)
 
   injectCSSToShadowRoot = async () => {
@@ -97,6 +98,19 @@ export default class DetailPanel {
     })
   }
 
+  listenForTurboFrameHover = () => {
+    this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-frame-tab .hotwire-dev-tools-entry").forEach((entry) => {
+      entry.addEventListener("mouseenter", (event) => {
+        const frameId = event.currentTarget.getAttribute("data-turbo-frame-id")
+        addHighlightOverlay(`#${frameId}`, "hotwire-dev-tools-turbo-frame-highlight-overlay")
+      })
+
+      entry.addEventListener("mouseleave", () => {
+        removeHighlightOverlay(".hotwire-dev-tools-turbo-frame-highlight-overlay")
+      })
+    })
+  }
+
   get panelHeader() {
     return `
       <div class="hotwire-dev-tools-detail-panel-header">
@@ -135,7 +149,7 @@ export default class DetailPanel {
 
   get turboFrameTabContent() {
     const frames = Array.from(document.querySelectorAll("turbo-frame")).sort((a, b) => a.id.localeCompare(b.id))
-    return frames.map((frame) => `<div class="hotwire-dev-tools-entry"><span>${frame.id}</span></div>`).join("")
+    return frames.map((frame) => `<div class="hotwire-dev-tools-entry" data-turbo-frame-id="${frame.id}"><span>${frame.id}</span></div>`).join("")
   }
 
   get infoTabContent() {

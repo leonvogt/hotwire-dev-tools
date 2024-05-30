@@ -3,7 +3,7 @@ export const addHighlightOverlay = (selector, className) => {
   elements.forEach((element) => {
     const rect = element.getBoundingClientRect()
     const overlay = document.createElement("div")
-    overlay.className = className
+    overlay.className = `hotwire-dev-tools-highlight-overlay ${className}`
     overlay.style.position = "absolute"
     overlay.style.top = `${rect.top + window.scrollY}px`
     overlay.style.left = `${rect.left + window.scrollX}px`

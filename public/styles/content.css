@@ -36,8 +36,16 @@ body.watch-turbo-frames {
   }
 }
 
-.hotwire-dev-tools-stimulus-highlight-overlay {
+.hotwire-dev-tools-highlight-overlay {
   background-color: rgba(92, 216, 229, 0.25);
   position: relative;
   z-index: 9999999;
+}
+
+.hotwire-dev-tools-stimulus-highlight-overlay {
+  background-color: rgba(119, 232, 185, 0.25);
+}
+
+.hotwire-dev-tools-turbo-frame-highlight-overlay {
+  background-color: rgba(92, 216, 229, 0.25);
 }
