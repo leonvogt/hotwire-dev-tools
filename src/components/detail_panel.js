@@ -70,7 +70,7 @@ export default class DetailPanel {
     const time = new Date().toLocaleTimeString()
 
     const entry = document.createElement("div")
-    entry.classList.add("hotwire-dev-tools-entry")
+    entry.classList.add("hotwire-dev-tools-entry", "flex-column")
     entry.innerHTML = `
       <div class="hotwire-dev-tools-entry-time">
         <small>${time}</small>
@@ -206,6 +206,7 @@ export default class DetailPanel {
       entries.push(`
         <div class="${className}" data-turbo-frame-id="${frame.id}" title="${title}">
           <span>${frame.id}</span>
+          ${frame.hasAttribute("src") ? `<span class="frame-with-src" title="Asynchron Turbo Frame - ${frame.getAttribute("src")}">${Icons.clock}</span>` : ""}
         </div>
       `)
     })

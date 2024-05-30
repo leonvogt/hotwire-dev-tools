@@ -105,7 +105,6 @@ sup {
   & .hotwire-dev-tools-entry {
     display: flex;
     justify-content: space-between;
-    flex-direction: column;
     padding: 0.5em;
     cursor: pointer;
     color: black;
@@ -117,6 +116,10 @@ sup {
 
   & .hotwire-dev-tools-entry sup {
     font-weight: 200;
+  }
+
+  & .hotwire-dev-tools-entry svg {
+    height: 1em;
   }
 
   & .hotwire-dev-tools-entry:hover {
@@ -193,4 +196,9 @@ sup {
 .hotwire-dev-tools-detail-panel-header,
 .hotwire-dev-tools-tablink:first-child {
   border-top-left-radius: 10px;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
 }
