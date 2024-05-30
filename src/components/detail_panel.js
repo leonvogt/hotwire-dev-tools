@@ -12,11 +12,28 @@ export default class DetailPanel {
     this.injectCSSToShadowRoot()
     this.createOrUpdateDetailPanel()
 
+    this.listenForLazyLoadedFrames()
     this.listenForTabNavigation()
     this.listenForCollapse()
     this.listenForStimulusControllerHover()
     this.listenForTurboFrameHover()
   }, 150)
+
+  listenForLazyLoadedFrames() {
+    const turboFramesWithSrc = document.querySelectorAll("turbo-frame[src][busy]")
+    turboFramesWithSrc.forEach((frame) => {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === "complete") {
+            const timeEnd = new Date().getTime()
+            const timeDiff = timeEnd - this.devTool.initializedTime
+            console.log(`Frame ${frame.id} loaded in ${timeDiff}ms`)
+          }
+        })
+      })
+      observer.observe(frame, { attributes: true })
+    })
+  }
 
   injectCSSToShadowRoot = async () => {
     if (this.shadowRoot.querySelector("style")) return

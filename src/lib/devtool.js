@@ -2,6 +2,7 @@ import { loadCSS } from "./utils"
 
 export default class Devtool {
   constructor() {
+    this.initializedTime = Date.now()
     this.options = this.defaultOptions
     this.stimulusControllers = []
     this.turboDetails = {}
