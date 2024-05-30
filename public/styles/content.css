@@ -23,7 +23,9 @@ body.watch-turbo-frames {
     overflow: hidden;
     width: 18px;
     opacity: 0.1;
-    transition: opacity 0.3s, width 0.3s;
+    transition:
+      opacity 0.3s,
+      width 0.3s;
   }
 
   & .turbo-frame-info-badge:hover {

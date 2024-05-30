@@ -56,12 +56,12 @@ const highlightTurboFrames = () => {
 
 const handleTurboFrameBadgeClick = (event) => {
   navigator.clipboard.writeText(event.target.dataset.turboId).then(() => {
-    event.target.classList.add('copied');
-  });
+    event.target.classList.add("copied")
+  })
 }
 
 const handleTurboFrameBadgeAnimationEnd = (event) => {
-  event.target.classList.remove('copied');
+  event.target.classList.remove("copied")
 }
 
 const injectCustomScript = () => {
