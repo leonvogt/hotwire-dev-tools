@@ -2,27 +2,24 @@ import { loadCSS } from "./utils"
 
 export default class Devtool {
   constructor() {
-    this.options = this.getOptions()
+    this.options = this.defaultOptions
     this.stimulusControllers = []
     this.turboDetails = {}
     this.detailPanelCSSText = null
+
+    this.getOptions().then((options) => {
+      this.options = options
+    })
   }
 
-  getOptions = () => {
-    const options = localStorage.getItem("hotwire-dev-tools-options")
-    if (!options) return this.defaultOptions
-
-    try {
-      return JSON.parse(options)
-    } catch (error) {
-      console.warn("Hotwire Dev Tools: Invalid options:", options)
-      return this.defaultOptions
-    }
+  getOptions = async () => {
+    const data = await chrome.storage.sync.get("options")
+    return data?.options || this.defaultOptions()
   }
 
   saveOptions = (options) => {
     const newOptions = { ...this.options, ...options }
-    localStorage.setItem("hotwire-dev-tools-options", JSON.stringify(newOptions))
+    chrome.storage.sync.set({ options: newOptions })
     this.options = newOptions
   }
 
