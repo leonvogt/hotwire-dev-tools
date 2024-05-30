@@ -23,7 +23,7 @@ body.watch-turbo-frames {
     overflow: hidden;
     width: 18px;
     opacity: 0.1;
-    transition: 0.3s;
+    transition: opacity 0.3s, width 0.3s;
   }
 
   & .turbo-frame-info-badge:hover {
@@ -31,8 +31,8 @@ body.watch-turbo-frames {
     width: fit-content;
   }
 
-  & .turbo-frame-info-badge.frame-with-src {
-    background-color: #5cd8e5;
+  & .turbo-frame-info-badge.copied {
+    animation: turboFrameScaleEffect 0.3s ease-in-out;
   }
 }
 
@@ -49,4 +49,16 @@ body.watch-turbo-frames {
 .hotwire-dev-tools-turbo-frame-highlight-overlay,
 .hotwire-dev-tools-turbo-stream-highlight-overlay {
   background-color: rgba(92, 216, 229, 0.25);
+}
+
+@keyframes turboFrameScaleEffect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

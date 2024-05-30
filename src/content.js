@@ -43,18 +43,25 @@ const highlightTurboFrames = () => {
       const badgeContent = document.createElement("span")
       badgeContent.textContent = `ʘ #${frame.id}`
       badgeContent.classList.add(badgeClass)
+      badgeContent.dataset.turboId = frame.id
       badgeContent.style.backgroundColor = frameColor
-      badgeContent.onclick = () => {
-        navigator.clipboard.writeText(frame.id)
-      }
+      badgeContent.addEventListener("click", handleTurboFrameBadgeClick)
+      badgeContent.addEventListener("animationend", handleTurboFrameBadgeAnimationEnd)
 
-      if (frame.hasAttribute("src")) {
-        badgeContent.classList.add("frame-with-src")
-      }
       badgeContainer.appendChild(badgeContent)
       frame.insertAdjacentElement("afterbegin", badgeContainer)
     }
   })
+}
+
+const handleTurboFrameBadgeClick = (event) => {
+  navigator.clipboard.writeText(event.target.dataset.turboId).then(() => {
+    event.target.classList.add('copied');
+  });
+}
+
+const handleTurboFrameBadgeAnimationEnd = (event) => {
+  event.target.classList.remove('copied');
 }
 
 const injectCustomScript = () => {
