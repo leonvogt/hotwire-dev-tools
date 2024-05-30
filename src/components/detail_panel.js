@@ -74,14 +74,20 @@ export default class DetailPanel {
 
     this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab").prepend(entry)
 
-    if (target) {
+    if (!target) return
+
+    const selector = `#${target}`
+    if (document.querySelector(selector)) {
       entry.addEventListener("mouseenter", () => {
-        addHighlightOverlay(`#${target}`, "hotwire-dev-tools-turbo-stream-highlight-overlay")
+        addHighlightOverlay(selector, "hotwire-dev-tools-turbo-stream-highlight-overlay")
       })
 
       entry.addEventListener("mouseleave", () => {
         removeHighlightOverlay(".hotwire-dev-tools-turbo-stream-highlight-overlay")
       })
+    } else {
+      entry.style.color = "red"
+      entry.title = "Target not found"
     }
   }
 
