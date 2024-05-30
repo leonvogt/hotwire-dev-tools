@@ -73,6 +73,16 @@ export default class DetailPanel {
     entry.innerHTML = `<span>${action}</span><span>${target}</span>`
 
     this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab").prepend(entry)
+
+    if (target) {
+      entry.addEventListener("mouseenter", () => {
+        addHighlightOverlay(`#${target}`, "hotwire-dev-tools-turbo-stream-highlight-overlay")
+      })
+
+      entry.addEventListener("mouseleave", () => {
+        removeHighlightOverlay(".hotwire-dev-tools-turbo-stream-highlight-overlay")
+      })
+    }
   }
 
   toggleCollapse = () => {

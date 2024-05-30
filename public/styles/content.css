@@ -46,6 +46,7 @@ body.watch-turbo-frames {
   background-color: rgba(119, 232, 185, 0.25);
 }
 
-.hotwire-dev-tools-turbo-frame-highlight-overlay {
+.hotwire-dev-tools-turbo-frame-highlight-overlay,
+.hotwire-dev-tools-turbo-stream-highlight-overlay {
   background-color: rgba(92, 216, 229, 0.25);
 }
