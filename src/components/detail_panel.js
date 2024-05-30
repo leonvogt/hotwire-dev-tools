@@ -72,7 +72,9 @@ export default class DetailPanel {
     entry.classList.add("hotwire-dev-tools-entry")
     entry.innerHTML = `<span>${action}</span><span>${target}</span>`
 
-    this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab").prepend(entry)
+    const streamTab = this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab")
+    streamTab.prepend(entry)
+    streamTab.querySelector(".hotwire-dev-tools-no-entry")?.remove()
 
     if (!target) return
 
@@ -144,6 +146,15 @@ export default class DetailPanel {
   get stimulusTabContent() {
     const sortedControllerIds = Object.keys(this.groupedStimulusControllerElements).sort()
 
+    if (sortedControllerIds.length === 0) {
+      return `
+        <div class="hotwire-dev-tools-no-entry">
+          <span>No Stimulus controllers found on this page</span>
+          <span>We'll keep looking</span>
+        </div>
+      `
+    }
+
     const entries = []
     sortedControllerIds.forEach((stimulusControllerId) => {
       let indicator = ""
@@ -165,6 +176,15 @@ export default class DetailPanel {
 
   get turboFrameTabContent() {
     const frames = Array.from(document.querySelectorAll("turbo-frame")).sort((a, b) => a.id.localeCompare(b.id))
+    if (frames.length === 0) {
+      return `
+        <div class="hotwire-dev-tools-no-entry">
+          <span>No Turbo Frames found on this page</span>
+          <span>We'll keep looking</span>
+        </div>
+      `
+    }
+
     const entries = []
     frames.forEach((frame) => {
       const nonUniqueFrameId = frames.filter((f) => f.id === frame.id).length > 1
@@ -181,6 +201,20 @@ export default class DetailPanel {
       `)
     })
     return entries.join("")
+  }
+
+  get turboSteamTabContent() {
+    // const streamTabEntries = Array.from(this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-stream-tab .hotwire-dev-tools-entry"))
+    // if (streamTabEntries.length > 0) {
+    //   return streamTabEntries.map((entry) => entry.outerHTML).join("")
+    // }
+
+    return `
+      <div class="hotwire-dev-tools-no-entry">
+        <span>No Turbo Streams seen yet</span>
+        <span>We'll keep looking</span>
+      </div>
+    `
   }
 
   get infoTabContent() {
@@ -277,7 +311,7 @@ export default class DetailPanel {
     return [
       { id: "hotwire-dev-tools-stimulus-tab", label: "Stimulus", content: this.stimulusTabContent },
       { id: "hotwire-dev-tools-turbo-frame-tab", label: "Frames", content: this.turboFrameTabContent },
-      { id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams", content: "" },
+      { id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams", content: this.turboSteamTabContent },
       { id: "hotwire-dev-tools-info-tab", label: Icons.info, content: this.infoTabContent },
     ]
   }
