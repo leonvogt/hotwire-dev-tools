@@ -1,7 +1,8 @@
 :host {
   all: initial;
-  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  color: black;
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  font-size: 16px !important;
+  color: black !important;
   --hotwire-dev-tools-muted-color: rgba(33, 37, 41, 0.749);
 }
 
@@ -15,7 +16,7 @@ sup {
   bottom: 0em;
   right: 0em;
   z-index: 10000000;
-  width: clamp(20rem, 30rem, 100vw);
+  width: clamp(20em, 30em, 100vw);
   background: white;
 
   & button {
@@ -23,7 +24,7 @@ sup {
   }
 
   .hotwire-dev-tools-detail-panel-header {
-    height: 2.5rem;
+    height: 2.5em;
     background: #29292e;
     color: #e7e9f5;
     display: flex;
@@ -151,7 +152,7 @@ sup {
   }
 
   &.collapsed:hover {
-    height: 2.5rem;
+    height: 2.5em;
   }
 }
 
