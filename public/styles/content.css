@@ -35,3 +35,9 @@ body.watch-turbo-frames {
     background-color: #5cd8e5;
   }
 }
+
+.hotwire-dev-tools-stimulus-highlight-overlay {
+  background-color: rgba(92, 216, 229, 0.25);
+  position: relative;
+  z-index: 9999999;
+}

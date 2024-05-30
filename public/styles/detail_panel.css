@@ -13,7 +13,7 @@ sup {
   position: fixed;
   bottom: 0em;
   right: 0em;
-  z-index: 99999;
+  z-index: 10000000;
   width: clamp(20rem, 30rem, 100vw);
   background: white;
 

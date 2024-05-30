@@ -1,4 +1,5 @@
 import { getMetaContent, debounce } from "../lib/utils"
+import { addHighlightOverlay, removeHighlightOverlay } from "../lib/highlight"
 import * as Icons from "../lib/icons"
 
 export default class DetailPanel {
@@ -13,6 +14,7 @@ export default class DetailPanel {
 
     this.listenForTabNavigation()
     this.listenForCollapse()
+    this.listenForStimulusControllerHover()
   }, 150)
 
   injectCSSToShadowRoot = async () => {
@@ -82,6 +84,19 @@ export default class DetailPanel {
     }
   }
 
+  listenForStimulusControllerHover = () => {
+    this.shadowRoot.querySelectorAll("#hotwire-dev-tools-stimulus-tab .hotwire-dev-tools-entry").forEach((entry) => {
+      entry.addEventListener("mouseenter", (event) => {
+        const controllerId = event.currentTarget.getAttribute("data-stimulus-controller-id")
+        addHighlightOverlay(`[data-controller="${controllerId}"]`, "hotwire-dev-tools-stimulus-highlight-overlay")
+      })
+
+      entry.addEventListener("mouseleave", () => {
+        removeHighlightOverlay(".hotwire-dev-tools-stimulus-highlight-overlay")
+      })
+    })
+  }
+
   get panelHeader() {
     return `
       <div class="hotwire-dev-tools-detail-panel-header">
@@ -108,7 +123,7 @@ export default class DetailPanel {
 
       const stimulusControllerElements = this.groupedStimulusControllerElements[stimulusControllerId]
       entries.push(`
-        <div class="hotwire-dev-tools-entry">
+        <div class="hotwire-dev-tools-entry" data-stimulus-controller-id="${stimulusControllerId}">
           <span>${stimulusControllerId}<sup>${stimulusControllerElements.length}</sup></span>
           ${indicator}
         </div>
