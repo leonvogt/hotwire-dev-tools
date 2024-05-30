@@ -193,10 +193,13 @@ sup {
   }
 }
 
-#hotwire-dev-tools-detail-panel-container,
 .hotwire-dev-tools-detail-panel-header,
 .hotwire-dev-tools-tablink:first-child {
   border-top-left-radius: 10px;
+}
+
+#hotwire-dev-tools-detail-panel-container {
+  border-top-left-radius: 15px;
 }
 
 .flex-column {
