@@ -32,6 +32,9 @@ The extension can be installed at:
 - `npm run build` - to bundle the extension into static files for production
 - `npm run format` - to format changes with Prettier
 
+> [!NOTE]  
+> By default, the extension will be built for Chrome. To build for Firefox just add `firefox` as an argument to the build command: `npm run build firefox` or `npm run dev firefox`.
+
 ### Test on Chrome
 
 1. Open Chrome and navigate to `chrome://extensions/`
