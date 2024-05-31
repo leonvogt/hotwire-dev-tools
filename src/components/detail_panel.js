@@ -247,10 +247,10 @@ export default class DetailPanel {
   }
 
   get turboSteamTabContent() {
-    // const streamTabEntries = Array.from(this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-stream-tab .hotwire-dev-tools-entry"))
-    // if (streamTabEntries.length > 0) {
-    //   return streamTabEntries.map((entry) => entry.outerHTML).join("")
-    // }
+    const streamTabEntries = Array.from(this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-stream-tab .hotwire-dev-tools-entry"))
+    if (streamTabEntries.length > 0) {
+      return streamTabEntries.map((entry) => entry.outerHTML).join("")
+    }
 
     return `
       <div class="hotwire-dev-tools-no-entry">
