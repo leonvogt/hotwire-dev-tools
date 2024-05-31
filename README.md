@@ -1,14 +1,20 @@
 # Hotwire Dev Tools
 
-Hotwire Dev Tools is a browser extension that provides a set of features for visualizing Turbo Frames, Turbo Streams and Stimulus controllers on a page.
+Hotwire Dev Tools is a browser extension with the goal of helping developers inspect their Turbo and Stimulus applications.
 
-Features:
+**Turbo features**:
 
-- Highlighting Turbo Frames
-- Listing Turbo Frames
-- Listing Stimulus controllers and their registration status
-- Monitoring incoming Turbo Streams
-- Displaying Turbo meta tags
+- Highlight Turbo Frames
+- Monitor incoming Turbo Streams
+- Display Turbo meta information like is Turbo Drive or morphing enabled?
+- Display warning when a Turbo Frame ID is not unique
+- List all Turbo Frames on the page
+
+**Stimulus features**:
+
+- List all Stimulus controllers on the page
+- Highlight specific Stimulus controllers
+- Display warning when a `data-controller` doesn't match any registered controller
 
 ## Installation
 
@@ -41,7 +47,17 @@ npm install --global web-ext
 web-ext run
 ```
 
-That will open a new Firefox window with the extension installed and hot reloading enabled.
+That will open a new Firefox instance with the extension installed and hot reloading enabled.
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/leonvogt/hotwire-dev-tools.
+
+### Coding Standards
+
+This project uses Prettier to format the code and ensure a consistent style.
+
+Please run `npm run format` prior to submitting pull requests.
 
 ---
 
