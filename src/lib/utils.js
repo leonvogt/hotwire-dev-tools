@@ -23,7 +23,3 @@ export const loadCSS = async (url) => {
     .then((css) => css)
     .catch((error) => console.error("Hotwire Dev Tools: Error loading CSS", error))
 }
-
-export const escapeHtml = (unsafe) => {
-  return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
-}

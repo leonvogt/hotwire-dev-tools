@@ -1,7 +1,11 @@
-import { getMetaContent, debounce, escapeHtml } from "../lib/utils"
+import { getMetaContent, debounce } from "../lib/utils"
 import { turboStreamTargetElements } from "../lib/turbo_utils"
 import { addHighlightOverlay, removeHighlightOverlay } from "../lib/highlight"
 import * as Icons from "../lib/icons"
+
+import hljs from "highlight.js/lib/core"
+import xml from "highlight.js/lib/languages/xml"
+hljs.registerLanguage("xml", xml)
 
 export default class DetailPanel {
   constructor(devTool) {
@@ -60,6 +64,8 @@ export default class DetailPanel {
     if (targetSelector) {
       entry.dataset.targetSelector = targetSelector
     }
+
+    const turboStreamContent = hljs.highlight(turboStream.outerHTML, { language: "html" }).value
     entry.innerHTML = `
       <div class="hotwire-dev-tools-entry-time">
         <small>${time}</small>
@@ -69,7 +75,7 @@ export default class DetailPanel {
         <span class="text-ellipsis" title="${targetSelector || ""}">${targetSelector || ""}</span>
       </div>
       <div class="hotwire-dev-tools-entry-details turbo-streams d-none">
-        ${escapeHtml(turboStream.outerHTML)}
+        <pre><code class="language-html">${turboStreamContent}</code></pre>
       </div>
     `
 
