@@ -1,4 +1,5 @@
 import { getMetaContent, debounce, escapeHtml } from "../lib/utils"
+import { turboStreamTargetElements } from "../lib/turbo_utils"
 import { addHighlightOverlay, removeHighlightOverlay } from "../lib/highlight"
 import * as Icons from "../lib/icons"
 
@@ -47,19 +48,22 @@ export default class DetailPanel {
   addTurboStreamToDetailPanel = (event) => {
     const turboStream = event.target
     const action = turboStream.getAttribute("action")
-    const target = turboStream.getAttribute("target") || ""
+    const target = turboStream.getAttribute("target")
+    const targets = turboStream.getAttribute("targets")
+    const targetSelector = target ? `#${target}` : targets
+    const targetElements = turboStreamTargetElements(turboStream)
     const time = new Date().toLocaleTimeString()
 
     const entry = document.createElement("div")
     entry.classList.add("hotwire-dev-tools-entry", "flex-column", "turbo-stream")
-    entry.dataset.target = target
+    entry.dataset.targetSelector = targetSelector
     entry.innerHTML = `
       <div class="hotwire-dev-tools-entry-time">
         <small>${time}</small>
       </div>
       <div class="hotwire-dev-tools-entry-content">
         <span>${action}</span>
-        <span>${target}</span>
+        <span>${targetSelector || ""}</span>
       </div>
       <div class="hotwire-dev-tools-entry-details turbo-streams d-none">
         ${escapeHtml(turboStream.outerHTML)}
@@ -71,14 +75,12 @@ export default class DetailPanel {
     streamTab.querySelector(".hotwire-dev-tools-no-entry")?.remove()
     entry.addEventListener("click", this.#handleClickTurboStream)
 
-    if (!target) return
-
-    if (document.querySelector(`#${target}`)) {
-      entry.addEventListener("mouseenter", this.#handleMouseEnterTurboStream)
-      entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboStream)
-    } else {
+    if ((targetElements || []).length === 0 && (target || targets)) {
       entry.classList.add("hotwire-dev-tools-entry-warning")
       entry.title = "Target not found"
+    } else {
+      entry.addEventListener("mouseenter", this.#handleMouseEnterTurboStream)
+      entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboStream)
     }
   }
 
@@ -130,8 +132,8 @@ export default class DetailPanel {
   }
 
   #handleMouseEnterTurboStream = (event) => {
-    const target = event.currentTarget.dataset.target
-    addHighlightOverlay(`#${target}`, "hotwire-dev-tools-turbo-stream-highlight-overlay")
+    const selector = event.currentTarget.dataset.targetSelector
+    addHighlightOverlay(selector, "hotwire-dev-tools-turbo-stream-highlight-overlay")
   }
 
   #handleMouseLeaveTurboStream = () => {
