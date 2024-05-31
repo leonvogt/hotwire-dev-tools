@@ -1,4 +1,4 @@
-import { getMetaContent, debounce } from "../lib/utils"
+import { getMetaContent, debounce, escapeHtml } from "../lib/utils"
 import { addHighlightOverlay, removeHighlightOverlay } from "../lib/highlight"
 import * as Icons from "../lib/icons"
 
@@ -51,7 +51,7 @@ export default class DetailPanel {
     const time = new Date().toLocaleTimeString()
 
     const entry = document.createElement("div")
-    entry.classList.add("hotwire-dev-tools-entry", "flex-column")
+    entry.classList.add("hotwire-dev-tools-entry", "flex-column", "turbo-stream")
     entry.dataset.target = target
     entry.innerHTML = `
       <div class="hotwire-dev-tools-entry-time">
@@ -61,11 +61,15 @@ export default class DetailPanel {
         <span>${action}</span>
         <span>${target}</span>
       </div>
+      <div class="hotwire-dev-tools-entry-details turbo-streams d-none">
+        ${escapeHtml(turboStream.outerHTML)}
+      </div>
     `
 
     const streamTab = this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab")
     streamTab.prepend(entry)
     streamTab.querySelector(".hotwire-dev-tools-no-entry")?.remove()
+    entry.addEventListener("click", this.#handleClickTurboStream)
 
     if (!target) return
 
@@ -132,6 +136,19 @@ export default class DetailPanel {
 
   #handleMouseLeaveTurboStream = () => {
     removeHighlightOverlay(".hotwire-dev-tools-turbo-stream-highlight-overlay")
+  }
+
+  #handleClickTurboStream = (event) => {
+    const entryDetails = event.target.closest(".hotwire-dev-tools-entry").querySelector(".hotwire-dev-tools-entry-details")
+    const wasCollapsed = entryDetails.classList.contains("d-none")
+
+    this.shadowRoot.querySelectorAll(".hotwire-dev-tools-entry-details").forEach((entryDetails) => {
+      entryDetails.classList.add("d-none")
+    })
+
+    if (wasCollapsed) {
+      entryDetails.classList.remove("d-none")
+    }
   }
 
   #handleMouseEnterStimulusController = (event) => {

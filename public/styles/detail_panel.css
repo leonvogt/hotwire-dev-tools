@@ -107,7 +107,7 @@ sup {
     display: flex;
     justify-content: space-between;
     padding: 0.5em;
-    cursor: pointer;
+    cursor: default;
     color: black;
   }
 
@@ -123,8 +123,20 @@ sup {
     height: 1em;
   }
 
+  & .hotwire-dev-tools-entry.turbo-stream {
+    cursor: pointer;
+  }
+
   & .hotwire-dev-tools-entry:hover {
     background: #ccc;
+  }
+
+  & .hotwire-dev-tools-entry-details {
+    padding: 1em;
+    font-family: monospace;
+    unicode-bidi: isolate;
+    font-size: 0.9em;
+    color: var(--hotwire-dev-tools-muted-color);
   }
 
   & .hotwire-dev-tools-no-entry {
@@ -206,4 +218,8 @@ sup {
 .flex-column {
   display: flex;
   flex-direction: column;
+}
+
+.d-none {
+  display: none;
 }
