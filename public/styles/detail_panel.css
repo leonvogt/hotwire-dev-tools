@@ -156,6 +156,7 @@ sup {
   & .hotwire-dev-tools-entry-content {
     display: flex;
     justify-content: space-between;
+    gap: 1em;
   }
 
   &.collapsed {
@@ -213,6 +214,12 @@ sup {
 
 #hotwire-dev-tools-detail-panel-container {
   border-top-left-radius: 15px;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .flex-column {

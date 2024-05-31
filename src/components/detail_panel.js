@@ -62,8 +62,8 @@ export default class DetailPanel {
         <small>${time}</small>
       </div>
       <div class="hotwire-dev-tools-entry-content">
-        <span>${action}</span>
-        <span>${targetSelector || ""}</span>
+        <span class="text-ellipsis" title="${action}">${action}</span>
+        <span class="text-ellipsis" title="${targetSelector || ""}">${targetSelector || ""}</span>
       </div>
       <div class="hotwire-dev-tools-entry-details turbo-streams d-none">
         ${escapeHtml(turboStream.outerHTML)}
