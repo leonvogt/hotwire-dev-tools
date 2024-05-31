@@ -17,6 +17,7 @@ export default class DetailPanel {
     this.listenForCollapse()
     this.listenForStimulusControllerHover()
     this.listenForTurboFrameHover()
+    this.listenForTurboStreamInteractions()
   }, 150)
 
   injectCSSToShadowRoot = async () => {
@@ -56,7 +57,9 @@ export default class DetailPanel {
 
     const entry = document.createElement("div")
     entry.classList.add("hotwire-dev-tools-entry", "flex-column", "turbo-stream")
-    entry.dataset.targetSelector = targetSelector
+    if (targetSelector) {
+      entry.dataset.targetSelector = targetSelector
+    }
     entry.innerHTML = `
       <div class="hotwire-dev-tools-entry-time">
         <small>${time}</small>
@@ -73,15 +76,13 @@ export default class DetailPanel {
     const streamTab = this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab")
     streamTab.prepend(entry)
     streamTab.querySelector(".hotwire-dev-tools-no-entry")?.remove()
-    entry.addEventListener("click", this.#handleClickTurboStream)
 
-    if ((targetElements || []).length === 0 && (target || targets)) {
+    if ((target || targets) && (targetElements || []).length === 0) {
       entry.classList.add("hotwire-dev-tools-entry-warning")
       entry.title = "Target not found"
-    } else {
-      entry.addEventListener("mouseenter", this.#handleMouseEnterTurboStream)
-      entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboStream)
     }
+
+    this.listenForTurboStreamInteractions()
   }
 
   toggleCollapse = () => {
@@ -105,6 +106,14 @@ export default class DetailPanel {
     this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-frame-tab .hotwire-dev-tools-entry").forEach((entry) => {
       entry.addEventListener("mouseenter", this.#handleMouseEnterTurboFrame)
       entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboFrame)
+    })
+  }
+
+  listenForTurboStreamInteractions = () => {
+    this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-stream-tab .hotwire-dev-tools-entry").forEach((entry) => {
+      entry.addEventListener("click", this.#handleClickTurboStream)
+      entry.addEventListener("mouseenter", this.#handleMouseEnterTurboStream)
+      entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboStream)
     })
   }
 
