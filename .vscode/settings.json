@@ -1,0 +1,10 @@
+{
+  "files.watcherExclude": {
+    "**/public/dist/*": true
+  },
+  "search.exclude": {
+    "**/public/dist/*": true
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
