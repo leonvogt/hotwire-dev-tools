@@ -1,4 +1,5 @@
 node_modules/
 /public/dist
+/public/manifest.json
 public.zip
 *.DS_Store
