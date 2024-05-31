@@ -160,6 +160,7 @@ export default class DetailPanel {
     if (wasCollapsed) {
       entryDetails.classList.remove("d-none")
     }
+    entryDetails.closest(".hotwire-dev-tools-entry").scrollIntoView({ behavior: "smooth" })
   }
 
   #handleMouseEnterStimulusController = (event) => {
