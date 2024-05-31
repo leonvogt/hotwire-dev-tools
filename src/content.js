@@ -99,8 +99,8 @@ const init = async () => {
 }
 
 const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
-events.forEach((event) => document.addEventListener(event, init))
-document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailPanel)
+events.forEach((event) => document.addEventListener(event, init, { passive: true }))
+document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailPanel, { passive: true })
 
 // When Turbo Drive renders a new page, we wanna copy over the existing detail panel - shadow container - to the new page,
 // so we can keep the detail panel open, without flickering, when navigating between pages.
