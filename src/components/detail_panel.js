@@ -89,7 +89,16 @@ export default class DetailPanel {
     }
 
     this.listenForTurboStreamInteractions()
+    this.addTabEffect("hotwire-dev-tools-turbo-stream-tab")
   }
+
+  addTabEffect = debounce((tabId) => {
+    const tab = this.shadowRoot.querySelector(`[data-tab-id="${tabId}"]`)
+    if (!tab || tab.classList.contains("active")) return
+    const animationClass = "animate__animated animate__headShake"
+    tab.classList.add(...animationClass.split(" "))
+    setTimeout(() => tab.classList.remove(...animationClass.split(" ")), 10000)
+  }, 150)
 
   toggleCollapse = () => {
     if (this.devTool.options.detailPanelCollapsed) {
