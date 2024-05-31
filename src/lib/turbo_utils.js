@@ -7,7 +7,7 @@ export const turboStreamTargetElements = (turboStream) => {
   } else if (targets) {
     return targetElementsByQuery(targets)
   } else {
-    []
+    ;[]
   }
 }
 
