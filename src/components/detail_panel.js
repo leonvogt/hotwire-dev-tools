@@ -24,6 +24,10 @@ export default class DetailPanel {
     this.listenForTurboStreamInteractions()
   }, 150)
 
+  dispose() {
+    this.shadowRoot.innerHTML = ""
+  }
+
   injectCSSToShadowRoot = async () => {
     if (this.shadowRoot.querySelector("style")) return
 
@@ -37,7 +41,7 @@ export default class DetailPanel {
     container.innerHTML = this.html
     this.shadowRoot.appendChild(container)
 
-    container.classList.toggle("collapsed", this.devTool.options.detailPanelCollapsed)
+    container.classList.toggle("collapsed", this.devTool.options.detailPanel.collapsed)
     this.toggleCollapse()
   }
 
@@ -101,7 +105,7 @@ export default class DetailPanel {
   }, 150)
 
   toggleCollapse = () => {
-    if (this.devTool.options.detailPanelCollapsed) {
+    if (this.devTool.options.detailPanel.collapsed) {
       this.shadowRoot.querySelector(".collapse-icon").style.display = "none"
       this.shadowRoot.querySelector(".expand-icon").style.display = "contents"
     } else {
@@ -143,7 +147,9 @@ export default class DetailPanel {
     clickedTab.classList.add("active")
     desiredTabContent.classList.add("active")
 
-    this.devTool.saveOptions({ currentTab: clickedTab.dataset.tabId })
+    const options = this.devTool.options
+    options.detailPanel.currentTab = clickedTab.dataset.tabId
+    this.devTool.saveOptions(options)
   }
 
   #handleClickCollapse = () => {
@@ -385,6 +391,6 @@ export default class DetailPanel {
   }
 
   get currentTab() {
-    return this.devTool.options.currentTab
+    return this.devTool.options.detailPanel.currentTab
   }
 }
