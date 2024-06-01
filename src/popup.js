@@ -17,6 +17,10 @@ const stimulusHighlightControllersBlacklist = document.getElementById("stimulus-
 const stimulusHighlightControllersToggles = document.querySelectorAll(".stimulus-highlight-controllers-toggle-element")
 
 const detailPanelShow = document.getElementById("detail-panel-show")
+const detailPanelShowStimulusTab = document.getElementById("detail-panel-show-stimulus-tab")
+const detailPanelShowTurboFrameTab = document.getElementById("detail-panel-show-turbo-frame-tab")
+const detailPanelShowTurboStreamTab = document.getElementById("detail-panel-show-turbo-stream-tab")
+const detailPanelToggles = document.querySelectorAll(".detail-panel-toggle-element")
 
 const toggleTurboHighlightFramesInputs = (show) => {
   if (show) {
@@ -34,6 +38,25 @@ const toggleStimulusHighlightControllersInputs = (show) => {
   }
 }
 
+const toggleDetailPanelInputs = (show) => {
+  if (show) {
+    detailPanelToggles.forEach((element) => element.classList.remove("d-none"))
+  } else {
+    detailPanelToggles.forEach((element) => element.classList.add("d-none"))
+  }
+}
+
+const maybeHideDetailPanel = () => {
+  const { showStimulusTab, showTurboFrameTab, showTurboStreamTab } = devTool.options.detailPanel
+  const showDetailPanel = showStimulusTab || showTurboFrameTab || showTurboStreamTab
+
+  if (!showDetailPanel) {
+    detailPanelShow.checked = false
+    devTool.saveOptions({ detailPanel: { ...devTool.options.detailPanel, show: false } })
+    toggleDetailPanelInputs(false)
+  }
+}
+
 const initializeForm = (options) => {
   turboHighlightFrames.checked = options.turbo.highlightFrames
   turboHighlightFramesOutlineColor.value = options.turbo.highlightFramesOutlineColor
@@ -48,8 +71,13 @@ const initializeForm = (options) => {
   stimulusHighlightControllersBlacklist.value = options.stimulus.highlightControllersBlacklist
 
   detailPanelShow.checked = options.detailPanel.show
+  detailPanelShowStimulusTab.checked = options.detailPanel.showStimulusTab
+  detailPanelShowTurboFrameTab.checked = options.detailPanel.showTurboFrameTab
+  detailPanelShowTurboStreamTab.checked = options.detailPanel.showTurboStreamTab
+
   toggleTurboHighlightFramesInputs(options.turbo.highlightFrames)
   toggleStimulusHighlightControllersInputs(options.stimulus.highlightControllers)
+  toggleDetailPanelInputs(options.detailPanel.show)
 }
 
 ;(async () => {
@@ -111,7 +139,26 @@ const initializeForm = (options) => {
   })
 
   detailPanelShow.addEventListener("change", (event) => {
+    toggleDetailPanelInputs(event.target.checked)
     options.detailPanel.show = event.target.checked
     devTool.saveOptions(options)
+  })
+
+  detailPanelShowStimulusTab.addEventListener("change", (event) => {
+    options.detailPanel.showStimulusTab = event.target.checked
+    devTool.saveOptions(options)
+    maybeHideDetailPanel()
+  })
+
+  detailPanelShowTurboFrameTab.addEventListener("change", (event) => {
+    options.detailPanel.showTurboFrameTab = event.target.checked
+    devTool.saveOptions(options)
+    maybeHideDetailPanel()
+  })
+
+  detailPanelShowTurboStreamTab.addEventListener("change", (event) => {
+    options.detailPanel.showTurboStreamTab = event.target.checked
+    devTool.saveOptions(options)
+    maybeHideDetailPanel()
   })
 })()

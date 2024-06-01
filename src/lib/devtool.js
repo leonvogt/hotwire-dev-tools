@@ -30,6 +30,11 @@ export default class Devtool {
     return this.detailPanelCSSText
   }
 
+  shouldRenderDetailPanel = () => {
+    const { show, showStimulusTab, showTurboFrameTab, showTurboStreamTab } = this.options.detailPanel
+    return show && (showStimulusTab || showTurboFrameTab || showTurboStreamTab)
+  }
+
   get defaultOptions() {
     return {
       turbo: {
@@ -48,6 +53,9 @@ export default class Devtool {
       },
       detailPanel: {
         show: false,
+        showStimulusTab: true,
+        showTurboFrameTab: true,
+        showTurboStreamTab: true,
         collapsed: false,
         currentTab: "hotwire-dev-tools-stimulus-tab",
       },

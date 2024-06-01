@@ -383,12 +383,22 @@ export default class DetailPanel {
   }
 
   get tabs() {
-    return [
-      { id: "hotwire-dev-tools-stimulus-tab", label: "Stimulus", content: this.stimulusTabContent },
-      { id: "hotwire-dev-tools-turbo-frame-tab", label: "Frames", content: this.turboFrameTabContent },
-      { id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams", content: this.turboSteamTabContent },
-      { id: "hotwire-dev-tools-info-tab", label: Icons.info, content: this.infoTabContent },
-    ]
+    const { showStimulusTab, showTurboFrameTab, showTurboStreamTab } = this.devTool.options.detailPanel
+    const enabledTabs = []
+    if (showStimulusTab) {
+      enabledTabs.push({ id: "hotwire-dev-tools-stimulus-tab", label: "Stimulus", content: this.stimulusTabContent })
+    }
+    if (showTurboFrameTab) {
+      enabledTabs.push({ id: "hotwire-dev-tools-turbo-frame-tab", label: "Frames", content: this.turboFrameTabContent })
+    }
+    if (showTurboStreamTab) {
+      enabledTabs.push({ id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams", content: this.turboSteamTabContent })
+    }
+    if (enabledTabs.length > 0) {
+      enabledTabs.push({ id: "hotwire-dev-tools-info-tab", label: Icons.info, content: this.infoTabContent })
+    }
+
+    return enabledTabs
   }
 
   get currentTab() {
