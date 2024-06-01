@@ -47,6 +47,8 @@ The easiest way is to make us of the [web-ext](https://extensionworkshop.com/doc
 
 ```bash
 npm install --global web-ext
+
+cd public
 web-ext run
 ```
 
