@@ -155,9 +155,10 @@ export default class DetailPanel {
   #handleClickCollapse = () => {
     const container = this.shadowRoot.getElementById("hotwire-dev-tools-detail-panel-container")
     container.classList.toggle("collapsed")
-    this.devTool.saveOptions({
-      detailPanelCollapsed: container.classList.contains("collapsed"),
-    })
+
+    const options = this.devTool.options
+    options.detailPanel.collapsed = container.classList.contains("collapsed")
+    this.devTool.saveOptions(options)
     this.toggleCollapse()
   }
 
