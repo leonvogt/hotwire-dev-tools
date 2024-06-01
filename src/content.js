@@ -84,20 +84,29 @@ const injectedScriptMessageHandler = (event) => {
     case "stimulusController":
       if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
         devTool.stimulusControllers = event.data.registeredControllers
-        detailPanel.render()
+        renderDetailPanel()
       }
       break
     case "turboDetails":
       detailPanel.turboDetails = event.data.details
-      detailPanel.render()
+      renderDetailPanel()
       break
   }
+}
+
+const renderDetailPanel = () => {
+  if (!devTool.options.detailPanel.show) {
+    detailPanel.dispose()
+    return
+  }
+
+  detailPanel.render()
 }
 
 const init = async () => {
   injectCustomScript()
   highlightTurboFrames()
-  detailPanel.render()
+  renderDetailPanel()
 }
 
 const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
@@ -123,5 +132,5 @@ chrome.storage.onChanged.addListener((changes, area) => {
 })
 
 // On pages without Turbo, there doesn't seem to be an event that informs us when the page has fully loaded.
-// Therefore, we call init as soon as this content.js file is loaded through the browser extension API.
+// Therefore, we call init as soon as this content.js file is loaded.
 init()
