@@ -6,14 +6,14 @@ const detailPanel = new DetailPanel(devTool)
 
 const highlightTurboFrames = () => {
   if (!devTool.options.turbo.highlightFrames) {
-    document.body.classList.remove("watch-turbo-frames")
+    document.body.classList.remove("hotwire-dev-tools-highlight-turbo-frames")
     document.querySelectorAll("turbo-frame").forEach((frame) => {
       frame.querySelector(".turbo-frame-info-badge-container")?.remove()
     })
     return
   }
 
-  document.body.classList.add("watch-turbo-frames")
+  document.body.classList.add("hotwire-dev-tools-highlight-turbo-frames")
   const { highlightFramesOutlineWidth, highlightFramesOutlineStyle, highlightFramesOutlineColor, highlightFramesBlacklist } = devTool.options.turbo
 
   let blacklistedFrames = []
