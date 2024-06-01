@@ -14,7 +14,7 @@ export default class Devtool {
 
   getOptions = async () => {
     const data = await chrome.storage.sync.get("options")
-    return data?.options || this.defaultOptions()
+    return data?.options || this.defaultOptions
   }
 
   saveOptions = (options) => {
@@ -32,12 +32,19 @@ export default class Devtool {
 
   get defaultOptions() {
     return {
-      frames: false,
-      detailPanel: false,
-      frameColor: "#5cd8e5",
-      frameBlacklist: "",
-      detailPanelCollapsed: false,
-      currentTab: "hotwire-dev-tools-stimulus-tab",
+      turbo: {
+        highlightFrames: false,
+        highlightFramesOutlineWidth: "2px",
+        highlightFramesOutlineStyle: "dashed",
+        highlightFramesOutlineColor: "#5cd8e5",
+        highlightFramesBlacklist: "",
+      },
+      stimulus: {},
+      detailPanel: {
+        show: false,
+        collapsed: false,
+        currentTab: "hotwire-dev-tools-stimulus-tab",
+      },
     }
   }
 }
