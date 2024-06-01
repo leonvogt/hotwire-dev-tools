@@ -39,7 +39,12 @@ export default class Devtool {
         highlightFramesOutlineColor: "#5cd8e5",
         highlightFramesBlacklist: "",
       },
-      stimulus: {},
+      stimulus: {
+        highlightControllers: false,
+        highlightControllersOutlineWidth: "2px",
+        highlightControllersOutlineStyle: "dashed",
+        highlightControllersOutlineColor: "#77e8b9",
+      },
       detailPanel: {
         show: false,
         collapsed: false,
