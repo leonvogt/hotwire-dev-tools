@@ -51,6 +51,7 @@ fieldset {
 
 .detail-panel-options-wrapper input[type="checkbox"] {
   margin-left: 0;
+  margin-bottom: 0;
 }
 
 .highlight-options-wrapper {

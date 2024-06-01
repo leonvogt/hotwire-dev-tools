@@ -127,7 +127,7 @@ const injectedScriptMessageHandler = (event) => {
 }
 
 const renderDetailPanel = () => {
-  if (!devTool.options.detailPanel.show) {
+  if (!devTool.shouldRenderDetailPanel()) {
     detailPanel.dispose()
     return
   }
