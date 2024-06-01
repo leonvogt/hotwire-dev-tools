@@ -2,4 +2,6 @@ node_modules/
 /public/dist
 /public/manifest.json
 public.zip
+public.crx
+public.pem
 *.DS_Store
