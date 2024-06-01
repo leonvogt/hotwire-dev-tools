@@ -56,6 +56,22 @@ const highlightTurboFrames = () => {
   })
 }
 
+const highlightStimulusControllers = () => {
+  if (devTool.options.stimulus.highlightControllers) {
+    const { highlightControllersOutlineWidth, highlightControllersOutlineStyle, highlightControllersOutlineColor } = devTool.options.stimulus
+
+    document.querySelectorAll("[data-controller]").forEach((controller) => {
+      controller.style.outlineStyle = highlightControllersOutlineStyle
+      controller.style.outlineWidth = highlightControllersOutlineWidth
+      controller.style.outlineColor = highlightControllersOutlineColor
+    })
+  } else {
+    document.querySelectorAll("[data-controller]").forEach((controller) => {
+      controller.style.outline = ""
+    })
+  }
+}
+
 const handleTurboFrameBadgeClick = (event) => {
   navigator.clipboard.writeText(event.target.dataset.turboId).then(() => {
     event.target.classList.add("copied")
@@ -106,6 +122,7 @@ const renderDetailPanel = () => {
 const init = async () => {
   injectCustomScript()
   highlightTurboFrames()
+  highlightStimulusControllers()
   renderDetailPanel()
 }
 
