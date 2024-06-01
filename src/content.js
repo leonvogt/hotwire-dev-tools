@@ -22,7 +22,7 @@ const highlightTurboFrames = () => {
     try {
       blacklistedFrames = Array.from(document.querySelectorAll(highlightFramesBlacklist))
     } catch (error) {
-      console.log("Hotwire Dev Tools: Invalid Turbo Frame ignore selector:", highlightFramesBlacklist)
+      console.warn("Hotwire Dev Tools: Invalid Turbo Frame ignore selector:", highlightFramesBlacklist)
     }
   }
 
@@ -32,7 +32,6 @@ const highlightTurboFrames = () => {
       return
     }
 
-    // Set the frame's outline color
     frame.style.outlineStyle = highlightFramesOutlineStyle
     frame.style.outlineWidth = highlightFramesOutlineWidth
     frame.style.outlineColor = highlightFramesOutlineColor
@@ -115,7 +114,7 @@ const injectedScriptMessageHandler = (event) => {
   switch (event.data.message) {
     case "stimulusController":
       if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
-        devTool.stimulusControllers = event.data.registeredControllers
+        devTool.registeredStimulusControllers = event.data.registeredControllers
         renderDetailPanel()
       }
       break

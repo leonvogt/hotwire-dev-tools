@@ -3,9 +3,9 @@ import { loadCSS } from "./utils"
 export default class Devtool {
   constructor() {
     this.options = this.defaultOptions
-    this.stimulusControllers = []
+    this.registeredStimulusControllers = []
     this.turboDetails = {}
-    this.detailPanelCSSText = null
+    this.detailPanelCSSContent = null
 
     this.getOptions().then((options) => {
       this.options = options
@@ -24,10 +24,10 @@ export default class Devtool {
   }
 
   detailPanelCSS = async () => {
-    if (this.detailPanelCSSText) return this.detailPanelCSSText
+    if (this.detailPanelCSSContent) return this.detailPanelCSSContent
 
-    this.detailPanelCSSText = await loadCSS(chrome.runtime.getURL("styles/detail_panel.css"))
-    return this.detailPanelCSSText
+    this.detailPanelCSSContent = await loadCSS(chrome.runtime.getURL("styles/detail_panel.css"))
+    return this.detailPanelCSSContent
   }
 
   shouldRenderDetailPanel = () => {

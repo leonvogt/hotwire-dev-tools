@@ -232,7 +232,7 @@ export default class DetailPanel {
     const entries = []
     sortedControllerIds.forEach((stimulusControllerId) => {
       let indicator = ""
-      if (this.devTool.stimulusControllers.length > 0 && !this.devTool.stimulusControllers.includes(stimulusControllerId)) {
+      if (this.devTool.registeredStimulusControllers.length > 0 && !this.devTool.registeredStimulusControllers.includes(stimulusControllerId)) {
         indicator = `<span style="color: red;" title="Controller not registered">✗</span>`
       }
 
