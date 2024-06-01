@@ -8,6 +8,7 @@ const highlightTurboFrames = () => {
   if (!devTool.options.turbo.highlightFrames) {
     document.body.classList.remove("hotwire-dev-tools-highlight-turbo-frames")
     document.querySelectorAll("turbo-frame").forEach((frame) => {
+      frame.style.outline = ""
       frame.querySelector(".turbo-frame-info-badge-container")?.remove()
     })
     return
@@ -21,12 +22,16 @@ const highlightTurboFrames = () => {
     try {
       blacklistedFrames = Array.from(document.querySelectorAll(highlightFramesBlacklist))
     } catch (error) {
-      console.warn("Hotwire Dev Tools: Invalid frameBlacklist selector:", highlightFramesBlacklist)
+      console.log("Hotwire Dev Tools: Invalid Turbo Frame ignore selector:", highlightFramesBlacklist)
     }
   }
 
-  const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter((frame) => !blacklistedFrames.includes(frame))
-  turboFrames.forEach((frame) => {
+  document.querySelectorAll("turbo-frame").forEach((frame) => {
+    if (blacklistedFrames.includes(frame)) {
+      frame.style.outline = ""
+      return
+    }
+
     // Set the frame's outline color
     frame.style.outlineStyle = highlightFramesOutlineStyle
     frame.style.outlineWidth = highlightFramesOutlineWidth
@@ -57,19 +62,30 @@ const highlightTurboFrames = () => {
 }
 
 const highlightStimulusControllers = () => {
-  if (devTool.options.stimulus.highlightControllers) {
-    const { highlightControllersOutlineWidth, highlightControllersOutlineStyle, highlightControllersOutlineColor } = devTool.options.stimulus
-
-    document.querySelectorAll("[data-controller]").forEach((controller) => {
-      controller.style.outlineStyle = highlightControllersOutlineStyle
-      controller.style.outlineWidth = highlightControllersOutlineWidth
-      controller.style.outlineColor = highlightControllersOutlineColor
-    })
-  } else {
-    document.querySelectorAll("[data-controller]").forEach((controller) => {
-      controller.style.outline = ""
-    })
+  if (!devTool.options.stimulus.highlightControllers) {
+    document.querySelectorAll("[data-controller]").forEach((controller) => (controller.style.outline = ""))
+    return
   }
+
+  const { highlightControllersOutlineWidth, highlightControllersOutlineStyle, highlightControllersOutlineColor, highlightControllersBlacklist } = devTool.options.stimulus
+  let blacklistedControllers = []
+  if (highlightControllersBlacklist) {
+    try {
+      blacklistedControllers = Array.from(document.querySelectorAll(highlightControllersBlacklist))
+    } catch (error) {
+      console.warn("Hotwire Dev Tools: Invalid Stimulus controller ignore selector:", highlightControllersBlacklist)
+    }
+  }
+
+  document.querySelectorAll("[data-controller]").forEach((controller) => {
+    if (blacklistedControllers.includes(controller)) {
+      controller.style.outline = ""
+      return
+    }
+    controller.style.outlineStyle = highlightControllersOutlineStyle
+    controller.style.outlineWidth = highlightControllersOutlineWidth
+    controller.style.outlineColor = highlightControllersOutlineColor
+  })
 }
 
 const handleTurboFrameBadgeClick = (event) => {
