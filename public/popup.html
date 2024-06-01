@@ -59,7 +59,7 @@
         <input type="checkbox" id="stimulus-highlight-controllers" />
         <label for="stimulus-highlight-controllers">Highlight Controllers</label>
 
-        <div class="highlight-frames-wrapper stimulus-highlight-controllers-toggle-element">
+        <div class="highlight-controllers-wrapper stimulus-highlight-controllers-toggle-element">
           <div class="highlight-options-wrapper">
             <select id="stimulus-highlight-controllers-outline-width">
               <option value="1px">1px</option>
@@ -81,6 +81,8 @@
 
             <input type="color" id="stimulus-highlight-controllers-outline-color" />
           </div>
+
+          <input type="text" class="m-0" id="stimulus-highlight-controllers-blacklist" placeholder='Ignore selector like [data-controller="xy"]' />
         </div>
       </form>
     </fieldset>

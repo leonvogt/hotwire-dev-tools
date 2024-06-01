@@ -13,6 +13,8 @@ const stimulusHighlightControllers = document.getElementById("stimulus-highlight
 const stimulusHighlightControllersOulingWidth = document.getElementById("stimulus-highlight-controllers-outline-width")
 const stimulusHighlightControllersOutlineStyle = document.getElementById("stimulus-highlight-controllers-outline-style")
 const stimulusHighlightControllersOutlineColor = document.getElementById("stimulus-highlight-controllers-outline-color")
+const stimulusHighlightControllersBlacklist = document.getElementById("stimulus-highlight-controllers-blacklist")
+const stimulusHighlightControllersToggles = document.querySelectorAll(".stimulus-highlight-controllers-toggle-element")
 
 const detailPanelShow = document.getElementById("detail-panel-show")
 
@@ -21,6 +23,14 @@ const toggleTurboHighlightFramesInputs = (show) => {
     turboHighlightFramesToggles.forEach((element) => element.classList.remove("d-none"))
   } else {
     turboHighlightFramesToggles.forEach((element) => element.classList.add("d-none"))
+  }
+}
+
+const toggleStimulusHighlightControllersInputs = (show) => {
+  if (show) {
+    stimulusHighlightControllersToggles.forEach((element) => element.classList.remove("d-none"))
+  } else {
+    stimulusHighlightControllersToggles.forEach((element) => element.classList.add("d-none"))
   }
 }
 
@@ -35,9 +45,11 @@ const initializeForm = (options) => {
   stimulusHighlightControllersOutlineColor.value = options.stimulus.highlightControllersOutlineColor
   stimulusHighlightControllersOutlineStyle.value = options.stimulus.highlightControllersOutlineStyle
   stimulusHighlightControllersOulingWidth.value = options.stimulus.highlightControllersOutlineWidth
+  stimulusHighlightControllersBlacklist.value = options.stimulus.highlightControllersBlacklist
 
   detailPanelShow.checked = options.detailPanel.show
   toggleTurboHighlightFramesInputs(options.turbo.highlightFrames)
+  toggleStimulusHighlightControllersInputs(options.stimulus.highlightControllers)
 }
 
 ;(async () => {
@@ -73,6 +85,7 @@ const initializeForm = (options) => {
   })
 
   stimulusHighlightControllers.addEventListener("change", (event) => {
+    toggleStimulusHighlightControllersInputs(event.target.checked)
     options.stimulus.highlightControllers = event.target.checked
     devTool.saveOptions(options)
   })
@@ -89,6 +102,11 @@ const initializeForm = (options) => {
 
   stimulusHighlightControllersOutlineColor.addEventListener("change", (event) => {
     options.stimulus.highlightControllersOutlineColor = event.target.value
+    devTool.saveOptions(options)
+  })
+
+  stimulusHighlightControllersBlacklist.addEventListener("input", (event) => {
+    options.stimulus.highlightControllersBlacklist = event.target.value
     devTool.saveOptions(options)
   })
 

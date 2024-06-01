@@ -36,12 +36,15 @@ fieldset {
 }
 
 .highlight-frames-wrapper,
+.highlight-controllers-wrapper,
 .detail-panel-options-wrapper {
   display: flex;
   flex-direction: column;
   padding: 0.5em;
   margin-left: 2em;
 }
+
+.highlight-controllers-wrapper,
 .highlight-frames-wrapper {
   gap: 1em;
 }

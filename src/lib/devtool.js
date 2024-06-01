@@ -44,6 +44,7 @@ export default class Devtool {
         highlightControllersOutlineWidth: "2px",
         highlightControllersOutlineStyle: "dashed",
         highlightControllersOutlineColor: "#77e8b9",
+        highlightControllersBlacklist: "",
       },
       detailPanel: {
         show: false,
