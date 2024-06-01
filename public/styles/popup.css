@@ -22,9 +22,10 @@ input[type="text"] {
   border-radius: 4px;
 }
 
-.title-container {
-  display: flex;
-  justify-content: center;
+fieldset {
+  margin: 1rem 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .title {
@@ -34,8 +35,30 @@ input[type="text"] {
   margin-bottom: 1rem;
 }
 
+.highlight-frames-wrapper,
+.detail-panel-options-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+  margin-left: 2em;
+}
 .highlight-frames-wrapper {
-  min-height: 40px;
+  gap: 1em;
+}
+
+.detail-panel-options-wrapper input[type="checkbox"] {
+  margin-left: 0;
+}
+
+.highlight-options-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2em;
+
+  & select {
+    height: 2em;
+  }
 }
 
 .d-none {
@@ -46,8 +69,8 @@ input[type="text"] {
   display: flex;
 }
 
-.align-items-center {
-  align-items: center;
+.justify-content-center {
+  justify-content: center;
 }
 
 .m-0 {

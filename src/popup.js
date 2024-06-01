@@ -2,53 +2,68 @@ import Devtool from "./lib/devtool"
 
 const devTool = new Devtool()
 
-const highlightFramesInput = document.getElementById("highlight-frames")
-const displayDetailPanelInput = document.getElementById("display-detail-panel")
-const frameColorInput = document.getElementById("frames-color")
-const frameBlacklistInput = document.getElementById("frames-blacklist")
-const highlightFramesToggles = document.querySelectorAll(".highlight-frames-toggle-elements")
+const turboHighlightFrames = document.getElementById("turbo-highlight-frames")
+const turboHighlightFramesOutlineWidth = document.getElementById("turbo-highlight-frames-outline-width")
+const turboHighlightFramesOutlineStyle = document.getElementById("turbo-highlight-frames-outline-style")
+const turboHighlightFramesOutlineColor = document.getElementById("turbo-highlight-frames-outline-color")
+const turboHighlightFramesBlacklist = document.getElementById("turbo-highlight-frames-blacklist")
+const turboHighlightFramesToggles = document.querySelectorAll(".turbo-highlight-frames-toggle-element")
 
-const toggleFrameColorInput = (show) => {
+const detailPanelShow = document.getElementById("detail-panel-show")
+
+const toggleTurboHighlightFramesInputs = (show) => {
   if (show) {
-    highlightFramesToggles.forEach((element) => element.classList.remove("d-none"))
+    turboHighlightFramesToggles.forEach((element) => element.classList.remove("d-none"))
   } else {
-    highlightFramesToggles.forEach((element) => element.classList.add("d-none"))
+    turboHighlightFramesToggles.forEach((element) => element.classList.add("d-none"))
   }
 }
 
 const initializeForm = (options) => {
-  highlightFramesInput.checked = options.frames
-  displayDetailPanelInput.checked = options.detailPanel
-  frameColorInput.value = options.frameColor
-  frameBlacklistInput.value = options.frameBlacklist
-  toggleFrameColorInput(options.frames)
+  turboHighlightFrames.checked = options.turbo.highlightFrames
+  turboHighlightFramesOutlineColor.value = options.turbo.highlightFramesOutlineColor
+  turboHighlightFramesOutlineStyle.value = options.turbo.highlightFramesOutlineStyle
+  turboHighlightFramesOutlineWidth.value = options.turbo.highlightFramesOutlineWidth
+  turboHighlightFramesBlacklist.value = options.turbo.highlightFramesBlacklist
+
+  detailPanelShow.checked = options.detailPanel.show
+  toggleTurboHighlightFramesInputs(options.turbo.highlightFrames)
 }
 
 ;(async () => {
-  const data = await chrome.storage.sync.get("options")
-  const options = data.options || devTool.defaultOptions
-
+  // Initialize form with persisted options
+  const options = await devTool.getOptions()
   initializeForm(options)
 
   // Event listeners to persist selected options
-  highlightFramesInput.addEventListener("change", (event) => {
-    toggleFrameColorInput(event.target.checked)
-    options.frames = event.target.checked
-    chrome.storage.sync.set({ options })
+  turboHighlightFrames.addEventListener("change", (event) => {
+    toggleTurboHighlightFramesInputs(event.target.checked)
+    options.turbo.highlightFrames = event.target.checked
+    devTool.saveOptions(options)
   })
 
-  displayDetailPanelInput.addEventListener("change", (event) => {
-    options.detailPanel = event.target.checked
-    chrome.storage.sync.set({ options })
+  turboHighlightFramesOutlineStyle.addEventListener("change", (event) => {
+    options.turbo.highlightFramesOutlineStyle = event.target.value
+    devTool.saveOptions(options)
   })
 
-  frameColorInput.addEventListener("change", (event) => {
-    options.frameColor = event.target.value
-    chrome.storage.sync.set({ options })
+  turboHighlightFramesOutlineWidth.addEventListener("change", (event) => {
+    options.turbo.highlightFramesOutlineWidth = event.target.value
+    devTool.saveOptions(options)
   })
 
-  frameBlacklistInput.addEventListener("input", (event) => {
-    options.frameBlacklist = event.target.value
-    chrome.storage.sync.set({ options })
+  turboHighlightFramesOutlineColor.addEventListener("change", (event) => {
+    options.turbo.highlightFramesOutlineColor = event.target.value
+    devTool.saveOptions(options)
+  })
+
+  turboHighlightFramesBlacklist.addEventListener("input", (event) => {
+    options.turbo.highlightFramesBlacklist = event.target.value
+    devTool.saveOptions(options)
+  })
+
+  detailPanelShow.addEventListener("change", (event) => {
+    options.detailPanel.show = event.target.checked
+    devTool.saveOptions(options)
   })
 })()

@@ -5,7 +5,7 @@ const devTool = new Devtool()
 const detailPanel = new DetailPanel(devTool)
 
 const highlightTurboFrames = () => {
-  if (!devTool.options.frames) {
+  if (!devTool.options.turbo.highlightFrames) {
     document.body.classList.remove("watch-turbo-frames")
     document.querySelectorAll("turbo-frame").forEach((frame) => {
       frame.querySelector(".turbo-frame-info-badge-container")?.remove()
@@ -14,27 +14,29 @@ const highlightTurboFrames = () => {
   }
 
   document.body.classList.add("watch-turbo-frames")
-  const { frameColor, frameBlacklist } = devTool.options
+  const { highlightFramesOutlineWidth, highlightFramesOutlineStyle, highlightFramesOutlineColor, highlightFramesBlacklist } = devTool.options.turbo
 
   let blacklistedFrames = []
-  if (frameBlacklist) {
+  if (highlightFramesBlacklist) {
     try {
-      blacklistedFrames = Array.from(document.querySelectorAll(frameBlacklist))
+      blacklistedFrames = Array.from(document.querySelectorAll(highlightFramesBlacklist))
     } catch (error) {
-      console.warn("Hotwire Dev Tools: Invalid frameBlacklist selector:", frameBlacklist)
+      console.warn("Hotwire Dev Tools: Invalid frameBlacklist selector:", highlightFramesBlacklist)
     }
   }
 
   const turboFrames = Array.from(document.querySelectorAll("turbo-frame")).filter((frame) => !blacklistedFrames.includes(frame))
   turboFrames.forEach((frame) => {
     // Set the frame's outline color
-    frame.style.outline = `2px dashed ${frameColor}`
+    frame.style.outlineStyle = highlightFramesOutlineStyle
+    frame.style.outlineWidth = highlightFramesOutlineWidth
+    frame.style.outlineColor = highlightFramesOutlineColor
 
     // Add a badge to the frame (or update the existing one)
     const badgeClass = "turbo-frame-info-badge"
     const existingBadge = frame.querySelector(`.${badgeClass}`)
     if (existingBadge) {
-      existingBadge.style.backgroundColor = frameColor
+      existingBadge.style.backgroundColor = highlightFramesOutlineColor
     } else {
       const badgeContainer = document.createElement("div")
       badgeContainer.classList.add("turbo-frame-info-badge-container")
@@ -44,7 +46,7 @@ const highlightTurboFrames = () => {
       badgeContent.textContent = `ʘ #${frame.id}`
       badgeContent.classList.add(badgeClass)
       badgeContent.dataset.turboId = frame.id
-      badgeContent.style.backgroundColor = frameColor
+      badgeContent.style.backgroundColor = highlightFramesOutlineColor
       badgeContent.addEventListener("click", handleTurboFrameBadgeClick)
       badgeContent.addEventListener("animationend", handleTurboFrameBadgeAnimationEnd)
 
