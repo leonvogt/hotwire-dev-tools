@@ -149,6 +149,12 @@ export default class DetailPanel {
 
     const options = this.devTool.options
     options.detailPanel.currentTab = clickedTab.dataset.tabId
+
+    if (options.detailPanel.collapsed) {
+      this.toggleCollapse()
+      options.detailPanel.collapsed = false
+    }
+
     this.devTool.saveOptions(options)
   }
 
