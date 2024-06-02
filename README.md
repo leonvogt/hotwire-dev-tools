@@ -12,8 +12,8 @@ Hotwire Dev Tools is a browser extension with the goal of helping developers ins
 
 **Stimulus features**:
 
+- Highlight Stimulus controllers
 - List all Stimulus controllers on the page
-- Highlight specific Stimulus controllers
 - Display warning when a `data-controller` doesn't match any registered controller
 
 ## Installation
@@ -23,6 +23,12 @@ The extension can be installed at:
 - [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/hotwire-dev-tools/)
 - [Chrome Web Store](https://chrome.google.com/webstore/detail/hotwire-dev-tools/)
 - Safari coming soon (hopefully 🙏)
+
+## Usage
+
+Once installed, click on the extension icon to open the Dev Tools options.  
+From there you can enable/disable the features you want to use.  
+_Note: On Firefox you may need to select "Always allow on site.com" to enable the extension on your site._
 
 ## Development
 
