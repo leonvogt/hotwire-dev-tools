@@ -43,6 +43,7 @@ export default class Devtool {
         highlightFramesOutlineStyle: "dashed",
         highlightFramesOutlineColor: "#5cd8e5",
         highlightFramesBlacklist: "",
+        ignoreEmptyFrames: false,
       },
       stimulus: {
         highlightControllers: false,

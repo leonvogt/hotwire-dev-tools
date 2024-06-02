@@ -15,7 +15,7 @@ const highlightTurboFrames = () => {
   }
 
   document.body.classList.add("hotwire-dev-tools-highlight-turbo-frames")
-  const { highlightFramesOutlineWidth, highlightFramesOutlineStyle, highlightFramesOutlineColor, highlightFramesBlacklist } = devTool.options.turbo
+  const { highlightFramesOutlineWidth, highlightFramesOutlineStyle, highlightFramesOutlineColor, highlightFramesBlacklist, ignoreEmptyFrames } = devTool.options.turbo
 
   let blacklistedFrames = []
   if (highlightFramesBlacklist) {
@@ -27,7 +27,9 @@ const highlightTurboFrames = () => {
   }
 
   document.querySelectorAll("turbo-frame").forEach((frame) => {
-    if (blacklistedFrames.includes(frame)) {
+    const isEmpty = frame.innerHTML.trim() === ""
+    const shouldIgnore = isEmpty && ignoreEmptyFrames
+    if (blacklistedFrames.includes(frame) || shouldIgnore) {
       frame.style.outline = ""
       return
     }

@@ -8,6 +8,7 @@ const turboHighlightFramesOutlineStyle = document.getElementById("turbo-highligh
 const turboHighlightFramesOutlineColor = document.getElementById("turbo-highlight-frames-outline-color")
 const turboHighlightFramesBlacklist = document.getElementById("turbo-highlight-frames-blacklist")
 const turboHighlightFramesToggles = document.querySelectorAll(".turbo-highlight-frames-toggle-element")
+const turboHighlightFramesIgnoreEmpty = document.getElementById("turbo-highlight-frames-ignore-empty")
 
 const stimulusHighlightControllers = document.getElementById("stimulus-highlight-controllers")
 const stimulusHighlightControllersOulingWidth = document.getElementById("stimulus-highlight-controllers-outline-width")
@@ -59,6 +60,7 @@ const maybeHideDetailPanel = () => {
 
 const initializeForm = (options) => {
   turboHighlightFrames.checked = options.turbo.highlightFrames
+  turboHighlightFramesIgnoreEmpty.checked = options.turbo.ignoreEmptyFrames
   turboHighlightFramesOutlineColor.value = options.turbo.highlightFramesOutlineColor
   turboHighlightFramesOutlineStyle.value = options.turbo.highlightFramesOutlineStyle
   turboHighlightFramesOutlineWidth.value = options.turbo.highlightFramesOutlineWidth
@@ -109,6 +111,11 @@ const initializeForm = (options) => {
 
   turboHighlightFramesBlacklist.addEventListener("input", (event) => {
     options.turbo.highlightFramesBlacklist = event.target.value
+    devTool.saveOptions(options)
+  })
+
+  turboHighlightFramesIgnoreEmpty.addEventListener("change", (event) => {
+    options.turbo.ignoreEmptyFrames = event.target.checked
     devTool.saveOptions(options)
   })
 
