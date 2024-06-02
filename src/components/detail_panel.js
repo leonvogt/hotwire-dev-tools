@@ -316,15 +316,15 @@ export default class DetailPanel {
           `
               : ""
           }
-          <div class="info-tab-content-wrapper">
+          <div class="info-tab-content-wrapper" title="Defines how Turbo handles page refreshes. Meta Tag: turbo-refresh-method">
             <span>Refresh Control:</span>
             <span>${getMetaContent("turbo-refresh-method") || "-"}</span>
           </div>
-          <div class="info-tab-content-wrapper">
+          <div class="info-tab-content-wrapper" title="Defines how Turbo handles scrolling. Meta Tag: turbo-refresh-scroll">
             <span>Vist Control:</span>
             <span>${getMetaContent("turbo-visit-control") || "-"}</span>
           </div>
-          <div class="info-tab-content-wrapper">
+          <div class="info-tab-content-wrapper" title="Defines the turbo caching behavior. Meta Tag: turbo-cache-control">
             <span>Cache Control:</span>
             <span>${getMetaContent("turbo-cache-control") || "-"}</span>
           </div>
