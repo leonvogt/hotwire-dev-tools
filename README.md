@@ -26,7 +26,7 @@ The extension can be installed at:
 
 ## Usage
 
-Once installed, click on the extension icon to open the Dev Tools options.  
+Once installed, click on the extension icon (or press Alt+Shift+A) to open the Dev Tools options.  
 From there you can enable/disable the features you want to use.  
 _Note: On Firefox you may need to select "Always allow on site.com" to enable the extension on your site._
 
