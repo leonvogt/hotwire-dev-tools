@@ -18,7 +18,7 @@ export default class DetailPanel {
     this.createOrUpdateDetailPanel()
 
     this.listenForTabNavigation()
-    this.listenForCollapse()
+    this.listenForToggleCollapse()
     this.listenForStimulusControllerHover()
     this.listenForTurboFrameHover()
     this.listenForTurboStreamInteractions()
@@ -40,9 +40,7 @@ export default class DetailPanel {
     const container = this.detailPanelContainer
     container.innerHTML = this.html
     this.shadowRoot.appendChild(container)
-
-    container.classList.toggle("collapsed", this.devTool.options.detailPanel.collapsed)
-    this.toggleCollapse()
+    this.toggleDetailPanelVisibility()
   }
 
   listenForTabNavigation() {
@@ -50,8 +48,8 @@ export default class DetailPanel {
     tablist.addEventListener("click", this.#handleClickTab)
   }
 
-  listenForCollapse() {
-    this.shadowRoot.querySelector(".hotwire-dev-tools-collapse-button").addEventListener("click", this.#handleClickCollapse)
+  listenForToggleCollapse() {
+    this.shadowRoot.querySelector(".hotwire-dev-tools-collapse-button").addEventListener("click", this.#handleClickToggleCollapse)
   }
 
   addTurboStreamToDetailPanel = (event) => {
@@ -104,13 +102,19 @@ export default class DetailPanel {
     setTimeout(() => tab.classList.remove(...animationClass.split(" ")), 10000)
   }, 150)
 
-  toggleCollapse = () => {
-    if (this.devTool.options.detailPanel.collapsed) {
+  toggleDetailPanelVisibility = (hide = this.devTool.options.detailPanel.collapsed) => {
+    const detailPanelContainer = this.shadowRoot.getElementById("hotwire-dev-tools-detail-panel-container")
+
+    if (hide) {
       this.shadowRoot.querySelector(".collapse-icon").style.display = "none"
       this.shadowRoot.querySelector(".expand-icon").style.display = "contents"
+
+      detailPanelContainer.classList.add("collapsed")
     } else {
       this.shadowRoot.querySelector(".collapse-icon").style.display = "contents"
       this.shadowRoot.querySelector(".expand-icon").style.display = "none"
+
+      detailPanelContainer.classList.remove("collapsed")
     }
   }
 
@@ -149,23 +153,18 @@ export default class DetailPanel {
 
     const options = this.devTool.options
     options.detailPanel.currentTab = clickedTab.dataset.tabId
-
-    if (options.detailPanel.collapsed) {
-      this.toggleCollapse()
-      options.detailPanel.collapsed = false
-    }
+    options.detailPanel.collapsed = false
 
     this.devTool.saveOptions(options)
+    this.toggleDetailPanelVisibility()
   }
 
-  #handleClickCollapse = () => {
-    const container = this.shadowRoot.getElementById("hotwire-dev-tools-detail-panel-container")
-    container.classList.toggle("collapsed")
-
+  #handleClickToggleCollapse = () => {
     const options = this.devTool.options
-    options.detailPanel.collapsed = container.classList.contains("collapsed")
+    options.detailPanel.collapsed = !options.detailPanel.collapsed
+
     this.devTool.saveOptions(options)
-    this.toggleCollapse()
+    this.toggleDetailPanelVisibility()
   }
 
   #handleMouseEnterTurboStream = (event) => {
