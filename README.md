@@ -60,6 +60,27 @@ web-ext run
 
 That will open a new Firefox instance with the extension installed and hot reloading enabled.
 
+### Test on Safari
+
+First [configure Safari in macOS to run unsigned extensions](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension#3744467):
+
+1. Choose Safari > Settings
+2. Select the Advanced tab
+3. Check the "Show features for web developers" box
+4. Select the Developer tab.
+5. Check the Allow unsigned extensions box.
+
+This may depend on the version of macOS and Safari you are using.  
+So if you can't find the settings, you may need to search for the specific version you are using.
+
+Then you can load the extension by following these steps:
+
+1. Open Xcode
+2. Choose "Open extension project"
+3. Select the [HotwireDevTools/HotwireDevTools.xcodeproj](./HotwireDevTools/HotwireDevTools.xcodeproj) file (blue icon)
+4. Build the project
+5. Open Safari > Settings > Extensions and enable the Hotwire Dev Tools extension
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/leonvogt/hotwire-dev-tools.
