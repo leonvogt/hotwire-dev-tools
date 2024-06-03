@@ -1,7 +1,15 @@
+# Generic
+*.DS_Store
 node_modules/
+
+# Build files
 /public/dist
 /public/manifest.json
+
+# Release files
 public.zip
 public.crx
 public.pem
-*.DS_Store
+
+# Xcode
+xcuserdata/
