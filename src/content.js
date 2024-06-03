@@ -137,6 +137,8 @@ const renderDetailPanel = () => {
 }
 
 const init = async () => {
+  await devTool.getOptions()
+
   injectCustomScript()
   highlightTurboFrames()
   highlightStimulusControllers()

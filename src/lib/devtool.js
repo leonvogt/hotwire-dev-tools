@@ -7,14 +7,13 @@ export default class Devtool {
     this.turboDetails = {}
     this.detailPanelCSSContent = null
 
-    this.getOptions().then((options) => {
-      this.options = options
-    })
+    this.getOptions()
   }
 
   getOptions = async () => {
     const data = await chrome.storage.sync.get("options")
-    return data?.options || this.defaultOptions
+    this.options = data?.options || this.defaultOptions
+    return this.options
   }
 
   saveOptions = (options) => {
