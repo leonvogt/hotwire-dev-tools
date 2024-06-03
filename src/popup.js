@@ -53,7 +53,6 @@ const maybeHideDetailPanel = () => {
 
   if (!showDetailPanel) {
     detailPanelShow.checked = false
-    devTool.saveOptions({ detailPanel: { ...devTool.options.detailPanel, show: false } })
     toggleDetailPanelInputs(false)
   }
 }
