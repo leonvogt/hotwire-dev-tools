@@ -92,6 +92,7 @@ sup {
     outline: none;
     padding-right: 0.5em;
     padding-left: 0.5em;
+    width: 2em;
   }
 
   .hotwire-dev-tools-collapse-button:hover {
