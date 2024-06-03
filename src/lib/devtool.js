@@ -24,7 +24,7 @@ export default class Devtool {
         const error = chrome.runtime.lastError
         console.error("Hotwire Dev Tools: Error saving data:", error)
         if (error.message.includes("MAX_WRITE_OPERATIONS_PER_MINUTE")) {
-          alert("Hotwire Dev Tools: Whoops! We are sorry but you've reached the maximum number of options changes allowed per minute. Please try again later.")
+          console.error("Hotwire Dev Tools: Whoops! We are sorry but you've reached the maximum number of options changes allowed per minute. Please try again later.")
           return
         }
       } else {
