@@ -1,1 +1,4 @@
 manifest.template.json
+
+# Ignore all the Xcode files
+HotwireDevTools/HotwireDevTools/*/**
