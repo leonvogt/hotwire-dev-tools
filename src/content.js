@@ -121,7 +121,7 @@ const injectedScriptMessageHandler = (event) => {
       }
       break
     case "turboDetails":
-      detailPanel.turboDetails = event.data.details
+      devTool.turboDetails = event.data.details
       renderDetailPanel()
       break
   }

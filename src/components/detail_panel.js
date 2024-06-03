@@ -307,13 +307,28 @@ export default class DetailPanel {
             <span>${document.querySelectorAll("turbo-frame").length}</span>
           </div>
           ${
+            typeof this.devTool.turboDetails.turboDriveEnabled === "boolean"
+              ? `
+                <div class="info-tab-content-wrapper" title="Checks 'window.Turbo.session.drive' to see if Turbo Drive is enabled">
+                  <span>Turbo Drive:</span>
+                  <span>${this.devTool.turboDetails.turboDriveEnabled ? "On" : "Off"}</span>
+                </div>
+              `
+              : `
+                <div class="info-tab-content-wrapper" title="Checks 'window.Turbo.session.drive' to see if Turbo Drive is enabled">
+                  <span>Turbo Drive:</span>
+                  <span>-</span>
+                </div>
+              `
+          }
+          ${
             getMetaContent("turbo-prefetch") === "false"
               ? `
-            <div class="info-tab-content-wrapper">
-              <span>Link Prefetch:</span>
-              <span>Off</span>
-            </div>
-          `
+                  <div class="info-tab-content-wrapper" title="Checks the meta tag 'turbo-prefetch' to see if Link Prefetch is enabled">
+                    <span>Link Prefetch:</span>
+                    <span>Off</span>
+                  </div>
+                `
               : ""
           }
           <div class="info-tab-content-wrapper" title="Defines how Turbo handles page refreshes. Meta Tag: turbo-refresh-method">

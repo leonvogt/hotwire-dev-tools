@@ -26,3 +26,5 @@ const events = ["DOMContentLoaded", "turbolinks:load", "turbo:load", "turbo:fram
 events.forEach((event) => {
   document.addEventListener(event, sendWindowDetails)
 })
+
+sendWindowDetails()
