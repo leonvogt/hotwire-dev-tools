@@ -3,12 +3,11 @@ const fs = require("fs-extra")
 const path = require("path")
 const mustache = require("mustache")
 
-const watchMode = process.argv.includes("--watch")
-const browser = process.argv[3] || "chrome"
 const nodeEnv = process.env.NODE_ENV
+const browser = process.argv[3] || "chrome"
 const production = nodeEnv === "production"
-const templatePath = path.join(__dirname, "manifest.template.json")
 const outputPath = path.join(__dirname, "public", "manifest.json")
+const templatePath = path.join(__dirname, "manifest.template.json")
 
 const browserSpecificSettings = {
   chrome: {
@@ -16,6 +15,9 @@ const browserSpecificSettings = {
   },
   firefox: {
     browser_specific_settings: true,
+  },
+  safari: {
+    browser_specific_settings: false,
   },
 }
 
