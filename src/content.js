@@ -162,7 +162,6 @@ window.addEventListener("message", injectedScriptMessageHandler)
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "sync" && changes.options?.newValue) {
-    devTool.saveOptions(changes.options.newValue)
     document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed"))
   }
 })
