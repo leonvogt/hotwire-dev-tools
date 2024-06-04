@@ -24,7 +24,7 @@ const esbuildConfig = {
   bundle: true,
   minify: production,
   sourcemap: !production,
-  target: ["chrome58", "firefox57"],
+  target: ["chrome58", "firefox109"],
   outdir: "./public/dist",
   define: {
     "process.env.NODE_ENV": `"${nodeEnv}"`,
