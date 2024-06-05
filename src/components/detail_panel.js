@@ -422,6 +422,15 @@ export default class DetailPanel {
   }
 
   get currentTab() {
-    return this.devTool.options.detailPanel.currentTab
+    const options = this.devTool.options
+
+    const storedCurrentTab = options.detailPanel.currentTab
+    const currentTabIsVisible = this.tabs.map((tab) => tab.id).includes(storedCurrentTab)
+    if (currentTabIsVisible) return storedCurrentTab
+
+    const newCurrentTab = this.tabs[0].id
+    options.detailPanel.currentTab = newCurrentTab
+    this.devTool.saveOptions(options)
+    return newCurrentTab
   }
 }
