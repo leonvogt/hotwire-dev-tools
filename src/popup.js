@@ -158,6 +158,18 @@ const initializeForm = (options) => {
     toggleDetailPanelInputs(event.target.checked)
     options.detailPanel.show = event.target.checked
     devTool.saveOptions(options)
+
+    // Show all tabs by default
+    const anyTabActive = detailPanelShowStimulusTab.checked || detailPanelShowTurboFrameTab.checked || detailPanelShowTurboStreamTab.checked
+    if (event.target.checked && !anyTabActive) {
+      detailPanelShowStimulusTab.checked = true
+      detailPanelShowTurboFrameTab.checked = true
+      detailPanelShowTurboStreamTab.checked = true
+      options.detailPanel.showStimulusTab = true
+      options.detailPanel.showTurboFrameTab = true
+      options.detailPanel.showTurboStreamTab = true
+      devTool.saveOptions(options)
+    }
   })
 
   detailPanelShowStimulusTab.addEventListener("change", (event) => {
