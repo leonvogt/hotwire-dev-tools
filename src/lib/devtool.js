@@ -20,17 +20,18 @@ export default class Devtool {
     const newOptions = { ...this.options, ...options }
 
     chrome.storage.sync.set({ options: newOptions }, () => {
-      if (chrome.runtime.lastError) {
-        const error = chrome.runtime.lastError
-        console.error("Hotwire Dev Tools: Error saving data:", error)
+      const error = chrome.runtime.lastError
+      if (error) {
         if (error.message.includes("MAX_WRITE_OPERATIONS_PER_MINUTE")) {
           console.error("Hotwire Dev Tools: Whoops! We are sorry but you've reached the maximum number of options changes allowed per minute. Please try again later.")
-          return
+        } else {
+          console.error("Hotwire Dev Tools: Error while saving options:", error)
         }
-      } else {
-        // Data saved successfully
-        this.options = newOptions
+        return
       }
+
+      // Options were saved successfully
+      this.options = newOptions
     })
   }
 
