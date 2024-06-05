@@ -76,6 +76,16 @@ const initializeForm = (options) => {
   detailPanelShowTurboFrameTab.checked = options.detailPanel.showTurboFrameTab
   detailPanelShowTurboStreamTab.checked = options.detailPanel.showTurboStreamTab
 
+  if (devTool.isFirefox) {
+    // In Firefox the color picker inside an extension popup doesn't really work (See https://github.com/leonvogt/hotwire-dev-tools/issues/20)
+    // Workaround: Change the input type to text so the user can input the color manually
+    turboHighlightFramesOutlineColor.type = "text"
+    turboHighlightFramesOutlineColor.placeholder = devTool.defaultOptions.turbo.highlightFramesOutlineColor
+
+    stimulusHighlightControllersOutlineColor.type = "text"
+    stimulusHighlightControllersOutlineColor.placeholder = devTool.defaultOptions.stimulus.highlightControllersOutlineColor
+  }
+
   toggleTurboHighlightFramesInputs(options.turbo.highlightFrames)
   toggleStimulusHighlightControllersInputs(options.stimulus.highlightControllers)
   toggleDetailPanelInputs(options.detailPanel.show)
