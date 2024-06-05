@@ -235,17 +235,19 @@ export default class DetailPanel {
     }
 
     const entries = []
-    sortedControllerIds.forEach((stimulusControllerId) => {
-      let indicator = ""
+    sortedControllerIds.forEach((stimulusControllerId, index) => {
+      let className = "hotwire-dev-tools-entry"
+      let tooltip = ""
       if (this.devTool.registeredStimulusControllers.length > 0 && !this.devTool.registeredStimulusControllers.includes(stimulusControllerId)) {
-        indicator = `<span style="color: red;" title="Controller not registered">✗</span>`
+        className += " hotwire-dev-tools-entry-warning tooltip"
+        tooltip = `<span class="tooltiptext ${index === 0 ? "tooltip-bottom" : "tooltip-top"}">Controller not registered</span>`
       }
 
       const stimulusControllerElements = this.groupedStimulusControllerElements[stimulusControllerId]
       entries.push(`
-        <div class="hotwire-dev-tools-entry" data-stimulus-controller-id="${stimulusControllerId}">
+        <div class="${className}" data-stimulus-controller-id="${stimulusControllerId}">
           <span>${stimulusControllerId}<sup>${stimulusControllerElements.length}</sup></span>
-          ${indicator}
+          ${tooltip}
         </div>
       `)
     })
@@ -265,17 +267,18 @@ export default class DetailPanel {
     }
 
     const entries = []
-    frames.forEach((frame) => {
+    frames.forEach((frame, index) => {
       const nonUniqueFrameId = frames.filter((f) => f.id === frame.id).length > 1
       let className = "hotwire-dev-tools-entry"
-      let title = ""
+      let tooltip = ""
       if (nonUniqueFrameId) {
-        className += " hotwire-dev-tools-entry-warning"
-        title = "Multiple frames with the same id"
+        className += " hotwire-dev-tools-entry-warning tooltip"
+        tooltip = `<span class="tooltiptext ${index === 0 ? "tooltip-bottom" : "tooltip-top"}">Multiple frames with the same ID</span>`
       }
       entries.push(`
-        <div class="${className}" data-turbo-frame-id="${frame.id}" title="${title}">
+        <div class="${className}" data-turbo-frame-id="${frame.id}">
           <span>${frame.id}</span>
+          ${tooltip}
           ${frame.hasAttribute("src") ? `<span class="frame-with-src" title="Asynchronous Turbo Frame - ${frame.getAttribute("src")}">${Icons.clock}</span>` : ""}
         </div>
       `)
