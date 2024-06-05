@@ -21,7 +21,7 @@ Hotwire Dev Tools is a browser extension with the goal of helping developers ins
 The extension can be installed at:
 
 - [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/hotwire-dev-tools/)
-- [Chrome Web Store](https://chrome.google.com/webstore/detail/hotwire-dev-tools/)
+- [Chrome Web Store](https://chromewebstore.google.com/detail/hotwire-dev-tools/phdobjkbablgffmmgnjbmfbbofnbkajc)
 - Safari coming soon (hopefully 🙏)
 
 ## Usage
@@ -62,7 +62,7 @@ That will open a new Firefox instance with the extension installed and hot reloa
 
 ### Test on Safari
 
-First [configure Safari in macOS to run unsigned extensions](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension#3744467):
+First [configure Safari to run unsigned extensions](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension#3744467):
 
 1. Choose Safari > Settings
 2. Select the Advanced tab
