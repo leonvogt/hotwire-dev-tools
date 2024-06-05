@@ -57,6 +57,7 @@ fieldset {
 .highlight-options-wrapper {
   display: flex;
   align-items: center;
+  gap: 0.5em;
   justify-content: space-between;
   height: 2em;
 

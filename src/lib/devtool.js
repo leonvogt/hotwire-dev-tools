@@ -46,6 +46,10 @@ export default class Devtool {
     return show && (showStimulusTab || showTurboFrameTab || showTurboStreamTab)
   }
 
+  get isFirefox() {
+    return navigator.userAgent.toLowerCase().indexOf("firefox") > -1
+  }
+
   get defaultOptions() {
     return {
       turbo: {
