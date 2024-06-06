@@ -6,7 +6,7 @@ Hotwire Dev Tools is a browser extension with the goal of helping developers ins
 
 - Highlight Turbo Frames
 - Monitor incoming Turbo Streams
-- Display Turbo meta information like is Turbo Drive or morphing enabled?
+- Display Turbo context information (Turbo Drive enabled, morphing enabled, ...)
 - Display warning when a Turbo Frame ID is not unique
 - List all Turbo Frames on the page
 
