@@ -53,6 +53,8 @@ export default class DetailPanel {
   }
 
   addTurboStreamToDetailPanel = (event) => {
+    if (!this.isTabEnabled("hotwire-dev-tools-turbo-stream-tab")) return
+
     const turboStream = event.target
     const action = turboStream.getAttribute("action")
     const target = turboStream.getAttribute("target")
@@ -138,6 +140,10 @@ export default class DetailPanel {
       entry.addEventListener("mouseenter", this.#handleMouseEnterTurboStream)
       entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboStream)
     })
+  }
+
+  isTabEnabled = (tabId) => {
+    return this.tabs.map((tab) => tab.id).includes(tabId)
   }
 
   #handleClickTab = (event) => {
@@ -425,8 +431,7 @@ export default class DetailPanel {
     const options = this.devTool.options
 
     const storedCurrentTab = options.detailPanel.currentTab
-    const currentTabIsVisible = this.tabs.map((tab) => tab.id).includes(storedCurrentTab)
-    if (currentTabIsVisible) return storedCurrentTab
+    if (this.isTabEnabled(storedCurrentTab)) return storedCurrentTab
 
     const newCurrentTab = this.tabs[0].id
     options.detailPanel.currentTab = newCurrentTab
