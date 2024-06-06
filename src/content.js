@@ -1,3 +1,4 @@
+import { turboStreamTargetElements } from "./lib/turbo_utils"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
 
@@ -127,6 +128,31 @@ const injectedScriptMessageHandler = (event) => {
   }
 }
 
+const consoleLogTurboStream = (event) => {
+  if (!devTool.options.turbo.consoleLogTurboStreams) return
+
+  const turboStream = event.target
+  const targetElements = turboStreamTargetElements(turboStream)
+  const target = turboStream.getAttribute("target")
+  const targets = turboStream.getAttribute("targets")
+
+  let message = `Hotwire Dev Tools: Turbo Stream received`
+
+  const targetsNotFoundInTheDOM = (target || targets) && (targetElements || []).length === 0
+  if (targetsNotFoundInTheDOM) {
+    message += ` - Target ${target ? "element" : "elements"} not found!`
+    console.warn(message, turboStream)
+    return
+  }
+
+  console.log(message, turboStream)
+}
+
+const handleIncomingTurboStream = (event) => {
+  detailPanel.addTurboStreamToDetailPanel(event)
+  consoleLogTurboStream(event)
+}
+
 const renderDetailPanel = () => {
   if (!devTool.shouldRenderDetailPanel()) {
     detailPanel.dispose()
@@ -147,7 +173,7 @@ const init = async () => {
 
 const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
 events.forEach((event) => document.addEventListener(event, init, { passive: true }))
-document.addEventListener("turbo:before-stream-render", detailPanel.addTurboStreamToDetailPanel, { passive: true })
+document.addEventListener("turbo:before-stream-render", handleIncomingTurboStream, { passive: true })
 
 // When Turbo Drive renders a new page, we wanna copy over the existing detail panel - shadow container - to the new page,
 // so we can keep the detail panel open, without flickering, when navigating between pages.
