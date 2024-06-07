@@ -90,16 +90,6 @@ const highlightStimulusControllers = () => {
   })
 }
 
-const handleTurboFrameBadgeClick = (event) => {
-  navigator.clipboard.writeText(event.target.dataset.turboId).then(() => {
-    event.target.classList.add("copied")
-  })
-}
-
-const handleTurboFrameBadgeAnimationEnd = (event) => {
-  event.target.classList.remove("copied")
-}
-
 const injectCustomScript = () => {
   const existingScript = document.getElementById("hotwire-dev-tools-inject-script")
   if (existingScript) return
@@ -108,24 +98,6 @@ const injectCustomScript = () => {
   script.src = chrome.runtime.getURL("dist/inject.js")
   script.id = "hotwire-dev-tools-inject-script"
   document.documentElement.appendChild(script)
-}
-
-const handleWindowMessage = (event) => {
-  if (event.origin !== window.location.origin) return
-  if (event.data.source !== "inject") return
-
-  switch (event.data.message) {
-    case "stimulusController":
-      if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
-        devTool.registeredStimulusControllers = event.data.registeredControllers
-        renderDetailPanel()
-      }
-      break
-    case "turboDetails":
-      devTool.turboDetails = event.data.details
-      renderDetailPanel()
-      break
-  }
 }
 
 const consoleLogTurboStream = (event) => {
@@ -148,9 +120,37 @@ const consoleLogTurboStream = (event) => {
   console.log(message, turboStream)
 }
 
+const handleTurboFrameBadgeClick = (event) => {
+  navigator.clipboard.writeText(event.target.dataset.turboId).then(() => {
+    event.target.classList.add("copied")
+  })
+}
+
+const handleTurboFrameBadgeAnimationEnd = (event) => {
+  event.target.classList.remove("copied")
+}
+
 const handleIncomingTurboStream = (event) => {
   detailPanel.addTurboStreamToDetailPanel(event)
   consoleLogTurboStream(event)
+}
+
+const handleWindowMessage = (event) => {
+  if (event.origin !== window.location.origin) return
+  if (event.data.source !== "inject") return
+
+  switch (event.data.message) {
+    case "stimulusController":
+      if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
+        devTool.registeredStimulusControllers = event.data.registeredControllers
+        renderDetailPanel()
+      }
+      break
+    case "turboDetails":
+      devTool.turboDetails = event.data.details
+      renderDetailPanel()
+      break
+  }
 }
 
 const renderDetailPanel = () => {
