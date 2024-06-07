@@ -7,6 +7,11 @@ import hljs from "highlight.js/lib/core"
 import xml from "highlight.js/lib/languages/xml"
 hljs.registerLanguage("xml", xml)
 
+const STIMULUS_TAB_ID = "hotwire-dev-tools-stimulus-tab"
+const TURBO_FRAME_TAB_ID = "hotwire-dev-tools-turbo-frame-tab"
+const TURBO_STREAM_TAB_ID = "hotwire-dev-tools-turbo-stream-tab"
+const INFO_TAB_ID = "hotwire-dev-tools-info-tab"
+
 export default class DetailPanel {
   constructor(devTool) {
     this.devTool = devTool
@@ -53,7 +58,7 @@ export default class DetailPanel {
   }
 
   addTurboStreamToDetailPanel = (event) => {
-    if (!this.isTabEnabled("hotwire-dev-tools-turbo-stream-tab")) return
+    if (!this.isTabEnabled(TURBO_STREAM_TAB_ID)) return
 
     const turboStream = event.target
     const action = turboStream.getAttribute("action")
@@ -83,7 +88,7 @@ export default class DetailPanel {
       </div>
     `
 
-    const streamTab = this.shadowRoot.getElementById("hotwire-dev-tools-turbo-stream-tab")
+    const streamTab = this.shadowRoot.getElementById(TURBO_STREAM_TAB_ID)
     streamTab.prepend(entry)
     streamTab.querySelector(".hotwire-dev-tools-no-entry")?.remove()
 
@@ -93,7 +98,7 @@ export default class DetailPanel {
     }
 
     this.listenForTurboStreamInteractions()
-    this.addTabEffect("hotwire-dev-tools-turbo-stream-tab")
+    this.addTabEffect(TURBO_STREAM_TAB_ID)
   }
 
   addTabEffect = debounce((tabId) => {
@@ -121,21 +126,21 @@ export default class DetailPanel {
   }
 
   listenForStimulusControllerHover = () => {
-    this.shadowRoot.querySelectorAll("#hotwire-dev-tools-stimulus-tab .hotwire-dev-tools-entry").forEach((entry) => {
+    this.shadowRoot.querySelectorAll(`#${STIMULUS_TAB_ID} .hotwire-dev-tools-entry`).forEach((entry) => {
       entry.addEventListener("mouseenter", this.#handleMouseEnterStimulusController)
       entry.addEventListener("mouseleave", this.#handleMouseLeaveStimulusController)
     })
   }
 
   listenForTurboFrameHover = () => {
-    this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-frame-tab .hotwire-dev-tools-entry").forEach((entry) => {
+    this.shadowRoot.querySelectorAll(`#${TURBO_FRAME_TAB_ID} .hotwire-dev-tools-entry`).forEach((entry) => {
       entry.addEventListener("mouseenter", this.#handleMouseEnterTurboFrame)
       entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboFrame)
     })
   }
 
   listenForTurboStreamInteractions = () => {
-    this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-stream-tab .hotwire-dev-tools-entry").forEach((entry) => {
+    this.shadowRoot.querySelectorAll(`#${TURBO_STREAM_TAB_ID} .hotwire-dev-tools-entry`).forEach((entry) => {
       entry.addEventListener("click", this.#handleClickTurboStream)
       entry.addEventListener("mouseenter", this.#handleMouseEnterTurboStream)
       entry.addEventListener("mouseleave", this.#handleMouseLeaveTurboStream)
@@ -290,7 +295,7 @@ export default class DetailPanel {
   }
 
   get turboSteamTabContent() {
-    const streamTabEntries = Array.from(this.shadowRoot.querySelectorAll("#hotwire-dev-tools-turbo-stream-tab .hotwire-dev-tools-entry"))
+    const streamTabEntries = Array.from(this.shadowRoot.querySelectorAll(`#${TURBO_STREAM_TAB_ID} .hotwire-dev-tools-entry`))
     if (streamTabEntries.length > 0) {
       return streamTabEntries.map((entry) => entry.outerHTML).join("")
     }
@@ -412,16 +417,16 @@ export default class DetailPanel {
     const { showStimulusTab, showTurboFrameTab, showTurboStreamTab } = this.devTool.options.detailPanel
     const enabledTabs = []
     if (showStimulusTab) {
-      enabledTabs.push({ id: "hotwire-dev-tools-stimulus-tab", label: "Stimulus", content: this.stimulusTabContent })
+      enabledTabs.push({ id: STIMULUS_TAB_ID, label: "Stimulus", content: this.stimulusTabContent })
     }
     if (showTurboFrameTab) {
-      enabledTabs.push({ id: "hotwire-dev-tools-turbo-frame-tab", label: "Frames", content: this.turboFrameTabContent })
+      enabledTabs.push({ id: TURBO_FRAME_TAB_ID, label: "Frames", content: this.turboFrameTabContent })
     }
     if (showTurboStreamTab) {
-      enabledTabs.push({ id: "hotwire-dev-tools-turbo-stream-tab", label: "Streams", content: this.turboSteamTabContent })
+      enabledTabs.push({ id: TURBO_STREAM_TAB_ID, label: "Streams", content: this.turboSteamTabContent })
     }
     if (enabledTabs.length > 0) {
-      enabledTabs.push({ id: "hotwire-dev-tools-info-tab", label: Icons.info, content: this.infoTabContent })
+      enabledTabs.push({ id: INFO_TAB_ID, label: Icons.info, content: this.infoTabContent })
     }
 
     return enabledTabs
