@@ -110,7 +110,7 @@ const injectCustomScript = () => {
   document.documentElement.appendChild(script)
 }
 
-const injectedScriptMessageHandler = (event) => {
+const handleWindowMessage = (event) => {
   if (event.origin !== window.location.origin) return
   if (event.data.source !== "inject") return
 
@@ -183,7 +183,7 @@ window.addEventListener("turbo:before-render", (event) => {
 })
 
 // Listen for potential message from the injected script
-window.addEventListener("message", injectedScriptMessageHandler)
+window.addEventListener("message", handleWindowMessage)
 
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
