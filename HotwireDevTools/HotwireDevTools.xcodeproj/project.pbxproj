@@ -21,7 +21,6 @@
 		356FE3A12C0DF1F30001527B /* images in Resources */ = {isa = PBXBuildFile; fileRef = 356FE39B2C0DF1F30001527B /* images */; };
 		356FE3A22C0DF1F30001527B /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = 356FE39C2C0DF1F30001527B /* popup.html */; };
 		356FE3A32C0DF1F30001527B /* styles in Resources */ = {isa = PBXBuildFile; fileRef = 356FE39D2C0DF1F30001527B /* styles */; };
-		356FE3A42C0DF1F30001527B /* scripts in Resources */ = {isa = PBXBuildFile; fileRef = 356FE39E2C0DF1F30001527B /* scripts */; };
 		356FE3A52C0DF1F30001527B /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 356FE39F2C0DF1F30001527B /* manifest.json */; };
 /* End PBXBuildFile section */
 
@@ -70,7 +69,6 @@
 		356FE39B2C0DF1F30001527B /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = ../../public/images; sourceTree = "<group>"; };
 		356FE39C2C0DF1F30001527B /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = ../../public/popup.html; sourceTree = "<group>"; };
 		356FE39D2C0DF1F30001527B /* styles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = styles; path = ../../public/styles; sourceTree = "<group>"; };
-		356FE39E2C0DF1F30001527B /* scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = scripts; path = ../../public/scripts; sourceTree = "<group>"; };
 		356FE39F2C0DF1F30001527B /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../public/manifest.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -154,7 +152,6 @@
 				356FE39B2C0DF1F30001527B /* images */,
 				356FE39C2C0DF1F30001527B /* popup.html */,
 				356FE39D2C0DF1F30001527B /* styles */,
-				356FE39E2C0DF1F30001527B /* scripts */,
 				356FE39F2C0DF1F30001527B /* manifest.json */,
 			);
 			name = Resources;
@@ -258,7 +255,6 @@
 				356FE3A12C0DF1F30001527B /* images in Resources */,
 				356FE3A22C0DF1F30001527B /* popup.html in Resources */,
 				356FE3A32C0DF1F30001527B /* styles in Resources */,
-				356FE3A42C0DF1F30001527B /* scripts in Resources */,
 				356FE3A52C0DF1F30001527B /* manifest.json in Resources */,
 				356FE3A02C0DF1F30001527B /* dist in Resources */,
 			);
