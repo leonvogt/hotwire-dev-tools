@@ -224,8 +224,12 @@ const getCurrentTabOrigin = () => {
 }
 
 ;(async () => {
-  const origin = await getCurrentTabOrigin()
-  devTool.origin = origin
+  try {
+    const origin = await getCurrentTabOrigin()
+    devTool.origin = origin
+  } catch (error) {
+    // If we can't get the origin, we just work with the global user options
+  }
 
   const options = await devTool.getOptions()
   initializeForm(options)
