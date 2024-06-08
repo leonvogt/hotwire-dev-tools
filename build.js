@@ -11,12 +11,18 @@ const templatePath = path.join(__dirname, "manifest.template.json")
 
 const browserSpecificSettings = {
   chrome: {
+    background_scripts: false,
+    background_service_worker: true,
     browser_specific_settings: false,
   },
   firefox: {
+    background_scripts: true,
+    background_service_worker: false,
     browser_specific_settings: true,
   },
   safari: {
+    background_scripts: false,
+    background_service_worker: true,
     browser_specific_settings: false,
   },
 }
