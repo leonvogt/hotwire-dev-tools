@@ -196,21 +196,15 @@ const setupEventListeners = (options) => {
   })
 }
 
+// Call the background script to get the origin of the current tab
 const getCurrentTabOrigin = () => {
   return new Promise((resolve, reject) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length === 0) {
-        reject(new Error("No active tab found"))
+    chrome.runtime.sendMessage({ type: "getOrigin" }, (response) => {
+      if (chrome.runtime.lastError || !response) {
+        reject(new Error(chrome.runtime.lastError ? chrome.runtime.lastError.message : "No response from the background script"))
         return
       }
-
-      chrome.tabs.sendMessage(tabs[0].id, { type: "getOrigin" }, (response) => {
-        if (chrome.runtime.lastError || !response) {
-          reject(new Error(chrome.runtime.lastError ? chrome.runtime.lastError.message : "No response from content script"))
-          return
-        }
-        resolve(response.origin)
-      })
+      resolve(response.origin)
     })
   })
 }

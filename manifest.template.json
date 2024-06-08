@@ -27,6 +27,9 @@
       "matches": ["<all_urls>"]
     }
   ],
+  "background": {
+    "scripts": ["dist/background.js"]
+  },
   {{#browser_specific_settings}}
   "browser_specific_settings": {
     "gecko": {

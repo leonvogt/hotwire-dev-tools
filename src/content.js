@@ -193,13 +193,6 @@ chrome.storage.onChanged.addListener((changes, area) => {
   }
 })
 
-// Listen for messages from the popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "getOrigin") {
-    sendResponse({ origin: LOCATION_ORIGIN })
-  }
-})
-
 // On pages without Turbo, there doesn't seem to be an event that informs us when the page has fully loaded.
 // Therefore, we call init as soon as this content.js file is loaded.
 init()
