@@ -2,7 +2,8 @@ import { turboStreamTargetElements } from "./lib/turbo_utils"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
 
-const devTool = new Devtool()
+const LOCATION_ORIGIN = window.location.origin
+const devTool = new Devtool(LOCATION_ORIGIN)
 const detailPanel = new DetailPanel(devTool)
 
 const highlightTurboFrames = () => {
@@ -136,7 +137,7 @@ const handleIncomingTurboStream = (event) => {
 }
 
 const handleWindowMessage = (event) => {
-  if (event.origin !== window.location.origin) return
+  if (event.origin !== LOCATION_ORIGIN) return
   if (event.data.source !== "inject") return
 
   switch (event.data.message) {
@@ -187,8 +188,15 @@ window.addEventListener("message", handleWindowMessage)
 
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === "sync" && changes.options?.newValue) {
+  if (area === "sync" && (changes.options?.newValue || changes[LOCATION_ORIGIN]?.newValue)) {
     document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed"))
+  }
+})
+
+// Listen for messages from the popup
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "getOrigin") {
+    sendResponse({ origin: LOCATION_ORIGIN })
   }
 })
 

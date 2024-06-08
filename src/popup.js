@@ -196,7 +196,29 @@ const setupEventListeners = (options) => {
   })
 }
 
+const getCurrentTabOrigin = () => {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length === 0) {
+        reject(new Error("No active tab found"))
+        return
+      }
+
+      chrome.tabs.sendMessage(tabs[0].id, { type: "getOrigin" }, (response) => {
+        if (chrome.runtime.lastError || !response) {
+          reject(new Error(chrome.runtime.lastError ? chrome.runtime.lastError.message : "No response from content script"))
+          return
+        }
+        resolve(response.origin)
+      })
+    })
+  })
+}
+
 ;(async () => {
+  const origin = await getCurrentTabOrigin()
+  devTool.origin = origin
+
   const options = await devTool.getOptions()
   initializeForm(options)
   setupEventListeners(options)

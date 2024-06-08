@@ -1,25 +1,32 @@
 import { loadCSS } from "./utils"
 
 export default class Devtool {
-  constructor() {
+  constructor(origin = null) {
     this.options = this.defaultOptions
     this.registeredStimulusControllers = []
     this.turboDetails = {}
+
+    this.origin = origin
     this.detailPanelCSSContent = null
 
     this.getOptions()
   }
 
+  // Always try to use the origin, to see if page-specific options are available
   getOptions = async () => {
-    const data = await chrome.storage.sync.get("options")
-    this.options = data?.options || this.defaultOptions
+    const globalOptions = await chrome.storage.sync.get("options")
+    const pageOptions = this.origin ? (await chrome.storage.sync.get(this.origin))[this.origin] : {}
+
+    this.options = pageOptions?.options || globalOptions?.options || this.defaultOptions
     return this.options
   }
 
   saveOptions = (options) => {
     const newOptions = { ...this.options, ...options }
+    const dataToStore = this.origin ? { options: newOptions } : newOptions
+    const key = this.origin || "options"
 
-    chrome.storage.sync.set({ options: newOptions }, () => {
+    chrome.storage.sync.set({ [key]: dataToStore }, () => {
       const error = chrome.runtime.lastError
       if (error) {
         if (error.message.includes("MAX_WRITE_OPERATIONS_PER_MINUTE")) {
