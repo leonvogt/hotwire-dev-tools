@@ -229,6 +229,7 @@ const getCurrentTabOrigin = () => {
     devTool.origin = origin
   } catch (error) {
     // If we can't get the origin, we just work with the global user options
+    document.querySelector(".page-specific-options-wrapper").remove()
   }
 
   const options = await devTool.getOptions()

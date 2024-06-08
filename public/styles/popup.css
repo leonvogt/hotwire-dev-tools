@@ -4,6 +4,7 @@ body {
   font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
   font-size: 16px;
   color: black;
+  --text-muted-color: #212529bf;
 }
 
 p,
@@ -37,7 +38,7 @@ fieldset {
 }
 
 fieldset legend {
-  color: #212529bf;
+  color: var(--text-muted-color);
   font-size: 12px;
 }
 
@@ -46,7 +47,7 @@ fieldset legend {
   font-weight: bold;
   text-align: center;
   margin-top: 0.5em;
-  margin-bottom: 0em;
+  margin-bottom: 0.5em;
 }
 
 .highlight-frames-wrapper,
@@ -78,6 +79,10 @@ fieldset legend {
   & select {
     height: 2em;
   }
+}
+
+.page-specific-options-wrapper span {
+  color: var(--text-muted-color);
 }
 
 /* Custom checkbox toggles */
