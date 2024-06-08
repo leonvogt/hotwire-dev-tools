@@ -1,6 +1,9 @@
 body {
   width: 20rem;
   background-color: #eee;
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  font-size: 16px;
+  color: black;
 }
 
 p,
@@ -28,11 +31,17 @@ fieldset {
   border-radius: 4px;
 }
 
+fieldset legend {
+  color: #212529bf;
+  font-size: 12px;
+}
+
 .title {
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-top: 0.5em;
+  margin-bottom: 0em;
 }
 
 .highlight-frames-wrapper,
@@ -46,7 +55,7 @@ fieldset {
 
 .highlight-controllers-wrapper,
 .highlight-frames-wrapper {
-  gap: 1em;
+  gap: 5px;
 }
 
 .detail-panel-options-wrapper input[type="checkbox"] {
