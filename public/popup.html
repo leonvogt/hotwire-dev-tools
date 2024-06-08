@@ -8,7 +8,7 @@
     <script defer src="dist/popup.js" type="module"></script>
   </head>
 
-  <body>
+  <body class="no-transitions">
     <div class="d-flex justify-content-center">
       <h1 class="title">Hotwire Dev Tools</h1>
     </div>
@@ -16,8 +16,11 @@
     <fieldset>
       <legend>Turbo</legend>
       <form>
-        <input type="checkbox" id="turbo-highlight-frames" />
-        <label for="turbo-highlight-frames">Highlight Frames</label>
+        <label class="toggle">
+          <input class="toggle-checkbox" type="checkbox" id="turbo-highlight-frames" />
+          <div class="toggle-switch"></div>
+          <span class="toggle-label">Highlight Frames</span>
+        </label>
 
         <div class="highlight-frames-wrapper turbo-highlight-frames-toggle-element">
           <div class="highlight-options-wrapper">
@@ -56,20 +59,22 @@
           <input type="text" class="m-0" id="turbo-highlight-frames-blacklist" placeholder="CSS selector to ignore specific Frames" />
         </div>
 
-        <div>
-          <div>
-            <input type="checkbox" id="turbo-console-log-turbo-streams" />
-            <label for="turbo-console-log-turbo-streams">Log Turbo Streams to Console</label>
-          </div>
-        </div>
+        <label class="toggle">
+          <input class="toggle-checkbox" type="checkbox" id="turbo-console-log-turbo-streams" />
+          <div class="toggle-switch"></div>
+          <span class="toggle-label">Log Turbo Streams to Console</span>
+        </label>
       </form>
     </fieldset>
 
     <fieldset>
       <legend>Stimulus</legend>
       <form>
-        <input type="checkbox" id="stimulus-highlight-controllers" />
-        <label for="stimulus-highlight-controllers">Highlight Controllers</label>
+        <label class="toggle">
+          <input class="toggle-checkbox" type="checkbox" id="stimulus-highlight-controllers" />
+          <div class="toggle-switch"></div>
+          <span class="toggle-label">Highlight Controllers</span>
+        </label>
 
         <div class="highlight-controllers-wrapper stimulus-highlight-controllers-toggle-element">
           <div class="highlight-options-wrapper">
@@ -102,8 +107,11 @@
     <fieldset>
       <legend>Detail Panel</legend>
       <form>
-        <input type="checkbox" id="detail-panel-show" />
-        <label for="detail-panel-show">Show Panel</label>
+        <label class="toggle">
+          <input class="toggle-checkbox" type="checkbox" id="detail-panel-show" />
+          <div class="toggle-switch"></div>
+          <span class="toggle-label">Show Panel</span>
+        </label>
 
         <div class="detail-panel-options-wrapper detail-panel-toggle-element">
           <div>

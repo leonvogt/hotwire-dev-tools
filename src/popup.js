@@ -30,6 +30,14 @@ const toggleInputs = (toggleElements, show) => {
   })
 }
 
+// When the popup is opened, the CSS transitions are disabled to prevent flickering
+// After initializing the form, we enable the transition effects again
+const enableCSSTransitions = () => {
+  setTimeout(() => {
+    document.body.classList.remove("no-transitions")
+  }, 100)
+}
+
 const saveOptions = async (options) => {
   devTool.saveOptions(options)
 }
@@ -69,6 +77,7 @@ const initializeForm = (options) => {
   toggleInputs(turboHighlightFramesToggles, turbo.highlightFrames)
   toggleInputs(stimulusHighlightControllersToggles, stimulus.highlightControllers)
   toggleInputs(detailPanelToggles, detailPanel.show)
+  enableCSSTransitions()
 }
 
 const maybeHideDetailPanel = (options) => {
