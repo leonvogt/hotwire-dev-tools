@@ -149,6 +149,10 @@ body.no-transitions {
   justify-content: center;
 }
 
+.align-items-center {
+  align-items: center;
+}
+
 .m-0 {
   margin: 0;
 }

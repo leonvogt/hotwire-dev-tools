@@ -164,7 +164,7 @@ const renderDetailPanel = () => {
 }
 
 const init = async () => {
-  await devTool.getOptions()
+  await devTool.setOptions()
 
   injectCustomScript()
   highlightTurboFrames()

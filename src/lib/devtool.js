@@ -9,22 +9,38 @@ export default class Devtool {
     this.origin = origin
     this.detailPanelCSSContent = null
 
-    this.getOptions()
+    this.setOptions()
   }
 
-  // Always try to use the origin, to see if page-specific options are available
+  setOptions = async () => {
+    this.options = await this.getOptions()
+  }
+
   getOptions = async () => {
-    const globalOptions = await chrome.storage.sync.get("options")
-    const pageOptions = this.origin ? (await chrome.storage.sync.get(this.origin))[this.origin] : {}
-
-    this.options = pageOptions?.options || globalOptions?.options || this.defaultOptions
-    return this.options
+    const globalOptions = await this.globalUserOptions()
+    const originOptions = await this.originOptions()
+    return originOptions || globalOptions || this.defaultOptions
   }
 
-  saveOptions = (options) => {
+  globalUserOptions = async () => {
+    const options = await chrome.storage.sync.get("options")
+    return options?.options
+  }
+
+  originOptions = async () => {
+    const pageOptions = await chrome.storage.sync.get(this.origin)
+    return pageOptions[this.origin]?.options
+  }
+
+  saveOptions = (options, saveToOriginStore = false) => {
     const newOptions = { ...this.options, ...options }
-    const dataToStore = this.origin ? { options: newOptions } : newOptions
-    const key = this.origin || "options"
+    let dataToStore = newOptions
+    let key = "options"
+
+    if (saveToOriginStore) {
+      dataToStore = this.origin ? { options: newOptions } : newOptions
+      key = this.origin || "options"
+    }
 
     chrome.storage.sync.set({ [key]: dataToStore }, () => {
       const error = chrome.runtime.lastError
@@ -40,6 +56,15 @@ export default class Devtool {
       // Options were saved successfully
       this.options = newOptions
     })
+  }
+
+  removeOptionsForOrigin = async () => {
+    await chrome.storage.sync.remove(this.origin)
+  }
+
+  originOptionsExist = async () => {
+    const options = await this.originOptions()
+    return !!options
   }
 
   detailPanelCSS = async () => {

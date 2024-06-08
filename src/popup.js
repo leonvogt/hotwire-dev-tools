@@ -2,6 +2,8 @@ import Devtool from "./lib/devtool"
 
 const devTool = new Devtool()
 
+const pageSpecificOptions = document.getElementById("page-specific-options")
+
 const turboHighlightFrames = document.getElementById("turbo-highlight-frames")
 const turboHighlightFramesOutlineWidth = document.getElementById("turbo-highlight-frames-outline-width")
 const turboHighlightFramesOutlineStyle = document.getElementById("turbo-highlight-frames-outline-style")
@@ -39,11 +41,14 @@ const enableCSSTransitions = () => {
 }
 
 const saveOptions = async (options) => {
-  devTool.saveOptions(options)
+  devTool.saveOptions(options, pageSpecificOptions.checked)
 }
 
-const initializeForm = (options) => {
+const initializeForm = async (options) => {
   const { turbo, stimulus, detailPanel } = options
+
+  const originOptionsExist = await devTool.originOptionsExist()
+  pageSpecificOptions.checked = originOptionsExist
 
   turboHighlightFrames.checked = turbo.highlightFrames
   turboConsoleLogTurboStreams.checked = turbo.consoleLogTurboStreams
@@ -92,6 +97,15 @@ const maybeHideDetailPanel = (options) => {
 
 const setupEventListeners = (options) => {
   const { turbo, stimulus, detailPanel } = options
+
+  pageSpecificOptions.addEventListener("change", (event) => {
+    const checked = event.target.checked
+    if (!checked) {
+      devTool.removeOptionsForOrigin()
+      devTool.setOptions()
+      // initializeForm(devTool.options)
+    }
+  })
 
   turboHighlightFrames.addEventListener("change", (event) => {
     const checked = event.target.checked
