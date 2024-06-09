@@ -25,6 +25,11 @@ input[type="text"] {
   border-radius: 4px;
 }
 
+label,
+.toggle-label {
+  user-select: none;
+}
+
 fieldset {
   margin: 1rem 0;
   border: 1px solid #ccc;
