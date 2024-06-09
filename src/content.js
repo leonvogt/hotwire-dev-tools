@@ -72,7 +72,9 @@ const highlightTurboFrames = () => {
       overlay.insertAdjacentElement("afterbegin", badgeContainer)
     }
 
-    document.body.appendChild(overlay)
+    if (!overlay.parentNode) {
+      document.body.appendChild(overlay)
+    }
   })
 }
 
