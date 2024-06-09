@@ -1,25 +1,48 @@
 import { loadCSS } from "./utils"
 
 export default class Devtool {
-  constructor() {
+  constructor(origin = null) {
     this.options = this.defaultOptions
     this.registeredStimulusControllers = []
     this.turboDetails = {}
+
+    this.origin = origin
     this.detailPanelCSSContent = null
 
-    this.getOptions()
+    this.setOptions()
+  }
+
+  setOptions = async () => {
+    this.options = await this.getOptions()
   }
 
   getOptions = async () => {
-    const data = await chrome.storage.sync.get("options")
-    this.options = data?.options || this.defaultOptions
-    return this.options
+    const globalOptions = await this.globalUserOptions()
+    const originOptions = await this.originOptions()
+    return originOptions || globalOptions || this.defaultOptions
   }
 
-  saveOptions = (options) => {
-    const newOptions = { ...this.options, ...options }
+  globalUserOptions = async () => {
+    const options = await chrome.storage.sync.get("options")
+    return options?.options
+  }
 
-    chrome.storage.sync.set({ options: newOptions }, () => {
+  originOptions = async () => {
+    const pageOptions = await chrome.storage.sync.get(this.origin)
+    return pageOptions[this.origin]?.options
+  }
+
+  saveOptions = (options, saveToOriginStore = false) => {
+    const newOptions = { ...this.options, ...options }
+    let dataToStore = newOptions
+    let key = "options"
+
+    if (saveToOriginStore) {
+      dataToStore = this.origin ? { options: newOptions } : newOptions
+      key = this.origin || "options"
+    }
+
+    chrome.storage.sync.set({ [key]: dataToStore }, () => {
       const error = chrome.runtime.lastError
       if (error) {
         if (error.message.includes("MAX_WRITE_OPERATIONS_PER_MINUTE")) {
@@ -33,6 +56,15 @@ export default class Devtool {
       // Options were saved successfully
       this.options = newOptions
     })
+  }
+
+  removeOptionsForOrigin = async () => {
+    await chrome.storage.sync.remove(this.origin)
+  }
+
+  originOptionsExist = async () => {
+    const options = await this.originOptions()
+    return !!options
   }
 
   detailPanelCSS = async () => {

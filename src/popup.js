@@ -2,6 +2,8 @@ import Devtool from "./lib/devtool"
 
 const devTool = new Devtool()
 
+const pageSpecificOptions = document.getElementById("page-specific-options")
+
 const turboHighlightFrames = document.getElementById("turbo-highlight-frames")
 const turboHighlightFramesOutlineWidth = document.getElementById("turbo-highlight-frames-outline-width")
 const turboHighlightFramesOutlineStyle = document.getElementById("turbo-highlight-frames-outline-style")
@@ -39,11 +41,14 @@ const enableCSSTransitions = () => {
 }
 
 const saveOptions = async (options) => {
-  devTool.saveOptions(options)
+  devTool.saveOptions(options, pageSpecificOptions.checked)
 }
 
-const initializeForm = (options) => {
+const initializeForm = async (options) => {
   const { turbo, stimulus, detailPanel } = options
+
+  const originOptionsExist = await devTool.originOptionsExist()
+  pageSpecificOptions.checked = originOptionsExist
 
   turboHighlightFrames.checked = turbo.highlightFrames
   turboConsoleLogTurboStreams.checked = turbo.consoleLogTurboStreams
@@ -92,6 +97,16 @@ const maybeHideDetailPanel = (options) => {
 
 const setupEventListeners = (options) => {
   const { turbo, stimulus, detailPanel } = options
+
+  pageSpecificOptions.addEventListener("change", async (event) => {
+    if (!event.target.checked) {
+      await devTool.removeOptionsForOrigin()
+
+      // Reset the form to the global options
+      await devTool.setOptions()
+      initializeForm(devTool.options)
+    }
+  })
 
   turboHighlightFrames.addEventListener("change", (event) => {
     const checked = event.target.checked
@@ -196,7 +211,32 @@ const setupEventListeners = (options) => {
   })
 }
 
+const getCurrentTabOrigin = async () => {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError)
+      }
+
+      if (tabs.length === 0) {
+        return reject(new Error("No active tab found"))
+      }
+
+      const origin = new URL(tabs[0].url).origin
+      resolve(origin)
+    })
+  })
+}
+
 ;(async () => {
+  try {
+    const origin = await getCurrentTabOrigin()
+    devTool.origin = origin
+  } catch (error) {
+    // If we can't get the origin, we just work with the global user options
+    document.querySelector(".page-specific-options-wrapper").remove()
+  }
+
   const options = await devTool.getOptions()
   initializeForm(options)
   setupEventListeners(options)
