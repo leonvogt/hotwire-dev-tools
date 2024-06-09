@@ -27,14 +27,6 @@
       "matches": ["<all_urls>"]
     }
   ],
-  "background": {
-    {{#background_scripts}}
-    "scripts": ["dist/background.js"]
-    {{/background_scripts}}
-    {{#background_service_worker}}
-    "service_worker": "dist/background.js"
-    {{/background_service_worker}}
-  },
   {{#browser_specific_settings}}
   "browser_specific_settings": {
     "gecko": {
