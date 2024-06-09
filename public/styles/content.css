@@ -1,41 +1,41 @@
-body.hotwire-dev-tools-highlight-turbo-frames {
-  & turbo-frame {
-    display: block;
-    border-radius: 5px;
-  }
+.hotwire-dev-tools-highlight-overlay-turbo-frame {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 5px;
+}
 
-  & .turbo-frame-info-badge-container {
-    position: relative;
-  }
+.hotwire-dev-tools-turbo-frame-info-badge-container {
+  position: relative;
+  pointer-events: all;
+}
 
-  & .turbo-frame-info-badge {
-    position: absolute;
-    z-index: 1000;
-    top: -20px;
-    height: 20px;
-    color: #fff;
-    padding: 0 5px;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 18px;
-    opacity: 0.1;
-    transition:
-      opacity 0.3s,
-      width 0.3s;
-  }
+.hotwire-dev-tools-turbo-frame-info-badge {
+  position: absolute;
+  z-index: 1000;
+  top: -20px;
+  height: 20px;
+  color: #fff;
+  padding: 0 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 18px;
+  opacity: 0.1;
+  transition:
+    opacity 0.3s,
+    width 0.3s;
+}
 
-  & .turbo-frame-info-badge:hover {
-    opacity: 1;
-    width: fit-content;
-  }
+.hotwire-dev-tools-turbo-frame-info-badge:hover {
+  opacity: 1;
+  width: fit-content;
+}
 
-  & .turbo-frame-info-badge.copied {
-    animation: turboFrameScaleEffect 0.3s ease-in-out;
-  }
+.hotwire-dev-tools-turbo-frame-info-badge.copied {
+  animation: turboFrameScaleEffect 0.3s ease-in-out;
 }
 
 .hotwire-dev-tools-highlight-overlay {
