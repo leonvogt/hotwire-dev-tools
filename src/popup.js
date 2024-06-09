@@ -98,12 +98,13 @@ const maybeHideDetailPanel = (options) => {
 const setupEventListeners = (options) => {
   const { turbo, stimulus, detailPanel } = options
 
-  pageSpecificOptions.addEventListener("change", (event) => {
-    const checked = event.target.checked
-    if (!checked) {
-      devTool.removeOptionsForOrigin()
-      devTool.setOptions()
-      // initializeForm(devTool.options)
+  pageSpecificOptions.addEventListener("change", async (event) => {
+    if (!event.target.checked) {
+      await devTool.removeOptionsForOrigin()
+
+      // Reset the form to the global options
+      await devTool.setOptions()
+      initializeForm(devTool.options)
     }
   })
 
