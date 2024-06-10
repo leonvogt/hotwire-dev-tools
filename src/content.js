@@ -8,11 +8,20 @@ const detailPanel = new DetailPanel(devTool)
 
 const highlightTurboFrames = () => {
   if (!devTool.options.turbo.highlightFrames) {
+    document.body.classList.remove("hotwire-dev-tools-highlight-turbo-frames")
+    document.querySelectorAll("turbo-frame").forEach((frame) => {
+      frame.style.outline = ""
+      frame.querySelector(".turbo-frame-info-badge-container")?.remove()
+    })
     document.querySelectorAll(".hotwire-dev-tools-highlight-overlay-turbo-frame").forEach((overlay) => overlay.remove())
     return
   }
 
-  const { highlightFramesOutlineWidth, highlightFramesOutlineStyle, highlightFramesOutlineColor, highlightFramesBlacklist, ignoreEmptyFrames } = devTool.options.turbo
+  const { highlightFramesOutlineWidth, highlightFramesOutlineStyle, highlightFramesOutlineColor, highlightFramesBlacklist, highlightFramesWithOverlay, ignoreEmptyFrames } = devTool.options.turbo
+
+  if (!highlightFramesWithOverlay) {
+    document.body.classList.add("hotwire-dev-tools-highlight-turbo-frames")
+  }
 
   let blacklistedFrames = []
   if (highlightFramesBlacklist) {
@@ -29,51 +38,79 @@ const highlightTurboFrames = () => {
     const isEmpty = frame.innerHTML.trim() === ""
     const shouldIgnore = isEmpty && ignoreEmptyFrames
     if (blacklistedFrames.includes(frame) || shouldIgnore) {
+      frame.style.outline = ""
       document.getElementById(`hotwire-dev-tools-highlight-overlay-${frame.id}`)?.remove()
       return
     }
 
-    const frameId = frame.id
-    const rect = frame.getBoundingClientRect()
-    let overlay = document.getElementById(`hotwire-dev-tools-highlight-overlay-${frameId}`)
-    if (!overlay) {
-      overlay = document.createElement("div")
-      overlay.id = `hotwire-dev-tools-highlight-overlay-${frameId}`
-      overlay.className = `hotwire-dev-tools-highlight-overlay-turbo-frame`
-    }
+    if (highlightFramesWithOverlay) {
+      const frameId = frame.id
+      const rect = frame.getBoundingClientRect()
+      let overlay = document.getElementById(`hotwire-dev-tools-highlight-overlay-${frameId}`)
+      if (!overlay) {
+        overlay = document.createElement("div")
+        overlay.id = `hotwire-dev-tools-highlight-overlay-${frameId}`
+        overlay.className = `hotwire-dev-tools-highlight-overlay-turbo-frame`
+      }
 
-    overlay.style.top = `${rect.top + windowScrollY}px`
-    overlay.style.left = `${rect.left + windowScrollX}px`
-    overlay.style.width = `${rect.width}px`
-    overlay.style.height = `${rect.height}px`
-    overlay.style.outlineStyle = highlightFramesOutlineStyle
-    overlay.style.outlineWidth = highlightFramesOutlineWidth
-    overlay.style.outlineColor = highlightFramesOutlineColor
+      overlay.style.top = `${rect.top + windowScrollY}px`
+      overlay.style.left = `${rect.left + windowScrollX}px`
+      overlay.style.width = `${rect.width}px`
+      overlay.style.height = `${rect.height}px`
+      overlay.style.outlineStyle = highlightFramesOutlineStyle
+      overlay.style.outlineWidth = highlightFramesOutlineWidth
+      overlay.style.outlineColor = highlightFramesOutlineColor
 
-    // Add a badge to the overlay (or update the existing one)
-    const badgeClass = "hotwire-dev-tools-turbo-frame-info-badge"
-    const existingBadge = overlay.querySelector(`.${badgeClass}`)
-    if (existingBadge) {
-      existingBadge.style.backgroundColor = highlightFramesOutlineColor
+      // Add a badge to the overlay (or update the existing one)
+      const badgeClass = "hotwire-dev-tools-turbo-frame-info-badge"
+      const existingBadge = overlay.querySelector(`.${badgeClass}`)
+      if (existingBadge) {
+        existingBadge.style.backgroundColor = highlightFramesOutlineColor
+      } else {
+        const badgeContainer = document.createElement("div")
+        badgeContainer.classList.add("hotwire-dev-tools-turbo-frame-info-badge-container")
+        badgeContainer.dataset.turboTemporary = true
+
+        const badgeContent = document.createElement("span")
+        badgeContent.textContent = `ʘ #${frameId}`
+        badgeContent.classList.add(badgeClass)
+        badgeContent.dataset.turboId = frameId
+        badgeContent.style.backgroundColor = highlightFramesOutlineColor
+        badgeContent.addEventListener("click", handleTurboFrameBadgeClick)
+        badgeContent.addEventListener("animationend", handleTurboFrameBadgeAnimationEnd)
+
+        badgeContainer.appendChild(badgeContent)
+        overlay.insertAdjacentElement("afterbegin", badgeContainer)
+      }
+
+      if (!overlay.parentNode) {
+        document.body.appendChild(overlay)
+      }
     } else {
-      const badgeContainer = document.createElement("div")
-      badgeContainer.classList.add("hotwire-dev-tools-turbo-frame-info-badge-container")
-      badgeContainer.dataset.turboTemporary = true
+      frame.style.outlineStyle = highlightFramesOutlineStyle
+      frame.style.outlineWidth = highlightFramesOutlineWidth
+      frame.style.outlineColor = highlightFramesOutlineColor
+      // Add a badge to the frame (or update the existing one)
+      const badgeClass = "hotwire-dev-tools-turbo-frame-info-badge"
+      const existingBadge = frame.querySelector(`.${badgeClass}`)
+      if (existingBadge) {
+        existingBadge.style.backgroundColor = highlightFramesOutlineColor
+      } else {
+        const badgeContainer = document.createElement("div")
+        badgeContainer.classList.add("hotwire-dev-tools-turbo-frame-info-badge-container")
+        badgeContainer.dataset.turboTemporary = true
 
-      const badgeContent = document.createElement("span")
-      badgeContent.textContent = `ʘ #${frameId}`
-      badgeContent.classList.add(badgeClass)
-      badgeContent.dataset.turboId = frameId
-      badgeContent.style.backgroundColor = highlightFramesOutlineColor
-      badgeContent.addEventListener("click", handleTurboFrameBadgeClick)
-      badgeContent.addEventListener("animationend", handleTurboFrameBadgeAnimationEnd)
+        const badgeContent = document.createElement("span")
+        badgeContent.textContent = `ʘ #${frame.id}`
+        badgeContent.classList.add(badgeClass)
+        badgeContent.dataset.turboId = frame.id
+        badgeContent.style.backgroundColor = highlightFramesOutlineColor
+        badgeContent.addEventListener("click", handleTurboFrameBadgeClick)
+        badgeContent.addEventListener("animationend", handleTurboFrameBadgeAnimationEnd)
 
-      badgeContainer.appendChild(badgeContent)
-      overlay.insertAdjacentElement("afterbegin", badgeContainer)
-    }
-
-    if (!overlay.parentNode) {
-      document.body.appendChild(overlay)
+        badgeContainer.appendChild(badgeContent)
+        frame.insertAdjacentElement("afterbegin", badgeContainer)
+      }
     }
   })
 }

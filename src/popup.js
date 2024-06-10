@@ -11,6 +11,7 @@ const turboHighlightFramesOutlineColor = document.getElementById("turbo-highligh
 const turboHighlightFramesBlacklist = document.getElementById("turbo-highlight-frames-blacklist")
 const turboHighlightFramesToggles = document.querySelectorAll(".turbo-highlight-frames-toggle-element")
 const turboHighlightFramesIgnoreEmpty = document.getElementById("turbo-highlight-frames-ignore-empty")
+const turboHighlightFramesWithOverlay = document.getElementById("turbo-highlight-frames-with-overlay")
 const turboConsoleLogTurboStreams = document.getElementById("turbo-console-log-turbo-streams")
 
 const stimulusHighlightControllers = document.getElementById("stimulus-highlight-controllers")
@@ -52,6 +53,7 @@ const initializeForm = async (options) => {
 
   turboHighlightFrames.checked = turbo.highlightFrames
   turboConsoleLogTurboStreams.checked = turbo.consoleLogTurboStreams
+  turboHighlightFramesWithOverlay.checked = turbo.highlightFramesWithOverlay
   turboHighlightFramesIgnoreEmpty.checked = turbo.ignoreEmptyFrames
   turboHighlightFramesOutlineColor.value = turbo.highlightFramesOutlineColor
   turboHighlightFramesOutlineStyle.value = turbo.highlightFramesOutlineStyle
@@ -142,6 +144,11 @@ const setupEventListeners = (options) => {
 
   turboConsoleLogTurboStreams.addEventListener("change", (event) => {
     turbo.consoleLogTurboStreams = event.target.checked
+    saveOptions(options)
+  })
+
+  turboHighlightFramesWithOverlay.addEventListener("change", (event) => {
+    turbo.highlightFramesWithOverlay = event.target.checked
     saveOptions(options)
   })
 
