@@ -1,3 +1,10 @@
+body.hotwire-dev-tools-highlight-turbo-frames {
+  & turbo-frame {
+    display: block;
+    border-radius: 5px;
+  }
+}
+
 .hotwire-dev-tools-highlight-overlay-turbo-frame {
   position: absolute;
   pointer-events: none;

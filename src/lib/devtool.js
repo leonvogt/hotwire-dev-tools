@@ -91,6 +91,7 @@ export default class Devtool {
         highlightFramesOutlineStyle: "dashed",
         highlightFramesOutlineColor: "#5cd8e5",
         highlightFramesBlacklist: "",
+        highlightFramesWithOverlay: false,
         ignoreEmptyFrames: false,
         consoleLogTurboStreams: false,
       },
