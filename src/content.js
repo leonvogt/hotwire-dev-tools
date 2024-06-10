@@ -209,6 +209,9 @@ window.addEventListener("turbo:before-cache", handleTurboBeforeCache)
 // Listen for potential message from the injected script
 window.addEventListener("message", handleWindowMessage)
 
+// Listen for window resize events
+window.addEventListener("resize", highlightTurboFrames)
+
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "sync" && (changes.options?.newValue || changes[LOCATION_ORIGIN]?.newValue)) {
