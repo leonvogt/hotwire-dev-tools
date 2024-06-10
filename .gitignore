@@ -13,3 +13,6 @@ public.pem
 
 # Xcode
 xcuserdata/
+
+# jetbrains IDE
+.idea/
