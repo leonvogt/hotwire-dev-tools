@@ -168,6 +168,12 @@ const handleWindowMessage = (event) => {
   }
 }
 
+const handleTurboBeforeCache = (event) => {
+  document.querySelectorAll(".hotwire-dev-tools-highlight-overlay-turbo-frame").forEach((element) => {
+    element.remove()
+  })
+}
+
 const renderDetailPanel = () => {
   if (!devTool.shouldRenderDetailPanel()) {
     detailPanel.dispose()
@@ -196,6 +202,9 @@ document.addEventListener("turbo:before-stream-render", handleIncomingTurboStrea
 window.addEventListener("turbo:before-render", (event) => {
   event.target.appendChild(document.getElementById("hotwire-dev-tools-shadow-container"))
 })
+
+// Chance to clean up any DOM modifications made by this extension before Turbo caches the page
+window.addEventListener("turbo:before-cache", handleTurboBeforeCache)
 
 // Listen for potential message from the injected script
 window.addEventListener("message", handleWindowMessage)
