@@ -9,7 +9,7 @@ import Cocoa
 import SafariServices
 import WebKit
 
-let extensionBundleIdentifier = "com.yourCompany.HotwireDevTools.Extension"
+let extensionBundleIdentifier = "hotwire.dev.tools.extension"
 
 class ViewController: NSViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
