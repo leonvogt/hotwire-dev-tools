@@ -46,18 +46,9 @@ body.hotwire-dev-tools-highlight-turbo-frames {
 }
 
 .hotwire-dev-tools-highlight-overlay {
-  background-color: rgba(92, 216, 229, 0.25);
+  opacity: 0.2;
   position: relative;
   z-index: 9999999;
-}
-
-.hotwire-dev-tools-stimulus-highlight-overlay {
-  background-color: rgba(119, 232, 185, 0.25);
-}
-
-.hotwire-dev-tools-turbo-frame-highlight-overlay,
-.hotwire-dev-tools-turbo-stream-highlight-overlay {
-  background-color: rgba(92, 216, 229, 0.25);
 }
 
 @keyframes turboFrameScaleEffect {

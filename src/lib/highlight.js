@@ -1,4 +1,4 @@
-export const addHighlightOverlay = (selector, className) => {
+export const addHighlightOverlay = (selector, className, color = "#77e8b9") => {
   const elements = document.querySelectorAll(selector)
   elements.forEach((element) => {
     const rect = element.getBoundingClientRect()
@@ -9,6 +9,7 @@ export const addHighlightOverlay = (selector, className) => {
     overlay.style.left = `${rect.left + window.scrollX}px`
     overlay.style.width = `${rect.width}px`
     overlay.style.height = `${rect.height}px`
+    overlay.style.backgroundColor = color
     document.body.appendChild(overlay)
   })
 }

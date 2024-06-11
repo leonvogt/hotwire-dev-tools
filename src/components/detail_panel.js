@@ -180,7 +180,7 @@ export default class DetailPanel {
 
   #handleMouseEnterTurboStream = (event) => {
     const selector = event.currentTarget.dataset.targetSelector
-    addHighlightOverlay(selector, "hotwire-dev-tools-turbo-stream-highlight-overlay")
+    addHighlightOverlay(selector, "hotwire-dev-tools-turbo-stream-highlight-overlay", this.devTool.options.turbo.highlightFramesOutlineColor)
   }
 
   #handleMouseLeaveTurboStream = () => {
@@ -203,7 +203,7 @@ export default class DetailPanel {
 
   #handleMouseEnterStimulusController = (event) => {
     const controllerId = event.currentTarget.getAttribute("data-stimulus-controller-id")
-    addHighlightOverlay(`[data-controller="${controllerId}"]`, "hotwire-dev-tools-stimulus-highlight-overlay")
+    addHighlightOverlay(`[data-controller="${controllerId}"]`, "hotwire-dev-tools-stimulus-highlight-overlay", this.devTool.options.stimulus.highlightControllersOutlineColor)
   }
 
   #handleMouseLeaveStimulusController = () => {
@@ -212,7 +212,7 @@ export default class DetailPanel {
 
   #handleMouseEnterTurboFrame = (event) => {
     const frameId = event.currentTarget.getAttribute("data-turbo-frame-id")
-    addHighlightOverlay(`#${frameId}`, "hotwire-dev-tools-turbo-frame-highlight-overlay")
+    addHighlightOverlay(`#${frameId}`, "hotwire-dev-tools-turbo-frame-highlight-overlay", this.devTool.options.turbo.highlightFramesOutlineColor)
   }
 
   #handleMouseLeaveTurboFrame = () => {
