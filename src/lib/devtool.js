@@ -32,10 +32,14 @@ export default class Devtool {
     return pageOptions[this.origin]?.options
   }
 
-  saveOptions = (options, saveToOriginStore = false) => {
+  saveOptions = async (options, saveToOriginStore = null) => {
     const newOptions = { ...this.options, ...options }
     let dataToStore = newOptions
     let key = "options"
+
+    if (saveToOriginStore === null) {
+      saveToOriginStore = await this.originOptionsExist()
+    }
 
     if (saveToOriginStore) {
       dataToStore = this.origin ? { options: newOptions } : newOptions
