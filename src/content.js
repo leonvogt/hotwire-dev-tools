@@ -181,7 +181,7 @@ const handleWindowMessage = (event) => {
 
   switch (event.data.message) {
     case "stimulusController":
-      if (event.data.registeredControllers && event.data.registeredControllers.constructor === Array) {
+      if (event.data.registeredControllers) {
         devTool.registeredStimulusControllers = event.data.registeredControllers
         renderDetailPanel()
       }
