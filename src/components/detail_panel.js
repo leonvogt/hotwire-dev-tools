@@ -248,18 +248,19 @@ export default class DetailPanel {
     const entries = []
     const detectedRegistedStimulusControllers = this.devTool.registeredStimulusControllers.length > 0
     sortedControllerIds.forEach((stimulusControllerId) => {
-      const controllerNotRegistered = detectedRegistedStimulusControllers && !this.devTool.registeredStimulusControllers.includes(stimulusControllerId)
+      let entryAttributes = { class: "hotwire-dev-tools-entry", "data-stimulus-controller-id": stimulusControllerId }
 
-      let entryClass = "hotwire-dev-tools-entry"
-      let title = ""
+      const controllerNotRegistered = detectedRegistedStimulusControllers && !this.devTool.registeredStimulusControllers.includes(stimulusControllerId)
       if (controllerNotRegistered) {
-        entryClass += " hotwire-dev-tools-entry-warning"
-        title = "Controller not registered"
+        entryAttributes.class += " hotwire-dev-tools-entry-warning"
+        entryAttributes.title = "Controller not registered"
       }
 
       const stimulusControllerElements = this.groupedStimulusControllerElements[stimulusControllerId]
       entries.push(`
-        <div class="${entryClass}" title="${title}" data-stimulus-controller-id="${stimulusControllerId}">
+        <div ${Object.entries(entryAttributes)
+          .map(([key, value]) => `${key}="${value}"`)
+          .join(" ")}>
           <span>${stimulusControllerId}<sup>${stimulusControllerElements.length}</sup></span>
         </div>
       `)
