@@ -18,8 +18,8 @@ export default class DetailPanel {
     this.shadowRoot = this.shadowContainer.attachShadow({ mode: "open" })
   }
 
-  render = debounce(() => {
-    this.injectCSSToShadowRoot()
+  render = debounce(async () => {
+    await this.injectCSSToShadowRoot()
     this.createOrUpdateDetailPanel()
 
     this.listenForTabNavigation()
