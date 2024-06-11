@@ -137,6 +137,7 @@ sup {
     padding: 0.5em;
     font-size: 0.9em;
     overflow-x: auto;
+    color: black;
   }
 
   & .hotwire-dev-tools-entry-details pre,
