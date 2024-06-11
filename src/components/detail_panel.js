@@ -346,7 +346,7 @@ export default class DetailPanel {
             <span>${getMetaContent("turbo-refresh-method") || "-"}</span>
           </div>
           <div class="info-tab-content-wrapper" title="Defines how Turbo handles scrolling. Meta Tag: turbo-refresh-scroll">
-            <span>Vist Control:</span>
+            <span>Visit Control:</span>
             <span>${getMetaContent("turbo-visit-control") || "-"}</span>
           </div>
           <div class="info-tab-content-wrapper" title="Defines the turbo caching behavior. Meta Tag: turbo-cache-control">
