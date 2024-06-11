@@ -22,13 +22,13 @@ The extension can be installed at:
 
 - [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/hotwire-dev-tools/)
 - [Chrome Web Store](https://chromewebstore.google.com/detail/hotwire-dev-tools/phdobjkbablgffmmgnjbmfbbofnbkajc)
-- Safari coming soon (hopefully 🙏)
+- [App Store for Safari](https://apps.apple.com/ch/app/hotwire-dev-tools/id6503706225)
 
 ## Usage
 
 Once installed, click on the extension icon (or press Alt+Shift+A) to open the Dev Tools options.  
 From there you can enable/disable the features you want to use.  
-_Note: On Firefox you may need to select "Always allow on site.com" to enable the extension on your site._
+_Note: On Firefox you may need to select "Always allow on example.com" to enable the extension on your site._
 
 ## Development
 
