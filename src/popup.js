@@ -182,6 +182,7 @@ const setupEventListeners = (options) => {
   detailPanelShow.addEventListener("change", (event) => {
     const showDetailPanel = event.target.checked
     detailPanel.show = showDetailPanel
+    detailPanel.collapsed = false
     toggleInputs(detailPanelToggles, showDetailPanel)
 
     const anyTabActive = detailPanelShowStimulusTab.checked || detailPanelShowTurboFrameTab.checked || detailPanelShowTurboStreamTab.checked
