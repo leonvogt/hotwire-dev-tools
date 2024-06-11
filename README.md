@@ -39,7 +39,7 @@ _Note: On Firefox you may need to select "Always allow on example.com" to enable
 - `npm run format` - to format changes with Prettier
 
 > [!NOTE]  
-> By default, the extension will be built for Chrome. To build for Firefox just add `firefox` as an argument to the build command: `npm run build firefox` or `npm run dev firefox`.
+> By default, the extension will be built for Chrome. To build for Firefox or Safari just add `firefox` or `safari` as an argument to the build command: `npm run build firefox` or `npm run build safari`.
 
 ### Test on Chrome
 
