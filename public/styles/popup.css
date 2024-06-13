@@ -50,6 +50,22 @@ fieldset legend {
   margin-bottom: 0.5em;
 }
 
+.version {
+  margin-bottom: 0.5rem;
+
+  & .label {
+    font-size: 0.8rem;
+    font-weight: lighter;
+    vertical-align: center;
+  }
+
+  & .string {
+    font-size: 0.8rem;
+    font-weight: normal;
+    vertical-align: center;
+  }
+}
+
 .highlight-frames-wrapper,
 .highlight-controllers-wrapper,
 .detail-panel-options-wrapper {

@@ -2,6 +2,8 @@ import Devtool from "./lib/devtool"
 
 const devTool = new Devtool()
 
+const versionString = document.getElementById("version-string")
+
 const pageSpecificOptions = document.getElementById("page-specific-options")
 
 const turboHighlightFrames = document.getElementById("turbo-highlight-frames")
@@ -245,6 +247,7 @@ const getCurrentTabOrigin = async () => {
     document.querySelector(".page-specific-options-wrapper").remove()
   }
 
+  versionString.textContent = chrome.runtime.getManifest().version
   const options = await devTool.getOptions()
   initializeForm(options)
   setupEventListeners(options)
