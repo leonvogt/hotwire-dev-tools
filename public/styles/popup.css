@@ -46,24 +46,15 @@ fieldset legend {
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-  margin-top: 0.5em;
+  margin-top: 0;
   margin-bottom: 0.5em;
 }
 
 .version {
-  margin-bottom: 0.5rem;
-
-  & .label {
-    font-size: 0.8rem;
-    font-weight: lighter;
-    vertical-align: center;
-    margin-right: 0.3rem;
-  }
-
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: #868686;
   & .string {
-    font-size: 0.8rem;
-    font-weight: normal;
-    vertical-align: center;
   }
 }
 
@@ -169,6 +160,10 @@ body.no-transitions {
 
 .justify-content-center {
   justify-content: center;
+}
+
+.justify-content-end {
+  justify-content: flex-end;
 }
 
 .align-items-center {
