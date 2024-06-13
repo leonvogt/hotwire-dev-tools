@@ -57,6 +57,7 @@ fieldset legend {
     font-size: 0.8rem;
     font-weight: lighter;
     vertical-align: center;
+    margin-right: 0.3rem;
   }
 
   & .string {
