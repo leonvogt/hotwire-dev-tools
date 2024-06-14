@@ -54,8 +54,6 @@ fieldset legend {
   font-size: 0.8rem;
   font-weight: normal;
   color: #868686;
-  & .string {
-  }
 }
 
 .highlight-frames-wrapper,
