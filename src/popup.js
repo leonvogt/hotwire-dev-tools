@@ -247,7 +247,7 @@ const getCurrentTabOrigin = async () => {
     document.querySelector(".page-specific-options-wrapper").remove()
   }
 
-  versionString.textContent = devTool.isFirefox ? browser.runtime.getManifest().version : chrome.runtime.getManifest().version
+  versionString.textContent = chrome.runtime.getManifest().version
 
   const options = await devTool.getOptions()
   initializeForm(options)
