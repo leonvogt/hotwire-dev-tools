@@ -232,6 +232,10 @@ const getCurrentTabOrigin = async () => {
         return reject(new Error("No active tab found"))
       }
 
+      if (!tabs[0].url) {
+        return reject(new Error("Active tab has no URL"))
+      }
+
       const origin = new URL(tabs[0].url).origin
       resolve(origin)
     })
