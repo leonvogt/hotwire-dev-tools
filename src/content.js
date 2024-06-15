@@ -199,6 +199,16 @@ const handleTurboBeforeCache = (event) => {
   })
 }
 
+const handleMonitoredEvent = (eventName, event) => {
+  let message = `Hotwire Dev Tools: ${eventName}`
+  const target = event.target
+  if (target?.id) message += ` #${target.id}`
+
+  console.groupCollapsed(message)
+  console.log(event)
+  console.groupEnd()
+}
+
 const renderDetailPanel = () => {
   if (!devTool.shouldRenderDetailPanel()) {
     detailPanel.dispose()
@@ -206,6 +216,38 @@ const renderDetailPanel = () => {
   }
 
   detailPanel.render()
+}
+
+const listenForEvents = () => {
+  const events = [
+    "turbo:click",
+    "turbo:before-visit",
+    "turbo:visit",
+    "turbo:before-cache",
+    "turbo:before-render",
+    "turbo:render",
+    "turbo:load",
+    "turbo:morph",
+    "turbo:before-morph-element",
+    "turbo:before-morph-attribute",
+    "turbo:morph-element",
+    "turbo:submit-start",
+    "turbo:submit-end",
+    "turbo:before-frame-render",
+    "turbo:frame-render",
+    "turbo:frame-load",
+    "turbo:frame-missing",
+    "turbo:before-stream-render",
+    "turbo:before-fetch-request",
+    "turbo:before-fetch-response",
+    "turbo:before-prefetch",
+    "turbo:fetch-request-error",
+  ]
+  events.forEach((eventName) => {
+    window.addEventListener(eventName, (event) => {
+      handleMonitoredEvent(eventName, event)
+    })
+  })
 }
 
 const init = async () => {
@@ -247,3 +289,5 @@ chrome.storage.onChanged.addListener((changes, area) => {
 // On pages without Turbo, there doesn't seem to be an event that informs us when the page has fully loaded.
 // Therefore, we call init as soon as this content.js file is loaded.
 init()
+
+listenForEvents()
