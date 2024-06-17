@@ -58,7 +58,7 @@ export default class DetailPanel {
   }
 
   addTurboStreamToDetailPanel = (event) => {
-    if (!this.isTabEnabled(TURBO_STREAM_TAB_ID)) return
+    if (!this.devTool.options.detailPanel.show || !this.isTabEnabled(TURBO_STREAM_TAB_ID)) return
 
     const turboStream = event.target
     const action = turboStream.getAttribute("action")
