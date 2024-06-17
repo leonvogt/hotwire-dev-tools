@@ -37,10 +37,7 @@
   "commands": {
     "_execute_action": {
       "suggested_key": {
-        "windows": "Alt+Shift+A",
-        "mac": "Alt+Shift+A",
-        "chromeos": "Alt+Shift+A",
-        "linux": "Alt+Shift+A"
+        "default": "Alt+Shift+S"
       }
     }
   }
