@@ -114,6 +114,9 @@ export default class Devtool {
         collapsed: false,
         currentTab: "hotwire-dev-tools-stimulus-tab",
       },
+      monitor: {
+        events: [],
+      },
     }
   }
 }
