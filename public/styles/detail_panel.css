@@ -222,6 +222,10 @@ sup {
   border-top-left-radius: 15px;
 }
 
+#hotwire-dev-tools-detail-panel-container.collapsed {
+  background: #29292e;
+}
+
 .text-ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
