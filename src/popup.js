@@ -1,4 +1,5 @@
 import Devtool from "./lib/devtool"
+import { MONITORING_EVENTS } from "./lib/monitoring_events"
 
 const devTool = new Devtool()
 
@@ -29,6 +30,11 @@ const detailPanelShowTurboFrameTab = document.getElementById("detail-panel-show-
 const detailPanelShowTurboStreamTab = document.getElementById("detail-panel-show-turbo-stream-tab")
 const detailPanelToggles = document.querySelectorAll(".detail-panel-toggle-element")
 
+const monitorEvents = document.getElementById("monitor-events")
+const monitorEventsToggles = document.querySelectorAll(".monitor-events-toggle-element")
+const monitorEventsCheckboxContainer = document.querySelector(".monitor-events-checkbox-container")
+const monitorEventsSelectAll = document.getElementById("monitor-events-select-all")
+
 const toggleInputs = (toggleElements, show) => {
   toggleElements.forEach((element) => {
     element.classList.toggle("d-none", !show)
@@ -48,7 +54,7 @@ const saveOptions = async (options) => {
 }
 
 const initializeForm = async (options) => {
-  const { turbo, stimulus, detailPanel } = options
+  const { turbo, stimulus, detailPanel, monitor } = options
 
   const originOptionsExist = await devTool.originOptionsExist()
   pageSpecificOptions.checked = originOptionsExist
@@ -73,6 +79,8 @@ const initializeForm = async (options) => {
   detailPanelShowTurboFrameTab.checked = detailPanel.showTurboFrameTab
   detailPanelShowTurboStreamTab.checked = detailPanel.showTurboStreamTab
 
+  monitorEvents.checked = monitor.events.length > 0
+
   if (devTool.isFirefox) {
     // In Firefox the color picker inside an extension popup doesn't really work (See https://github.com/leonvogt/hotwire-dev-tools/issues/20)
     // Workaround: Change the input type to text so the user can input the color manually
@@ -83,9 +91,29 @@ const initializeForm = async (options) => {
     stimulusHighlightControllersOutlineColor.placeholder = devTool.defaultOptions.stimulus.highlightControllersOutlineColor
   }
 
+  const activeEvents = Array.from(options.monitor?.events || [])
+
+  MONITORING_EVENTS.forEach((event) => {
+    const wrapper = document.createElement("div")
+    const checkbox = document.createElement("input")
+    checkbox.type = "checkbox"
+    checkbox.id = `monitor-${event}`
+    checkbox.value = event
+    checkbox.checked = activeEvents.includes(event)
+
+    const label = document.createElement("label")
+    label.htmlFor = `monitor-${event}`
+    label.textContent = event
+
+    wrapper.appendChild(checkbox)
+    wrapper.appendChild(label)
+    document.querySelector(".monitor-events-checkbox-container").appendChild(wrapper)
+  })
+
   toggleInputs(turboHighlightFramesToggles, turbo.highlightFrames)
   toggleInputs(stimulusHighlightControllersToggles, stimulus.highlightControllers)
   toggleInputs(detailPanelToggles, detailPanel.show)
+  toggleInputs(monitorEventsToggles, monitorEvents.checked)
   enableCSSTransitions()
 }
 
@@ -218,6 +246,37 @@ const setupEventListeners = (options) => {
     detailPanel.showTurboStreamTab = event.target.checked
     saveOptions(options)
     maybeHideDetailPanel(options)
+  })
+
+  monitorEvents.addEventListener("change", (event) => {
+    const checked = event.target.checked
+    toggleInputs(monitorEventsToggles, checked)
+  })
+
+  monitorEventsCheckboxContainer.addEventListener("change", (event) => {
+    const checkbox = event.target
+    const eventValue = checkbox.value
+
+    if (checkbox.checked) {
+      options.monitor.events.push(eventValue)
+    } else {
+      options.monitor.events = options.monitor.events.filter((event) => event !== eventValue)
+    }
+
+    saveOptions(options)
+  })
+
+  monitorEventsSelectAll.addEventListener("click", (event) => {
+    event.preventDefault()
+    const allCheckboxes = document.querySelectorAll(".monitor-events-checkbox-container input[type='checkbox']")
+    const allChecked = Array.from(allCheckboxes).every((checkbox) => checkbox.checked)
+
+    allCheckboxes.forEach((checkbox) => {
+      checkbox.checked = !allChecked
+    })
+
+    options.monitor.events = allChecked ? [] : MONITORING_EVENTS
+    saveOptions(options)
   })
 }
 

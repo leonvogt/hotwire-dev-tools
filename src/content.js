@@ -1,4 +1,5 @@
 import { turboStreamTargetElements } from "./lib/turbo_utils"
+import { MONITORING_EVENTS } from "./lib/monitoring_events"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
 
@@ -199,6 +200,18 @@ const handleTurboBeforeCache = (event) => {
   })
 }
 
+const handleMonitoredEvent = (eventName, event) => {
+  if (!devTool.options.monitor.events?.includes(eventName)) return
+
+  let message = `Hotwire Dev Tools: ${eventName}`
+  const target = event.target
+  if (target?.id) message += ` #${target.id}`
+
+  console.groupCollapsed(message)
+  console.log(event)
+  console.groupEnd()
+}
+
 const renderDetailPanel = () => {
   if (!devTool.shouldRenderDetailPanel()) {
     detailPanel.dispose()
@@ -206,6 +219,14 @@ const renderDetailPanel = () => {
   }
 
   detailPanel.render()
+}
+
+const listenForEvents = () => {
+  MONITORING_EVENTS.forEach((eventName) => {
+    window.addEventListener(eventName, (event) => {
+      handleMonitoredEvent(eventName, event)
+    })
+  })
 }
 
 const init = async () => {
@@ -247,3 +268,4 @@ chrome.storage.onChanged.addListener((changes, area) => {
 // On pages without Turbo, there doesn't seem to be an event that informs us when the page has fully loaded.
 // Therefore, we call init as soon as this content.js file is loaded.
 init()
+listenForEvents()
