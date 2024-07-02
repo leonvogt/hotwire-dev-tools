@@ -1,5 +1,5 @@
 import Devtool from "./lib/devtool"
-import { EVENTS_FOR_MONITORING } from "./lib/monitored_events"
+import { MONITORING_EVENTS } from "./lib/monitoring_events"
 
 const devTool = new Devtool()
 
@@ -93,7 +93,7 @@ const initializeForm = async (options) => {
 
   const activeEvents = Array.from(options.monitor?.events || [])
 
-  EVENTS_FOR_MONITORING.forEach((event) => {
+  MONITORING_EVENTS.forEach((event) => {
     const wrapper = document.createElement("div")
     const checkbox = document.createElement("input")
     checkbox.type = "checkbox"
@@ -275,7 +275,7 @@ const setupEventListeners = (options) => {
       checkbox.checked = !allChecked
     })
 
-    options.monitor.events = allChecked ? [] : EVENTS_FOR_MONITORING
+    options.monitor.events = allChecked ? [] : MONITORING_EVENTS
     saveOptions(options)
   })
 }

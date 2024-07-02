@@ -1,5 +1,5 @@
 import { turboStreamTargetElements } from "./lib/turbo_utils"
-import { EVENTS_FOR_MONITORING } from "./lib/monitored_events"
+import { MONITORING_EVENTS } from "./lib/monitoring_events"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
 
@@ -222,7 +222,7 @@ const renderDetailPanel = () => {
 }
 
 const listenForEvents = () => {
-  EVENTS_FOR_MONITORING.forEach((eventName) => {
+  MONITORING_EVENTS.forEach((eventName) => {
     window.addEventListener(eventName, (event) => {
       handleMonitoredEvent(eventName, event)
     })

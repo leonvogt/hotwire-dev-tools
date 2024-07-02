@@ -1,4 +1,4 @@
-export const EVENTS_FOR_MONITORING = [
+export const MONITORING_EVENTS = [
   "turbo:click",
   "turbo:before-visit",
   "turbo:visit",
