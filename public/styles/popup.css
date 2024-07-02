@@ -5,6 +5,7 @@ body {
   font-size: 16px;
   color: black;
   --text-muted-color: #212529bf;
+  --btn-secondary-color: #555555;
 }
 
 p,
@@ -40,6 +41,24 @@ fieldset {
 fieldset legend {
   color: var(--text-muted-color);
   font-size: 12px;
+}
+
+button {
+  background-color: var(--btn-secondary-color);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+button:hover {
+  box-shadow:
+    0 3px 4px 0 rgba(0, 0, 0, 0.24),
+    0 4px 12px 0 rgba(0, 0, 0, 0.19);
 }
 
 .title {
@@ -85,6 +104,11 @@ fieldset legend {
   & select {
     height: 2em;
   }
+}
+
+.detail-panel-options-control {
+  margin-left: 2.5em;
+  margin-top: 0.5em;
 }
 
 .page-specific-options-wrapper span {

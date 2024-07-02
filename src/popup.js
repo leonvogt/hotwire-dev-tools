@@ -33,6 +33,7 @@ const detailPanelToggles = document.querySelectorAll(".detail-panel-toggle-eleme
 const monitorEvents = document.getElementById("monitor-events")
 const monitorEventsToggles = document.querySelectorAll(".monitor-events-toggle-element")
 const monitorEventsCheckboxContainer = document.querySelector(".monitor-events-checkbox-container")
+const monitorEventsSelectAll = document.getElementById("monitor-events-select-all")
 
 const toggleInputs = (toggleElements, show) => {
   toggleElements.forEach((element) => {
@@ -262,6 +263,19 @@ const setupEventListeners = (options) => {
       options.monitor.events = options.monitor.events.filter((event) => event !== eventValue)
     }
 
+    saveOptions(options)
+  })
+
+  monitorEventsSelectAll.addEventListener("click", (event) => {
+    event.preventDefault()
+    const allCheckboxes = document.querySelectorAll(".monitor-events-checkbox-container input[type='checkbox']")
+    const allChecked = Array.from(allCheckboxes).every((checkbox) => checkbox.checked)
+
+    allCheckboxes.forEach((checkbox) => {
+      checkbox.checked = !allChecked
+    })
+
+    options.monitor.events = allChecked ? [] : EVENTS_FOR_MONITORING
     saveOptions(options)
   })
 }
