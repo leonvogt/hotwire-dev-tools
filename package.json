@@ -1,8 +1,4 @@
 {
-  "name": "hotwire-dev-tools",
-  "version": "0.0.1",
-  "description": "Hotwire Dev Tools for Turbo and Stimulus",
-  "author": "Leon Vogt",
   "scripts": {
     "build": "NODE_ENV=production node build.js --no-watch",
     "dev": "NODE_ENV=development node build.js --watch",
