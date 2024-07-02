@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Hotwire Dev Tools",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Dev Tools for Turbo and Stimulus",
   "icons": {
     "16": "images/icon-16-wo.png",
