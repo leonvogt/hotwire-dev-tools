@@ -19,7 +19,10 @@ export default class Devtool {
   getOptions = async () => {
     const globalOptions = await this.globalUserOptions()
     const originOptions = await this.originOptions()
-    return originOptions || globalOptions || this.defaultOptions
+
+    let options = originOptions || globalOptions || this.defaultOptions
+    options = this.addMissingDefaultOptions(options)
+    return options
   }
 
   globalUserOptions = async () => {
@@ -81,6 +84,24 @@ export default class Devtool {
   shouldRenderDetailPanel = () => {
     const { show, showStimulusTab, showTurboFrameTab, showTurboStreamTab } = this.options.detailPanel
     return show && (showStimulusTab || showTurboFrameTab || showTurboStreamTab)
+  }
+
+  addMissingDefaultOptions = (options) => {
+    if (options.addOptionsForVersion === this.version) return options
+
+    const defaultOptions = this.defaultOptions
+    for (const key in defaultOptions) {
+      if (options[key] === undefined) {
+        options[key] = defaultOptions[key]
+      }
+    }
+
+    options.addOptionsForVersion = this.version
+    return options
+  }
+
+  get version() {
+    return chrome.runtime.getManifest().version
   }
 
   get isFirefox() {
