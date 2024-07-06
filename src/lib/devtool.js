@@ -87,13 +87,21 @@ export default class Devtool {
   }
 
   addMissingDefaultOptions = (options) => {
+    if (options.addOptionsForVersion === this.version) return options
+
     const defaultOptions = this.defaultOptions
     for (const key in defaultOptions) {
       if (options[key] === undefined) {
         options[key] = defaultOptions[key]
       }
     }
+
+    options.addOptionsForVersion = this.version
     return options
+  }
+
+  get version() {
+    return chrome.runtime.getManifest().version
   }
 
   get isFirefox() {
