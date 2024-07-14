@@ -2,6 +2,7 @@ import { turboStreamTargetElements } from "./lib/turbo_utils"
 import { MONITORING_EVENTS } from "./lib/monitoring_events"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
+import LeaderLine from "./dependencies/leader_line"
 
 const LOCATION_ORIGIN = window.location.origin
 const devTool = new Devtool(LOCATION_ORIGIN)
@@ -236,6 +237,18 @@ const init = async () => {
   highlightTurboFrames()
   highlightStimulusControllers()
   renderDetailPanel()
+
+  // Clean up any existing LeaderLines
+  document.querySelectorAll(".leader-line").forEach((line) => line.remove())
+
+  // Create new LeaderLines for each Turbo Frame trigger
+  const turboFrameTriggers = document.querySelectorAll("[data-turbo-frame]")
+  turboFrameTriggers.forEach((trigger) => {
+    const turboFrame = document.getElementById(trigger.dataset.turboFrame)
+    if (turboFrame) {
+      new LeaderLine(trigger, turboFrame)
+    }
+  })
 }
 
 const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
