@@ -54,32 +54,30 @@ const saveOptions = async (options) => {
 }
 
 const initializeForm = async (options) => {
-  const { turbo, stimulus, detailPanel, monitor } = options
-
   const originOptionsExist = await devTool.originOptionsExist()
   pageSpecificOptions.checked = originOptionsExist
 
-  turboHighlightFrames.checked = turbo.highlightFrames
-  turboConsoleLogTurboStreams.checked = turbo.consoleLogTurboStreams
-  turboHighlightFramesWithOverlay.checked = turbo.highlightFramesWithOverlay
-  turboHighlightFramesIgnoreEmpty.checked = turbo.ignoreEmptyFrames
-  turboHighlightFramesOutlineColor.value = turbo.highlightFramesOutlineColor
-  turboHighlightFramesOutlineStyle.value = turbo.highlightFramesOutlineStyle
-  turboHighlightFramesOutlineWidth.value = turbo.highlightFramesOutlineWidth
-  turboHighlightFramesBlacklist.value = turbo.highlightFramesBlacklist
+  turboHighlightFrames.checked = options.turbo.highlightFrames
+  turboConsoleLogTurboStreams.checked = options.turbo.consoleLogTurboStreams
+  turboHighlightFramesWithOverlay.checked = options.turbo.highlightFramesWithOverlay
+  turboHighlightFramesIgnoreEmpty.checked = options.turbo.ignoreEmptyFrames
+  turboHighlightFramesOutlineColor.value = options.turbo.highlightFramesOutlineColor
+  turboHighlightFramesOutlineStyle.value = options.turbo.highlightFramesOutlineStyle
+  turboHighlightFramesOutlineWidth.value = options.turbo.highlightFramesOutlineWidth
+  turboHighlightFramesBlacklist.value = options.turbo.highlightFramesBlacklist
 
-  stimulusHighlightControllers.checked = stimulus.highlightControllers
-  stimulusHighlightControllersOutlineColor.value = stimulus.highlightControllersOutlineColor
-  stimulusHighlightControllersOutlineStyle.value = stimulus.highlightControllersOutlineStyle
-  stimulusHighlightControllersOutlineWidth.value = stimulus.highlightControllersOutlineWidth
-  stimulusHighlightControllersBlacklist.value = stimulus.highlightControllersBlacklist
+  stimulusHighlightControllers.checked = options.stimulus.highlightControllers
+  stimulusHighlightControllersOutlineColor.value = options.stimulus.highlightControllersOutlineColor
+  stimulusHighlightControllersOutlineStyle.value = options.stimulus.highlightControllersOutlineStyle
+  stimulusHighlightControllersOutlineWidth.value = options.stimulus.highlightControllersOutlineWidth
+  stimulusHighlightControllersBlacklist.value = options.stimulus.highlightControllersBlacklist
 
-  detailPanelShow.checked = detailPanel.show
-  detailPanelShowStimulusTab.checked = detailPanel.showStimulusTab
-  detailPanelShowTurboFrameTab.checked = detailPanel.showTurboFrameTab
-  detailPanelShowTurboStreamTab.checked = detailPanel.showTurboStreamTab
+  detailPanelShow.checked = options.detailPanel.show
+  detailPanelShowStimulusTab.checked = options.detailPanel.showStimulusTab
+  detailPanelShowTurboFrameTab.checked = options.detailPanel.showTurboFrameTab
+  detailPanelShowTurboStreamTab.checked = options.detailPanel.showTurboStreamTab
 
-  monitorEvents.checked = monitor.events.length > 0
+  monitorEvents.checked = options.monitor.events.length > 0
 
   if (devTool.isFirefox) {
     // In Firefox the color picker inside an extension popup doesn't really work (See https://github.com/leonvogt/hotwire-dev-tools/issues/20)
@@ -110,9 +108,9 @@ const initializeForm = async (options) => {
     document.querySelector(".monitor-events-checkbox-container").appendChild(wrapper)
   })
 
-  toggleInputs(turboHighlightFramesToggles, turbo.highlightFrames)
-  toggleInputs(stimulusHighlightControllersToggles, stimulus.highlightControllers)
-  toggleInputs(detailPanelToggles, detailPanel.show)
+  toggleInputs(turboHighlightFramesToggles, options.turbo.highlightFrames)
+  toggleInputs(stimulusHighlightControllersToggles, options.stimulus.highlightControllers)
+  toggleInputs(detailPanelToggles, options.detailPanel.show)
   toggleInputs(monitorEventsToggles, monitorEvents.checked)
   enableCSSTransitions()
 }
@@ -128,8 +126,6 @@ const maybeHideDetailPanel = (options) => {
 }
 
 const setupEventListeners = (options) => {
-  const { turbo, stimulus, detailPanel } = options
-
   pageSpecificOptions.addEventListener("change", async (event) => {
     if (!event.target.checked) {
       await devTool.removeOptionsForOrigin()
@@ -142,77 +138,77 @@ const setupEventListeners = (options) => {
 
   turboHighlightFrames.addEventListener("change", (event) => {
     const checked = event.target.checked
-    turbo.highlightFrames = checked
+    options.turbo.highlightFrames = checked
     toggleInputs(turboHighlightFramesToggles, checked)
     saveOptions(options)
   })
 
   turboHighlightFramesOutlineStyle.addEventListener("change", (event) => {
-    turbo.highlightFramesOutlineStyle = event.target.value
+    options.turbo.highlightFramesOutlineStyle = event.target.value
     saveOptions(options)
   })
 
   turboHighlightFramesOutlineWidth.addEventListener("change", (event) => {
-    turbo.highlightFramesOutlineWidth = event.target.value
+    options.turbo.highlightFramesOutlineWidth = event.target.value
     saveOptions(options)
   })
 
   turboHighlightFramesOutlineColor.addEventListener("change", (event) => {
-    turbo.highlightFramesOutlineColor = event.target.value
+    options.turbo.highlightFramesOutlineColor = event.target.value
     saveOptions(options)
   })
 
   turboHighlightFramesBlacklist.addEventListener("input", (event) => {
-    turbo.highlightFramesBlacklist = event.target.value
+    options.turbo.highlightFramesBlacklist = event.target.value
     saveOptions(options)
   })
 
   turboHighlightFramesIgnoreEmpty.addEventListener("change", (event) => {
-    turbo.ignoreEmptyFrames = event.target.checked
+    options.turbo.ignoreEmptyFrames = event.target.checked
     saveOptions(options)
   })
 
   turboConsoleLogTurboStreams.addEventListener("change", (event) => {
-    turbo.consoleLogTurboStreams = event.target.checked
+    options.turbo.consoleLogTurboStreams = event.target.checked
     saveOptions(options)
   })
 
   turboHighlightFramesWithOverlay.addEventListener("change", (event) => {
-    turbo.highlightFramesWithOverlay = event.target.checked
+    options.turbo.highlightFramesWithOverlay = event.target.checked
     saveOptions(options)
   })
 
   stimulusHighlightControllers.addEventListener("change", (event) => {
     const checked = event.target.checked
-    stimulus.highlightControllers = checked
+    options.stimulus.highlightControllers = checked
     toggleInputs(stimulusHighlightControllersToggles, checked)
     saveOptions(options)
   })
 
   stimulusHighlightControllersOutlineStyle.addEventListener("change", (event) => {
-    stimulus.highlightControllersOutlineStyle = event.target.value
+    options.stimulus.highlightControllersOutlineStyle = event.target.value
     saveOptions(options)
   })
 
   stimulusHighlightControllersOutlineWidth.addEventListener("change", (event) => {
-    stimulus.highlightControllersOutlineWidth = event.target.value
+    options.stimulus.highlightControllersOutlineWidth = event.target.value
     saveOptions(options)
   })
 
   stimulusHighlightControllersOutlineColor.addEventListener("change", (event) => {
-    stimulus.highlightControllersOutlineColor = event.target.value
+    options.stimulus.highlightControllersOutlineColor = event.target.value
     saveOptions(options)
   })
 
   stimulusHighlightControllersBlacklist.addEventListener("input", (event) => {
-    stimulus.highlightControllersBlacklist = event.target.value
+    options.stimulus.highlightControllersBlacklist = event.target.value
     saveOptions(options)
   })
 
   detailPanelShow.addEventListener("change", (event) => {
     const showDetailPanel = event.target.checked
-    detailPanel.show = showDetailPanel
-    detailPanel.collapsed = false
+    options.detailPanel.show = showDetailPanel
+    options.detailPanel.collapsed = false
     toggleInputs(detailPanelToggles, showDetailPanel)
 
     const anyTabActive = detailPanelShowStimulusTab.checked || detailPanelShowTurboFrameTab.checked || detailPanelShowTurboStreamTab.checked
@@ -231,19 +227,19 @@ const setupEventListeners = (options) => {
   })
 
   detailPanelShowStimulusTab.addEventListener("change", (event) => {
-    detailPanel.showStimulusTab = event.target.checked
+    options.detailPanel.showStimulusTab = event.target.checked
     saveOptions(options)
     maybeHideDetailPanel(options)
   })
 
   detailPanelShowTurboFrameTab.addEventListener("change", (event) => {
-    detailPanel.showTurboFrameTab = event.target.checked
+    options.detailPanel.showTurboFrameTab = event.target.checked
     saveOptions(options)
     maybeHideDetailPanel(options)
   })
 
   detailPanelShowTurboStreamTab.addEventListener("change", (event) => {
-    detailPanel.showTurboStreamTab = event.target.checked
+    options.detailPanel.showTurboStreamTab = event.target.checked
     saveOptions(options)
     maybeHideDetailPanel(options)
   })
