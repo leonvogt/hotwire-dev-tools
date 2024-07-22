@@ -216,11 +216,12 @@ const handleMonitoredEvent = (eventName, event) => {
 const handleTurboFrameRender = (event) => {
   const turboFrame = event.target
   const overlayClassName = `hotwire-dev-tools-highlight-overlay-turbo-frame-${turboFrame.id}`
-  addHighlightOverlayToElements([turboFrame], "#5cd8e5", overlayClassName, "0.2")
+  const color = devTool.options.turbo.highlightFramesOutlineColor
+  addHighlightOverlayToElements([turboFrame], color, overlayClassName, "0.2")
 
   setTimeout(() => {
     removeHighlightOverlay(`.${overlayClassName}`)
-  }, 300)
+  }, 400)
 }
 
 const renderDetailPanel = () => {
