@@ -45,12 +45,6 @@ body.hotwire-dev-tools-highlight-turbo-frames {
   animation: turboFrameScaleEffect 0.3s ease-in-out;
 }
 
-.hotwire-dev-tools-highlight-overlay {
-  opacity: 0.2;
-  position: relative;
-  z-index: 9999999;
-}
-
 @keyframes turboFrameScaleEffect {
   0% {
     transform: scale(1);

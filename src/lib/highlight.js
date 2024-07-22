@@ -1,15 +1,15 @@
-export const addHighlightOverlay = (selector, color = "#77e8b9") => {
-  const elements = document.querySelectorAll(selector)
+export const addHighlightOverlayToElements = (elements, color = "#77e8b9", overlayClassName = "hotwire-dev-tools-highlight-overlay", opacity = "0.2") => {
   elements.forEach((element) => {
-    addHighlightOverlayToElement(element, color)
+    const rect = element.getBoundingClientRect()
+    createOverlay(rect, color, overlayClassName, opacity)
   })
 }
 
-export const addHighlightOverlayToElement = (element, color = "#77e8b9", overlayClassName = "hotwire-dev-tools-highlight-overlay", opacity = "1") => {
-  const rect = element.getBoundingClientRect()
+export const createOverlay = (rect, color, overlayClassName, opacity) => {
   const overlay = document.createElement("div")
   overlay.className = overlayClassName
   overlay.style.position = "absolute"
+  overlay.style.zIndex = 9999999
   overlay.style.opacity = opacity
   overlay.style.top = `${rect.top + window.scrollY}px`
   overlay.style.left = `${rect.left + window.scrollX}px`

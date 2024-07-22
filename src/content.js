@@ -1,5 +1,5 @@
 import { turboStreamTargetElements } from "./lib/turbo_utils"
-import { addHighlightOverlayToElement, removeHighlightOverlay } from "./lib/highlight"
+import { addHighlightOverlayToElements, removeHighlightOverlay } from "./lib/highlight"
 import { MONITORING_EVENTS } from "./lib/monitoring_events"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
@@ -216,7 +216,7 @@ const handleMonitoredEvent = (eventName, event) => {
 const handleTurboFrameRender = (event) => {
   const turboFrame = event.target
   const overlayClassName = `hotwire-dev-tools-highlight-overlay-turbo-frame-${turboFrame.id}`
-  addHighlightOverlayToElement(turboFrame, "#5cd8e5", overlayClassName, "0.2")
+  addHighlightOverlayToElements([turboFrame], "#5cd8e5", overlayClassName, "0.2")
 
   setTimeout(() => {
     removeHighlightOverlay(`.${overlayClassName}`)
