@@ -251,6 +251,10 @@ const setupEventListeners = (options) => {
   monitorEvents.addEventListener("change", (event) => {
     const checked = event.target.checked
     toggleInputs(monitorEventsToggles, checked)
+    if (!checked) {
+      options.monitor.events = []
+      saveOptions(options)
+    }
   })
 
   monitorEventsCheckboxContainer.addEventListener("change", (event) => {
