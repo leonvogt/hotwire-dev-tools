@@ -1,6 +1,6 @@
 import { getMetaContent, debounce } from "../lib/utils"
 import { turboStreamTargetElements } from "../lib/turbo_utils"
-import { addHighlightOverlay, removeHighlightOverlay } from "../lib/highlight"
+import { addHighlightOverlayToElements, removeHighlightOverlay } from "../lib/highlight"
 import * as Icons from "../lib/icons"
 
 import hljs from "highlight.js/lib/core"
@@ -180,7 +180,8 @@ export default class DetailPanel {
 
   #handleMouseEnterTurboStream = (event) => {
     const selector = event.currentTarget.dataset.targetSelector
-    addHighlightOverlay(selector, this.devTool.options.turbo.highlightFramesOutlineColor)
+    const elements = document.querySelectorAll(selector)
+    addHighlightOverlayToElements(elements, this.devTool.options.turbo.highlightFramesOutlineColor)
   }
 
   #handleMouseLeaveTurboStream = () => {
@@ -203,7 +204,8 @@ export default class DetailPanel {
 
   #handleMouseEnterStimulusController = (event) => {
     const controllerId = event.currentTarget.getAttribute("data-stimulus-controller-id")
-    addHighlightOverlay(`[data-controller="${controllerId}"]`, this.devTool.options.stimulus.highlightControllersOutlineColor)
+    const elements = document.querySelectorAll(`[data-controller="${controllerId}"]`)
+    addHighlightOverlayToElements(elements, this.devTool.options.stimulus.highlightControllersOutlineColor)
   }
 
   #handleMouseLeaveStimulusController = () => {
@@ -212,7 +214,8 @@ export default class DetailPanel {
 
   #handleMouseEnterTurboFrame = (event) => {
     const frameId = event.currentTarget.getAttribute("data-turbo-frame-id")
-    addHighlightOverlay(`#${frameId}`, this.devTool.options.turbo.highlightFramesOutlineColor)
+    const elements = document.querySelectorAll(`turbo-frame#${frameId}`)
+    addHighlightOverlayToElements(elements, this.devTool.options.turbo.highlightFramesOutlineColor)
   }
 
   #handleMouseLeaveTurboFrame = () => {

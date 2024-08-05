@@ -1,4 +1,5 @@
 import { turboStreamTargetElements } from "./lib/turbo_utils"
+import { addHighlightOverlayToElements, removeHighlightOverlay } from "./lib/highlight"
 import { MONITORING_EVENTS } from "./lib/monitoring_events"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
@@ -212,6 +213,19 @@ const handleMonitoredEvent = (eventName, event) => {
   console.groupEnd()
 }
 
+const handleTurboFrameRender = (event) => {
+  if (!devTool.options.turbo.highlightFramesChanges) return
+
+  const turboFrame = event.target
+  const overlayClassName = `hotwire-dev-tools-highlight-overlay-turbo-frame-${turboFrame.id}`
+  const color = devTool.options.turbo.highlightFramesOutlineColor
+  addHighlightOverlayToElements([turboFrame], color, overlayClassName, "0.1")
+
+  setTimeout(() => {
+    removeHighlightOverlay(`.${overlayClassName}`)
+  }, 350)
+}
+
 const renderDetailPanel = () => {
   if (!devTool.shouldRenderDetailPanel()) {
     detailPanel.dispose()
@@ -257,6 +271,9 @@ window.addEventListener("message", handleWindowMessage)
 
 // Listen for window resize events
 window.addEventListener("resize", highlightTurboFrames)
+
+// Listen for specific Turbo events
+window.addEventListener("turbo:frame-render", handleTurboFrameRender)
 
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {

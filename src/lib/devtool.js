@@ -117,6 +117,7 @@ export default class Devtool {
         highlightFramesOutlineColor: "#5cd8e5",
         highlightFramesBlacklist: "",
         highlightFramesWithOverlay: false,
+        highlightFramesChanges: false,
         ignoreEmptyFrames: false,
         consoleLogTurboStreams: false,
       },
