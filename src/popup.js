@@ -15,6 +15,7 @@ const turboHighlightFramesBlacklist = document.getElementById("turbo-highlight-f
 const turboHighlightFramesToggles = document.querySelectorAll(".turbo-highlight-frames-toggle-element")
 const turboHighlightFramesIgnoreEmpty = document.getElementById("turbo-highlight-frames-ignore-empty")
 const turboHighlightFramesWithOverlay = document.getElementById("turbo-highlight-frames-with-overlay")
+const turbohighlightFramesChanges = document.getElementById("turbo-highlight-frames-changes")
 const turboConsoleLogTurboStreams = document.getElementById("turbo-console-log-turbo-streams")
 
 const stimulusHighlightControllers = document.getElementById("stimulus-highlight-controllers")
@@ -61,6 +62,7 @@ const initializeForm = async (options) => {
   turboConsoleLogTurboStreams.checked = options.turbo.consoleLogTurboStreams
   turboHighlightFramesWithOverlay.checked = options.turbo.highlightFramesWithOverlay
   turboHighlightFramesIgnoreEmpty.checked = options.turbo.ignoreEmptyFrames
+  turbohighlightFramesChanges.checked = options.turbo.highlightFramesChanges
   turboHighlightFramesOutlineColor.value = options.turbo.highlightFramesOutlineColor
   turboHighlightFramesOutlineStyle.value = options.turbo.highlightFramesOutlineStyle
   turboHighlightFramesOutlineWidth.value = options.turbo.highlightFramesOutlineWidth
@@ -168,13 +170,18 @@ const setupEventListeners = (options) => {
     saveOptions(options)
   })
 
-  turboConsoleLogTurboStreams.addEventListener("change", (event) => {
-    options.turbo.consoleLogTurboStreams = event.target.checked
+  turboHighlightFramesWithOverlay.addEventListener("change", (event) => {
+    options.turbo.highlightFramesWithOverlay = event.target.checked
     saveOptions(options)
   })
 
-  turboHighlightFramesWithOverlay.addEventListener("change", (event) => {
-    options.turbo.highlightFramesWithOverlay = event.target.checked
+  turbohighlightFramesChanges.addEventListener("change", (event) => {
+    options.turbo.highlightFramesChanges = event.target.checked
+    saveOptions(options)
+  })
+
+  turboConsoleLogTurboStreams.addEventListener("change", (event) => {
+    options.turbo.consoleLogTurboStreams = event.target.checked
     saveOptions(options)
   })
 

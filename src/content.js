@@ -214,6 +214,8 @@ const handleMonitoredEvent = (eventName, event) => {
 }
 
 const handleTurboFrameRender = (event) => {
+  if (!devTool.options.turbo.highlightFramesChanges) return
+
   const turboFrame = event.target
   const overlayClassName = `hotwire-dev-tools-highlight-overlay-turbo-frame-${turboFrame.id}`
   const color = devTool.options.turbo.highlightFramesOutlineColor
