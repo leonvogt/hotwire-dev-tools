@@ -238,11 +238,11 @@ const renderDetailPanel = () => {
 const listenForEvents = () => {
   MONITORING_EVENTS.forEach((eventName) => {
     window.addEventListener(eventName, (event) => {
-      // For some unknown reason, we can't use the event itself in Safari, without loosing the event.detail property.
-      // The only hacky workaround that seems to work is to use a setTimeout with 0ms delay. (Issue#73
+      // For some unknown reason, we can't use the event itself in Safari, without loosing custom properties, like event.detail.
+      // The only hacky workaround that seems to work is to use a setTimeout with some delay. (Issue#73)
       setTimeout(() => {
         handleMonitoredEvent(eventName, event)
-      }, 0)
+      }, 100)
     })
   })
 }
