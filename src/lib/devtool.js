@@ -77,7 +77,7 @@ export default class Devtool {
   detailPanelCSS = async () => {
     if (this.detailPanelCSSContent) return this.detailPanelCSSContent
 
-    this.detailPanelCSSContent = await loadCSS(chrome.runtime.getURL("styles/detail_panel.css"))
+    this.detailPanelCSSContent = await loadCSS(chrome.runtime.getURL("styles/hotwire_dev_tools_detail_panel.css"))
     return this.detailPanelCSSContent
   }
 
