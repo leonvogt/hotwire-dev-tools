@@ -49,7 +49,7 @@ _Note: On Firefox you may need to select "Always allow on example.com" to enable
 
 ### Test on Firefox
 
-The easiest way is to make us of the [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/) tool:
+The easiest way is to make use of the [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/) tool:
 
 ```bash
 npm install --global web-ext
