@@ -22,7 +22,7 @@ const browserSpecificSettings = {
 }
 
 const esbuildConfig = {
-  entryPoints: ["./src/content.js", "./src/popup.js", "./src/hotwire_dev_tools_inject_script.js"],
+  entryPoints: ["./src/content.js", "./src/popup.js", "./src/hotwire_dev_tools_inject_script.js", "./src/browser_panel/panel.js", "./src/browser_panel/proxy.js"],
   bundle: true,
   minify: production,
   sourcemap: !production,
