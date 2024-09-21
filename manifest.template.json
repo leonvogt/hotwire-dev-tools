@@ -24,6 +24,7 @@
       "css": ["styles/hotwire_dev_tools_content.css"]
     }
   ],
+  "devtools_page": "devtools.html",
   "permissions": ["storage", "activeTab"],
   "action": {
     "default_title": "Click or press Alt+Shift+S to launch Dev Tools",
