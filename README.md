@@ -77,7 +77,7 @@ Then you can load the extension by following these steps:
 
 1. Open Xcode
 2. Choose "Open Existing Project"
-3. Select the [HotwireDevTools/HotwireDevTools.xcodeproj](./HotwireDevTools/HotwireDevTools.xcodeproj) file (blue icon)
+3. Select the [xcode/HotwireDevTools.xcodeproj](./xcode/HotwireDevTools.xcodeproj) workspace (blue icon)
 4. Build the project (you may need to select a team in the project settings -> Signing & Capabilities)
 5. Open Safari > Settings > Extensions and enable the Hotwire Dev Tools extension
 
