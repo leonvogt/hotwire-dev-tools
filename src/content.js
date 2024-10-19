@@ -1,6 +1,7 @@
-import { turboStreamTargetElements } from "./lib/turbo_utils"
-import { addHighlightOverlayToElements, removeHighlightOverlay } from "./lib/highlight"
+import { turboStreamTargetElements } from "./utils/turbo_utils"
+import { addHighlightOverlayToElements, removeHighlightOverlay } from "./utils/highlight"
 import { MONITORING_EVENTS } from "./lib/monitoring_events"
+
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
 import DOMScanner from "./utils/dom_scanner"

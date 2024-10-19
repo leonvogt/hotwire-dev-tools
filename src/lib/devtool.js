@@ -1,4 +1,4 @@
-import { loadCSS } from "./utils"
+import { loadCSS } from "../utils/utils"
 
 export default class Devtool {
   constructor(origin = null) {
