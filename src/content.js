@@ -1,3 +1,4 @@
+import { debounce } from "./utils/utils"
 import { turboStreamTargetElements } from "./utils/turbo_utils"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "./utils/highlight"
 import { MONITORING_EVENTS } from "./lib/monitoring_events"
@@ -5,10 +6,12 @@ import { MONITORING_EVENTS } from "./lib/monitoring_events"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
 import DOMScanner from "./utils/dom_scanner"
+import DiagnosticsChecker from "./lib/diagnostics_checker"
 
 const LOCATION_ORIGIN = window.location.origin
 const devTool = new Devtool(LOCATION_ORIGIN)
 const detailPanel = new DetailPanel(devTool)
+const diagnosticsChecker = new DiagnosticsChecker(devTool)
 
 const highlightTurboFrames = () => {
   const badgeClass = "hotwire-dev-tools-turbo-frame-info-badge"
@@ -165,6 +168,10 @@ const consoleLogTurboStream = (event) => {
   console.log(message, turboStream)
 }
 
+const checkForWarnings = debounce(() => {
+  diagnosticsChecker.checkForWarnings()
+}, 150)
+
 const handleTurboFrameBadgeClick = (event) => {
   navigator.clipboard.writeText(event.target.dataset.turboId).then(() => {
     event.target.classList.add("copied")
@@ -189,6 +196,7 @@ const handleWindowMessage = (event) => {
       if (event.data.registeredControllers) {
         devTool.registeredStimulusControllers = event.data.registeredControllers
         renderDetailPanel()
+        checkForWarnings()
       }
       break
     case "turboDetails":
@@ -257,7 +265,7 @@ const init = async () => {
   highlightTurboFrames()
   highlightStimulusControllers()
   renderDetailPanel()
-  console.log(DOMScanner.uniqueStimulusControllerIdentifiers)
+  checkForWarnings()
 }
 
 const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
