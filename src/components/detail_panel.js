@@ -1,6 +1,7 @@
 import { getMetaContent, debounce } from "../lib/utils"
 import { turboStreamTargetElements } from "../lib/turbo_utils"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "../lib/highlight"
+import DOMScanner from "../utils/dom_scanner"
 import * as Icons from "../lib/icons"
 
 import hljs from "highlight.js/lib/core"
@@ -237,7 +238,8 @@ export default class DetailPanel {
   }
 
   get stimulusTabContent() {
-    const sortedControllerIds = Object.keys(this.groupedStimulusControllerElements).sort()
+    const groupedControllers = DOMScanner.groupedStimulusControllerElements
+    const sortedControllerIds = Object.keys(groupedControllers).sort()
 
     if (sortedControllerIds.length === 0) {
       return `
@@ -259,7 +261,7 @@ export default class DetailPanel {
         entryAttributes.title = "Controller not registered"
       }
 
-      const stimulusControllerElements = this.groupedStimulusControllerElements[stimulusControllerId]
+      const stimulusControllerElements = groupedControllers[stimulusControllerId]
       entries.push(`
         <div ${Object.entries(entryAttributes)
           .map(([key, value]) => `${key}="${value}"`)
@@ -273,7 +275,7 @@ export default class DetailPanel {
   }
 
   get turboFrameTabContent() {
-    const frames = Array.from(document.querySelectorAll("turbo-frame")).sort((a, b) => a.id.localeCompare(b.id))
+    const frames = Array.from(DOMScanner.turboFrameElements)
     if (frames.length === 0) {
       return `
         <div class="hotwire-dev-tools-no-entry">
@@ -322,7 +324,7 @@ export default class DetailPanel {
         <div class="info-tab-content-turbo">
           <div class="info-tab-content-wrapper">
             <span>Turbo Frames:</span>
-            <span>${document.querySelectorAll("turbo-frame").length}</span>
+            <span>${DOMScanner.turboFrameElements.length}</span>
           </div>
           ${
             typeof this.devTool.turboDetails.turboDriveEnabled === "boolean"
@@ -366,31 +368,11 @@ export default class DetailPanel {
         <div class="info-tab-content-stimulus">
           <div class="info-tab-content-wrapper">
             <span>Stimulus Controllers:</span>
-            <span>${document.querySelectorAll("[data-controller]").length}</span>
+            <span>${DOMScanner.stimulusControllerElements.length}</span>
           </div>
         </div>
       </div>
     `
-  }
-
-  get groupedStimulusControllerElements() {
-    const stimulusControllerElements = document.querySelectorAll("[data-controller]")
-    if (stimulusControllerElements.length === 0) return {}
-
-    const groupedElements = {}
-    stimulusControllerElements.forEach((element) => {
-      element.dataset.controller
-        .split(" ")
-        .filter((stimulusControllerId) => stimulusControllerId.trim() !== "")
-        .forEach((stimulusControllerId) => {
-          if (!groupedElements[stimulusControllerId]) {
-            groupedElements[stimulusControllerId] = []
-          }
-          groupedElements[stimulusControllerId].push(element)
-        })
-    })
-
-    return groupedElements
   }
 
   get detailPanelContainer() {
@@ -404,12 +386,12 @@ export default class DetailPanel {
   }
 
   get shadowContainer() {
-    const existingShadowContainer = document.getElementById("hotwire-dev-tools-shadow-container")
+    const existingShadowContainer = DOMScanner.shadowContainer
     if (existingShadowContainer) {
       return existingShadowContainer
     }
     const shadowContainer = document.createElement("div")
-    shadowContainer.id = "hotwire-dev-tools-shadow-container"
+    shadowContainer.id = DOMScanner.SHADOW_CONTAINER_ID
     document.body.appendChild(shadowContainer)
     return shadowContainer
   }

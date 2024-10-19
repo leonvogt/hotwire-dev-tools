@@ -3,6 +3,7 @@ import { addHighlightOverlayToElements, removeHighlightOverlay } from "./lib/hig
 import { MONITORING_EVENTS } from "./lib/monitoring_events"
 import Devtool from "./lib/devtool"
 import DetailPanel from "./components/detail_panel"
+import DOMScanner from "./utils/dom_scanner"
 
 const LOCATION_ORIGIN = window.location.origin
 const devTool = new Devtool(LOCATION_ORIGIN)
@@ -14,11 +15,11 @@ const highlightTurboFrames = () => {
 
   if (!devTool.options.turbo.highlightFrames) {
     document.body.classList.remove("hotwire-dev-tools-highlight-turbo-frames")
-    document.querySelectorAll("turbo-frame").forEach((frame) => {
+    DOMScanner.turboFrameElements.forEach((frame) => {
       frame.style.outline = ""
       frame.querySelector(`.${badgeContainerClass}`)?.remove()
     })
-    document.querySelectorAll(".hotwire-dev-tools-highlight-overlay-turbo-frame").forEach((overlay) => overlay.remove())
+    DOMScanner.turboFrameOverlayElements.forEach((overlay) => overlay.remove())
     return
   }
 
@@ -61,7 +62,7 @@ const highlightTurboFrames = () => {
 
   const windowScrollY = window.scrollY
   const windowScrollX = window.scrollX
-  document.querySelectorAll("turbo-frame").forEach((frame) => {
+  DOMScanner.turboFrameElements.forEach((frame) => {
     const frameId = frame.id
     const isEmpty = frame.innerHTML.trim() === ""
     const shouldIgnore = isEmpty && ignoreEmptyFrames
@@ -77,7 +78,7 @@ const highlightTurboFrames = () => {
       if (!overlay) {
         overlay = document.createElement("div")
         overlay.id = `hotwire-dev-tools-highlight-overlay-${frameId}`
-        overlay.className = `hotwire-dev-tools-highlight-overlay-turbo-frame`
+        overlay.className = DOMScanner.TURBO_FRAME_OVERLAY_CLASS_NAME
       }
 
       Object.assign(overlay.style, {
@@ -106,8 +107,9 @@ const highlightTurboFrames = () => {
 }
 
 const highlightStimulusControllers = () => {
+  const controllers = DOMScanner.stimulusControllerElements
   if (!devTool.options.stimulus.highlightControllers) {
-    document.querySelectorAll("[data-controller]").forEach((controller) => (controller.style.outline = ""))
+    controllers.forEach((controller) => (controller.style.outline = ""))
     return
   }
 
@@ -121,7 +123,7 @@ const highlightStimulusControllers = () => {
     }
   }
 
-  document.querySelectorAll("[data-controller]").forEach((controller) => {
+  controllers.forEach((controller) => {
     if (blacklistedControllers.includes(controller)) {
       controller.style.outline = ""
       return
@@ -196,7 +198,7 @@ const handleWindowMessage = (event) => {
 }
 
 const handleTurboBeforeCache = (event) => {
-  document.querySelectorAll(".hotwire-dev-tools-highlight-overlay-turbo-frame").forEach((element) => {
+  DOMScanner.turboFrameOverlayElements.forEach((element) => {
     element.remove()
   })
 }
@@ -217,7 +219,7 @@ const handleTurboFrameRender = (event) => {
   if (!devTool.options.turbo.highlightFramesChanges) return
 
   const turboFrame = event.target
-  const overlayClassName = `hotwire-dev-tools-highlight-overlay-turbo-frame-${turboFrame.id}`
+  const overlayClassName = `${TURBO_FRAME_OVERLAY_CLASS_NAME}-${turboFrame.id}`
   const color = devTool.options.turbo.highlightFramesOutlineColor
   addHighlightOverlayToElements([turboFrame], color, overlayClassName, "0.1")
 
@@ -254,6 +256,7 @@ const init = async () => {
   highlightTurboFrames()
   highlightStimulusControllers()
   renderDetailPanel()
+  console.log(DOMScanner.uniqueStimulusControllerIdentifiers)
 }
 
 const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
@@ -264,7 +267,7 @@ document.addEventListener("turbo:before-stream-render", handleIncomingTurboStrea
 // so we can keep the detail panel open, without flickering, when navigating between pages.
 // (The normal data-turbo-permanent way doesn't work for this, because the new page won't have the detail panel in the DOM yet)
 window.addEventListener("turbo:before-render", (event) => {
-  event.target.appendChild(document.getElementById("hotwire-dev-tools-shadow-container"))
+  event.target.appendChild(DOMScanner.shadowContainer)
 })
 
 // Chance to clean up any DOM modifications made by this extension before Turbo caches the page
