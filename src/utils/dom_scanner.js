@@ -7,6 +7,10 @@ export default class DOMScanner {
     return document.querySelectorAll("turbo-frame")
   }
 
+  static get turboFrameIds() {
+    return Array.from(this.turboFrameElements).map((turboFrame) => turboFrame.id)
+  }
+
   // Stimulus
   static get stimulusControllerElements() {
     return document.querySelectorAll("[data-controller]")
