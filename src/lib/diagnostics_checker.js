@@ -24,7 +24,7 @@ export default class DiagnosticsChecker {
     const duplicatedIds = turboFramesIds.filter((id, index) => turboFramesIds.indexOf(id) !== index)
 
     duplicatedIds.forEach((id) => {
-      this.printWarning(`Multiple Turbo Frames with the same ID: ${id}`)
+      this.printWarning(`Multiple Turbo Frames with the same ID '${id}' detected. This can cause unexpected behavior. Ensure that each Turbo Frame has a unique ID.`)
     })
   }
 
@@ -36,7 +36,7 @@ export default class DiagnosticsChecker {
       const controllerRegistered = registeredStimulusControllers.includes(controllerId)
 
       if (!controllerRegistered) {
-        this.printWarning(`Stimulus controller "${controllerId}" seems to be not registered`)
+        this.printWarning(`The Stimulus controller '${controllerId}' does not appear to be registered. Learn more about registering Stimulus controllers here: https://stimulus.hotwired.dev/handbook/installing.`)
       }
     })
   }
