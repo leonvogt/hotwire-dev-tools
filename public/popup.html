@@ -155,14 +155,22 @@
       <legend>Console Log</legend>
       <form>
         <label class="toggle">
+          <input class="toggle-checkbox" type="checkbox" id="log-warnings" />
+          <div class="toggle-switch"></div>
+          <span class="toggle-label">Log Warnings</span>
+        </label>
+
+        <label class="toggle">
           <input class="toggle-checkbox" type="checkbox" id="monitor-events" />
           <div class="toggle-switch"></div>
           <span class="toggle-label">Monitor Events</span>
         </label>
-        <div class="detail-panel-options-control monitor-events-toggle-element">
-          <button id="monitor-events-select-all">Select all</button>
+        <div class="monitor-events-collapse">
+          <div class="detail-panel-options-control monitor-events-toggle-element">
+            <button id="monitor-events-select-all">Select all</button>
+          </div>
+          <div class="detail-panel-options-wrapper monitor-events-toggle-element monitor-events-checkbox-container"></div>
         </div>
-        <div class="detail-panel-options-wrapper monitor-events-toggle-element monitor-events-checkbox-container"></div>
       </form>
     </fieldset>
   </body>
