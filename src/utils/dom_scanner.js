@@ -11,6 +11,10 @@ export default class DOMScanner {
     return Array.from(this.turboFrameElements).map((turboFrame) => turboFrame.id)
   }
 
+  static get turboPermanentElements() {
+    return document.querySelectorAll("[data-turbo-permanent]")
+  }
+
   // Stimulus
   static get stimulusControllerElements() {
     return document.querySelectorAll("[data-controller]")
