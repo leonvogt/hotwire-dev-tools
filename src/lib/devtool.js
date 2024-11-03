@@ -139,6 +139,7 @@ export default class Devtool {
       monitor: {
         events: [],
       },
+      logWarnings: true,
     }
   }
 }

@@ -36,6 +36,8 @@ const monitorEventsToggles = document.querySelectorAll(".monitor-events-toggle-e
 const monitorEventsCheckboxContainer = document.querySelector(".monitor-events-checkbox-container")
 const monitorEventsSelectAll = document.getElementById("monitor-events-select-all")
 
+const logWarning = document.getElementById("log-warnings")
+
 const toggleInputs = (toggleElements, show) => {
   toggleElements.forEach((element) => {
     element.classList.toggle("d-none", !show)
@@ -80,6 +82,8 @@ const initializeForm = async (options) => {
   detailPanelShowTurboStreamTab.checked = options.detailPanel.showTurboStreamTab
 
   monitorEvents.checked = options.monitor.events.length > 0
+
+  logWarning.checked = options.logWarnings
 
   if (devTool.isFirefox) {
     // In Firefox the color picker inside an extension popup doesn't really work (See https://github.com/leonvogt/hotwire-dev-tools/issues/20)
@@ -283,6 +287,11 @@ const setupEventListeners = (options) => {
     })
 
     options.monitor.events = allChecked ? [] : MONITORING_EVENTS
+    saveOptions(options)
+  })
+
+  logWarning.addEventListener("change", (event) => {
+    options.logWarnings = event.target.checked
     saveOptions(options)
   })
 }

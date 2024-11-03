@@ -169,7 +169,9 @@ const consoleLogTurboStream = (event) => {
 }
 
 const checkForWarnings = debounce(() => {
-  diagnosticsChecker.checkForWarnings()
+  if (devTool.options.logWarnings) {
+    diagnosticsChecker.checkForWarnings()
+  }
 }, 150)
 
 const handleTurboFrameBadgeClick = (event) => {

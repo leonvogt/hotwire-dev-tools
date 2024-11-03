@@ -32,6 +32,11 @@ label,
   user-select: none;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+}
+
 fieldset {
   margin: 1rem 0;
   border: 1px solid #ccc;
