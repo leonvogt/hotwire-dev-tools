@@ -12,8 +12,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["dist/content.js"],
-      "css": ["styles/content.css"]
+      "js": ["dist/hotwire_dev_tools_content.js"],
+      "css": ["styles/hotwire_dev_tools_content.css"]
     }
   ],
   "permissions": ["storage", "activeTab"],
