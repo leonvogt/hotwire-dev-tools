@@ -21,8 +21,14 @@ const browserSpecificSettings = {
   },
 }
 
+const outputFileNames = {
+  "content.js": "hotwire_dev_tools_content.js",
+  "popup.js": "hotwire_dev_tools_popup.js",
+  "inject_script.js": "hotwire_dev_tools_inject_script.js",
+}
+
 const esbuildConfig = {
-  entryPoints: ["./src/content.js", "./src/popup.js", "./src/hotwire_dev_tools_inject_script.js"],
+  entryPoints: ["./src/content.js", "./src/popup.js", "./src/inject_script.js"],
   bundle: true,
   minify: production,
   sourcemap: !production,
@@ -31,6 +37,29 @@ const esbuildConfig = {
   define: {
     "process.env.NODE_ENV": `"${nodeEnv}"`,
   },
+  metafile: true,
+  plugins: [
+    {
+      name: "rename-output-files",
+      setup(build) {
+        build.onEnd(async (result) => {
+          if (result.metafile) {
+            const outputFiles = Object.keys(result.metafile.outputs)
+            for (const outputFile of outputFiles) {
+              const originalName = path.basename(outputFile)
+              const newName = outputFileNames[originalName]
+
+              if (newName) {
+                const newPath = path.join(path.dirname(outputFile), newName)
+                await fs.rename(outputFile, newPath)
+                console.log(`Renamed ${originalName} to ${newName}`)
+              }
+            }
+          }
+        })
+      },
+    },
+  ],
 }
 
 async function generateManifest() {
