@@ -56,6 +56,15 @@ const saveOptions = async (options) => {
   devTool.saveOptions(options, pageSpecificOptions.checked)
 }
 
+const showFirefoxColorPreview = () => {
+  if (!devTool.isFirefox) return
+
+  document.querySelectorAll(".color-preview").forEach((preview) => {
+    preview.classList.remove("d-none")
+    preview.style.backgroundColor = preview.nextElementSibling.value
+  })
+}
+
 const initializeForm = async (options) => {
   const originOptionsExist = await devTool.originOptionsExist()
   pageSpecificOptions.checked = originOptionsExist
@@ -89,10 +98,12 @@ const initializeForm = async (options) => {
     // In Firefox the color picker inside an extension popup doesn't really work (See https://github.com/leonvogt/hotwire-dev-tools/issues/20)
     // Workaround: Change the input type to text so the user can input the color manually
     turboHighlightFramesOutlineColor.type = "text"
-    turboHighlightFramesOutlineColor.placeholder = devTool.defaultOptions.turbo.highlightFramesOutlineColor
-
     stimulusHighlightControllersOutlineColor.type = "text"
-    stimulusHighlightControllersOutlineColor.placeholder = devTool.defaultOptions.stimulus.highlightControllersOutlineColor
+
+    turboHighlightFramesOutlineColor.value = options.turbo.highlightFramesOutlineColor
+    stimulusHighlightControllersOutlineColor.value = options.stimulus.highlightControllersOutlineColor
+
+    showFirefoxColorPreview()
   }
 
   const activeEvents = Array.from(options.monitor?.events || [])
@@ -159,8 +170,10 @@ const setupEventListeners = (options) => {
     saveOptions(options)
   })
 
-  turboHighlightFramesOutlineColor.addEventListener("change", (event) => {
+  turboHighlightFramesOutlineColor.addEventListener(devTool.isFirefox ? "input" : "change", (event) => {
     options.turbo.highlightFramesOutlineColor = event.target.value
+
+    showFirefoxColorPreview()
     saveOptions(options)
   })
 
@@ -206,8 +219,10 @@ const setupEventListeners = (options) => {
     saveOptions(options)
   })
 
-  stimulusHighlightControllersOutlineColor.addEventListener("change", (event) => {
+  stimulusHighlightControllersOutlineColor.addEventListener(devTool.isFirefox ? "input" : "change", (event) => {
     options.stimulus.highlightControllersOutlineColor = event.target.value
+
+    showFirefoxColorPreview()
     saveOptions(options)
   })
 
