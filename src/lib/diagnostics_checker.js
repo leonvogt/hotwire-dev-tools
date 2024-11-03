@@ -18,6 +18,7 @@ export default class DiagnosticsChecker {
     this._checkForDuplicatedTurboFrames()
     this._checkForNonRegisteredStimulusControllers()
     this._checkTurboPermanentElements()
+    this._checkStimulusTargetsNesting()
   }
 
   _checkForDuplicatedTurboFrames = () => {
@@ -39,6 +40,20 @@ export default class DiagnosticsChecker {
       if (!controllerRegistered) {
         this.printWarning(`The Stimulus controller '${controllerId}' does not appear to be registered. Learn more about registering Stimulus controllers here: https://stimulus.hotwired.dev/handbook/installing.`)
       }
+    })
+  }
+
+  _checkStimulusTargetsNesting = () => {
+    DOMScanner.uniqueStimulusControllerIdentifiers.forEach((controllerId) => {
+      const dataSelector = `data-${controllerId}-target`
+      const targetElements = document.querySelectorAll(`[${dataSelector}`)
+      targetElements.forEach((element) => {
+        const parent = element.closest(`[data-controller="${controllerId}"]`)
+        if (!parent) {
+          const targetName = element.getAttribute(`${dataSelector}`)
+          this.printWarning(`The Stimulus target '${targetName}' is not inside the Stimulus controller '${controllerId}'`)
+        }
+      })
     })
   }
 
