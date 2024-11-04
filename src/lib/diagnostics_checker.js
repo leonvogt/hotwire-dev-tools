@@ -51,7 +51,7 @@ export default class DiagnosticsChecker {
         const parent = element.closest(`[data-controller~="${controllerId}"]`)
         if (!parent) {
           const targetName = element.getAttribute(`${dataSelector}`)
-          this.printWarning(`The Stimulus target '${targetName}' is not inside the Stimulus controller '${controllerId}'`)
+          this.printWarning(`The Stimulus target '${targetName}' is not inside the Stimulus controller '${controllerId}'`, true, element)
         }
       })
     })
