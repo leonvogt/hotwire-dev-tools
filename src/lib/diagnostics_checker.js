@@ -48,7 +48,7 @@ export default class DiagnosticsChecker {
       const dataSelector = `data-${controllerId}-target`
       const targetElements = document.querySelectorAll(`[${dataSelector}`)
       targetElements.forEach((element) => {
-        const parent = element.closest(`[data-controller="${controllerId}"]`)
+        const parent = element.closest(`[data-controller~="${controllerId}"]`)
         if (!parent) {
           const targetName = element.getAttribute(`${dataSelector}`)
           this.printWarning(`The Stimulus target '${targetName}' is not inside the Stimulus controller '${controllerId}'`)
