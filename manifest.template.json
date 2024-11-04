@@ -4,10 +4,18 @@
   "version": "0.3.0",
   "description": "Dev Tools for Turbo and Stimulus",
   "icons": {
+    {{#useOutlineIcons}}
     "16": "images/icon-16-wo.png",
     "32": "images/icon-32-wo.png",
     "48": "images/icon-48-wo.png",
     "128": "images/icon-128-wo.png"
+    {{/useOutlineIcons}}
+    {{^useOutlineIcons}}
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+    {{/useOutlineIcons}}
   },
   "content_scripts": [
     {

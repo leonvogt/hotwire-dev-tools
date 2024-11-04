@@ -11,12 +11,15 @@ const templatePath = path.join(__dirname, "manifest.template.json")
 
 const browserSpecificSettings = {
   chrome: {
+    useOutlineIcons: true,
     browser_specific_settings: false,
   },
   firefox: {
+    useOutlineIcons: true,
     browser_specific_settings: true,
   },
   safari: {
+    useOutlineIcons: false,
     browser_specific_settings: false,
   },
 }
