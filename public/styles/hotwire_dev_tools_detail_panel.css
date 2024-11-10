@@ -414,3 +414,9 @@ code.hljs {
   color: #b31d28;
   background-color: #ffeef0;
 }
+
+@media print {
+  #hotwire-dev-tools-detail-panel-container {
+    display: none !important;
+  }
+}
