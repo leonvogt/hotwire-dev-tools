@@ -7,14 +7,17 @@ Hotwire Dev Tools is a browser extension with the goal of helping developers ins
 - Highlight Turbo Frames
 - Monitor incoming Turbo Streams
 - Display Turbo context information (Turbo Drive enabled, morphing enabled, ...)
-- Display warning when a Turbo Frame ID is not unique
-- List all Turbo Frames on the page
+- Log all Turbo related events
+- Log warning when a Turbo Frame ID is not unique
+- Log warning when an element has `data-turbo-permanent` but no ID or a non-unique ID
+- Highlight Turbo Frame changes
 
 **Stimulus features**:
 
 - Highlight Stimulus controllers
 - List all Stimulus controllers on the page
-- Display warning when a `data-controller` doesn't match any registered controller
+- Log warning when a `data-controller` doesn't match any registered controller
+- Log warning when a Stimulus target is not nested within the corresponding controller
 
 ## Installation
 
