@@ -230,7 +230,7 @@ const handleTurboFrameRender = (event) => {
   if (!devTool.options.turbo.highlightFramesChanges) return
 
   const turboFrame = event.target
-  const overlayClassName = `${TURBO_FRAME_OVERLAY_CLASS_NAME}-${turboFrame.id}`
+  const overlayClassName = `${DOMScanner.TURBO_FRAME_OVERLAY_CLASS_NAME}-${turboFrame.id}`
   const color = devTool.options.turbo.highlightFramesOutlineColor
   addHighlightOverlayToElements([turboFrame], color, overlayClassName, "0.1")
 
