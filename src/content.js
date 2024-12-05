@@ -295,7 +295,7 @@ window.addEventListener("turbo:frame-render", handleTurboFrameRender)
 
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === "sync" && (changes.options?.newValue || changes[LOCATION_ORIGIN]?.newValue)) {
+  if (changes.options?.newValue || changes[LOCATION_ORIGIN]?.newValue) {
     document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed"))
   }
 })
