@@ -35,9 +35,15 @@ export default class DiagnosticsChecker {
     if (registeredStimulusControllers.length === 0) return
 
     DOMScanner.uniqueStimulusControllerIdentifiers.forEach((controllerId) => {
-      const controllerRegistered = registeredStimulusControllers.includes(controllerId)
+      // Bridge components are only registered in the Mobile app,
+      // so we don't want to show warnings for them in the web app.
+      // Ideally, we'd verify whether a controller is truly a bridge component,
+      // but since we have limited insight into the Stimulus application,
+      // we just use a simple prefix check.
+      const isBridgeComponent = controllerId.startsWith("native--") || controllerId.startsWith("bridge--")
 
-      if (!controllerRegistered) {
+      const controllerRegistered = registeredStimulusControllers.includes(controllerId)
+      if (!controllerRegistered && !isBridgeComponent) {
         this.printWarning(`The Stimulus controller '${controllerId}' does not appear to be registered. Learn more about registering Stimulus controllers here: https://stimulus.hotwired.dev/handbook/installing.`)
       }
     })
