@@ -4,6 +4,8 @@ body {
   font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
   font-size: 16px;
   color: black;
+  user-select: none;
+  -webkit-user-select: none;
   --text-muted-color: #212529bf;
   --btn-secondary-color: #555555;
 }
@@ -25,11 +27,6 @@ input[type="text"] {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-label,
-.toggle-label {
-  user-select: none;
 }
 
 form {
@@ -132,6 +129,7 @@ button:hover {
 .toggle {
   cursor: pointer;
   display: inline-block;
+  margin-bottom: 1px;
 }
 
 .toggle-switch {
@@ -184,10 +182,11 @@ body.no-transitions {
   }
 }
 
+/* Weird firefox color preview fix - fixme */
 .color-preview {
-  width: 80px;
-  height: 20px;
-  margin-left: 7px;
+  width: 40px;
+  height: 10px;
+  margin-right: -7px;
 }
 
 /* Utility classes */
