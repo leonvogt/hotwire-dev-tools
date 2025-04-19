@@ -293,6 +293,9 @@ const setupEventListeners = (options) => {
       options.monitor.events = []
     }
     saveOptions(options)
+
+    // Scoll the first event group into view
+    document.querySelector(".monitor-events-group-title").scrollIntoView({ behavior: "smooth", block: "center" })
   })
 
   monitorEventsCheckboxContainer.addEventListener("change", (event) => {
