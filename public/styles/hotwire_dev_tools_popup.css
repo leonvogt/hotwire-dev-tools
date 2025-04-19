@@ -120,6 +120,10 @@ button:hover {
   color: var(--text-muted-color);
 }
 
+.monitor-events-group {
+  margin-bottom: 1em;
+}
+
 /* Custom checkbox toggles */
 .toggle {
   cursor: pointer;
