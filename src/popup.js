@@ -114,6 +114,7 @@ const initializeForm = async (options) => {
 
     const groupTitle = document.createElement("strong")
     groupTitle.textContent = groupName
+    groupTitle.classList.add("monitor-events-group-title")
     groupContainer.appendChild(groupTitle)
 
     events.forEach((event) => {
@@ -305,6 +306,26 @@ const setupEventListeners = (options) => {
     }
 
     saveOptions(options)
+  })
+
+  monitorEventsCheckboxContainer.addEventListener("click", (event) => {
+    const element = event.target
+    if (element.classList.contains("monitor-events-group-title")) {
+      const checkboxes = element.parentElement.querySelectorAll("input[type='checkbox']")
+      const allChecked = Array.from(checkboxes).every((checkbox) => checkbox.checked)
+
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = !allChecked
+        const eventValue = checkbox.value
+        if (checkbox.checked) {
+          options.monitor.events.push(eventValue)
+        } else {
+          options.monitor.events = options.monitor.events.filter((event) => event !== eventValue)
+        }
+      })
+
+      saveOptions(options)
+    }
   })
 
   monitorEventsSelectAll.addEventListener("click", (event) => {

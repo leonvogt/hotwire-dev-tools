@@ -124,6 +124,10 @@ button:hover {
   margin-bottom: 1em;
 }
 
+.monitor-events-group-title {
+  cursor: pointer;
+}
+
 /* Custom checkbox toggles */
 .toggle {
   cursor: pointer;
