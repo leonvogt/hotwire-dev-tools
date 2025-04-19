@@ -1,5 +1,5 @@
 import Devtool from "./lib/devtool"
-import { MONITORING_EVENTS } from "./lib/monitoring_events"
+import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS } from "./lib/monitoring_events"
 
 const devTool = new Devtool()
 
@@ -108,21 +108,32 @@ const initializeForm = async (options) => {
 
   const activeEvents = Array.from(options.monitor?.events || [])
 
-  MONITORING_EVENTS.forEach((event) => {
-    const wrapper = document.createElement("div")
-    const checkbox = document.createElement("input")
-    checkbox.type = "checkbox"
-    checkbox.id = `monitor-${event}`
-    checkbox.value = event
-    checkbox.checked = activeEvents.includes(event)
+  Object.entries(MONITORING_EVENT_GROUPS).forEach(([groupName, events]) => {
+    const groupContainer = document.createElement("div")
+    groupContainer.classList.add("monitor-events-group")
 
-    const label = document.createElement("label")
-    label.htmlFor = `monitor-${event}`
-    label.textContent = event
+    const groupTitle = document.createElement("strong")
+    groupTitle.textContent = groupName
+    groupContainer.appendChild(groupTitle)
 
-    wrapper.appendChild(checkbox)
-    wrapper.appendChild(label)
-    document.querySelector(".monitor-events-checkbox-container").appendChild(wrapper)
+    events.forEach((event) => {
+      const wrapper = document.createElement("div")
+      const checkbox = document.createElement("input")
+      checkbox.type = "checkbox"
+      checkbox.id = `monitor-${event}`
+      checkbox.value = event
+      checkbox.checked = activeEvents.includes(event)
+
+      const label = document.createElement("label")
+      label.htmlFor = `monitor-${event}`
+      label.textContent = event
+
+      wrapper.appendChild(checkbox)
+      wrapper.appendChild(label)
+      groupContainer.appendChild(wrapper)
+    })
+
+    monitorEventsCheckboxContainer.appendChild(groupContainer)
   })
 
   toggleInputs(turboHighlightFramesToggles, options.turbo.highlightFrames)
