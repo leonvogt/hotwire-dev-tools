@@ -9,7 +9,7 @@
     "highlight.js": "^11.11.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.2",
+    "esbuild": "^0.25.3",
     "fs-extra": "^11.3.0",
     "mustache": "^4.2.0",
     "prettier": "^3.5.3"
