@@ -355,7 +355,7 @@ export default class DetailPanel {
             <span>Refresh Control:</span>
             <span>${getMetaContent("turbo-refresh-method") || "-"}</span>
           </div>
-          <div class="info-tab-content-wrapper" title="Defines how Turbo handles scrolling. Meta Tag: turbo-refresh-scroll">
+          <div class="info-tab-content-wrapper" title="Defines if Turbo should perform a full page reload. Meta Tag: turbo-visit-control">
             <span>Visit Control:</span>
             <span>${getMetaContent("turbo-visit-control") || "-"}</span>
           </div>
