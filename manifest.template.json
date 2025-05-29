@@ -24,14 +24,23 @@
       "css": ["styles/hotwire_dev_tools_content.css"]
     }
   ],
-  "permissions": ["storage", "activeTab"],
+  "devtools_page": "devtools.html",
+  "background": {
+    "service_worker": "dist/browser_panel/background.js"
+  },
+  "permissions": ["storage", "activeTab", "scripting", "tabs"],
   "action": {
     "default_title": "Click or press Alt+Shift+S to launch Dev Tools",
     "default_popup": "popup.html"
   },
   "web_accessible_resources": [
     {
-      "resources": ["dist/hotwire_dev_tools_inject_script.js", "styles/hotwire_dev_tools_detail_panel.css"],
+      "resources": [
+        "dist/browser_panel/agent.js",
+        "dist/browser_panel/proxy.js",
+        "dist/hotwire_dev_tools_inject_script.js",
+        "styles/hotwire_dev_tools_detail_panel.css"
+      ],
       "matches": ["<all_urls>"]
     }
   ],

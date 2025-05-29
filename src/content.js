@@ -146,6 +146,14 @@ const injectCustomScript = () => {
   script.src = chrome.runtime.getURL("dist/hotwire_dev_tools_inject_script.js")
   script.id = "hotwire-dev-tools-inject-script"
   document.documentElement.appendChild(script)
+
+  // Alpine.js detected, inject the proxy script
+  const browserPanelScript = document.createElement("script")
+  browserPanelScript.src = chrome.runtime.getURL("dist/browser_panel/proxy.js")
+  document.documentElement.appendChild(browserPanelScript)
+  browserPanelScript.onload = function () {
+    browserPanelScript.remove()
+  }
 }
 
 const consoleLogTurboStream = (event) => {
