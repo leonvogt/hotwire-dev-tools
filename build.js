@@ -31,7 +31,19 @@ const outputFileNames = {
 }
 
 const esbuildConfig = {
-  entryPoints: ["./src/content.js", "./src/popup.js", "./src/inject_script.js"],
+  entryPoints: [
+    "./src/content.js",
+    "./src/popup.js",
+    "./src/inject_script.js",
+    "./src/browser_panel/panel.js",
+    "./src/browser_panel/proxy.js",
+    "./src/scripts/backend.js",
+    "./src/scripts/background.js",
+    "./src/scripts/content_proxy.js",
+    "./src/scripts/detector.js",
+    "./src/scripts/devtools-background.js",
+    "./src/scripts/proxy.js",
+  ],
   bundle: true,
   minify: production,
   sourcemap: !production,
