@@ -1,7 +1,6 @@
 import { isInspector, inspectorPortNameToTabId, PROXY, CONTENT } from "../browser_panel/ports"
 import { CONTENT_TO_BACKGROUND_MESSAGES } from "../lib/constants"
 
-// TODO: refactor this to a class?
 let ports = {}
 
 const initPortsForTab = (tabId) => {
@@ -32,6 +31,8 @@ chrome.runtime.onConnect.addListener(async (port) => {
       }
       console.log(`(${port.name}, tabId: ${contentTabId}) -> background: `, message)
       if (message.type === CONTENT_TO_BACKGROUND_MESSAGES.ALPINE_DETECTED && message.alpineDetected && contentTabId) {
+        console.log("Set icon and popup for tabId", contentTabId)
+
         chrome.action.setIcon({
           tabId: contentTabId,
           path: {
@@ -40,10 +41,10 @@ chrome.runtime.onConnect.addListener(async (port) => {
             128: "/images/icon-128.png",
           },
         })
-        chrome.action.setPopup({
-          tabId: contentTabId,
-          popup: `popups/enabled.html`,
-        })
+        // chrome.action.setPopup({
+        //   tabId: contentTabId,
+        //   popup: `popups/enabled.html`,
+        // })
       }
     }
     port.onMessage.addListener(contentListener)
@@ -59,7 +60,7 @@ chrome.runtime.onConnect.addListener(async (port) => {
     console.log(`Injecting proxy for tabId ${tabId}`)
     await chrome.scripting.executeScript({
       target: { tabId: tabId },
-      files: ["./proxy.js"],
+      files: ["dist/scripts/proxy.js"],
     })
     initPortsForTab(tabId)
     ports[tabId].devtools = port

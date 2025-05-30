@@ -1,9 +1,4 @@
-export const [state, setState] = createStore({
-  version: {},
-  errors: [],
-  components: {},
-  preloadedComponentData: {},
-})
+export const createStore = () => {}
 
 export const setAlpineVersionFromBackend = (version) => {
   setState({

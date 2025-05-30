@@ -29,6 +29,8 @@ function serializeDataProperty(value) {
 }
 
 function init() {
+  console.log("Alpine Devtools Backend: Initializing...")
+
   class AlpineDevtoolsBackend {
     constructor() {
       this.components = []
@@ -392,6 +394,8 @@ function init() {
       waitForAlpine(() => {
         devtoolsBackend.start()
       })
+    } else {
+      console.log("Alpine Devtools Backend: Handshake received from unknown source:", e.data.source)
     }
   }
 

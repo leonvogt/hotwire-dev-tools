@@ -3,20 +3,21 @@ import { CONTENT_TO_BACKGROUND_MESSAGES } from "../lib/constants"
 function detect(win) {
   const detector = {
     delay: 300,
-    retry: 4
+    retry: 4,
   }
   doDetect()
   function doDetect() {
     setTimeout(() => {
       const alpineGlobalDetected = !!window.Alpine
       const alpineElementDetected = !!document.querySelector("[x-data]")
-      const alpineDetected = alpineGlobalDetected || alpineElementDetected
+      // const alpineDetected = alpineGlobalDetected || alpineElementDetected
+      const alpineDetected = true
       win.postMessage(
         {
           alpineDetected,
-          type: CONTENT_TO_BACKGROUND_MESSAGES.ALPINE_DETECTED
+          type: CONTENT_TO_BACKGROUND_MESSAGES.ALPINE_DETECTED,
         },
-        "*"
+        "*",
       )
       if (!alpineDetected && detector.retry > 0) {
         detector.retry -= 1

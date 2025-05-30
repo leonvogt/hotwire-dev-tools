@@ -16,7 +16,7 @@ function createPanelIfHasAlpine() {
     return
   }
 
-  chrome.devtools.inspectedWindow.eval("!!(window.Alpine)", function (hasAlpine) {
+  chrome.devtools.inspectedWindow.eval("!!(window.Stimulus)", function (hasAlpine) {
     if (created) {
       return
     }

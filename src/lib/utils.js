@@ -64,28 +64,7 @@ export function set(object, path, value) {
 // with default options, will run 3 attempts, 1 at 0s, 1 at 500ms, 1 at 1000ms
 // so should hook into Alpine.js if it loads within 1s of the script triggering
 export function waitForAlpine(cb, { maxAttempts = 3, interval = 500, delayFirstAttempt = false } = {}) {
-  let attempts = delayFirstAttempt ? 0 : 1
-  if (!delayFirstAttempt && window.Alpine) {
-    if (process.env.NODE_ENV !== "production") {
-      console.info(`waitForAlpine, attempts: ${attempts}/${maxAttempts}`)
-    }
-    cb()
-    return
-  }
-  if (attempts >= maxAttempts) return
-  const timer = setInterval(wait, interval)
-  function wait() {
-    attempts++
-    if (process.env.NODE_ENV !== "production") {
-      console.info(`waitForAlpine, attempts: ${attempts}/${maxAttempts}`)
-    }
-    if (attempts >= maxAttempts || window.Alpine) {
-      clearInterval(timer)
-    }
-    if (window.Alpine) {
-      cb()
-    }
-  }
+  cb()
 }
 
 function mapDataTypeToInputType(dataType) {
