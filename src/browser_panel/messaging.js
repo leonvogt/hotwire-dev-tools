@@ -9,6 +9,9 @@ function setPort(port) {
 }
 
 // Backend -> Panel messages
+// Here we receive messages from the backend script that runs in the page context,
+// and save them into the global state for the panel to use.
+// The panel will then automatically re-render the components based on the new state.
 export function handleBackendToPanelMessage(message, port) {
   if (message.type === BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS) {
     setTurboFrames(message.frames, message.url)

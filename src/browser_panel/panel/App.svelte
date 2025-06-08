@@ -12,7 +12,7 @@
 
     <div id="turbo-frame-tab" class="tabcontent active">
       <div class="d-flex justify-content-between">
-        <h2>Turbo Frames</h2>
+        <TurboFrames />
         <button class="refresh-turbo-frames button-as-link">
           <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
             <!-- Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. -->
@@ -23,26 +23,6 @@
             />
           </svg>
         </button>
-      </div>
-      <div class="turbo-frame-content">
-        <div class="lists">
-          <div id="turbo-frame-list"></div>
-          <template id="turbo-frame-template">
-            <div class="turbo-frame">
-              <div class="turbo-frame-id"></div>
-            </div>
-          </template>
-        </div>
-
-        <div class="details">
-          <div id="turbo-frame-details"></div>
-          <template id="turbo-frame-details-template">
-            <div class="turbo-frame">
-              <div class="turbo-frame-id"></div>
-              <div class="turbo-frame-src"></div>
-            </div>
-          </template>
-        </div>
       </div>
     </div>
 
@@ -100,10 +80,5 @@
         </div>
       </div>
     </div>
-  </div>
-
-
-  <div class="card">
-    <TurboFrames />
   </div>
 </main>

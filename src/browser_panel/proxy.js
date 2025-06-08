@@ -28,8 +28,6 @@ function proxy() {
   function sendMessageToDevtools(e) {
     if (e.data && e.data.source === HOTWIRE_DEV_TOOLS_BACKEND_SOURCE) {
       proxyPort.postMessage(e.data.payload)
-    } else {
-      console.log("Not forwarding message", e)
     }
   }
 
