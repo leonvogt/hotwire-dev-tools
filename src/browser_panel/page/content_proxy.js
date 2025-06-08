@@ -1,4 +1,4 @@
-import { CONTENT } from "../browser_panel/ports"
+import { CONTENT } from "../ports"
 
 const port = chrome.runtime.connect({ name: CONTENT })
 

@@ -1,10 +1,12 @@
-import { inspectorPortName } from "./ports"
-import { panelPostMessage, handleBackendToPanelMessage } from "./messaging"
-import { PANEL_TO_BACKEND_MESSAGES } from "../lib/constants"
-import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "./ports"
+import { inspectorPortName } from "../ports"
+import { panelPostMessage, handleBackendToPanelMessage } from "../messaging"
+import { PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
+import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "../ports"
 
 // Entrypoint for DevTool panel
 function connect() {
+  console.log("Hotwire DevTools Panel: connecting...")
+
   // The flow goes:
   // 1. [panel] inject backend
   // 2. [panel] connect on an "inspector" port
@@ -23,7 +25,7 @@ function connect() {
     })
   })
 
-  injectScript(chrome.runtime.getURL("/dist/scripts/backend.js"), () => {
+  injectScript(chrome.runtime.getURL("/dist/browser_panel/page/backend.js"), () => {
     const port = chrome.runtime.connect({
       name: inspectorPortName(chrome.devtools.inspectedWindow.tabId),
     })
