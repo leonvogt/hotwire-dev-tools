@@ -1,4 +1,14 @@
-export const addHighlightOverlayToElements = (elements, color = "#77e8b9", overlayClassName = "hotwire-dev-tools-highlight-overlay", opacity = "0.2") => {
+export const addHighlightOverlayToElements = (elementsOrSelector, color = "#77e8b9", overlayClassName = "hotwire-dev-tools-highlight-overlay", opacity = "0.2") => {
+  let elements = []
+
+  if (typeof elementsOrSelector === "string") {
+    elements = Array.from(document.querySelectorAll(elementsOrSelector))
+  } else if (Array.isArray(elementsOrSelector)) {
+    elements = elementsOrSelector
+  } else if (elementsOrSelector instanceof Element) {
+    elements = [elementsOrSelector]
+  }
+
   elements.forEach((element) => {
     const rect = element.getBoundingClientRect()
     createOverlay(rect, color, overlayClassName, opacity)
