@@ -18,8 +18,6 @@ export default mount(App, {
 
 // Entrypoint for DevTool panel
 function connect() {
-  console.log("Hotwire DevTools Panel: connecting...")
-
   // The flow goes:
   // 1. [panel] inject backend
   // 2. [panel] connect on an "inspector" port
@@ -54,6 +52,22 @@ function connect() {
       if (disconnected) return
       handleBackendToPanelMessage(message, port)
     })
+  })
+
+  addEventListeners()
+}
+
+function addEventListeners() {
+  // Handle tab navigation
+  document.querySelector(".tablist").addEventListener("click", (event) => {
+    document.querySelectorAll(".tabcontent, .tablinks").forEach((tab) => {
+      tab.className = tab.className.replace(" active", "")
+    })
+
+    const clickedTab = event.target
+    const desiredTabContent = document.getElementById(event.target.dataset.tabId)
+    clickedTab.className += " active"
+    desiredTabContent.className += " active"
   })
 }
 
