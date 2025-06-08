@@ -39,7 +39,6 @@ const esbuildConfig = {
     "./src/browser_panel/panel/panel.js",
     "./src/browser_panel/panel/register.js",
     "./src/browser_panel/page/backend.js",
-    "./src/browser_panel/page/content_proxy.js",
     "./src/browser_panel/proxy.js",
   ],
   bundle: true,

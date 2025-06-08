@@ -21,11 +21,6 @@
     {
       "matches": ["<all_urls>"],
       "css": ["styles/hotwire_dev_tools_content.css"]
-    },
-    {
-      "matches": ["<all_urls>"],
-      "js": ["dist/browser_panel/page/content_proxy.js"],
-      "run_at": "document_start"
     }
   ],
   "host_permissions": ["http://*/*", "https://*/*", "file:///*"],
