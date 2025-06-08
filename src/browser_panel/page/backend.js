@@ -1,6 +1,6 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE } from "../ports"
 import { BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
-
+import { addHighlightOverlayToElements, removeHighlightOverlay } from "../../utils/highlight"
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.
 // It also handles messages from the panel to perform actions like refreshing Turbo frames.
@@ -116,6 +116,18 @@ function init() {
     switch (e.data.payload.action) {
       case PANEL_TO_BACKEND_MESSAGES.GET_TURBO_FRAMES: {
         devtoolsBackend.watchTurboFrames()
+        break
+      }
+      case PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT: {
+        addHighlightOverlayToElements(e.data.payload.selector)
+        break
+      }
+      case PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER: {
+        if (e.data.payload.selector) {
+          removeHighlightOverlay(e.data.payload.selector)
+        } else {
+          removeHighlightOverlay()
+        }
         break
       }
     }
