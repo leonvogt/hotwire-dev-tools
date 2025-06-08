@@ -52,7 +52,7 @@ const esbuildConfig = {
   },
   metafile: true,
   plugins: [
-    sveltePlugin(),
+    sveltePlugin({ compilerOptions: { css: "injected" } }),
     {
       name: "rename-output-files",
       setup(build) {
