@@ -8,7 +8,8 @@
   "dependencies": {
     "esbuild-svelte": "^0.9.3",
     "highlight.js": "^11.11.1",
-    "svelte": "^5.33.18"
+    "svelte": "^5.33.18",
+    "svelte-splitpanes": "^8.0.9"
   },
   "devDependencies": {
     "esbuild": "^0.25.4",

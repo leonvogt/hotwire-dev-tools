@@ -50,6 +50,7 @@ const esbuildConfig = {
   define: {
     "process.env.NODE_ENV": `"${nodeEnv}"`,
   },
+  conditions: ["svelte", "browser"],
   metafile: true,
   plugins: [
     sveltePlugin({ compilerOptions: { css: "injected" } }),
