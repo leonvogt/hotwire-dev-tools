@@ -23,3 +23,7 @@ export const loadCSS = async (url) => {
     .then((css) => css)
     .catch((error) => console.error("Hotwire Dev Tools: Error loading CSS", error))
 }
+
+export const inspectElement = (selector) => {
+  chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector('${selector}'))`)
+}

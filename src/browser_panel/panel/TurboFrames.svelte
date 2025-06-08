@@ -1,5 +1,7 @@
 <script>
   import { getTurboFrames } from '../State.svelte.js';
+  import { inspectElement } from '../../utils/utils.js'
+  import * as Icons from '../../utils/icons.js';
 </script>
 
 <table>
@@ -13,8 +15,11 @@
   </thead>
   <tbody>
     {#each getTurboFrames() as frame}
-      <tr>
-        <td>{frame.id}</td>
+      <tr onclick="{() => inspectElement(`#${frame.id}`)}">
+        <td>
+          {frame.id}
+          {@html Icons.inspectElement}
+        </td>
         <td>{frame.src}</td>
         <td>{frame.loading}</td>
         <td>{frame.attributes}</td>
