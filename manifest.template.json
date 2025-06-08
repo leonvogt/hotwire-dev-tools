@@ -24,17 +24,17 @@
     },
     {
       "matches": ["<all_urls>"],
-      "js": ["dist/scripts/content_proxy.js"],
+      "js": ["dist/browser_panel/page/content_proxy.js"],
       "run_at": "document_start"
     }
   ],
   "host_permissions": ["http://*/*", "https://*/*", "file:///*"],
-  "devtools_page": "devtools-background.html",
+  "devtools_page": "register.html",
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src"
   },
   "background": {
-    "service_worker": "dist/scripts/background.js",
+    "service_worker": "dist/background.js",
     "type": "module"
   },
   "permissions": ["storage", "activeTab", "scripting"],
@@ -48,7 +48,7 @@
       "matches": ["<all_urls>"]
     },
     {
-      "resources": ["panel.html", "devtools-background.html", "dist/scripts/backend.js"],
+      "resources": ["panel.html", "register.html", "dist/browser_panel/page/backend.js"],
       "matches": ["<all_urls>"]
     }
   ],

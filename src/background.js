@@ -1,4 +1,4 @@
-import { isInspector, inspectorPortNameToTabId, PROXY } from "../browser_panel/ports"
+import { isInspector, inspectorPortNameToTabId, PROXY } from "./browser_panel/ports"
 
 let ports = {}
 
@@ -25,7 +25,7 @@ chrome.runtime.onConnect.addListener(async (port) => {
     console.log(`Injecting proxy for tabId ${tabId}`)
     await chrome.scripting.executeScript({
       target: { tabId: tabId },
-      files: ["dist/scripts/proxy.js"],
+      files: ["dist/browser_panel/proxy.js"],
     })
     initPortsForTab(tabId)
     ports[tabId].devtools = port

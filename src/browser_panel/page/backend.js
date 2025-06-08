@@ -1,5 +1,5 @@
-import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE } from "../browser_panel/ports"
-import { BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "../lib/constants"
+import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE } from "../ports"
+import { BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
 
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.
