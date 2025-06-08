@@ -20,11 +20,24 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["dist/hotwire_dev_tools_content.js"],
       "css": ["styles/hotwire_dev_tools_content.css"]
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/scripts/content_proxy.js"],
+      "run_at": "document_start"
     }
   ],
-  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["http://*/*", "https://*/*", "file:///*"],
+  "devtools_page": "devtools-background.html",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src"
+  },
+  "background": {
+    "service_worker": "dist/scripts/background.js",
+    "type": "module"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_title": "Click or press Alt+Shift+S to launch Dev Tools",
     "default_popup": "popup.html"
@@ -32,6 +45,10 @@
   "web_accessible_resources": [
     {
       "resources": ["dist/hotwire_dev_tools_inject_script.js", "styles/hotwire_dev_tools_detail_panel.css"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["panel.html", "devtools-background.html", "dist/scripts/backend.js"],
       "matches": ["<all_urls>"]
     }
   ],
