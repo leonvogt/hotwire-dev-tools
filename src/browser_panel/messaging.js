@@ -1,5 +1,5 @@
 import { BACKEND_TO_PANEL_MESSAGES } from "../lib/constants"
-import { setComponentsList } from "./state"
+import { setTurboFrames } from "./State.svelte.js"
 
 function setPort(port) {
   if (!window.__HotwireDevTools) {
@@ -11,7 +11,7 @@ function setPort(port) {
 // Backend -> Panel messages
 export function handleBackendToPanelMessage(message, port) {
   if (message.type === BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS) {
-    setComponentsList(message.components, message.url)
+    setTurboFrames(message.frames, message.url)
     setPort(port)
   }
 }
