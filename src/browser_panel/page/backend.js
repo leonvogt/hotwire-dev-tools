@@ -33,11 +33,21 @@ function init() {
     }
 
     watchTurboFrames() {
-      const turboFrames = Array.from(document.querySelectorAll("turbo-frame"))
+      const frames = Array.from(document.querySelectorAll("turbo-frame")).map((frame) => {
+        return {
+          id: frame.id,
+          src: frame.src,
+          loading: frame.loading,
+          innerHTML: frame.innerHTML,
+          attributes: Array.from(frame.attributes).reduce((acc, attr) => {
+            acc[attr.name] = attr.value
+            return acc
+          }, {}),
+        }
+      })
+
       this._postMessage({
-        components: turboFrames.map((el, index) => ({
-          id: el.id || `turbo-frame-${index}`,
-        })),
+        frames: frames,
         url: btoa(window.location.href),
         type: BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS,
       })

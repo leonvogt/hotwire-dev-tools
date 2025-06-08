@@ -1,5 +1,5 @@
 <script>
-  import Counter from './Counter.svelte'
+  import TurboFrames from './TurboFrames.svelte'
 </script>
 
 <main>
@@ -104,6 +104,6 @@
 
 
   <div class="card">
-    <Counter />
+    <TurboFrames />
   </div>
 </main>
