@@ -20,6 +20,8 @@
       source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
     })
   };
+
+  const ignoredAttributes = ['id', 'loading', 'src', 'complete', 'aria-busy', 'busy']
 </script>
 
 <table>
@@ -37,15 +39,56 @@
       <tr onmouseenter={() => addHighlightOverlay(selector)}
           onmouseleave={() => hideHighlightOverlay()}>
         <td>
-          <span>{frame.id}</span>
-          <button onclick={() => inspectElement(selector)}>
-            {@html Icons.inspectElement}
-          </button>
+          <div class="d-flex align-items-center justify-content-between">
+            <span>{frame.id}</span>
+            <button class="btn-icon" onclick={() => inspectElement(selector)}>
+              {@html Icons.inspectElement}
+            </button>
+          </div>
         </td>
         <td>{frame.src}</td>
         <td>{frame.loading}</td>
-        <td>{frame.attributes}</td>
+        <td>
+          <ul>
+            {#each Object.entries(frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
+              <li><strong>{key}:</strong> {value}</li>
+            {/each}
+          </ul>
+        </td>
       </tr>
     {/each}
   </tbody>
 </table>
+
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+  }
+
+  button:hover {
+    color: #0056b3;
+  }
+</style>

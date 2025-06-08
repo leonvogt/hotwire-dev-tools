@@ -37,11 +37,10 @@ function init() {
         return {
           id: frame.id,
           src: frame.src,
-          loading: frame.loading,
-          innerHTML: frame.innerHTML,
-          attributes: Array.from(frame.attributes).reduce((acc, attr) => {
-            acc[attr.name] = attr.value
-            return acc
+          loading: frame.getAttribute("loading"),
+          attributes: Array.from(frame.attributes).reduce((attributeMap, attribute) => {
+            attributeMap[attribute.name] = attribute.value
+            return attributeMap
           }, {}),
         }
       })
