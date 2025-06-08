@@ -3,6 +3,19 @@ import { panelPostMessage, handleBackendToPanelMessage } from "../messaging"
 import { PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
 import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "../ports"
 
+import App from "./App.svelte"
+import { mount } from "svelte"
+
+if (chrome.devtools.panels.themeName === "dark") {
+  document.body.classList.add("dark")
+} else {
+  document.body.classList.remove("dark")
+}
+
+export default mount(App, {
+  target: document.querySelector("#app"),
+})
+
 // Entrypoint for DevTool panel
 function connect() {
   console.log("Hotwire DevTools Panel: connecting...")

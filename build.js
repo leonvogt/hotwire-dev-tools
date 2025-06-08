@@ -2,6 +2,7 @@ const esbuild = require("esbuild")
 const fs = require("fs-extra")
 const path = require("path")
 const mustache = require("mustache")
+const sveltePlugin = require("esbuild-svelte")
 
 const nodeEnv = process.env.NODE_ENV
 const browser = process.argv[3] || "chrome"
@@ -51,6 +52,7 @@ const esbuildConfig = {
   },
   metafile: true,
   plugins: [
+    sveltePlugin(),
     {
       name: "rename-output-files",
       setup(build) {
