@@ -1,5 +1,8 @@
 <script>
   import { Pane, Splitpanes } from "svelte-splitpanes"
+  import hljs from "highlight.js/lib/core"
+  import xml from "highlight.js/lib/languages/xml"
+  hljs.registerLanguage("xml", xml)
 
   import { getTurboFrames } from "../../State.svelte.js"
   import { inspectElement } from "../../../utils/utils.js"
@@ -106,7 +109,7 @@
   <Pane size={35}>
     <div class="d-flex justify-content-center align-items-center position-relative">
       <h2>Frames</h2>
-      <button class="position-absolute end-0" onclick={refreshTurboFrames} title="Refresh Turbo Frames List">
+      <button class="btn-icon icon-dark position-absolute end-0" onclick={refreshTurboFrames} title="Refresh Turbo Frames List">
         {@html Icons.refresh}
       </button>
     </div>
@@ -126,7 +129,7 @@
             onmouseleave={() => hideHighlightOverlay()}
           >
             <div>{selector}</div>
-            <button class="btn-icon" onclick={() => inspectElement(selector)}>
+            <button class="btn-icon btn-inspect" onclick={() => inspectElement(selector)}>
               {@html Icons.inspectElement}
             </button>
           </div>
@@ -140,27 +143,45 @@
     {/if}
   </Pane>
 
-  <Pane size={30} class="turbo-frames-detail-panel">
+  <Pane size={30} class="turbo-frames-detail-panel flow">
     {#if currentFrame}
       <div class="d-flex justify-content-center align-items-center position-relative">
         <h2>#{currentFrame.id}</h2>
         {#if currentFrame.src}
           <div class="position-absolute end-0">
-            <button class="" onclick={() => refreshTurboFrame(selectedFrameId)} title="Refresh Turbo Frames List">
+            <button class="btn-icon icon-dark" onclick={() => refreshTurboFrame(selectedFrameId)} title="Refresh Turbo Frames List">
               {@html Icons.refresh}
             </button>
           </div>
         {/if}
       </div>
-      <div>
-        <p><strong>Source:</strong> {currentFrame.src}</p>
-        <p><strong>Loading:</strong> {currentFrame.loading}</p>
-        <h4>Attributes:</h4>
-        <ul>
+
+      <div class="pane-section-heading">Attributes</div>
+      <table class="table table-sm w-100">
+        <tbody>
+          <tr>
+            <td>Source</td>
+            <td>{currentFrame.src || "N/A"}</td>
+          </tr>
+          <tr>
+            <td>Loading</td>
+            <td>{currentFrame.loading || "N/A"}</td>
+          </tr>
           {#each Object.entries(currentFrame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
-            <li><strong>{key}:</strong> {value}</li>
+            <tr>
+              <td>{key}</td>
+              <td>{value}</td>
+            </tr>
           {/each}
-        </ul>
+        </tbody>
+      </table>
+
+      <div class="pane-section-heading">HTML</div>
+      <div class="d-flex justify-content-between align-items-top gap-2">
+        <pre class="html-preview"><code class="language-html">{@html hljs.highlight(currentFrame.html, { language: "html" }).value}</code></pre>
+        <button class="btn-icon btn-inspect" onclick={() => inspectElement(`#${currentFrame.id}`)}>
+          {@html Icons.inspectElement}
+        </button>
       </div>
     {:else}
       <div class="no-entry-hint">
@@ -170,17 +191,3 @@
     {/if}
   </Pane>
 </Splitpanes>
-
-<style>
-  button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #007bff;
-    text-decoration: underline;
-  }
-
-  button:hover {
-    color: #0056b3;
-  }
-</style>

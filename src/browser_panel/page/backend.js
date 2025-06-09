@@ -1,7 +1,7 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE } from "../ports"
 import { BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "../../utils/highlight"
-import { debounce } from "../../utils/utils"
+import { debounce, serializeHTMLElement } from "../../utils/utils"
 
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.
@@ -35,10 +35,14 @@ function init() {
 
     sendTurboFrames = debounce(() => {
       const frames = Array.from(document.querySelectorAll("turbo-frame")).map((frame) => {
+        const html = serializeHTMLElement(frame)
+
         return {
           id: frame.id,
           src: frame.src,
           loading: frame.getAttribute("loading"),
+          innerHTML: frame.innerHTML,
+          html: html,
           attributes: Array.from(frame.attributes).reduce((attributeMap, attribute) => {
             attributeMap[attribute.name] = attribute.value
             return attributeMap
