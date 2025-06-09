@@ -1,5 +1,5 @@
 <script>
-  import TurboTab from "./tabs/Turbo.svelte"
+  import TurboTab from "./tabs/TurboTab.svelte"
   import { handleResize } from "../theme.svelte.js"
 
   const addEventListeners = () => {
