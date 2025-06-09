@@ -29,13 +29,6 @@ function connect() {
   // What that means is that messages go:
   // - panel/devtools -(port)-> background -(port)-> proxy -(window)-> backend
   // - backend -(window)-> proxy -(port)-> background -(port)-> panel/devtools
-  document.querySelector(".refresh-turbo-frames")?.addEventListener("click", () => {
-    panelPostMessage({
-      action: PANEL_TO_BACKEND_MESSAGES.GET_TURBO_FRAMES,
-      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-    })
-  })
-
   injectScript(chrome.runtime.getURL("/dist/browser_panel/page/backend.js"), () => {
     const port = chrome.runtime.connect({
       name: inspectorPortName(chrome.devtools.inspectedWindow.tabId),
