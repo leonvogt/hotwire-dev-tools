@@ -2,6 +2,7 @@
 :root {
   --primary-color: #1976d2;
   --selected-bg: #e3f2fd;
+  --muted-color: rgba(33, 37, 41, 0.749);
 }
 
 body {
@@ -55,11 +56,6 @@ button {
   cursor: pointer;
 }
 
-tr.selected {
-  background-color: var(--selected-bg, #e3f2fd);
-  border-left: 3px solid var(--primary-color, #1976d2);
-}
-
 .splitpanes.default-theme .splitpanes__pane {
   background-color: transparent !important;
 }
@@ -85,6 +81,27 @@ table:focus-visible {
   outline: none;
 }
 
+.no-entry-hint {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  color: var(--muted-color);
+  padding: 1em;
+}
+
+.entry-row {
+  border-bottom: 1px solid #ddd;
+  user-select: none;
+}
+.entry-row:hover {
+  background-color: var(--selected-bg, #e3f2fd);
+}
+.entry-row.selected {
+  background-color: var(--selected-bg, #e3f2fd);
+  border-left: 3px solid var(--primary-color, #1976d2);
+}
+
 /* Utilities */
 .d-flex {
   display: flex;
@@ -108,6 +125,14 @@ table:focus-visible {
   display: flex;
 }
 
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
 .justify-content-between {
   justify-content: space-between;
 }
@@ -129,4 +154,33 @@ table:focus-visible {
 
 .h-100vh {
   height: 100vh;
+}
+
+.visibility-hidden {
+  visibility: hidden;
+}
+
+.p-0 {
+  padding: 0;
+}
+.p-1 {
+  padding: 0.25rem;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.p-3 {
+  padding: 1rem;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.end-0 {
+  right: 0;
 }

@@ -63,6 +63,16 @@ function init() {
       )
     }
 
+    refreshTurboFrame(id) {
+      const frame = document.querySelector(`turbo-frame#${id}`)
+      if (frame) {
+        frame.reload()
+        this.sendTurboFrames()
+      } else {
+        console.warn(`Hotwire DevTools Backend: Turbo frame with id "${id}" not found.`)
+      }
+    }
+
     observeNode(node) {
       const observerOptions = {
         childList: true,
@@ -104,8 +114,6 @@ function init() {
       window.removeEventListener("message", handshake)
       window.addEventListener("message", handleMessages)
       devtoolsBackend.start()
-    } else {
-      console.log("Hotwire DevTools Backend: Handshake received from unknown source:", e.data.source)
     }
   }
 
@@ -122,6 +130,12 @@ function init() {
     switch (e.data.payload.action) {
       case PANEL_TO_BACKEND_MESSAGES.GET_TURBO_FRAMES: {
         devtoolsBackend.sendTurboFrames()
+        break
+      }
+      case PANEL_TO_BACKEND_MESSAGES.REFRESH_TURBO_FRAME: {
+        console.log("Hotwire DevTools Backend: Refreshing Turbo frame with id:", e.data.payload.id)
+
+        devtoolsBackend.refreshTurboFrame(e.data.payload.id)
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT: {

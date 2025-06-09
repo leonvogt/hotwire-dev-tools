@@ -21,6 +21,7 @@ export const PANEL_TO_BACKEND_MESSAGES = {
   HIDE_HOVER: "hide-hover",
   EDIT_ATTRIBUTE: "edit-attribute",
   GET_TURBO_FRAMES: "get-turbo-frames",
+  REFRESH_TURBO_FRAME: "refresh-turbo-frame",
 }
 
 export const CONTENT_TO_BACKGROUND_MESSAGES = {}
