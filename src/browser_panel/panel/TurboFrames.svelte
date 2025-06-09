@@ -6,6 +6,7 @@
   import { panelPostMessage } from "../messaging"
   import { PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "../ports"
+  import { orientation, breakpoint, horizontalPanes } from "../theme.svelte.js"
   import * as Icons from "../../utils/icons.js"
 
   let turboFrames = $state([])
@@ -33,6 +34,13 @@
   const hideHighlightOverlay = () => {
     panelPostMessage({
       action: PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER,
+      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    })
+  }
+
+  const refreshTurboFrams = () => {
+    panelPostMessage({
+      action: PANEL_TO_BACKEND_MESSAGES.GET_TURBO_FRAMES,
       source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
     })
   }
@@ -77,8 +85,12 @@
   const ignoredAttributes = ["id", "loading", "src", "complete", "aria-busy", "busy"]
 </script>
 
-<Splitpanes class="turbo-frames-list-panel">
+<Splitpanes class="turbo-frames-list-panel" horizontal={$horizontalPanes}>
   <Pane size={80}>
+    <button class="button-as-link" onclick={refreshTurboFrams} title="Refresh Turbo Frames List">
+      {@html Icons.refresh}
+    </button>
+
     <div class="scrollable-list">
       <table tabindex="0" onkeydown={handleKeyDown} role="grid" aria-label="Turbo Frames List">
         <thead>
