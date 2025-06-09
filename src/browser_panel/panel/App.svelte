@@ -1,5 +1,5 @@
 <script>
-  import TurboFrames from "./TurboFrames.svelte"
+  import TurboTab from "./tabs/Turbo.svelte"
   import { handleResize } from "../theme.svelte.js"
 
   const addEventListeners = () => {
@@ -14,13 +14,14 @@
 <main {@attach addEventListeners}>
   <div id="container">
     <div class="tablist">
-      <button class="tablinks active" data-tab-id="turbo-frame-tab">Turbo Frames</button>
-      <button class="tablinks" data-tab-id="turbo-stream-tab">Turbo Streams</button>
+      <button class="tablinks active" data-tab-id="turbo-tab">Turbo</button>
       <button class="tablinks" data-tab-id="stimulus-tab">Stimulus</button>
+      <button class="tablinks" data-tab-id="stimulus-tab">Native</button>
+      <button class="tablinks" data-tab-id="stimulus-tab">Events</button>
     </div>
 
-    <div id="turbo-frame-tab" class="tabcontent active">
-      <TurboFrames />
+    <div id="turbo-tab" class="tabcontent active">
+      <TurboTab />
     </div>
 
     <div id="turbo-stream-tab" class="tabcontent">
