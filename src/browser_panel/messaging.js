@@ -1,5 +1,5 @@
 import { BACKEND_TO_PANEL_MESSAGES } from "../lib/constants"
-import { setTurboFrames } from "./State.svelte.js"
+import { setTurboFrames, addTurboStream } from "./State.svelte.js"
 
 function setPort(port) {
   if (!window.__HotwireDevTools) {
@@ -13,9 +13,16 @@ function setPort(port) {
 // and save them into the global state for the panel to use.
 // The panel will then automatically re-render the components based on the new state.
 export function handleBackendToPanelMessage(message, port) {
-  if (message.type === BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS) {
-    setTurboFrames(message.frames, message.url)
-    setPort(port)
+  switch (message.type) {
+    case BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS:
+      setTurboFrames(message.frames, message.url)
+      setPort(port)
+      break
+    case BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED:
+      addTurboStream(message.turboStream)
+      break
+    default:
+      console.warn(`Unknown message type from backend: ${message.type}`)
   }
 }
 

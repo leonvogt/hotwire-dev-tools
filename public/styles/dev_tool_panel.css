@@ -7,7 +7,9 @@
   --dark-color: #212529;
   --selected-bg: #e3f2fd;
   --muted-color: rgba(33, 37, 41, 0.749);
+
   --navbar-height: 2.75rem;
+  --available-content-height: calc(100vh - var(--navbar-height) - 1.5em);
 }
 
 body {
@@ -50,7 +52,7 @@ button {
 .tabcontent {
   display: none;
   padding: 0.5em 1em;
-  height: calc(100vh - var(--navbar-height) - 1.5em);
+  height: var(--available-content-height);
 
   &.active {
     display: block;
@@ -202,7 +204,7 @@ pre.html-preview {
 
 .scrollable-list {
   overflow-y: auto;
-  max-height: 100vh;
+  max-height: var(--available-content-height);
 }
 
 .h-100 {
@@ -227,6 +229,14 @@ pre.html-preview {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.text-muted {
+  color: var(--muted-color);
 }
 
 .p-0 {

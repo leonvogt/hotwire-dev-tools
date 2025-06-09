@@ -46,3 +46,7 @@ export const serializeHTMLElement = (element, escapeHTML) => {
 
   return string
 }
+
+export const generateUUID = () => {
+  return crypto.randomUUID()
+}

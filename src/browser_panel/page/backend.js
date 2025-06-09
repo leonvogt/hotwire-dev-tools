@@ -1,7 +1,7 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE } from "../ports"
 import { BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "../../utils/highlight"
-import { debounce, serializeHTMLElement } from "../../utils/utils"
+import { debounce, serializeHTMLElement, generateUUID } from "../../utils/utils"
 
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.
@@ -16,11 +16,13 @@ function init() {
     start() {
       this.sendTurboFrames()
 
+      document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
+
       const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
       events.forEach((event) => {
         document.addEventListener(event, () => {
-          console.log("Hotwire DevTools Backend: Event received:", event)
-          this.observeNode(document.querySelector("body"))
+          this.sendTurboFrames()
+          // this.observeNode(document.querySelector("body"))
         })
       })
 
@@ -36,9 +38,11 @@ function init() {
     sendTurboFrames = debounce(() => {
       const frames = Array.from(document.querySelectorAll("turbo-frame")).map((frame) => {
         const html = serializeHTMLElement(frame)
+        const uuid = generateUUID()
 
         return {
           id: frame.id,
+          uuid: uuid,
           src: frame.src,
           loading: frame.getAttribute("loading"),
           innerHTML: frame.innerHTML,
@@ -56,6 +60,30 @@ function init() {
         type: BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS,
       })
     }, 100)
+
+    handleIncomingTurboStream = (event) => {
+      const turboStream = event.target
+      const turboStreamContent = turboStream.outerHTML
+      const action = turboStream.getAttribute("action")
+      const target = turboStream.getAttribute("target")
+      const targets = turboStream.getAttribute("targets")
+      const targetSelector = target ? `#${target}` : targets
+      const uuid = generateUUID()
+      const time = new Date().toLocaleTimeString()
+
+      this._postMessage({
+        type: BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED,
+        turboStream: {
+          turboStreamContent: turboStreamContent,
+          action: action,
+          target: target,
+          targets: targets,
+          targetSelector: targetSelector,
+          uuid: uuid,
+          time: time,
+        },
+      })
+    }
 
     _postMessage(payload) {
       window.postMessage(
