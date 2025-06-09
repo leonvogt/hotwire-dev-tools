@@ -27,3 +27,22 @@ export const loadCSS = async (url) => {
 export const inspectElement = (selector) => {
   chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector('${selector}'))`)
 }
+
+export const serializeHTMLElement = (element, escapeHTML) => {
+  if (!(element instanceof Element)) {
+    throw new Error("Expected an Element")
+  }
+
+  const attributes = Array.from(element.attributes)
+    .map((attr) => `${attr.name}="${attr.value}"`)
+    .join(" ")
+
+  const tagName = element.tagName.toLowerCase()
+  const string = `<${tagName}${attributes ? " " + attributes : ""}></${tagName}>`
+
+  if (escapeHTML) {
+    return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
+  }
+
+  return string
+}
