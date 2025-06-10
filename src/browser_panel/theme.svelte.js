@@ -1,36 +1,26 @@
 import { writable } from "svelte/store"
+import { MediaQuery } from "svelte/reactivity"
 import { debounce } from "../utils/utils"
 
 const breakpoints = {
   md: 640,
   lg: 960,
 }
+const large = new MediaQuery(`(min-width: ${breakpoints.lg}px)`)
+const medium = new MediaQuery(`(min-width: ${breakpoints.md}px)`)
 
-let width = typeof window !== "undefined" ? window.innerWidth : 1024
-
-function updateWidth() {
-  const newWidth = window.innerWidth
-  width = newWidth === 0 ? width : newWidth
-  return width
+const detectOrientation = () => {
+  return medium.current ? "landscape" : "portrait"
 }
 
-function isLargerThan(minWidth) {
-  if (typeof window === "undefined") return false
-  return updateWidth() > minWidth
-}
-
-function detectOrientation() {
-  return isLargerThan(breakpoints.lg) ? "landscape" : "portrait"
-}
-
-function detectBreakpoint() {
-  if (isLargerThan(breakpoints.lg)) return "lg"
-  if (isLargerThan(breakpoints.md)) return "md"
-  return "sm"
-}
-
-function detectHorizontalPanes() {
+const detectHorizontalPanes = () => {
   return detectOrientation() === "portrait"
+}
+
+const detectBreakpoint = () => {
+  if (large.current) return "lg"
+  if (medium.current) return "md"
+  return "sm"
 }
 
 export const orientation = writable(detectOrientation())
