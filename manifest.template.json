@@ -29,10 +29,18 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src"
   },
+  {{#needs_service_worker}}
   "background": {
     "service_worker": "dist/background.js",
     "type": "module"
   },
+  {{/needs_service_worker}}
+  {{^needs_service_worker}}
+  "background": {
+    "scripts": ["dist/background.js"],
+    "persistent": false
+  },
+  {{/needs_service_worker}}
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_title": "Click or press Alt+Shift+S to launch Dev Tools",
