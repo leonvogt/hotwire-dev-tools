@@ -8,6 +8,7 @@
   --selected-bg: #e3f2fd;
   --muted-color: rgba(33, 37, 41, 0.749);
 
+  --panel-background-color: #ffffff;
   --navbar-height: 2.75rem;
   --available-content-height: calc(100vh - var(--navbar-height) - 1.5em);
 }
@@ -55,6 +56,7 @@ button {
   padding: 0.5em 1em;
   height: var(--available-content-height);
   margin-top: var(--navbar-height);
+  background-color: var(--panel-background-color);
 
   &.active {
     display: block;

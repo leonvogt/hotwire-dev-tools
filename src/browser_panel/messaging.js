@@ -20,6 +20,7 @@ export function handleBackendToPanelMessage(message, port) {
       break
     case BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED:
       addTurboStream(message.turboStream)
+      setPort(port)
       break
     default:
       console.warn(`Unknown message type from backend: ${message.type}`)

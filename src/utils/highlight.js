@@ -3,7 +3,7 @@ export const addHighlightOverlayToElements = (elementsOrSelector, color = "#007a
 
   if (typeof elementsOrSelector === "string") {
     elements = Array.from(document.querySelectorAll(elementsOrSelector))
-  } else if (Array.isArray(elementsOrSelector)) {
+  } else if (Array.isArray(elementsOrSelector) || elementsOrSelector instanceof NodeList || elementsOrSelector instanceof HTMLCollection) {
     elements = elementsOrSelector
   } else if (elementsOrSelector instanceof Element) {
     elements = [elementsOrSelector]
