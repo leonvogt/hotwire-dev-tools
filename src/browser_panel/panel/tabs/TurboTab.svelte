@@ -50,7 +50,7 @@
 
   // Set the first Turbo Frame as selected if none is selected
   $effect(() => {
-    turboFrames = getTurboFrames()
+    turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
     turboStreams = getTurboStreams()
 
     if (!selected.uuid && turboFrames.length > 0) {
