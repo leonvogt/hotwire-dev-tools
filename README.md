@@ -1,6 +1,9 @@
 # Hotwire Dev Tools
 
-Hotwire Dev Tools is a browser extension with the goal of helping developers inspect their Turbo and Stimulus applications.
+Hotwire Dev Tools is a browser extension designed to help developers inspect their Turbo and Stimulus applications.
+
+![image](https://github.com/user-attachments/assets/2501834c-87a2-4016-9d6d-f57eb467df8a)
+
 
 **Turbo features**:
 
