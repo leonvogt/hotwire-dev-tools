@@ -1,8 +1,20 @@
+<div align="center">
+
 # Hotwire Dev Tools
 
-Hotwire Dev Tools is a browser extension with the goal of helping developers inspect their Turbo and Stimulus applications.
+**Hotwire Dev Tools is a browser extension designed to help developers inspect their Turbo and Stimulus applications.**
 
-**Turbo features**:
+<img alt="screenshot" src="https://res.cloudinary.com/dlvuixik3/image/upload/v1750143707/6bee3a30-3545-48ea-b80f-054d0ef25bf2_xmdeg2.png" width="800px" height="auto">
+
+[![Firefox](https://img.shields.io/badge/Firefox-FF7139?style=for-the-badge&logo=Firefox-Browser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/hotwire-dev-tools/)
+[![Google Chrome](https://img.shields.io/badge/Google%20Chrome-4285F4?style=for-the-badge&logo=GoogleChrome&logoColor=white)](https://chromewebstore.google.com/detail/hotwire-dev-tools/phdobjkbablgffmmgnjbmfbbofnbkajc)
+[![Safari](https://img.shields.io/badge/Safari-000000?style=for-the-badge&logo=Safari&logoColor=white)](https://apps.apple.com/ch/app/hotwire-dev-tools/id6503706225)
+
+</div>
+
+## Features
+
+**Turbo**:
 
 - Highlight Turbo Frames
 - Monitor incoming Turbo Streams
@@ -12,7 +24,7 @@ Hotwire Dev Tools is a browser extension with the goal of helping developers ins
 - Log warning when an element has `data-turbo-permanent` but no ID or a non-unique ID
 - Highlight Turbo Frame changes
 
-**Stimulus features**:
+**Stimulus**:
 
 - Highlight Stimulus controllers
 - List all Stimulus controllers on the page
@@ -29,9 +41,11 @@ The extension can be installed at:
 
 ## Usage
 
-Once installed, click on the extension icon (or press Alt+Shift+S) to open the Dev Tools options.  
-From there you can enable/disable the features you want to use.  
-_Note: On Firefox you may need to select "Always allow on example.com" to enable the extension on your site._
+Once installed, click the extension icon (or press Alt+Shift+S) to open the DevTools options.  
+From there, you can enable/disable the features you want to use.
+
+> [!NOTE]
+> On Firefox you may need to select "Always allow on example.com" to enable the extension on your site
 
 ## Development
 
