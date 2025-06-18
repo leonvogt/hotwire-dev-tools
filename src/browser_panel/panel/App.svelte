@@ -1,7 +1,9 @@
 <script>
   import TurboTab from "./tabs/TurboTab.svelte"
   import { handleResize } from "../theme.svelte.js"
+  import { setDevtoolInstance } from "../../lib/devtool.js"
 
+  setDevtoolInstance()
   let currentTab = $state("turbo-tab")
 
   const addEventListeners = () => {

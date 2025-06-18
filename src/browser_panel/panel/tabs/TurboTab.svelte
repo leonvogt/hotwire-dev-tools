@@ -10,6 +10,7 @@
   import { panelPostMessage } from "../../messaging.js"
   import { PANEL_TO_BACKEND_MESSAGES } from "../../../lib/constants.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "../../ports.js"
+  import { getDevtoolInstance } from "../../../lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
   import * as Icons from "../../../utils/icons.js"
 
@@ -20,6 +21,8 @@
   const turboStreamAnimationDuration = 300
   const ignoredAttributes = ["id", "loading", "src", "complete", "aria-busy", "busy"]
 
+  const devTool = getDevtoolInstance()
+  let options = $state({})
   let turboFrames = $state([])
   let turboStreams = $state([])
 
@@ -49,7 +52,7 @@
   }
 
   // Set the first Turbo Frame as selected if none is selected
-  $effect(() => {
+  $effect(async () => {
     turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
     turboStreams = getTurboStreams()
 
@@ -61,6 +64,8 @@
         stream: null,
       }
     }
+
+    options = await devTool.getOptions()
   })
 
   const scrollIntoView = debounce((element) => {
@@ -136,10 +141,21 @@
       }
     }, 10)
   }
+
+  const handlePaneResize = (event) => {
+    const dimensions = event.detail.map((pane) => pane.size)
+    devTool.saveOptions({
+      turboPaneDimensions: {
+        streams: dimensions[0],
+        frames: dimensions[1],
+        details: dimensions[2],
+      },
+    })
+  }
 </script>
 
-<Splitpanes class="turbo-frames-list-panel" horizontal={$horizontalPanes}>
-  <Pane size={35}>
+<Splitpanes class="turbo-frames-list-panel" horizontal={$horizontalPanes} on:resized={handlePaneResize}>
+  <Pane size={options.turboPaneDimensions?.streams || 35}>
     <div class="d-flex flex-column h-100">
       <div class="d-flex justify-content-center">
         <h2>Streams</h2>
@@ -176,7 +192,7 @@
     </div>
   </Pane>
 
-  <Pane size={35}>
+  <Pane size={options.turboPaneDimensions?.frames || 35}>
     {#snippet turboFrameRow(frame, depth = 0)}
       {@const selector = `#${frame.id}`}
       <div
@@ -223,7 +239,7 @@
     </div>
   </Pane>
 
-  <Pane size={30} class="turbo-frames-detail-panel flow">
+  <Pane size={options.turboPaneDimensions?.details || 30} class="turbo-frames-detail-panel flow">
     {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
       <div class="d-flex justify-content-center align-items-center position-relative">
         <h2 class="pe-4">#{selected.frame.id}</h2>
