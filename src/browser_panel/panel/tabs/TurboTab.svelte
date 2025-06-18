@@ -251,35 +251,36 @@
           </div>
         {/if}
       </div>
-
-      <div class="pane-section-heading">Attributes</div>
-      <table class="table table-sm w-100">
-        <tbody>
-          <tr>
-            <td>Source</td>
-            <td>{selected.frame.src || "N/A"}</td>
-          </tr>
-          <tr>
-            <td>Loading</td>
-            <td>{selected.frame.loading || "N/A"}</td>
-          </tr>
-          {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
+      <div class="scrollable-list flow">
+        <div class="pane-section-heading">Attributes</div>
+        <table class="table table-sm w-100">
+          <tbody>
             <tr>
-              <td>{key}</td>
-              <td>{value}</td>
+              <td>Source</td>
+              <td>{selected.frame.src || "N/A"}</td>
             </tr>
-          {/each}
-        </tbody>
-      </table>
+            <tr>
+              <td>Loading</td>
+              <td>{selected.frame.loading || "N/A"}</td>
+            </tr>
+            {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
+              <tr>
+                <td>{key}</td>
+                <td>{value}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
 
-      <div class="pane-section-heading">HTML</div>
-      <div class="d-flex justify-content-between align-items-top gap-2">
-        <div class="html-preview">
-          <pre><code class="language-html">{@html hljs.highlight(selected.frame.html, { language: "html" }).value}</code></pre>
+        <div class="pane-section-heading">HTML</div>
+        <div class="d-flex justify-content-between align-items-top gap-2">
+          <div class="html-preview">
+            <pre><code class="language-html">{@html hljs.highlight(selected.frame.html, { language: "html" }).value}</code></pre>
+          </div>
+          <button class="btn-icon btn-inspect" onclick={() => inspectElement(`#${selected.frame.id}`)}>
+            {@html Icons.inspectElement}
+          </button>
         </div>
-        <button class="btn-icon btn-inspect" onclick={() => inspectElement(`#${selected.frame.id}`)}>
-          {@html Icons.inspectElement}
-        </button>
       </div>
     {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
       <div class="d-flex justify-content-center align-items-center position-relative">
