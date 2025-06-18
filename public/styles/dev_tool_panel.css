@@ -6,6 +6,7 @@
   --light-color: #ebebeb;
   --dark-color: #212529;
   --selected-bg: #e3f2fd;
+  --hover-for-select-bg: #f0f8ff;
   --muted-color: rgba(33, 37, 41, 0.749);
 
   --panel-background-color: #ffffff;
@@ -123,11 +124,21 @@ svg.icon-dark {
   padding-left: calc(var(--depth, 0) * var(--indent-size) + 0.5rem);
 }
 .entry-row:hover {
-  background-color: var(--selected-bg, #e3f2fd);
+  background-color: var(--hover-for-select-bg);
 }
 .entry-row.selected {
-  background-color: var(--selected-bg, #e3f2fd);
-  border-left: 3px solid var(--primary-color, #1976d2);
+  background-color: var(--selected-bg);
+  border-left: 3px solid var(--primary-color);
+}
+
+.entry-row .btn-hoverable {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.entry-row:hover .btn-hoverable {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .html-preview {
@@ -260,6 +271,10 @@ svg.icon-dark {
 
 .mb-3 {
   margin-bottom: 1rem;
+}
+
+.me-2 {
+  margin-right: 0.5rem;
 }
 
 .gap-0 {

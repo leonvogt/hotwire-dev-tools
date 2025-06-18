@@ -191,7 +191,7 @@
         onmouseleave={() => hideHighlightOverlay()}
       >
         <div>{selector}</div>
-        <button class="btn-icon btn-inspect" onclick={() => inspectElement(selector)}>
+        <button class="btn-icon btn-inspect btn-hoverable me-2" onclick={() => inspectElement(selector)}>
           {@html Icons.inspectElement}
         </button>
       </div>
