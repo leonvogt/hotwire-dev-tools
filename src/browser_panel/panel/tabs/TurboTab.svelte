@@ -207,9 +207,6 @@
     <div class="d-flex flex-column h-100">
       <div class="d-flex justify-content-center align-items-center position-relative">
         <h2>Frames</h2>
-        <button class="btn-icon icon-dark position-absolute end-0" onclick={refreshTurboFrames} title="Refresh Turbo Frames List">
-          {@html Icons.refresh}
-        </button>
       </div>
       {#if turboFrames.length > 0}
         <div class="scrollable-list">
@@ -229,7 +226,7 @@
   <Pane size={30} class="turbo-frames-detail-panel flow">
     {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
       <div class="d-flex justify-content-center align-items-center position-relative">
-        <h2>#{selected.frame.id}</h2>
+        <h2 class="pe-4">#{selected.frame.id}</h2>
         {#if selected.frame.src}
           <div class="position-absolute end-0">
             <button class="btn-icon icon-dark" onclick={() => refreshTurboFrame(selected.frame.id)} title="Refresh Turbo Frames List">
