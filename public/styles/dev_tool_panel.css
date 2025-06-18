@@ -150,6 +150,10 @@ svg.icon-muted {
   pointer-events: auto;
 }
 
+.entry-row:focus-visible {
+  outline: none;
+}
+
 .html-preview {
   display: flex;
   max-width: 100%;
