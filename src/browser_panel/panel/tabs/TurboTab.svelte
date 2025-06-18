@@ -177,6 +177,33 @@
   </Pane>
 
   <Pane size={35}>
+    {#snippet turboFrameRow(frame, depth = 0)}
+      {@const selector = `#${frame.id}`}
+      <div
+        class="d-flex justify-content-between align-items-center cursor-pointer entry-row"
+        class:selected={selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.frame.id === frame.id}
+        role="button"
+        tabindex="0"
+        style="--depth: {depth}"
+        onclick={() => setSelectedTurboFrame(frame)}
+        onkeyup={() => setSelectedTurboFrame(frame)}
+        onmouseenter={() => addHighlightOverlay(selector)}
+        onmouseleave={() => hideHighlightOverlay()}
+      >
+        <div>{selector}</div>
+        <button class="btn-icon btn-inspect" onclick={() => inspectElement(selector)}>
+          {@html Icons.inspectElement}
+        </button>
+      </div>
+
+      <!-- Recursively render children -->
+      {#if frame.children && frame.children.length}
+        {#each frame.children as child}
+          {@render turboFrameRow(child, depth + 1)}
+        {/each}
+      {/if}
+    {/snippet}
+
     <div class="d-flex flex-column h-100">
       <div class="d-flex justify-content-center align-items-center position-relative">
         <h2>Frames</h2>
@@ -187,22 +214,7 @@
       {#if turboFrames.length > 0}
         <div class="scrollable-list">
           {#each turboFrames as frame}
-            {@const selector = `#${frame.id}`}
-            <div
-              class="p-1 d-flex justify-content-between align-items-center cursor-pointer entry-row"
-              class:selected={selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.frame.id === frame.id}
-              role="button"
-              tabindex="0"
-              onclick={() => setSelectedTurboFrame(frame)}
-              onkeyup={() => setSelectedTurboFrame(frame)}
-              onmouseenter={() => addHighlightOverlay(selector)}
-              onmouseleave={() => hideHighlightOverlay()}
-            >
-              <div>{selector}</div>
-              <button class="btn-icon btn-inspect" onclick={() => inspectElement(selector)}>
-                {@html Icons.inspectElement}
-              </button>
-            </div>
+            {@render turboFrameRow(frame)}
           {/each}
         </div>
       {:else}

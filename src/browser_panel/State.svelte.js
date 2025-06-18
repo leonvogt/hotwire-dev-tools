@@ -2,17 +2,7 @@ let turboFrames = $state([])
 let turboStreams = $state([])
 
 export function setTurboFrames(frames) {
-  turboFrames = Array.from(frames).map((frame) => {
-    return {
-      id: frame.id,
-      src: frame.src,
-      uuid: frame.uuid,
-      html: frame.html,
-      loading: frame.loading,
-      innerHTML: frame.innerHTML,
-      attributes: frame.attributes || {},
-    }
-  })
+  turboFrames = frames
 }
 
 export function getTurboFrames() {
