@@ -31,9 +31,14 @@ export function getTurboStreams() {
   return turboStreams
 }
 
+export function clearTurboStreams() {
+  turboStreams = []
+}
+
 export default {
   setTurboFrames,
   getTurboFrames,
   addTurboStream,
   getTurboStreams,
+  clearTurboStreams,
 }

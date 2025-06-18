@@ -103,6 +103,11 @@ svg.icon-dark {
   fill: var(--dark-color);
 }
 
+.icon-muted svg,
+svg.icon-muted {
+  fill: var(--dark-color);
+}
+
 .btn-inspect {
   color: var(--primary-color);
 }
