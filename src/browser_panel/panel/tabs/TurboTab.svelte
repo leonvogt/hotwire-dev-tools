@@ -5,7 +5,7 @@
   import xml from "highlight.js/lib/languages/xml"
   hljs.registerLanguage("xml", xml)
 
-  import { getTurboFrames, getTurboStreams } from "../../State.svelte.js"
+  import { getTurboFrames, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { inspectElement, debounce } from "../../../utils/utils.js"
   import { panelPostMessage } from "../../messaging.js"
   import { PANEL_TO_BACKEND_MESSAGES } from "../../../lib/constants.js"
@@ -157,8 +157,11 @@
 <Splitpanes class="turbo-frames-list-panel" horizontal={$horizontalPanes} on:resized={handlePaneResize}>
   <Pane size={options.turboPaneDimensions?.streams || 35}>
     <div class="d-flex flex-column h-100">
-      <div class="d-flex justify-content-center">
+      <div class="d-flex justify-content-center align-items-center position-relative">
         <h2>Streams</h2>
+        <button class="btn-icon icon-muted position-absolute end-0" onclick={clearTurboStreams} title="Clear List">
+          {@html Icons.trash}
+        </button>
       </div>
       {#if turboStreams.length > 0}
         <div class="scrollable-list">
@@ -221,21 +224,21 @@
     {/snippet}
 
     <div class="d-flex flex-column h-100">
-      <div class="d-flex justify-content-center align-items-center position-relative">
+      <div class="d-flex justify-content-center">
         <h2>Frames</h2>
       </div>
-      {#if turboFrames.length > 0}
-        <div class="scrollable-list">
+      <div class="scrollable-list">
+        {#if turboFrames.length > 0}
           {#each turboFrames as frame}
             {@render turboFrameRow(frame)}
           {/each}
-        </div>
-      {:else}
-        <div class="no-entry-hint">
-          <span>No Turbo Frames found on this page</span>
-          <span>We'll keep looking</span>
-        </div>
-      {/if}
+        {:else}
+          <div class="no-entry-hint">
+            <span>No Turbo Frames found on this page</span>
+            <span>We'll keep looking</span>
+          </div>
+        {/if}
+      </div>
     </div>
   </Pane>
 
