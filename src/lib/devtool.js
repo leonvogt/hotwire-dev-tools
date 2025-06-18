@@ -1,4 +1,5 @@
 import { loadCSS } from "../utils/utils"
+import { getContext, setContext } from "svelte"
 
 export default class Devtool {
   constructor(origin = null) {
@@ -142,4 +143,15 @@ export default class Devtool {
       logWarnings: true,
     }
   }
+}
+
+const DEFAULT_KEY = "$_devtool_state"
+
+export const getDevtoolInstance = (key = DEFAULT_KEY) => {
+  return getContext(key)
+}
+
+export const setDevtoolInstance = (key = DEFAULT_KEY) => {
+  const devtoolInstance = new Devtool()
+  return setContext(key, devtoolInstance)
 }

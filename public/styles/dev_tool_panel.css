@@ -77,6 +77,10 @@ button {
   background-color: transparent !important;
 }
 
+.splitpanes.default-theme .splitpanes__splitter {
+  background-color: #ececec !important;
+}
+
 .btn-icon {
   background-color: transparent;
   border: none;
