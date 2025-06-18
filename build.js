@@ -47,7 +47,7 @@ const esbuildConfig = {
   ],
   bundle: true,
   minify: production,
-  sourcemap: !production,
+  sourcemap: !production && browser !== "safari",
   target: ["chrome88", "firefox109", "safari15"],
   outdir: "./public/dist",
   define: {

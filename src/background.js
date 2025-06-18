@@ -1,3 +1,6 @@
+// This background script is running all the time and checks for connections,
+// from the browser devtools panel and the backend.
+
 import { isInspector, inspectorPortNameToTabId, PROXY } from "./browser_panel/ports"
 
 let ports = {}
@@ -17,16 +20,46 @@ const resetPortsForTab = (tabId) => {
   }
 }
 
+const getActiveTab = async () => {
+  try {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+    return tabs[0]?.id
+  } catch (error) {
+    console.warn("Could not get active tab:", error)
+    return null
+  }
+}
+
 chrome.runtime.onConnect.addListener(async (port) => {
   let tabId
+
   if (isInspector(port)) {
-    // this is a devtools tab creating a connection
+    // When the browser devtools panel is opened, it creates a connection
+    // and sends a port with the name "inspector_<tabId>".
     tabId = inspectorPortNameToTabId(port.name)
-    console.log(`Injecting proxy for tabId ${tabId}`)
-    await chrome.scripting.executeScript({
-      target: { tabId: tabId },
-      files: ["dist/browser_panel/proxy.js"],
-    })
+
+    // Safari seems to not provide a valid tabId in some cases and just sends -1.
+    // In these cases, we will just use the active tab
+    if (tabId === -1) {
+      const activeTabId = await getActiveTab()
+      if (activeTabId) {
+        tabId = activeTabId
+        console.log(`Using active tab ID ${tabId} for Safari`)
+      } else {
+        console.warn("Could not determine active tab ID, skipping script injection")
+        return
+      }
+    }
+
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        files: ["dist/browser_panel/proxy.js"],
+      })
+    } catch (error) {
+      console.error(`Failed to inject script for tabId ${tabId}:`, error)
+    }
+
     initPortsForTab(tabId)
     ports[tabId].devtools = port
   } else {
@@ -35,8 +68,9 @@ chrome.runtime.onConnect.addListener(async (port) => {
       console.warn("Received onConnect from ", port.name, " not initialising a devtools <-> backend, tabId: ", tabId)
       return
     }
+
     if (tabId) {
-      // This is coming from backend.js
+      // This connection is coming from backend.js
       initPortsForTab(tabId)
       ports[tabId].backend = port
     } else {
@@ -44,15 +78,14 @@ chrome.runtime.onConnect.addListener(async (port) => {
     }
   }
 
+  // If both devtools and backend ports are set for the tab, start double piping
   if (tabId && ports[tabId].devtools && ports[tabId].backend) {
     doublePipe(tabId, ports[tabId].devtools, ports[tabId].backend)
   }
   return
 })
 
-/**
- * For each tab, 2-way forward messages, devtools <-> backend.
- */
+// For each tab, 2-way forward messages, devtools <-> backend.
 function doublePipe(tabId, devtools, backend) {
   console.log(devtools.name, backend.name)
   devtools.onMessage.addListener(lOne)

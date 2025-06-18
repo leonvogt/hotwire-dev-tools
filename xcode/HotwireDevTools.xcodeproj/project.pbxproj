@@ -22,6 +22,8 @@
 		356FE3A22C0DF1F30001527B /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = 356FE39C2C0DF1F30001527B /* popup.html */; };
 		356FE3A32C0DF1F30001527B /* styles in Resources */ = {isa = PBXBuildFile; fileRef = 356FE39D2C0DF1F30001527B /* styles */; };
 		356FE3A52C0DF1F30001527B /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 356FE39F2C0DF1F30001527B /* manifest.json */; };
+		35BD75C32DF97382001E83A0 /* register.html in Resources */ = {isa = PBXBuildFile; fileRef = 35BD75C22DF97382001E83A0 /* register.html */; };
+		35BD75C42DF97382001E83A0 /* panel.html in Resources */ = {isa = PBXBuildFile; fileRef = 35BD75C12DF97382001E83A0 /* panel.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +72,8 @@
 		356FE39C2C0DF1F30001527B /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = ../../public/popup.html; sourceTree = "<group>"; };
 		356FE39D2C0DF1F30001527B /* styles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = styles; path = ../../public/styles; sourceTree = "<group>"; };
 		356FE39F2C0DF1F30001527B /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../public/manifest.json; sourceTree = "<group>"; };
+		35BD75C12DF97382001E83A0 /* panel.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = panel.html; path = ../public/panel.html; sourceTree = SOURCE_ROOT; };
+		35BD75C22DF97382001E83A0 /* register.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = register.html; path = ../public/register.html; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +152,8 @@
 		356FE3992C0DF1F30001527B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				35BD75C12DF97382001E83A0 /* panel.html */,
+				35BD75C22DF97382001E83A0 /* register.html */,
 				356FE39A2C0DF1F30001527B /* dist */,
 				356FE39B2C0DF1F30001527B /* images */,
 				356FE39C2C0DF1F30001527B /* popup.html */,
@@ -256,6 +262,8 @@
 				356FE3A22C0DF1F30001527B /* popup.html in Resources */,
 				356FE3A32C0DF1F30001527B /* styles in Resources */,
 				356FE3A52C0DF1F30001527B /* manifest.json in Resources */,
+				35BD75C32DF97382001E83A0 /* register.html in Resources */,
+				35BD75C42DF97382001E83A0 /* panel.html in Resources */,
 				356FE3A02C0DF1F30001527B /* dist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
