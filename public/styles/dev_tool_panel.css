@@ -146,19 +146,16 @@ svg.icon-dark {
 }
 
 .html-preview {
-  /* Seems random. Because it is. */
-  /* Otherwise the html preview from highlight.js may be cut off */
-  margin-bottom: 1em;
-  padding-bottom: 3rem;
-  overflow-y: auto;
+  display: flex;
   max-width: 100%;
-}
-.html-preview pre {
-  position: relative;
+  overflow-y: auto;
   mask-type: alpha;
-  padding-right: 25px;
   -webkit-mask-image: linear-gradient(to right, black 12px, black calc(100% - 25px), transparent calc(100% - 8px), transparent calc(100% - 8px) 100%);
   mask-image: linear-gradient(to right, black 12px, black calc(100% - 25px), transparent calc(100% - 8px), transparent calc(100% - 8px) 100%);
+  padding-bottom: 3rem;
+  padding-right: 25px;
+  margin-bottom: 1em;
+  scrollbar-width: none;
 }
 
 .pane-section-heading {
