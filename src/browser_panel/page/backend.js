@@ -37,14 +37,12 @@ function init() {
 
     sendTurboFrames = debounce(() => {
       const allFrames = Array.from(document.querySelectorAll("turbo-frame"))
-
       const frameMap = new Map()
 
       allFrames.forEach((frame) => {
-        const uuid = generateUUID()
         const data = {
           id: frame.id,
-          uuid: uuid,
+          uuid: generateUUID(),
           src: frame.src,
           loading: frame.getAttribute("loading"),
           innerHTML: frame.innerHTML,
@@ -59,7 +57,6 @@ function init() {
       })
 
       const topLevelFrames = []
-
       allFrames.forEach((frame) => {
         const parent = frame.parentElement?.closest("turbo-frame")
         if (parent && frameMap.has(parent)) {
@@ -72,7 +69,7 @@ function init() {
       this._postMessage({
         frames: topLevelFrames,
         url: btoa(window.location.href),
-        type: BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS,
+        type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_FRAMES,
       })
     }, 100)
 

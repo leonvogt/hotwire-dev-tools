@@ -1,5 +1,5 @@
 export const BACKEND_TO_PANEL_MESSAGES = {
-  SET_COMPONENTS: "set-components",
+  SET_TURBO_FRAMES: "set-turbo-frames",
   TURBO_STREAM_RECEIVED: "turbo-stream-received",
 }
 
