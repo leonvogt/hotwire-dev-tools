@@ -14,7 +14,7 @@ function setPort(port) {
 // The panel will then automatically re-render the components based on the new state.
 export function handleBackendToPanelMessage(message, port) {
   switch (message.type) {
-    case BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS:
+    case BACKEND_TO_PANEL_MESSAGES.SET_TURBO_FRAMES:
       setTurboFrames(message.frames, message.url)
       setPort(port)
       break
