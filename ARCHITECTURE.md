@@ -17,12 +17,14 @@ The goal is to align both parts and use a single source of truth for the state a
 
 ## Devtool Panel
 
+![image](https://github.com/user-attachments/assets/7cb63fb0-08ee-4854-9a3a-c68a8df5f910)
+
 ### Communication Flow
 
 ```
 ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
 │                 │      │                 │      │                 │      │                 │
-│ DevTools Panel  │◄────►│  Background.js  │◄────►│      Proxy      │◄────►│  Backend (Page) │
+│    panel.js     │◄────►│  background.js  │◄────►│    proxy.js     │◄────►│   backend.js    │
 │                 │ port │                 │ port │                 │window│                 │
 └─────────────────┘      └─────────────────┘      └─────────────────┘      └─────────────────┘
 ```
