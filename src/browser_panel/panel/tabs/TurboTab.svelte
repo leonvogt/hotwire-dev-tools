@@ -87,13 +87,6 @@
     })
   }
 
-  const refreshTurboFrames = () => {
-    panelPostMessage({
-      action: PANEL_TO_BACKEND_MESSAGES.GET_TURBO_FRAMES,
-      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-    })
-  }
-
   const refreshTurboFrame = (turboFrameId) => {
     panelPostMessage({
       action: PANEL_TO_BACKEND_MESSAGES.REFRESH_TURBO_FRAME,
@@ -102,7 +95,7 @@
     })
   }
 
-  const handleKeyDown = (event) => {
+  const handleFrameListKeyboardNavigation = (event) => {
     if (!turboFrames.length) return
 
     const currentIndex = turboFrames.findIndex((frame) => frame.uuid === selected.uuid)
@@ -129,15 +122,13 @@
         return
     }
 
-    selected = {
-      type: SELECTABLE_TYPES.TURBO_FRAME,
-      uuid: turboFrames[newIndex].uuid,
-    }
+    setSelectedTurboFrame(turboFrames[newIndex])
 
     setTimeout(() => {
-      const selectedRow = document.querySelector(".turbo-frames-list-panel tr.selected")
+      const selectedRow = document.querySelector(".turbo-frame-pane .entry-row.selected")
+
       if (selectedRow) {
-        selectedRow.scrollIntoView({ behavior: "smooth", block: "center" })
+        selectedRow.scrollIntoView({ behavior: "smooth", block: "nearest" })
       }
     }, 10)
   }
@@ -154,7 +145,7 @@
   }
 </script>
 
-<Splitpanes class="turbo-frames-list-panel" horizontal={$horizontalPanes} on:resized={handlePaneResize}>
+<Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize}>
   <Pane size={options.turboPaneDimensions?.streams || 35}>
     <div class="d-flex flex-column h-100">
       <div class="d-flex justify-content-center align-items-center position-relative">
@@ -195,7 +186,7 @@
     </div>
   </Pane>
 
-  <Pane size={options.turboPaneDimensions?.frames || 35}>
+  <Pane class="turbo-frame-pane" size={options.turboPaneDimensions?.frames || 35}>
     {#snippet turboFrameRow(frame, depth = 0)}
       {@const selector = `#${frame.id}`}
       <div
@@ -205,7 +196,7 @@
         tabindex="0"
         style="--depth: {depth}"
         onclick={() => setSelectedTurboFrame(frame)}
-        onkeyup={() => setSelectedTurboFrame(frame)}
+        onkeyup={handleFrameListKeyboardNavigation}
         onmouseenter={() => addHighlightOverlay(selector)}
         onmouseleave={() => hideHighlightOverlay()}
       >
