@@ -187,6 +187,7 @@ function init() {
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT: {
+        removeHighlightOverlay()
         addHighlightOverlayToElements(e.data.payload.selector)
         break
       }
