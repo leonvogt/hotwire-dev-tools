@@ -268,6 +268,15 @@ svg.icon-dark {
 .p-3 {
   padding: 1rem;
 }
+.pe-3 {
+  padding-right: 1rem;
+}
+.pe-4 {
+  padding-right: 1.5rem;
+}
+.pe-5 {
+  padding-right: 3rem;
+}
 
 .mb-3 {
   margin-bottom: 1rem;
