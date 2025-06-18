@@ -36,26 +36,41 @@ function init() {
     }
 
     sendTurboFrames = debounce(() => {
-      const frames = Array.from(document.querySelectorAll("turbo-frame")).map((frame) => {
-        const html = serializeHTMLElement(frame)
-        const uuid = generateUUID()
+      const allFrames = Array.from(document.querySelectorAll("turbo-frame"))
 
-        return {
+      const frameMap = new Map()
+
+      allFrames.forEach((frame) => {
+        const uuid = generateUUID()
+        const data = {
           id: frame.id,
           uuid: uuid,
           src: frame.src,
           loading: frame.getAttribute("loading"),
           innerHTML: frame.innerHTML,
-          html: html,
-          attributes: Array.from(frame.attributes).reduce((attributeMap, attribute) => {
-            attributeMap[attribute.name] = attribute.value
-            return attributeMap
+          html: serializeHTMLElement(frame),
+          attributes: Array.from(frame.attributes).reduce((map, attr) => {
+            map[attr.name] = attr.value
+            return map
           }, {}),
+          children: [],
+        }
+        frameMap.set(frame, data)
+      })
+
+      const topLevelFrames = []
+
+      allFrames.forEach((frame) => {
+        const parent = frame.parentElement?.closest("turbo-frame")
+        if (parent && frameMap.has(parent)) {
+          frameMap.get(parent).children.push(frameMap.get(frame))
+        } else {
+          topLevelFrames.push(frameMap.get(frame))
         }
       })
 
       this._postMessage({
-        frames: frames,
+        frames: topLevelFrames,
         url: btoa(window.location.href),
         type: BACKEND_TO_PANEL_MESSAGES.SET_COMPONENTS,
       })

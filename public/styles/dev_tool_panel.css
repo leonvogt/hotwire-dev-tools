@@ -117,6 +117,10 @@ svg.icon-dark {
 .entry-row {
   border-bottom: 1px solid #ddd;
   user-select: none;
+  padding: 0.25rem;
+
+  --indent-size: 1rem;
+  padding-left: calc(var(--depth, 0) * var(--indent-size) + 0.5rem);
 }
 .entry-row:hover {
   background-color: var(--selected-bg, #e3f2fd);
