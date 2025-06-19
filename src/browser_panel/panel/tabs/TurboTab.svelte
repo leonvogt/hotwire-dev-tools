@@ -5,6 +5,7 @@
   import xml from "highlight.js/lib/languages/xml"
   hljs.registerLanguage("xml", xml)
 
+  import CopyButton from "../../components/CopyButton.svelte"
   import { getTurboFrames, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { inspectElement, debounce } from "../../../utils/utils.js"
   import { panelPostMessage } from "../../messaging.js"
@@ -303,8 +304,11 @@
         </table>
 
         <div class="pane-section-heading">HTML</div>
-        <div class="html-preview">
-          <pre><code class="language-html">{@html hljs.highlight(selected.stream.turboStreamContent, { language: "html" }).value}</code></pre>
+        <div class="d-flex justify-content-between align-items-top gap-2">
+          <div class="html-preview">
+            <pre><code class="language-html">{@html hljs.highlight(selected.stream.turboStreamContent, { language: "html" }).value}</code></pre>
+          </div>
+          <CopyButton value={selected.stream.turboStreamContent} />
         </div>
       </div>
     {:else}

@@ -50,3 +50,21 @@ export const serializeHTMLElement = (element, escapeHTML) => {
 export const generateUUID = () => {
   return crypto.randomUUID()
 }
+
+// Copy to clipboard is bit tricky from a devtool panel context.
+// Currently, we're using the common trick of creating a textarea and using the `document.execCommand("copy")` method, which is deprecated.
+// Problem: When calling `navigator.clipboard.writeText` from:
+// - a devtools panel context, it throws the error: "The Clipboard API has been blocked because of a permissions policy applied to the current document."
+// - a content script context, it throws the error: "Failed to execute 'writeText' on 'Clipboard': Document is not focused"
+// In the future, we should look into how we can improve this.
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard
+export const copyToClipboard = (value) => {
+  const textarea = document.createElement("textarea")
+  textarea.value = value != null ? value : ""
+  textarea.style.position = "absolute"
+  textarea.style.opacity = "0"
+  document.body.appendChild(textarea)
+  textarea.select()
+  document.execCommand("copy")
+  textarea.remove()
+}
