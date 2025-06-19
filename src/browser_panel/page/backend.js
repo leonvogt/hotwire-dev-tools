@@ -139,6 +139,7 @@ function init() {
 
   // Using a function scope to avoid running into issues on re-injection
   const devtoolsBackend = new HotwireDevToolsBackend()
+  window.HotwireDevToolsBackend = devtoolsBackend
   window.addEventListener("message", handshake)
 
   function handshake(e) {
@@ -186,4 +187,9 @@ function init() {
   }
 }
 
-init()
+if (window.HotwireDevToolsBackend) {
+  // If the backend is already initialized, we don't need to re-initialize it.
+  // This can happen, if the panel gets reloaded and the backend script get re-injected.
+} else {
+  init()
+}

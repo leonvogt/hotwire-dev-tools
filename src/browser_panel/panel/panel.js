@@ -18,7 +18,7 @@ export default mount(App, {
 })
 
 function connect() {
-  injectScript(chrome.runtime.getURL("/dist/browser_panel/page/backend.js"), () => {
+  injectBackendScript(() => {
     const port = chrome.runtime.connect({
       name: inspectorPortName(chrome.devtools.inspectedWindow.tabId),
     })
@@ -40,17 +40,18 @@ function onReload(reloadFunction) {
   chrome.devtools.network.onNavigated.addListener(reloadFunction)
 }
 
-// Inject a globally evaluated script, in the same context with the actual page
-function injectScript(scriptName, callback) {
-  const src = `
+// Inject backend.js in the same context as the actual page
+function injectBackendScript(callback) {
+  const scripURL = chrome.runtime.getURL("/dist/browser_panel/page/backend.js")
+  const script = `
     (function() {
       var script = document.constructor.prototype.createElement.call(document, 'script');
-      script.src = "${scriptName}";
+      script.src = "${scripURL}";
+      script.id = "hotwire-dev-tools-backend-script"
       document.documentElement.appendChild(script);
-      script.parentNode.removeChild(script);
     })()
   `
-  chrome.devtools.inspectedWindow.eval(src, function (res, err) {
+  chrome.devtools.inspectedWindow.eval(script, function (res, err) {
     if (err) {
       console.log(err)
     }
