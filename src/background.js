@@ -96,6 +96,7 @@ function doublePipe(tabId, devtools, backend) {
     console.log("devtools -> backend", message)
     backend.postMessage(message)
   }
+
   backend.onMessage.addListener(lTwo)
   function lTwo(message) {
     if (message.event === "log") {
@@ -104,6 +105,7 @@ function doublePipe(tabId, devtools, backend) {
     console.log(`${tabId} backend -> devtools`, message)
     devtools.postMessage(message)
   }
+
   function shutdown() {
     console.log(`tab ${tabId} disconnected.`)
     devtools.onMessage.removeListener(lOne)
@@ -112,7 +114,9 @@ function doublePipe(tabId, devtools, backend) {
     backend.disconnect()
     resetPortsForTab(tabId)
   }
+
   devtools.onDisconnect.addListener(shutdown)
   backend.onDisconnect.addListener(shutdown)
+
   console.log(`tab ${tabId} connected.`)
 }
