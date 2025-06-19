@@ -2,6 +2,7 @@ import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE } from "../ports"
 import { BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "../../utils/highlight"
 import { debounce, serializeHTMLElement, generateUUID } from "../../utils/utils"
+import ConsoleProxy from "../../utils/ConsoleProxy"
 
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.
@@ -10,11 +11,14 @@ function init() {
   class HotwireDevToolsBackend {
     constructor() {
       this.observer = null
+      this.consoleProxy = new ConsoleProxy("page")
       this._stopMutationObserver = false
     }
 
     start() {
+      this.consoleProxy.addConsoleProxy()
       this.sendTurboFrames()
+      console.log("Hotwire DevTools Backend: Initialized and ready to observe Turbo frames.")
 
       document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
 

@@ -2,7 +2,9 @@
 // from the browser devtools panel and the backend.
 
 import { isInspector, inspectorPortNameToTabId, PROXY } from "./browser_panel/ports"
+import ConsoleProxy from "./utils/ConsoleProxy"
 
+const consoleProxy = new ConsoleProxy("background")
 let ports = {}
 
 const initPortsForTab = (tabId) => {
@@ -93,14 +95,19 @@ function doublePipe(tabId, devtools, backend) {
     if (message.event === "log") {
       return console.log(`tab ${tabId}`, message.payload)
     }
+
     console.log("devtools -> backend", message)
+    consoleProxy.log("devtools -> backend", message)
     backend.postMessage(message)
   }
   backend.onMessage.addListener(lTwo)
   function lTwo(message) {
     if (message.event === "log") {
+      consoleProxy.log(`tab ${tabId}`, message.payload)
       return console.log(`tab ${tabId}`, message.payload)
     }
+
+    consoleProxy.log(`${tabId} backend -> devtools`, message)
     console.log(`${tabId} backend -> devtools`, message)
     devtools.postMessage(message)
   }

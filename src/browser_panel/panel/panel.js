@@ -3,6 +3,7 @@ import { mount } from "svelte"
 
 import { inspectorPortName } from "../ports"
 import { handleBackendToPanelMessage } from "../messaging"
+import ConsoleProxy from "../../utils/ConsoleProxy"
 
 // This file is the entrypoint for DevTool panel
 // It is loaded in the context of the DevTools panel and injects the backend script into the current tab / page
@@ -18,6 +19,9 @@ export default mount(App, {
 })
 
 function connect() {
+  const consoleProxy = new ConsoleProxy("dev-tool")
+  consoleProxy.addConsoleProxy()
+
   injectScript(chrome.runtime.getURL("/dist/browser_panel/page/backend.js"), () => {
     const port = chrome.runtime.connect({
       name: inspectorPortName(chrome.devtools.inspectedWindow.tabId),
