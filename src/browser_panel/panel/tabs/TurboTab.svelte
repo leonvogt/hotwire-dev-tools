@@ -7,7 +7,7 @@
 
   import CopyButton from "../../components/CopyButton.svelte"
   import { getTurboFrames, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
-  import { inspectElement, debounce } from "../../../utils/utils.js"
+  import { inspectElement, debounce, handleKeyboardNavigation } from "../../../utils/utils.js"
   import { panelPostMessage } from "../../messaging.js"
   import { PANEL_TO_BACKEND_MESSAGES } from "../../../lib/constants.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "../../ports.js"
@@ -100,34 +100,28 @@
     if (!turboFrames.length) return
 
     const currentIndex = turboFrames.findIndex((frame) => frame.uuid === selected.uuid)
-    let newIndex = currentIndex
-
-    switch (event.key) {
-      case "ArrowDown":
-        event.preventDefault()
-        newIndex = currentIndex < turboFrames.length - 1 ? currentIndex + 1 : 0
-        break
-      case "ArrowUp":
-        event.preventDefault()
-        newIndex = currentIndex > 0 ? currentIndex - 1 : turboFrames.length - 1
-        break
-      case "Home":
-        event.preventDefault()
-        newIndex = 0
-        break
-      case "End":
-        event.preventDefault()
-        newIndex = turboFrames.length - 1
-        break
-      default:
-        return
-    }
-
+    const newIndex = handleKeyboardNavigation(event, turboFrames, currentIndex)
     setSelectedTurboFrame(turboFrames[newIndex])
 
     setTimeout(() => {
       const selectedRow = document.querySelector(".turbo-frame-pane .entry-row.selected")
+      if (selectedRow) {
+        selectedRow.scrollIntoView({ behavior: "smooth", block: "nearest" })
+      }
+    }, 10)
+  }
 
+  const handleStreamListKeyboardNavigation = (event) => {
+    if (!turboStreams.length) return
+
+    const currentIndex = turboStreams.findIndex((stream) => stream.uuid === selected.uuid)
+    const newIndex = handleKeyboardNavigation(event, turboStreams, currentIndex)
+    console.log({ currentIndex, newIndex, turboStreams })
+
+    setSelectedTurboStream(turboStreams[newIndex])
+
+    setTimeout(() => {
+      const selectedRow = document.querySelector(".turbo-stream-pane .entry-row.selected")
       if (selectedRow) {
         selectedRow.scrollIntoView({ behavior: "smooth", block: "nearest" })
       }
@@ -147,7 +141,7 @@
 </script>
 
 <Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize}>
-  <Pane size={options.turboPaneDimensions?.streams || 35}>
+  <Pane class="turbo-stream-pane" size={options.turboPaneDimensions?.streams || 35}>
     <div class="d-flex flex-column h-100">
       <div class="d-flex justify-content-center align-items-center position-relative">
         <h2>Streams</h2>
@@ -166,7 +160,7 @@
               role="button"
               tabindex="0"
               onclick={() => setSelectedTurboStream(stream)}
-              onkeyup={() => setSelectedTurboStream(stream)}
+              onkeyup={handleStreamListKeyboardNavigation}
             >
               <div class="text-align-right text-muted">
                 <span class="timestamp">{stream.time}</span>
@@ -234,7 +228,7 @@
     </div>
   </Pane>
 
-  <Pane size={options.turboPaneDimensions?.details || 30} class="turbo-frames-detail-panel flow">
+  <Pane class="turbo-detail-pane flow" size={options.turboPaneDimensions?.details || 30}>
     {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
       <div class="d-flex justify-content-center align-items-center position-relative">
         <h2 class="pe-4">#{selected.frame.id}</h2>

@@ -68,3 +68,30 @@ export const copyToClipboard = (value) => {
   document.execCommand("copy")
   textarea.remove()
 }
+
+export const handleKeyboardNavigation = (event, collection, currentIndex) => {
+  let newIndex = currentIndex
+
+  switch (event.key) {
+    case "ArrowDown":
+      event.preventDefault()
+      newIndex = currentIndex < collection.length - 1 ? currentIndex + 1 : 0
+      break
+    case "ArrowUp":
+      event.preventDefault()
+      newIndex = currentIndex > 0 ? currentIndex - 1 : collection.length - 1
+      break
+    case "Home":
+      event.preventDefault()
+      newIndex = 0
+      break
+    case "End":
+      event.preventDefault()
+      newIndex = collection.length - 1
+      break
+    default:
+      return
+  }
+
+  return newIndex
+}
