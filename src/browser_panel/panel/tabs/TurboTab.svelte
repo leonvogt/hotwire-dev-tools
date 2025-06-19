@@ -161,6 +161,8 @@
               tabindex="0"
               onclick={() => setSelectedTurboStream(stream)}
               onkeyup={handleStreamListKeyboardNavigation}
+              onmouseenter={() => addHighlightOverlay(stream.targetSelector)}
+              onmouseleave={() => hideHighlightOverlay()}
             >
               <div class="text-align-right text-muted">
                 <span class="timestamp">{stream.time}</span>
