@@ -8,174 +8,110 @@ import { mount } from "svelte"
 import { inspectorPortName } from "../ports"
 import { handleBackendToPanelMessage } from "../messaging"
 
-if (chrome.devtools.panels.themeName === "dark") {
-  document.body.classList.add("dark")
-} else {
-  document.body.classList.remove("dark")
-}
+// Mount Svelte app
+document.body.classList.toggle("dark", chrome.devtools.panels.themeName === "dark")
+export default mount(App, { target: document.querySelector("#app") })
 
-// State management for connection attempts
-let connectionAttempts = 0
-let maxConnectionAttempts = 10
-let isConnecting = false
 let currentPort = null
+let isConnecting = false
+let connectionAttempts = 0
+const maxConnectionAttempts = 10
 
-function connect() {
+async function connect() {
   if (isConnecting) return
+
+  if (connectionAttempts >= maxConnectionAttempts) {
+    console.error(`Max connection attempts (${maxConnectionAttempts}) reached. Giving up.`)
+    return
+  }
+
   isConnecting = true
   connectionAttempts++
 
-  console.log(`Connection attempt ${connectionAttempts}/${maxConnectionAttempts}`)
+  try {
+    await injectBackendScript()
+    currentPort = createConnection()
+    console.log(`Connected successfully (attempt ${connectionAttempts})`)
+    connectionAttempts = 0
+  } catch (error) {
+    console.warn(`Connection failed (attempt ${connectionAttempts}/${maxConnectionAttempts}):`, error)
 
-  injectBackendScript()
-    .then(() => {
-      return createConnection()
-    })
-    .then((port) => {
-      currentPort = port
-      connectionAttempts = 0 // Reset on success
-      isConnecting = false
-    })
-    .catch((error) => {
-      console.warn("Connection failed:", error)
-      isConnecting = false
+    if (connectionAttempts < maxConnectionAttempts) {
+      setTimeout(() => {
+        isConnecting = false
+        connect()
+      }, 500)
+    } else {
+      console.error(`Failed to connect after ${maxConnectionAttempts} attempts`)
+    }
+    return
+  }
 
-      if (connectionAttempts < maxConnectionAttempts) {
-        setTimeout(() => connect(), 500)
-      } else {
-        console.error("Max connection attempts reached. Backend injection failed.")
-        connectionAttempts = 0 // Reset for future attempts
-      }
-    })
+  isConnecting = false
 }
 
 function createConnection() {
-  return new Promise((resolve, reject) => {
-    try {
-      const port = chrome.runtime.connect({
-        name: inspectorPortName(chrome.devtools.inspectedWindow.tabId),
-      })
-
-      let disconnected = false
-
-      port.onDisconnect.addListener(() => {
-        disconnected = true
-      })
-
-      port.onMessage.addListener(function (message) {
-        if (disconnected) return
-        handleBackendToPanelMessage(message, port)
-      })
-
-      resolve(port)
-    } catch (error) {
-      reject(error)
-    }
+  const port = chrome.runtime.connect({
+    name: inspectorPortName(chrome.devtools.inspectedWindow.tabId),
   })
+
+  port.onDisconnect.addListener(() => {
+    currentPort = null
+  })
+
+  port.onMessage.addListener((message) => {
+    handleBackendToPanelMessage(message, port)
+  })
+
+  return port
 }
 
-// Inject backend.js in the same context as the actual page
 function injectBackendScript() {
+  const scriptId = "hotwire-dev-tools-backend-script"
+  const scriptURL = chrome.runtime.getURL("/dist/browser_panel/page/backend.js")
+
+  const injectionScript = `
+    (function() {
+      if (document.getElementById('${scriptId}')) return 'already-injected';
+
+      const script = document.createElement('script');
+      script.src = "${scriptURL}";
+      script.id = "${scriptId}";
+      script.async = true;
+
+      (document.head || document.documentElement).appendChild(script);
+      return 'injected';
+    })()
+  `
+
   return new Promise((resolve, reject) => {
-    const scriptId = "hotwire-dev-tools-backend-script"
-    const scriptURL = chrome.runtime.getURL("/dist/browser_panel/page/backend.js")
-
-    const injectionScript = `
-      (function() {
-        // Check if script is already injected
-        if (document.getElementById('${scriptId}')) {
-          return 'already-injected';
-        }
-
-        // Function to inject script
-        function injectScript() {
-          const script = document.createElement('script');
-          script.src = "${scriptURL}";
-          script.id = "${scriptId}";
-          script.async = true;
-
-          // Add error handling
-          script.onerror = function() {
-            console.error('Failed to load backend script');
-          };
-
-          const target = document.head || document.documentElement;
-          if (target) {
-            target.appendChild(script);
-            return 'injected';
-          }
-          return 'no-target';
-        }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', function() {
-            injectScript();
-          });
-          return 'waiting-for-dom';
-        } else {
-          return injectScript();
-        }
-      })()
-    `
-
     chrome.devtools.inspectedWindow.eval(injectionScript, (result, error) => {
       if (error) {
-        console.error("Script injection error:", error)
         reject(new Error(`Injection failed: ${error.description || error.message}`))
-        return
-      }
-
-      console.log("Injection result:", result)
-
-      if (result === "already-injected") {
-        console.log("Backend script already injected")
-        resolve()
-      } else if (result === "injected" || result === "waiting-for-dom") {
-        resolve()
       } else {
-        reject(new Error(`Unexpected injection result: ${result}`))
+        resolve()
       }
     })
   })
 }
 
-// Handle page navigation
-function onReload(reloadFunction) {
+function setupReconnectionHandlers() {
   chrome.devtools.network.onNavigated.addListener(() => {
     console.log("Page navigated, reconnecting...")
-
-    // Disconnect current port if exists
-    if (currentPort) {
-      currentPort.disconnect()
-      currentPort = null
-    }
-
-    // Reset connection state
-    isConnecting = false
+    currentPort?.disconnect()
+    currentPort = null
     connectionAttempts = 0
+    setTimeout(connect, 200)
+  })
 
-    // Add a delay to ensure page is ready
-    setTimeout(reloadFunction, 100)
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    if (tabId === chrome.devtools.inspectedWindow.tabId && changeInfo.status === "complete" && !currentPort) {
+      console.log("Tab reloaded, reconnecting...")
+      connectionAttempts = 0
+      setTimeout(connect, 200)
+    }
   })
 }
 
-// Handle tab updates (refresh, etc.)
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (tabId === chrome.devtools.inspectedWindow.tabId && changeInfo.status === "complete") {
-    console.log("Tab updated and complete, ensuring connection...")
-
-    // Only reconnect if we don't have an active connection
-    if (!currentPort || !isConnecting) {
-      setTimeout(() => connect(), 200)
-    }
-  }
-})
-
-onReload(() => {
-  connect()
-})
+setupReconnectionHandlers()
 connect()
-
-export default mount(App, {
-  target: document.querySelector("#app"),
-})
