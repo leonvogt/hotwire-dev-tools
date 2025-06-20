@@ -14,7 +14,26 @@ function proxy() {
   window.addEventListener("message", sendMessageToDevtools)
   proxyPort.onDisconnect.addListener(handleDisconnect)
 
-  sendMessageToBackend(PANEL_TO_BACKEND_MESSAGES.INIT)
+  handshakeWithBackend()
+
+  function handshakeWithBackend() {
+    sendMessageToBackend(PANEL_TO_BACKEND_MESSAGES.INIT)
+
+    // It can happen, that the proxy gets loaded before the backend script is injected into the page.
+    // For that case, we will try to send the INIT message multiple times.
+    // The backend script stop listening for the INIT message after the first one gets received.
+    const MAX_ATTEMPTS = 10
+    const INTERVAL_MS = 100
+    let attempts = 0
+
+    const intervalId = setInterval(() => {
+      if (attempts++ >= MAX_ATTEMPTS) {
+        clearInterval(intervalId)
+        return
+      }
+      sendMessageToBackend(PANEL_TO_BACKEND_MESSAGES.INIT)
+    }, INTERVAL_MS)
+  }
 
   function sendMessageToBackend(payload) {
     window.postMessage(
