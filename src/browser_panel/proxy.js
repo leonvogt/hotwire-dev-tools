@@ -3,6 +3,7 @@
 // to the chrome runtime API. It serves as a proxy between the injected
 // backend and the DevTool panel.
 import { HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, HOTWIRE_DEV_TOOLS_PROXY_SOURCE, PROXY } from "./ports"
+import { PANEL_TO_BACKEND_MESSAGES } from "../lib/constants"
 
 function proxy() {
   const proxyPort = chrome.runtime.connect({
@@ -13,7 +14,7 @@ function proxy() {
   window.addEventListener("message", sendMessageToDevtools)
   proxyPort.onDisconnect.addListener(handleDisconnect)
 
-  sendMessageToBackend("init")
+  sendMessageToBackend(PANEL_TO_BACKEND_MESSAGES.INIT)
 
   function sendMessageToBackend(payload) {
     window.postMessage(
@@ -34,7 +35,7 @@ function proxy() {
   function handleDisconnect() {
     proxyPort.onMessage.removeListener(sendMessageToBackend)
     window.removeEventListener("message", sendMessageToDevtools)
-    sendMessageToBackend("shutdown")
+    sendMessageToBackend(PANEL_TO_BACKEND_MESSAGES.SHUTDOWN)
   }
 }
 

@@ -4,13 +4,13 @@ export const BACKEND_TO_PANEL_MESSAGES = {
 }
 
 export const PANEL_TO_BACKEND_MESSAGES = {
-  // shutdown is triggered from proxy.js
+  // Triggered by the Proxy
+  INIT: "init",
   SHUTDOWN: "shutdown",
 
+  // Triggered by the Panel itself
   HOVER_COMPONENT: "hover",
   HIDE_HOVER: "hide-hover",
   GET_TURBO_FRAMES: "get-turbo-frames",
   REFRESH_TURBO_FRAME: "refresh-turbo-frame",
 }
-
-export const CONTENT_TO_BACKGROUND_MESSAGES = {}

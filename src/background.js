@@ -1,5 +1,6 @@
 // This background script is running all the time and checks for connections,
 // from the browser devtools panel and the backend.
+// It sets up a two-way communication channel between the devtools panel and the backend script.
 
 import { isInspector, inspectorPortNameToTabId, PROXY } from "./browser_panel/ports"
 
