@@ -139,13 +139,11 @@ const highlightStimulusControllers = () => {
 }
 
 const injectCustomScript = () => {
-  const existingScript = document.getElementById("hotwire-dev-tools-inject-script")
-  if (existingScript) return
-
   const script = document.createElement("script")
   script.src = chrome.runtime.getURL("dist/hotwire_dev_tools_inject_script.js")
   script.id = "hotwire-dev-tools-inject-script"
   document.documentElement.appendChild(script)
+  script.parentNode.removeChild(script)
 }
 
 const consoleLogTurboStream = (event) => {
