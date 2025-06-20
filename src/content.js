@@ -8,6 +8,23 @@ import DetailPanel from "./components/detail_panel"
 import DOMScanner from "./utils/dom_scanner"
 import DiagnosticsChecker from "./lib/diagnostics_checker"
 
+// Load scripts in the real world context, where they have the same window context as the page
+const loadScriptInRealWorld = (path) => {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script")
+    script.src = chrome.runtime.getURL(path)
+    script.type = "module"
+
+    script.addEventListener("error", (err) => reject(err))
+    script.addEventListener("load", () => resolve(undefined))
+
+    const mount = document.head || document.documentElement
+    mount.appendChild(script)
+    script.parentNode.removeChild(script)
+  })
+}
+loadScriptInRealWorld("dist/hotwire_dev_tools_inject_script.js")
+
 const LOCATION_ORIGIN = window.location.origin
 const devTool = new Devtool(LOCATION_ORIGIN)
 const detailPanel = new DetailPanel(devTool)
@@ -138,14 +155,6 @@ const highlightStimulusControllers = () => {
   })
 }
 
-const injectCustomScript = () => {
-  const script = document.createElement("script")
-  script.src = chrome.runtime.getURL("dist/hotwire_dev_tools_inject_script.js")
-  script.id = "hotwire-dev-tools-inject-script"
-  document.documentElement.appendChild(script)
-  script.parentNode.removeChild(script)
-}
-
 const consoleLogTurboStream = (event) => {
   if (!devTool.options.turbo.consoleLogTurboStreams) return
 
@@ -261,7 +270,6 @@ const listenForEvents = () => {
 const init = async () => {
   await devTool.setOptions()
 
-  injectCustomScript()
   highlightTurboFrames()
   highlightStimulusControllers()
   renderDetailPanel()

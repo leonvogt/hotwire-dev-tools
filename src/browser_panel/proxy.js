@@ -3,6 +3,7 @@
 // to the chrome runtime API. It serves as a proxy between the injected
 // backend and the DevTool panel.
 import { HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, HOTWIRE_DEV_TOOLS_PROXY_SOURCE, PROXY } from "./ports"
+import { PANEL_TO_BACKEND_MESSAGES } from "../lib/constants"
 
 function proxy() {
   const proxyPort = chrome.runtime.connect({
@@ -13,7 +14,26 @@ function proxy() {
   window.addEventListener("message", sendMessageToDevtools)
   proxyPort.onDisconnect.addListener(handleDisconnect)
 
-  sendMessageToBackend("init")
+  handshakeWithBackend()
+
+  function handshakeWithBackend() {
+    sendMessageToBackend(PANEL_TO_BACKEND_MESSAGES.INIT)
+
+    // It can happen, that the proxy gets loaded before the backend script is injected into the page.
+    // For that case, we will try to send the INIT message multiple times.
+    // The backend script stop listening for the INIT message after the first one gets received.
+    const MAX_ATTEMPTS = 10
+    const INTERVAL_MS = 100
+    let attempts = 0
+
+    const intervalId = setInterval(() => {
+      if (attempts++ >= MAX_ATTEMPTS) {
+        clearInterval(intervalId)
+        return
+      }
+      sendMessageToBackend(PANEL_TO_BACKEND_MESSAGES.INIT)
+    }, INTERVAL_MS)
+  }
 
   function sendMessageToBackend(payload) {
     window.postMessage(
@@ -34,7 +54,7 @@ function proxy() {
   function handleDisconnect() {
     proxyPort.onMessage.removeListener(sendMessageToBackend)
     window.removeEventListener("message", sendMessageToDevtools)
-    sendMessageToBackend("shutdown")
+    sendMessageToBackend(PANEL_TO_BACKEND_MESSAGES.SHUTDOWN)
   }
 }
 

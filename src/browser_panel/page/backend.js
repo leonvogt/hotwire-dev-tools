@@ -1,4 +1,4 @@
-import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE } from "../ports"
+import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE } from "../ports"
 import { BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "../../utils/highlight"
 import { debounce, serializeHTMLElement, generateUUID } from "../../utils/utils"
@@ -100,7 +100,7 @@ function init() {
     _postMessage(payload) {
       window.postMessage(
         {
-          source: "hotwire-dev-tools-backend",
+          source: HOTWIRE_DEV_TOOLS_BACKEND_SOURCE,
           payload,
         },
         "*",
@@ -155,7 +155,7 @@ function init() {
   window.addEventListener("message", handshake)
 
   function handshake(e) {
-    if (e.data.source === HOTWIRE_DEV_TOOLS_PROXY_SOURCE && e.data.payload === "init") {
+    if (e.data.source === HOTWIRE_DEV_TOOLS_PROXY_SOURCE && e.data.payload === PANEL_TO_BACKEND_MESSAGES.INIT) {
       window.removeEventListener("message", handshake)
       window.addEventListener("message", handleMessages)
       devtoolsBackend.start()
