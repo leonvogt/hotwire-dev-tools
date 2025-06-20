@@ -23,7 +23,7 @@
   const ignoredAttributes = ["id", "loading", "src", "complete", "aria-busy", "busy"]
 
   const devTool = getDevtoolInstance()
-  let options = $state({})
+  let options = $state(devTool.options)
   let turboFrames = $state([])
   let turboStreams = $state([])
 
@@ -53,7 +53,7 @@
   }
 
   // Set the first Turbo Frame as selected if none is selected
-  $effect(async () => {
+  $effect(() => {
     turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
     turboStreams = getTurboStreams()
 
@@ -65,8 +65,6 @@
         stream: null,
       }
     }
-
-    options = await devTool.getOptions()
   })
 
   const scrollIntoView = debounce((element) => {
