@@ -5,8 +5,7 @@
 import App from "./App.svelte"
 import { mount } from "svelte"
 
-import { inspectorPortName } from "../ports"
-import { handleBackendToPanelMessage } from "../messaging"
+import { handleBackendToPanelMessage, devToolPanelName } from "../messaging"
 
 // Mount Svelte app
 document.body.classList.toggle("dark", chrome.devtools.panels.themeName === "dark")
@@ -52,7 +51,7 @@ async function connect() {
 
 function createConnection() {
   const port = chrome.runtime.connect({
-    name: inspectorPortName(chrome.devtools.inspectedWindow.tabId),
+    name: devToolPanelName(chrome.devtools.inspectedWindow.tabId),
   })
 
   port.onDisconnect.addListener(() => {

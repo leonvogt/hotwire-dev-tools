@@ -1,4 +1,4 @@
-import { BACKEND_TO_PANEL_MESSAGES } from "../lib/constants"
+import { BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS } from "../lib/constants"
 import { setTurboFrames, addTurboStream } from "./State.svelte.js"
 
 function setPort(port) {
@@ -34,4 +34,16 @@ export function panelPostMessage(message) {
   } else {
     console.warn(`Unable to post message from panel, message: ${JSON.stringify(message)}`)
   }
+}
+
+export function isDevToolPanel(port) {
+  return port.name.startsWith(PORT_IDENTIFIERS.INSPECTOR_PREFIX)
+}
+
+export function devToolPanelName(tabId) {
+  return PORT_IDENTIFIERS.INSPECTOR_PREFIX + tabId
+}
+
+export function devToolPanelNameToTabId(portName) {
+  return Number(portName.replace(PORT_IDENTIFIERS.INSPECTOR_PREFIX, ""))
 }

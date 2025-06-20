@@ -2,7 +2,8 @@
 // from the browser devtools panel and the backend.
 // It sets up a two-way communication channel between the devtools panel and the backend script.
 
-import { isInspector, inspectorPortNameToTabId, PROXY } from "./browser_panel/ports"
+import { isDevToolPanel, devToolPanelNameToTabId } from "./browser_panel/messaging"
+import { PORT_IDENTIFIERS } from "./lib/constants"
 
 let ports = {}
 
@@ -34,10 +35,10 @@ const getActiveTab = async () => {
 chrome.runtime.onConnect.addListener(async (port) => {
   let tabId
 
-  if (isInspector(port)) {
+  if (isDevToolPanel(port)) {
     // When the browser devtools panel is opened, it creates a connection
     // and sends a port with the name "inspector_<tabId>".
-    tabId = inspectorPortNameToTabId(port.name)
+    tabId = devToolPanelNameToTabId(port.name)
 
     // Safari seems to not provide a valid tabId in some cases and just sends -1.
     // In these cases, we will just use the active tab
@@ -65,7 +66,7 @@ chrome.runtime.onConnect.addListener(async (port) => {
     ports[tabId].devtools = port
   } else {
     tabId = port.sender?.tab?.id
-    if (port.name !== PROXY) {
+    if (port.name !== PORT_IDENTIFIERS.PROXY) {
       console.warn("Received onConnect from ", port.name, " not initialising a devtools <-> backend, tabId: ", tabId)
       return
     }
