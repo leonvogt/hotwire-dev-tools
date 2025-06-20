@@ -382,7 +382,7 @@ const getCurrentTabOrigin = async () => {
 
   versionString.textContent = devTool.version
 
-  const options = await devTool.getOptions()
-  initializeForm(options)
-  setupEventListeners(options)
+  await devTool.setOptions()
+  initializeForm(devTool.options)
+  setupEventListeners(devTool.options)
 })()

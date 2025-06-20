@@ -9,8 +9,6 @@ export default class Devtool {
 
     this.origin = origin
     this.detailPanelCSSContent = null
-
-    this.setOptions()
   }
 
   setOptions = async () => {
