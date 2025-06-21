@@ -59,7 +59,7 @@
     }
   ],
   {{#needs_browser_specific_settings}}
-  "needs_browser_specific_settings": {
+  "browser_specific_settings": {
     "gecko": {
       "id": "hotwire_dev_tools@browser_extension"
     }
