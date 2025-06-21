@@ -1,20 +1,20 @@
 {
   "scripts": {
-    "build": "NODE_ENV=production node build.js --no-watch",
-    "dev": "NODE_ENV=development node build.js --watch",
+    "build": "node build.js",
+    "dev": "node build.js --watch",
     "lint": "npx prettier --check .",
     "format": "npx prettier --write ."
   },
   "dependencies": {
-    "esbuild-svelte": "^0.9.3",
     "highlight.js": "^11.11.1",
     "svelte": "^5.33.18",
     "svelte-splitpanes": "^8.0.9"
   },
   "devDependencies": {
-    "esbuild": "^0.25.4",
+    "@sveltejs/vite-plugin-svelte": "^5.1.0",
     "fs-extra": "^11.3.0",
     "mustache": "^4.2.0",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.3",
+    "vite": "^6.3.5"
   }
 }
