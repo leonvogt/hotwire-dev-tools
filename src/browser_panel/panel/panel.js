@@ -103,13 +103,15 @@ function setupReconnectionHandlers() {
     setTimeout(connect, 200)
   })
 
-  chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-    if (tabId === chrome.devtools.inspectedWindow.tabId && changeInfo.status === "complete" && !currentPort) {
-      console.log("Tab reloaded, reconnecting...")
-      connectionAttempts = 0
-      setTimeout(connect, 200)
-    }
-  })
+  if (__IS_CHROME__) {
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+      if (tabId === chrome.devtools.inspectedWindow.tabId && changeInfo.status === "complete" && !currentPort) {
+        console.log("Tab reloaded, reconnecting...")
+        connectionAttempts = 0
+        setTimeout(connect, 200)
+      }
+    })
+  }
 }
 
 setupReconnectionHandlers()
