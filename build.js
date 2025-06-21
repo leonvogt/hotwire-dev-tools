@@ -52,6 +52,9 @@ const esbuildConfig = {
   outdir: "./public/dist",
   define: {
     "process.env.NODE_ENV": `"${nodeEnv}"`,
+    __IS_CHROME__: JSON.stringify(browser === "chrome"),
+    __IS_FIREFOX__: JSON.stringify(browser === "firefox"),
+    __IS_SAFARI__: JSON.stringify(browser === "safari"),
   },
   conditions: ["svelte", "browser"],
   metafile: true,
