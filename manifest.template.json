@@ -37,8 +37,7 @@
   {{/needs_service_worker}}
   {{^needs_service_worker}}
   "background": {
-    "scripts": ["dist/background.js"],
-    "persistent": false
+    "scripts": ["dist/background.js"]
   },
   {{/needs_service_worker}}
   "permissions": ["storage", "activeTab", "scripting"],
