@@ -80,6 +80,11 @@ const esbuildConfig = {
   ],
 }
 
+const copyAssets = async () => {
+  await fs.copy("node_modules/@shoelace-style/shoelace/dist/assets", "public/dist/assets")
+  console.log("Copied Shoelace assets")
+}
+
 async function generateManifest() {
   try {
     const template = await fs.readFile(templatePath, "utf8")
@@ -98,6 +103,7 @@ const buildAndWatch = async () => {
 
 async function buildProject() {
   await generateManifest()
+  await copyAssets()
 
   if (process.argv.includes("--watch")) {
     buildAndWatch()
