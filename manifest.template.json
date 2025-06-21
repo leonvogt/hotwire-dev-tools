@@ -20,7 +20,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["dist/hotwire_dev_tools_content.js"],
+      "js": ["js/hotwire_dev_tools_content.js"],
       "css": ["styles/hotwire_dev_tools_content.css"]
     }
   ],
@@ -31,13 +31,13 @@
   },
   {{#needs_service_worker}}
   "background": {
-    "service_worker": "dist/background.js",
+    "service_worker": "js/background.js",
     "type": "module"
   },
   {{/needs_service_worker}}
   {{^needs_service_worker}}
   "background": {
-    "scripts": ["dist/background.js"],
+    "scripts": ["js/background.js"],
     "persistent": false
   },
   {{/needs_service_worker}}
@@ -49,11 +49,11 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "dist/hotwire_dev_tools_inject_script.js",
+        "js/hotwire_dev_tools_inject_script.js",
         "styles/hotwire_dev_tools_detail_panel.css",
         "panel.html",
         "register.html",
-        "dist/browser_panel/page/backend.js"
+        "js/browser_panel/page/backend.js"
       ],
       "matches": ["<all_urls>"]
     }
