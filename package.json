@@ -6,6 +6,7 @@
     "format": "npx prettier --write ."
   },
   "dependencies": {
+    "@shoelace-style/shoelace": "^2.20.1",
     "esbuild-svelte": "^0.9.3",
     "highlight.js": "^11.11.1",
     "svelte": "^5.33.18",

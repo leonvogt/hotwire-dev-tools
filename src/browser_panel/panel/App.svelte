@@ -1,4 +1,7 @@
 <script>
+  import "@shoelace-style/shoelace/dist/themes/light.css"
+  import "@shoelace-style/shoelace/dist/shoelace.js"
+
   import { getDevtoolInstance, setDevtoolInstance } from "../../lib/devtool.js"
   import { handleResize } from "../theme.svelte.js"
   import TurboTab from "./tabs/TurboTab.svelte"
