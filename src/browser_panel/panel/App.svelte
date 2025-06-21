@@ -1,8 +1,19 @@
 <script>
   import "@shoelace-style/shoelace/dist/themes/light.css"
   import "@shoelace-style/shoelace/dist/shoelace.js"
+
+  // Set Shoelace base path to point to the correct location of the Shoelace icons
   import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js"
   setBasePath("/dist")
+
+  // Register our custom icons
+  import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/icon-library.js"
+  registerIconLibrary("custom", {
+    resolver: (name) => {
+      return `/icons/${name}.svg`
+    },
+    mutator: (svg) => svg.setAttribute("fill", "currentColor"),
+  })
 
   import { getDevtoolInstance, setDevtoolInstance } from "../../lib/devtool.js"
   import { handleResize } from "../theme.svelte.js"

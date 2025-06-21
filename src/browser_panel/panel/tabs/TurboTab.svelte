@@ -5,7 +5,9 @@
   import xml from "highlight.js/lib/languages/xml"
   hljs.registerLanguage("xml", xml)
 
-  import CopyButton from "../../components/CopyButton.svelte"
+  import CopyButton from "$components/CopyButton.svelte"
+  import InspectButton from "$components/InspectButton.svelte"
+  import SlIconButton from "$shoelace/SLIconButton.svelte"
   import { getTurboFrames, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { inspectElement, debounce, handleKeyboardNavigation } from "../../../utils/utils.js"
   import { panelPostMessage } from "../../messaging.js"
@@ -142,9 +144,9 @@
     <div class="d-flex flex-column h-100">
       <div class="d-flex justify-content-center align-items-center position-relative">
         <h2>Streams</h2>
-        <button class="btn-icon icon-muted position-absolute end-0" onclick={clearTurboStreams} title="Clear List">
-          {@html Icons.trash}
-        </button>
+        {#if turboStreams.length > 0}
+          <SlIconButton class="position-absolute end-0" name="trash2" onclick={clearTurboStreams}></SlIconButton>
+        {/if}
       </div>
       {#if turboStreams.length > 0}
         <div class="scrollable-list">
@@ -195,9 +197,7 @@
         onmouseleave={() => hideHighlightOverlay()}
       >
         <div>{selector}</div>
-        <button class="btn-icon btn-inspect btn-hoverable me-2" onclick={() => inspectElement(selector)}>
-          {@html Icons.inspectElement}
-        </button>
+        <InspectButton class="btn-hoverable me-2" {selector}></InspectButton>
       </div>
 
       <!-- Recursively render children -->
@@ -265,9 +265,7 @@
           <div class="html-preview">
             <pre><code class="language-html">{@html hljs.highlight(selected.frame.html, { language: "html" }).value}</code></pre>
           </div>
-          <button class="btn-icon btn-inspect" onclick={() => inspectElement(`#${selected.frame.id}`)}>
-            {@html Icons.inspectElement}
-          </button>
+          <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
         </div>
       </div>
     {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
@@ -287,9 +285,7 @@
               <td>
                 <div class="d-flex justify-content-between align-items-center">
                   <span>{selected.stream.targetSelector}</span>
-                  <button class="btn-icon btn-inspect" onclick={() => inspectElement(`${selected.stream.targetSelector}`)}>
-                    {@html Icons.inspectElement}
-                  </button>
+                  <InspectButton selector={selected.stream.targetSelector}></InspectButton>
                 </div>
               </td>
             </tr>

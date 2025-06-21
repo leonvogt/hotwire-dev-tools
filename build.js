@@ -55,8 +55,15 @@ const esbuildConfig = {
   },
   conditions: ["svelte", "browser"],
   metafile: true,
+  alias: {
+    $src: path.resolve(__dirname, "src"),
+    $shoelace: path.resolve(__dirname, "src/shoelace"),
+    $components: path.resolve(__dirname, "src/components"),
+  },
   plugins: [
-    sveltePlugin({ compilerOptions: { css: "injected" } }),
+    sveltePlugin({
+      compilerOptions: { css: "injected" },
+    }),
     {
       name: "rename-output-files",
       setup(build) {
@@ -81,8 +88,15 @@ const esbuildConfig = {
 }
 
 const copyAssets = async () => {
+  // Copy default Shoelace icons
   await fs.copy("node_modules/@shoelace-style/shoelace/dist/assets", "public/dist/assets")
-  console.log("Copied Shoelace assets")
+
+  // Copy Font Awesome icons
+  // Currently commented out, since we copy the necessary icons directly to public/icons folder.
+  // That way we can copy specific icons from different sources and don't need to import a whole library.
+  // await fs.copy("node_modules/@fortawesome/fontawesome-free/svgs/solid", "public/dist/assets/fontawesome/solid")
+  // await fs.copy("node_modules/@fortawesome/fontawesome-free/svgs/regular", "public/dist/assets/fontawesome/regular")
+  console.log("Copied assets")
 }
 
 async function generateManifest() {

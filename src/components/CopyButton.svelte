@@ -1,5 +1,5 @@
 <script>
-  import { copyToClipboard } from "../../utils/utils.js"
+  import { copyToClipboard } from "../utils/utils.js"
 
   let { value } = $props()
   let copied = $state(false)

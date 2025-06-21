@@ -327,6 +327,10 @@ svg.icon-muted {
   right: 0;
 }
 
+.fs-100 {
+  font-size: 1rem;
+}
+
 /* Highlight.js GitHub Theme */
 pre code.hljs {
   display: block;
