@@ -79,7 +79,40 @@
     </div>
   </main>
 {:else}
-  <div class="loading-indicator">
-    <span>Loading Hotwire Dev Tools</span>
+  <div class="h-100vh d-flex justify-content-center align-items-center flex-column gap-5">
+    <div class="show-in-200ms">
+      <div class="mb-2">Setting up Hotwire DevTool...</div>
+      <sl-skeleton effect="sheen"></sl-skeleton>
+    </div>
+    <div class="show-in-1000ms text-align-center">
+      <div class="mb-2">Hmm... this is taking a bit longer than expected.</div>
+      <div>Check the browser console for any errors.</div>
+      {#if __IS_CHROME__}
+        <div>Right-click anywhere on this panel → Inspect → Console</div>
+      {/if}
+
+      {#if __IS_FIREFOX__}
+        <div>If there isn't something showing up, you can also try to inspect the extension itself by:</div>
+        <br />
+        <div>
+          Opening the "Debug Add-ons" page in Firefox: <u>about:debugging#/runtime/this-firefox</u>
+        </div>
+        <div>Then clicking on the "Inspect" button next to the Hotwire DevTool. There you should see the console output.</div>
+      {/if}
+
+      {#if __IS_SAFARI__}
+        <div class="text-muted">
+          On Safari, you might need to enable the inspection option first by:
+          <br />
+          Safari Web Inspector Setting (Gear Icon on the top right) → Experimental → Allow Inspecting Web Inspector
+        </div>
+      {/if}
+
+      <div class="mt-4">
+        Found something weird? Please open an issue on GitHub:
+        <br />
+        <a href="https://github.com/leonvogt/hotwire-dev-tools/issues/new" target="_blank" rel="noopener noreferrer">https://github.com/leonvogt/hotwire-dev-tools/issues/new</a>
+      </div>
+    </div>
   </div>
 {/if}

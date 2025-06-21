@@ -258,6 +258,10 @@ svg.icon-muted {
   overflow: hidden;
 }
 
+.text-align-center {
+  text-align: center;
+}
+
 .text-align-right {
   text-align: right;
 }
@@ -288,8 +292,36 @@ svg.icon-muted {
   padding-right: 3rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mt-3 {
+  margin-top: 1rem;
+}
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
 .mb-3 {
   margin-bottom: 1rem;
+}
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+.mb-5 {
+  margin-bottom: 3rem;
 }
 
 .me-2 {
@@ -329,6 +361,27 @@ svg.icon-muted {
 
 .fs-100 {
   font-size: 1rem;
+}
+
+.show-in-200ms {
+  animation: showIn 0.3s ease forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.show-in-1000ms {
+  animation: showIn 0.3s ease forwards;
+  animation-delay: 1s;
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes showIn {
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 /* Highlight.js GitHub Theme */
