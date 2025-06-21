@@ -1,4 +1,4 @@
-import DOMScanner from "../utils/dom_scanner"
+import DOMScanner from "$utils/dom_scanner"
 
 export default class DiagnosticsChecker {
   constructor(devTool) {

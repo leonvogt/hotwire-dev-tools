@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "$src/*": ["src/*"],
+      "$shoelace/*": ["src/shoelace/*"],
+      "$components/*": ["src/components/*"],
+      "$utils/*": ["src/utils/*"],
+      "$lib/*": ["src/lib/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

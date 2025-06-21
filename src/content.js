@@ -1,12 +1,12 @@
-import { debounce } from "./utils/utils"
-import { turboStreamTargetElements } from "./utils/turbo_utils"
-import { addHighlightOverlayToElements, removeHighlightOverlay } from "./utils/highlight"
-import { MONITORING_EVENTS } from "./lib/monitoring_events"
+import { debounce } from "$utils/utils.js"
+import { turboStreamTargetElements } from "$utils/turbo_utils"
+import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
+import { MONITORING_EVENTS } from "$lib/monitoring_events"
 
-import Devtool from "./lib/devtool"
-import DetailPanel from "./components/detail_panel"
-import DOMScanner from "./utils/dom_scanner"
-import DiagnosticsChecker from "./lib/diagnostics_checker"
+import Devtool from "$lib/devtool"
+import DetailPanel from "$components/detail_panel"
+import DOMScanner from "$utils/dom_scanner"
+import DiagnosticsChecker from "$lib/diagnostics_checker"
 
 // Load scripts in the real world context, where they have the same window context as the page
 const loadScriptInRealWorld = (path) => {

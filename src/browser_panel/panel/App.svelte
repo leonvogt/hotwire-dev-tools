@@ -15,7 +15,7 @@
     mutator: (svg) => svg.setAttribute("fill", "currentColor"),
   })
 
-  import { getDevtoolInstance, setDevtoolInstance } from "../../lib/devtool.js"
+  import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { handleResize } from "../theme.svelte.js"
   import TurboTab from "./tabs/TurboTab.svelte"
 

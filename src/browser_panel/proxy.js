@@ -2,7 +2,7 @@
 // activated. Because it is not injected using eval, it has full privilege
 // to the chrome runtime API. It serves as a proxy between the injected
 // backend and the DevTool panel.
-import { HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, HOTWIRE_DEV_TOOLS_PROXY_SOURCE, PANEL_TO_BACKEND_MESSAGES, PORT_IDENTIFIERS } from "../lib/constants"
+import { HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, HOTWIRE_DEV_TOOLS_PROXY_SOURCE, PANEL_TO_BACKEND_MESSAGES, PORT_IDENTIFIERS } from "$lib/constants"
 
 function proxy() {
   const proxyPort = chrome.runtime.connect({

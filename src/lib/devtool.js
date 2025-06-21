@@ -1,4 +1,4 @@
-import { loadCSS } from "../utils/utils"
+import { loadCSS } from "$utils/utils"
 import { getContext, setContext } from "svelte"
 
 export default class Devtool {

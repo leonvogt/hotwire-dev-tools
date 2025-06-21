@@ -1,6 +1,6 @@
 import { writable } from "svelte/store"
 import { MediaQuery } from "svelte/reactivity"
-import { debounce } from "../utils/utils"
+import { debounce } from "$utils/utils"
 
 const breakpoints = {
   md: 640,

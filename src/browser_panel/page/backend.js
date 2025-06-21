@@ -1,6 +1,6 @@
-import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "../../lib/constants"
-import { addHighlightOverlayToElements, removeHighlightOverlay } from "../../utils/highlight"
-import { debounce, serializeHTMLElement, generateUUID } from "../../utils/utils"
+import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
+import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
+import { debounce, serializeHTMLElement, generateUUID } from "$utils/utils"
 
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.

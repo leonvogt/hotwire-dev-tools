@@ -1,4 +1,4 @@
-import { BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS } from "../lib/constants"
+import { BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS } from "$lib/constants"
 import { setTurboFrames, addTurboStream } from "./State.svelte.js"
 
 function setPort(port) {

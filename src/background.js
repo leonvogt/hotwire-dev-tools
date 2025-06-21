@@ -3,7 +3,7 @@
 // It sets up a two-way communication channel between the devtools panel and the backend script.
 
 import { isDevToolPanel, devToolPanelNameToTabId } from "./browser_panel/messaging"
-import { PORT_IDENTIFIERS } from "./lib/constants"
+import { PORT_IDENTIFIERS } from "$lib/constants"
 
 let ports = {}
 

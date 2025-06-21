@@ -9,12 +9,12 @@
   import InspectButton from "$components/InspectButton.svelte"
   import SlIconButton from "$shoelace/SLIconButton.svelte"
   import { getTurboFrames, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
-  import { inspectElement, debounce, handleKeyboardNavigation } from "../../../utils/utils.js"
+  import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
   import { panelPostMessage } from "../../messaging.js"
-  import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "../../../lib/constants.js"
-  import { getDevtoolInstance } from "../../../lib/devtool.js"
+  import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
+  import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
-  import * as Icons from "../../../utils/icons.js"
+  import * as Icons from "$utils/icons.js"
 
   const SELECTABLE_TYPES = {
     TURBO_FRAME: "turbo-frame",

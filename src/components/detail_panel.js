@@ -1,8 +1,8 @@
-import { getMetaContent, debounce } from "../utils/utils"
-import { turboStreamTargetElements } from "../utils/turbo_utils"
-import { addHighlightOverlayToElements, removeHighlightOverlay } from "../utils/highlight"
-import DOMScanner from "../utils/dom_scanner"
-import * as Icons from "../utils/icons"
+import { getMetaContent, debounce } from "$utils/utils"
+import { turboStreamTargetElements } from "$utils/turbo_utils"
+import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
+import DOMScanner from "$utils/dom_scanner"
+import * as Icons from "$utils/icons"
 
 import hljs from "highlight.js/lib/core"
 import xml from "highlight.js/lib/languages/xml"

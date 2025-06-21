@@ -59,6 +59,8 @@ const esbuildConfig = {
     $src: path.resolve(__dirname, "src"),
     $shoelace: path.resolve(__dirname, "src/shoelace"),
     $components: path.resolve(__dirname, "src/components"),
+    $utils: path.resolve(__dirname, "src/utils"),
+    $lib: path.resolve(__dirname, "src/lib"),
   },
   plugins: [
     sveltePlugin({
