@@ -8,6 +8,7 @@
 
   import CopyButton from "$components/CopyButton.svelte"
   import InspectButton from "$components/InspectButton.svelte"
+  import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import IconButton from "$shoelace/IconButton.svelte"
   import { getTurboFrames, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
@@ -295,7 +296,10 @@
 
               <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
                 <span>HTML</span>
-                <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
+                <div>
+                  <ScrollIntoViewButton selector={`#${selected.frame.id}`}></ScrollIntoViewButton>
+                  <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
+                </div>
               </div>
               <div class="html-preview">
                 <pre><code class="language-html">{@html hljs.highlight(selected.frame.html, { language: "html" }).value}</code></pre>
@@ -320,7 +324,10 @@
                     <td>
                       <div class="d-flex justify-content-between align-items-center">
                         <span>{selected.stream.targetSelector}</span>
-                        <InspectButton selector={selected.stream.targetSelector}></InspectButton>
+                        <div>
+                          <ScrollIntoViewButton selector={selected.stream.targetSelector}></ScrollIntoViewButton>
+                          <InspectButton selector={selected.stream.targetSelector}></InspectButton>
+                        </div>
                       </div>
                     </td>
                   </tr>

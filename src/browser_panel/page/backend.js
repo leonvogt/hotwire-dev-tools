@@ -183,7 +183,6 @@ function init() {
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT: {
-        removeHighlightOverlay()
         addHighlightOverlayToElements(e.data.payload.selector)
         break
       }
@@ -192,6 +191,20 @@ function init() {
           removeHighlightOverlay(e.data.payload.selector)
         } else {
           removeHighlightOverlay()
+        }
+        break
+      }
+      case PANEL_TO_BACKEND_MESSAGES.SCROLL_AND_HIGHLIGHT: {
+        const element = document.querySelector(e.data.payload.selector)
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" })
+
+          addHighlightOverlayToElements(e.data.payload.selector)
+          setTimeout(() => {
+            removeHighlightOverlay()
+          }, 1000)
+        } else {
+          console.warn("Element not found for selector:", "${selector}")
         }
         break
       }

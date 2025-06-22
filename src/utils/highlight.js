@@ -1,4 +1,5 @@
 export const addHighlightOverlayToElements = (elementsOrSelector, color = "#007aff", overlayClassName = "hotwire-dev-tools-highlight-overlay", opacity = "0.2") => {
+  removeHighlightOverlay()
   let elements = []
 
   if (typeof elementsOrSelector === "string") {

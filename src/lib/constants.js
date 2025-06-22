@@ -22,4 +22,5 @@ export const PANEL_TO_BACKEND_MESSAGES = {
   HIDE_HOVER: "hide-hover",
   GET_TURBO_FRAMES: "get-turbo-frames",
   REFRESH_TURBO_FRAME: "refresh-turbo-frame",
+  SCROLL_AND_HIGHLIGHT: "scroll-and-highlight",
 }
