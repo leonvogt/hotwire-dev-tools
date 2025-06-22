@@ -17,6 +17,7 @@
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
   import * as Icons from "$utils/icons.js"
+  import { collapseEntryRows, toggleStickyParent, checkStickyVisibility } from "$src/utils/collapsible.js"
 
   const SELECTABLE_TYPES = {
     TURBO_FRAME: "turbo-frame",
@@ -82,7 +83,7 @@
         const isExpanded = !collapsedFrames[frameUuid]
         const hasChildren = containerElement.querySelectorAll(".entry-row").length > 0
 
-        toggleStickyParent(frameUuid, frameElement, isExpanded && hasChildren)
+        toggleStickyParent(frameUuid, frameElement, isExpanded && hasChildren, stickyFrames)
       })
     }, 100)
   })
@@ -113,85 +114,9 @@
     }
   }
 
-  const collapseEntryRows = (frameUuid, event) => {
-    event.stopPropagation()
-
-    const isCurrentlyCollapsed = collapsedFrames[frameUuid] || false
-    const frameElement = event.target.closest(".entry-row")
-    const containerElement = frameElement.nextElementSibling
-
-    if (containerElement && containerElement.classList.contains("children-container")) {
-      if (isCurrentlyCollapsed) {
-        // Expanding
-        containerElement.classList.remove("collapsed")
-        containerElement.style.height = "0px"
-        containerElement.offsetHeight
-
-        const targetHeight = containerElement.scrollHeight
-        containerElement.style.height = `${targetHeight}px`
-        setTimeout(() => {
-          containerElement.style.height = ""
-          toggleStickyParent(frameUuid, frameElement, true)
-        }, 300) // Match the transition duration in CSS
-      } else {
-        // Collapsing
-        const startHeight = containerElement.scrollHeight
-        containerElement.style.height = `${startHeight}px`
-        containerElement.offsetHeight
-
-        containerElement.style.height = "0px"
-        toggleStickyParent(frameUuid, frameElement, false)
-        setTimeout(() => {
-          containerElement.classList.add("collapsed")
-        }, 300) // Match the transition duration
-      }
-    }
-
-    collapsedFrames[frameUuid] = !isCurrentlyCollapsed
-  }
-
-  const toggleStickyParent = (frameUuid, frameElement, makeSticky) => {
-    if (makeSticky) {
-      frameElement.classList.add("sticky-parent")
-      stickyFrames[frameUuid] = frameElement
-    } else {
-      frameElement.classList.remove("sticky-parent")
-      delete stickyFrames[frameUuid]
-    }
-  }
-
   const addTurboFrameListListeners = (scrollableList) => {
-    scrollableList.addEventListener("scroll", checkStickyVisibility)
+    scrollableList.addEventListener("scroll", () => checkStickyVisibility(scrollableList, stickyFrames, collapsedFrames))
   }
-
-  const checkStickyVisibility = debounce(() => {
-    const scrollableList = document.querySelector(".turbo-frame-pane .scrollable-list")
-    if (!scrollableList) return
-
-    Object.entries(stickyFrames).forEach(([frameUuid, frameElement]) => {
-      const containerElement = frameElement.nextElementSibling
-      if (!containerElement || !containerElement.classList.contains("children-container")) return
-
-      const isCurrentlyCollapsed = collapsedFrames[frameUuid] || false
-      if (isCurrentlyCollapsed) {
-        frameElement.classList.remove("sticky-parent")
-        return
-      }
-
-      const children = Array.from(containerElement.querySelectorAll(".entry-row"))
-      const isAnyChildVisible = children.some((child) => {
-        const rect = child.getBoundingClientRect()
-        const parentRect = scrollableList.getBoundingClientRect()
-        return rect.bottom > parentRect.top && rect.top < parentRect.bottom
-      })
-
-      if (isAnyChildVisible) {
-        frameElement.classList.add("sticky-parent")
-      } else {
-        frameElement.classList.remove("sticky-parent")
-      }
-    })
-  }, 50)
 
   const scrollIntoView = debounce((element) => {
     element.scrollIntoView({ behavior: "smooth", block: "end" })
@@ -332,7 +257,7 @@
       >
         <div class="d-flex align-items-center">
           {#if frame.children && frame.children.length}
-            <IconButton class="collapse-icon {isCollapsed ? 'rotated' : ''}" name="chevron-down" onclick={(event) => collapseEntryRows(frame.uuid, event)}></IconButton>
+            <IconButton class="collapse-icon {isCollapsed ? 'rotated' : ''}" name="chevron-down" onclick={(event) => collapseEntryRows(frame.uuid, event, collapsedFrames, stickyFrames)}></IconButton>
           {/if}
           <div>{selector}</div>
         </div>
