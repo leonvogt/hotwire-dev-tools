@@ -29,6 +29,8 @@
   let options = $state(devTool.options)
   let turboFrames = $state([])
   let turboStreams = $state([])
+  let collapsedFrames = $state({})
+
   const turboFrameCount = $derived(() => {
     const countFrames = (frames) => {
       return frames.reduce((count, frame) => {
@@ -62,6 +64,41 @@
       frame: null,
       stream: stream,
     }
+  }
+
+  const collapseEntryRows = (frameUuid, event) => {
+    event.stopPropagation()
+
+    const isCurrentlyCollapsed = collapsedFrames[frameUuid] || false
+    const frameEl = event.target.closest(".entry-row")
+    const containerEl = frameEl.nextElementSibling
+
+    if (containerEl && containerEl.classList.contains("children-container")) {
+      if (isCurrentlyCollapsed) {
+        // Expanding
+        containerEl.classList.remove("collapsed")
+        containerEl.style.height = "0px"
+        containerEl.offsetHeight
+
+        const targetHeight = containerEl.scrollHeight
+        containerEl.style.height = `${targetHeight}px`
+        setTimeout(() => {
+          containerEl.style.height = ""
+        }, 300) // Match the transition duration in CSS
+      } else {
+        // Collapsing
+        const startHeight = containerEl.scrollHeight
+        containerEl.style.height = `${startHeight}px`
+        containerEl.offsetHeight
+
+        containerEl.style.height = "0px"
+        setTimeout(() => {
+          containerEl.classList.add("collapsed")
+        }, 300) // Match the transition duration
+      }
+    }
+
+    collapsedFrames[frameUuid] = !isCurrentlyCollapsed
   }
 
   // Set the first Turbo Frame as selected if none is selected
@@ -208,9 +245,13 @@
   <Pane class="turbo-frame-pane full-pane" size={options.turboPaneDimensions?.frames || 35}>
     {#snippet turboFrameRow(frame, depth = 0)}
       {@const selector = `#${frame.id}`}
+      {@const isCollapsed = collapsedFrames[frame.uuid] || false}
+      {@const hasChildren = frame.children && frame.children.length > 0}
+
       <div
         class="d-flex justify-content-between align-items-center cursor-pointer entry-row"
         class:selected={selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.frame.id === frame.id}
+        class:ps-0={hasChildren}
         role="button"
         tabindex="0"
         style="--depth: {depth}"
@@ -219,15 +260,22 @@
         onmouseenter={() => addHighlightOverlay(selector)}
         onmouseleave={() => hideHighlightOverlay()}
       >
-        <div>{selector}</div>
+        <div class="d-flex align-items-center">
+          {#if frame.children && frame.children.length}
+            <IconButton class="collapse-icon {isCollapsed ? 'rotated' : ''}" name="chevron-down" onclick={(event) => collapseEntryRows(frame.uuid, event)}></IconButton>
+          {/if}
+          <div>{selector}</div>
+        </div>
         <InspectButton class="btn-hoverable me-2" {selector}></InspectButton>
       </div>
 
       <!-- Recursively render children -->
-      {#if frame.children && frame.children.length}
-        {#each frame.children as child}
-          {@render turboFrameRow(child, depth + 1)}
-        {/each}
+      {#if hasChildren}
+        <div class="children-container" class:collapsed={isCollapsed}>
+          {#each frame.children as child}
+            {@render turboFrameRow(child, depth + 1)}
+          {/each}
+        </div>
       {/if}
     {/snippet}
 

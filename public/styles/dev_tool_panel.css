@@ -228,6 +228,28 @@ svg.icon-muted {
   font-size: var(--fs-100);
 }
 
+.collapse-icon {
+  font-size: var(--fs-400);
+  transition: transform 0.3s ease;
+  transform-origin: center center;
+}
+
+.collapse-icon::part(base) {
+  padding: 0.25rem;
+}
+
+.collapse-icon.rotated {
+  transform: rotate(-90deg);
+}
+.children-container {
+  overflow: hidden;
+  transition: height 0.3s ease-out;
+}
+
+.children-container.collapsed {
+  display: block;
+}
+
 /* Utilities */
 .d-flex {
   display: flex;
@@ -326,6 +348,33 @@ svg.icon-muted {
 }
 .p-5 {
   padding: 3rem;
+}
+.ps-0 {
+  padding-left: 0;
+}
+.ps-1 {
+  padding-left: 0.25rem;
+}
+.ps-2 {
+  padding-left: 0.5rem;
+}
+.ps-3 {
+  padding-left: 1rem;
+}
+.ps-4 {
+  padding-left: 1.5rem;
+}
+.ps-5 {
+  padding-left: 3rem;
+}
+.pe-0 {
+  padding-right: 0;
+}
+.pe-1 {
+  padding-right: 0.25rem;
+}
+.pe-2 {
+  padding-right: 0.5rem;
 }
 .pe-3 {
   padding-right: 1rem;
