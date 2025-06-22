@@ -251,6 +251,7 @@ svg.icon-muted {
 .scrollable-list {
   overflow-y: auto;
   max-height: 100%;
+  scrollbar-width: thin;
 }
 
 .h-100 {
@@ -394,6 +395,7 @@ svg.icon-muted {
 
 .scrollable-y {
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .show-in-200ms {
