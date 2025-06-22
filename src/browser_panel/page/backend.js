@@ -39,9 +39,14 @@ function init() {
       const frameMap = new Map()
 
       allFrames.forEach((frame) => {
+        let uuid = frame.getAttribute("data-hotwire-dev-tools-uuid")
+        if (!uuid) {
+          uuid = generateUUID()
+          frame.setAttribute("data-hotwire-dev-tools-uuid", uuid)
+        }
         const data = {
           id: frame.id,
-          uuid: generateUUID(),
+          uuid: uuid,
           src: frame.src,
           loading: frame.getAttribute("loading"),
           innerHTML: frame.innerHTML,
