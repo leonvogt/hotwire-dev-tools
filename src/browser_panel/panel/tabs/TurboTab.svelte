@@ -1,6 +1,7 @@
 <script>
   import { Pane, Splitpanes } from "svelte-splitpanes"
   import { slide } from "svelte/transition"
+  import NumberFlow from "@number-flow/svelte"
   import hljs from "highlight.js/lib/core"
   import xml from "highlight.js/lib/languages/xml"
   hljs.registerLanguage("xml", xml)
@@ -27,6 +28,15 @@
   let options = $state(devTool.options)
   let turboFrames = $state([])
   let turboStreams = $state([])
+  const turboFrameCount = $derived(() => {
+    const countFrames = (frames) => {
+      return frames.reduce((count, frame) => {
+        return count + 1 + (frame.children ? countFrames(frame.children) : 0)
+      }, 0)
+    }
+    return countFrames(turboFrames)
+  })
+  let isFirstFrameCountRender = $state(true)
 
   let selected = $state({
     type: null,
@@ -65,6 +75,14 @@
         frame: turboFrames[0],
         stream: null,
       }
+    }
+  })
+
+  $effect(() => {
+    if (isFirstFrameCountRender && turboFrameCount() > 0) {
+      setTimeout(() => {
+        isFirstFrameCountRender = false
+      }, 0)
     }
   })
 
@@ -215,8 +233,11 @@
     <div class="card h-100">
       <div class="card-body">
         <div class="d-flex flex-column h-100">
-          <div class="d-flex justify-content-center">
+          <div class="d-flex justify-content-center align-items-center position-relative">
             <h2>Frames</h2>
+            <sl-badge class="count-badge count-badge--small position-absolute end-0" variant="neutral" pill>
+              <NumberFlow value={turboFrameCount()} animated={!isFirstFrameCountRender} />
+            </sl-badge>
           </div>
           <div class="scrollable-list">
             {#if turboFrames.length > 0}
