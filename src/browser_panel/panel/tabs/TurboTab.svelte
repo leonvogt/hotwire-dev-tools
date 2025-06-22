@@ -30,6 +30,7 @@
   let turboFrames = $state([])
   let turboStreams = $state([])
   let collapsedFrames = $state({})
+  let stickyFrames = $state({})
 
   const turboFrameCount = $derived(() => {
     const countFrames = (frames) => {
@@ -46,6 +47,52 @@
     uuid: null,
     frame: null,
     stream: null,
+  })
+
+  // Set the first Turbo Frame as selected if none is selected
+  $effect(() => {
+    turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
+    turboStreams = getTurboStreams()
+
+    if (!selected.uuid && turboFrames.length > 0) {
+      selected = {
+        type: SELECTABLE_TYPES.TURBO_FRAME,
+        uuid: turboFrames[0].uuid,
+        frame: turboFrames[0],
+        stream: null,
+      }
+    }
+  })
+
+  // Reset all sticky frames when the list of Turbo Frames changes
+  $effect(() => {
+    if (!turboFrames.length) return
+
+    setTimeout(() => {
+      Object.values(stickyFrames).forEach((frameEl) => frameEl.classList.remove("sticky-parent"))
+      stickyFrames = {}
+
+      document.querySelectorAll(".turbo-frame-pane .entry-row").forEach((frameElement) => {
+        const frameUuid = frameElement.getAttribute("data-frame-uuid")
+        if (!frameUuid) return
+
+        const containerElement = frameElement.nextElementSibling
+        if (!containerElement?.classList.contains("children-container")) return
+
+        const isExpanded = !collapsedFrames[frameUuid]
+        const hasChildren = containerElement.querySelectorAll(".entry-row").length > 0
+
+        toggleStickyParent(frameUuid, frameElement, isExpanded && hasChildren)
+      })
+    }, 100)
+  })
+
+  $effect(() => {
+    if (isFirstFrameCountRender && turboFrameCount() > 0) {
+      setTimeout(() => {
+        isFirstFrameCountRender = false
+      }, 0)
+    }
   })
 
   const setSelectedTurboFrame = (frame) => {
@@ -70,30 +117,32 @@
     event.stopPropagation()
 
     const isCurrentlyCollapsed = collapsedFrames[frameUuid] || false
-    const frameEl = event.target.closest(".entry-row")
-    const containerEl = frameEl.nextElementSibling
+    const frameElement = event.target.closest(".entry-row")
+    const containerElement = frameElement.nextElementSibling
 
-    if (containerEl && containerEl.classList.contains("children-container")) {
+    if (containerElement && containerElement.classList.contains("children-container")) {
       if (isCurrentlyCollapsed) {
         // Expanding
-        containerEl.classList.remove("collapsed")
-        containerEl.style.height = "0px"
-        containerEl.offsetHeight
+        containerElement.classList.remove("collapsed")
+        containerElement.style.height = "0px"
+        containerElement.offsetHeight
 
-        const targetHeight = containerEl.scrollHeight
-        containerEl.style.height = `${targetHeight}px`
+        const targetHeight = containerElement.scrollHeight
+        containerElement.style.height = `${targetHeight}px`
         setTimeout(() => {
-          containerEl.style.height = ""
+          containerElement.style.height = ""
+          toggleStickyParent(frameUuid, frameElement, true)
         }, 300) // Match the transition duration in CSS
       } else {
         // Collapsing
-        const startHeight = containerEl.scrollHeight
-        containerEl.style.height = `${startHeight}px`
-        containerEl.offsetHeight
+        const startHeight = containerElement.scrollHeight
+        containerElement.style.height = `${startHeight}px`
+        containerElement.offsetHeight
 
-        containerEl.style.height = "0px"
+        containerElement.style.height = "0px"
+        toggleStickyParent(frameUuid, frameElement, false)
         setTimeout(() => {
-          containerEl.classList.add("collapsed")
+          containerElement.classList.add("collapsed")
         }, 300) // Match the transition duration
       }
     }
@@ -101,28 +150,48 @@
     collapsedFrames[frameUuid] = !isCurrentlyCollapsed
   }
 
-  // Set the first Turbo Frame as selected if none is selected
-  $effect(() => {
-    turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
-    turboStreams = getTurboStreams()
+  const toggleStickyParent = (frameUuid, frameElement, makeSticky) => {
+    if (makeSticky) {
+      frameElement.classList.add("sticky-parent")
+      stickyFrames[frameUuid] = frameElement
+    } else {
+      frameElement.classList.remove("sticky-parent")
+      delete stickyFrames[frameUuid]
+    }
+  }
 
-    if (!selected.uuid && turboFrames.length > 0) {
-      selected = {
-        type: SELECTABLE_TYPES.TURBO_FRAME,
-        uuid: turboFrames[0].uuid,
-        frame: turboFrames[0],
-        stream: null,
+  const addTurboFrameListListeners = (scrollableList) => {
+    scrollableList.addEventListener("scroll", checkStickyVisibility)
+  }
+
+  const checkStickyVisibility = debounce(() => {
+    const scrollableList = document.querySelector(".turbo-frame-pane .scrollable-list")
+    if (!scrollableList) return
+
+    Object.entries(stickyFrames).forEach(([frameUuid, frameElement]) => {
+      const containerElement = frameElement.nextElementSibling
+      if (!containerElement || !containerElement.classList.contains("children-container")) return
+
+      const isCurrentlyCollapsed = collapsedFrames[frameUuid] || false
+      if (isCurrentlyCollapsed) {
+        frameElement.classList.remove("sticky-parent")
+        return
       }
-    }
-  })
 
-  $effect(() => {
-    if (isFirstFrameCountRender && turboFrameCount() > 0) {
-      setTimeout(() => {
-        isFirstFrameCountRender = false
-      }, 0)
-    }
-  })
+      const children = Array.from(containerElement.querySelectorAll(".entry-row"))
+      const isAnyChildVisible = children.some((child) => {
+        const rect = child.getBoundingClientRect()
+        const parentRect = scrollableList.getBoundingClientRect()
+        return rect.bottom > parentRect.top && rect.top < parentRect.bottom
+      })
+
+      if (isAnyChildVisible) {
+        frameElement.classList.add("sticky-parent")
+      } else {
+        frameElement.classList.remove("sticky-parent")
+      }
+    })
+  }, 50)
 
   const scrollIntoView = debounce((element) => {
     element.scrollIntoView({ behavior: "smooth", block: "end" })
@@ -255,6 +324,7 @@
         role="button"
         tabindex="0"
         style="--depth: {depth}"
+        data-frame-uuid={frame.uuid}
         onclick={() => setSelectedTurboFrame(frame)}
         onkeyup={handleFrameListKeyboardNavigation}
         onmouseenter={() => addHighlightOverlay(selector)}
@@ -288,7 +358,7 @@
               <NumberFlow value={turboFrameCount()} animated={!isFirstFrameCountRender} />
             </sl-badge>
           </div>
-          <div class="scrollable-list">
+          <div class="scrollable-list" {@attach addTurboFrameListListeners}>
             {#if turboFrames.length > 0}
               {#each turboFrames as frame (frame.uuid)}
                 {@render turboFrameRow(frame)}
