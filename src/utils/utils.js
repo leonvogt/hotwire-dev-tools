@@ -89,6 +89,10 @@ export const handleKeyboardNavigation = (event, collection, currentIndex) => {
       event.preventDefault()
       newIndex = collection.length - 1
       break
+    case "Enter":
+      event.preventDefault()
+      newIndex = currentIndex
+      break
     default:
       return
   }
