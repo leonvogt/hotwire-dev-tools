@@ -7,7 +7,7 @@
 
   import CopyButton from "$components/CopyButton.svelte"
   import InspectButton from "$components/InspectButton.svelte"
-  import SlIconButton from "$shoelace/SLIconButton.svelte"
+  import IconButton from "$shoelace/IconButton.svelte"
   import { getTurboFrames, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
   import { panelPostMessage } from "../../messaging.js"
@@ -147,7 +147,7 @@
           <div class="d-flex justify-content-center align-items-center position-relative">
             <h2>Streams</h2>
             {#if turboStreams.length > 0}
-              <SlIconButton class="position-absolute end-0" name="trash2" onclick={clearTurboStreams}></SlIconButton>
+              <IconButton class="position-absolute end-0" name="trash2" onclick={clearTurboStreams}></IconButton>
             {/if}
           </div>
           <div class="scrollable-list">
@@ -272,12 +272,12 @@
                 </tbody>
               </table>
 
-              <div class="pane-section-heading">HTML</div>
-              <div class="d-flex justify-content-between align-items-top gap-2">
-                <div class="html-preview">
-                  <pre><code class="language-html">{@html hljs.highlight(selected.frame.html, { language: "html" }).value}</code></pre>
-                </div>
+              <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+                <span>HTML</span>
                 <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
+              </div>
+              <div class="html-preview">
+                <pre><code class="language-html">{@html hljs.highlight(selected.frame.html, { language: "html" }).value}</code></pre>
               </div>
             </div>
           </div>
@@ -306,12 +306,12 @@
                 </tbody>
               </table>
 
-              <div class="pane-section-heading">HTML</div>
-              <div class="d-flex justify-content-between align-items-top gap-2">
-                <div class="html-preview">
-                  <pre><code class="language-html">{@html hljs.highlight(selected.stream.turboStreamContent, { language: "html" }).value}</code></pre>
-                </div>
+              <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+                <span>HTML</span>
                 <CopyButton value={selected.stream.turboStreamContent} />
+              </div>
+              <div class="html-preview">
+                <pre><code class="language-html">{@html hljs.highlight(selected.stream.turboStreamContent, { language: "html" }).value}</code></pre>
               </div>
             </div>
           </div>
