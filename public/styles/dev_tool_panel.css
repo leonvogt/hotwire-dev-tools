@@ -321,6 +321,16 @@ svg.icon-muted {
 .pe-5 {
   padding-right: 3rem;
 }
+.pt-0 {
+  padding-top: 0;
+}
+.pb-0 {
+  padding-bottom: 0;
+}
+.py-0 {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 
 .mt-1 {
   margin-top: 0.25rem;
