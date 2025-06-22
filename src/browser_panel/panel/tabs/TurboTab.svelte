@@ -208,7 +208,7 @@
           </div>
           <div class="scrollable-list">
             {#if turboStreams.length > 0}
-              {#each turboStreams as stream}
+              {#each turboStreams as stream (stream.uuid)}
                 <div
                   {@attach scrollIntoView}
                   class="entry-row p-1 cursor-pointer"
@@ -272,7 +272,7 @@
       <!-- Recursively render children -->
       {#if hasChildren}
         <div class="children-container" class:collapsed={isCollapsed}>
-          {#each frame.children as child}
+          {#each frame.children as child (child.uuid)}
             {@render turboFrameRow(child, depth + 1)}
           {/each}
         </div>
@@ -290,7 +290,7 @@
           </div>
           <div class="scrollable-list">
             {#if turboFrames.length > 0}
-              {#each turboFrames as frame}
+              {#each turboFrames as frame (frame.uuid)}
                 {@render turboFrameRow(frame)}
               {/each}
             {:else}
