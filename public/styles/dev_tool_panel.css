@@ -142,6 +142,15 @@ svg.icon-muted {
   --indent-size: 1rem;
   padding-left: calc(var(--depth, 0) * var(--indent-size) + 0.5rem);
 }
+
+.entry-row.sticky-parent {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .entry-row:hover {
   background-color: var(--hover-for-select-bg);
 }
