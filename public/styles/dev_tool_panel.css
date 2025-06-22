@@ -190,6 +190,29 @@ svg.icon-muted {
   margin-top: 1em;
 }
 
+.full-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  box-shadow: 0 1px 2px hsl(240 3.8% 46.1% / 6%);
+  border: solid 1px hsl(240 5.9% 90%);
+  border-radius: 0.25rem;
+}
+.card-body {
+  padding: 1.25rem;
+  box-sizing: border-box;
+  height: 100%;
+}
+
 /* Utilities */
 .d-flex {
   display: flex;
@@ -282,6 +305,12 @@ svg.icon-muted {
 .p-3 {
   padding: 1rem;
 }
+.p-4 {
+  padding: 1.5rem;
+}
+.p-5 {
+  padding: 3rem;
+}
 .pe-3 {
   padding-right: 1rem;
 }
@@ -361,6 +390,10 @@ svg.icon-muted {
 
 .fs-100 {
   font-size: 1rem;
+}
+
+.scrollable-y {
+  overflow-y: auto;
 }
 
 .show-in-200ms {
