@@ -151,6 +151,12 @@ function init() {
         this.observer = null
       }
     }
+
+    respondToHealthCheck() {
+      this._postMessage({
+        type: BACKEND_TO_PANEL_MESSAGES.HEALTH_CHECK_RESPONSE,
+      })
+    }
   }
 
   // Using a function scope to avoid running into issues on re-injection
@@ -177,6 +183,10 @@ function init() {
       return
     }
     switch (e.data.payload.action) {
+      case PANEL_TO_BACKEND_MESSAGES.HEALTH_CHECK: {
+        devtoolsBackend.respondToHealthCheck()
+        break
+      }
       case PANEL_TO_BACKEND_MESSAGES.GET_TURBO_FRAMES: {
         devtoolsBackend.sendTurboFrames()
         break

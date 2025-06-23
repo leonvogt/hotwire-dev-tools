@@ -22,6 +22,8 @@ export function handleBackendToPanelMessage(message, port) {
       addTurboStream(message.turboStream)
       setPort(port)
       break
+    case BACKEND_TO_PANEL_MESSAGES.HEALTH_CHECK_RESPONSE:
+      setPort(port)
     default:
       console.warn(`Unknown message type from backend: ${message.type}`)
   }

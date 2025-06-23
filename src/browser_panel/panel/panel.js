@@ -5,7 +5,8 @@
 import App from "./App.svelte"
 import { mount } from "svelte"
 
-import { handleBackendToPanelMessage, devToolPanelName } from "../messaging"
+import { panelPostMessage, handleBackendToPanelMessage, devToolPanelName } from "../messaging"
+import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
 
 // Mount Svelte app
 document.body.classList.toggle("dark", chrome.devtools.panels.themeName === "dark")
@@ -14,6 +15,7 @@ export default mount(App, { target: document.querySelector("#app") })
 let currentPort = null
 let isConnecting = false
 let connectionAttempts = 0
+let lastBackendMessageAt
 const maxConnectionAttempts = 10
 
 async function connect() {
@@ -59,6 +61,7 @@ function createConnection() {
   })
 
   port.onMessage.addListener((message) => {
+    lastBackendMessageAt = Date.now()
     handleBackendToPanelMessage(message, port)
   })
 
@@ -94,25 +97,47 @@ function injectBackendScript() {
   })
 }
 
+function reconnect() {
+  currentPort?.disconnect()
+  currentPort = null
+  connectionAttempts = 0
+  setTimeout(connect, 200)
+}
+
 function setupReconnectionHandlers() {
   chrome.devtools.network.onNavigated.addListener(() => {
     console.log("Page navigated, reconnecting...")
-    currentPort?.disconnect()
-    currentPort = null
-    connectionAttempts = 0
-    setTimeout(connect, 200)
+    reconnect()
   })
 
   if (__IS_CHROME__) {
     chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
       if (tabId === chrome.devtools.inspectedWindow.tabId && changeInfo.status === "complete" && !currentPort) {
         console.log("Tab reloaded, reconnecting...")
-        connectionAttempts = 0
-        setTimeout(connect, 200)
+        reconnect()
       }
     })
   }
 }
 
+function startHealthCheck() {
+  // Send every 0.5 second a health check message to the backend.
+  setInterval(() => {
+    panelPostMessage({
+      action: PANEL_TO_BACKEND_MESSAGES.HEALTH_CHECK,
+      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    })
+  }, 500)
+
+  // check every second (plus a small buffer) if the backend is still responsive.
+  setInterval(() => {
+    if (Date.now() - lastBackendMessageAt > 1100) {
+      console.log("Health check failed, reconnecting...")
+      reconnect()
+    }
+  }, 1100)
+}
+
 setupReconnectionHandlers()
 connect()
+startHealthCheck()
