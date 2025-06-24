@@ -12,10 +12,12 @@ import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/
 document.body.classList.toggle("dark", chrome.devtools.panels.themeName === "dark")
 export default mount(App, { target: document.querySelector("#app") })
 
+let lastBackendMessageAt
 let currentPort = null
 let isConnecting = false
 let connectionAttempts = 0
-let lastBackendMessageAt
+let healthCheckInterval = null
+let backendCheckInterval = null
 const maxConnectionAttempts = 10
 
 async function connect() {
@@ -23,6 +25,7 @@ async function connect() {
 
   if (connectionAttempts >= maxConnectionAttempts) {
     console.error(`Max connection attempts (${maxConnectionAttempts}) reached. Giving up.`)
+    clearIntervals()
     return
   }
 
@@ -34,6 +37,7 @@ async function connect() {
     currentPort = createConnection()
     console.log(`Connected successfully (attempt ${connectionAttempts})`)
     connectionAttempts = 0
+    startHealthCheck()
   } catch (error) {
     console.warn(`Connection failed (attempt ${connectionAttempts}/${maxConnectionAttempts}):`, error)
 
@@ -45,6 +49,7 @@ async function connect() {
     } else {
       console.error(`Failed to connect after ${maxConnectionAttempts} attempts`)
     }
+    isConnecting = false
     return
   }
 
@@ -57,7 +62,7 @@ function createConnection() {
   })
 
   port.onDisconnect.addListener(() => {
-    currentPort = null
+    cleanup()
   })
 
   port.onMessage.addListener((message) => {
@@ -98,15 +103,21 @@ function injectBackendScript() {
 }
 
 function reconnect() {
-  currentPort?.disconnect()
-  currentPort = null
-  connectionAttempts = 0
+  if (connectionAttempts >= maxConnectionAttempts) {
+    console.error("Reconnect - Max reconnection attempts reached. Stopping retries.")
+    clearIntervals()
+    return
+  }
+
+  cleanup()
+  connectionAttempts++
   setTimeout(connect, 200)
 }
 
 function setupReconnectionHandlers() {
   chrome.devtools.network.onNavigated.addListener(() => {
     console.log("Page navigated, reconnecting...")
+    cleanup()
     reconnect()
   })
 
@@ -114,6 +125,7 @@ function setupReconnectionHandlers() {
     chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
       if (tabId === chrome.devtools.inspectedWindow.tabId && changeInfo.status === "complete" && !currentPort) {
         console.log("Tab reloaded, reconnecting...")
+        cleanup()
         reconnect()
       }
     })
@@ -121,23 +133,45 @@ function setupReconnectionHandlers() {
 }
 
 function startHealthCheck() {
-  // Send every 0.5 second a health check message to the backend.
-  setInterval(() => {
+  if (!currentPort) {
+    console.warn("HealthCheck - Cannot start without an established connection.")
+    return
+  }
+
+  clearIntervals()
+
+  // Send every 0.5 seconds a health check message to the backend.
+  healthCheckInterval = setInterval(() => {
     panelPostMessage({
       action: PANEL_TO_BACKEND_MESSAGES.HEALTH_CHECK,
       source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
     })
   }, 500)
 
-  // check every second (plus a small buffer) if the backend is still responsive.
-  setInterval(() => {
+  // Check every second (plus a small buffer) if the backend is still responsive.
+  backendCheckInterval = setInterval(() => {
     if (Date.now() - lastBackendMessageAt > 1100) {
-      console.log("Health check failed, reconnecting...")
+      console.log("HealthCheck - Backend unresponsive, reconnecting...")
       reconnect()
     }
   }, 1100)
 }
 
+function clearIntervals() {
+  clearInterval(healthCheckInterval)
+  clearInterval(backendCheckInterval)
+}
+
+function cleanup() {
+  clearIntervals()
+  connectionAttempts = 0
+  isConnecting = false
+
+  if (currentPort) {
+    currentPort.disconnect()
+    currentPort = null
+  }
+}
+
 setupReconnectionHandlers()
 connect()
-startHealthCheck()

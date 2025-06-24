@@ -24,6 +24,7 @@ export function handleBackendToPanelMessage(message, port) {
       break
     case BACKEND_TO_PANEL_MESSAGES.HEALTH_CHECK_RESPONSE:
       setPort(port)
+      break
     default:
       console.warn(`Unknown message type from backend: ${message.type}`)
   }
