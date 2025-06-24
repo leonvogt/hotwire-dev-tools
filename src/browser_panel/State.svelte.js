@@ -1,3 +1,25 @@
+export function createConnectionState() {
+  let connectedToBackend = $state(false)
+  let isPermanentlyDisconnected = $state(false)
+
+  return {
+    get isPermanentlyDisconnected() {
+      return isPermanentlyDisconnected
+    },
+    set isPermanentlyDisconnected(value) {
+      isPermanentlyDisconnected = value
+    },
+
+    get connectedToBackend() {
+      return connectedToBackend
+    },
+    set connectedToBackend(value) {
+      connectedToBackend = value
+    },
+  }
+}
+export const connection = createConnectionState()
+
 let turboFrames = $state([])
 let turboStreams = $state([])
 

@@ -441,6 +441,21 @@ svg.icon-muted {
   margin-right: 0.5rem;
 }
 
+.m-1 {
+  margin: 0.25rem;
+}
+.m-2 {
+  margin: 0.5rem;
+}
+.m-3 {
+  margin: 1rem;
+}
+.m-4 {
+  margin: 1.5rem;
+}
+.m-5 {
+  margin: 3rem;
+}
 .gap-0 {
   gap: 0;
 }
