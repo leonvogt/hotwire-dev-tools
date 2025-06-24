@@ -37,7 +37,11 @@ async function connect() {
     currentPort = createConnection()
     console.log(`Connected successfully (attempt ${connectionAttempts})`)
     connectionAttempts = 0
-    startHealthCheck()
+    if (__IS_SAFARI__) {
+      // Health checks are only needed for Safari because it doesn't trigger the `port.onDisconnect` event consistently.
+      // More: https://github.com/leonvogt/hotwire-dev-tools/pull/123
+      startHealthCheck()
+    }
   } catch (error) {
     console.warn(`Connection failed (attempt ${connectionAttempts}/${maxConnectionAttempts}):`, error)
 
