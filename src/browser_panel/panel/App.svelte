@@ -18,6 +18,7 @@
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { handleResize } from "../theme.svelte.js"
   import TurboTab from "./tabs/TurboTab.svelte"
+  import { connection } from "../State.svelte.js"
 
   setDevtoolInstance()
   const devTool = getDevtoolInstance()
@@ -51,7 +52,18 @@
   }
 </script>
 
-{#if devToolOptionsLoaded}
+{#if connection.isPermanentlyDisconnected}
+  <sl-alert variant="danger" class="m-5" open>
+    <sl-icon slot="icon" name="exclamation-octagon"></sl-icon>
+    <strong>Connection Timeout</strong><br />
+    Unable to connect to the current page. Try closing and reopening the inspection panel to resolve the issue.
+    <div class="mt-4">
+      If this issue persists, consider reporting it on GitHub:
+      <br />
+      <a href="https://github.com/leonvogt/hotwire-dev-tools/issues/new" target="_blank" rel="noopener noreferrer">https://github.com/leonvogt/hotwire-dev-tools/issues/new</a>
+    </div>
+  </sl-alert>
+{:else if devToolOptionsLoaded}
   <main {@attach addEventListeners}>
     <div id="container">
       <div class="tablist">

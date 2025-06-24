@@ -4,16 +4,21 @@
 
 import App from "./App.svelte"
 import { mount } from "svelte"
+import { connection } from "../State.svelte.js"
 
-import { handleBackendToPanelMessage, devToolPanelName } from "../messaging"
+import { panelPostMessage, handleBackendToPanelMessage, devToolPanelName } from "../messaging"
+import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
 
 // Mount Svelte app
 document.body.classList.toggle("dark", chrome.devtools.panels.themeName === "dark")
 export default mount(App, { target: document.querySelector("#app") })
 
+let lastBackendMessageAt
 let currentPort = null
 let isConnecting = false
 let connectionAttempts = 0
+let healthCheckInterval = null
+let backendCheckInterval = null
 const maxConnectionAttempts = 10
 
 async function connect() {
@@ -21,6 +26,8 @@ async function connect() {
 
   if (connectionAttempts >= maxConnectionAttempts) {
     console.error(`Max connection attempts (${maxConnectionAttempts}) reached. Giving up.`)
+    connection.isPermanentlyDisconnected = true
+    clearIntervals()
     return
   }
 
@@ -31,9 +38,16 @@ async function connect() {
     await injectBackendScript()
     currentPort = createConnection()
     console.log(`Connected successfully (attempt ${connectionAttempts})`)
+    connection.connectedToBackend = true
     connectionAttempts = 0
+    if (__IS_SAFARI__) {
+      // Health checks are only needed for Safari because it doesn't trigger the `port.onDisconnect` event consistently.
+      // More: https://github.com/leonvogt/hotwire-dev-tools/pull/123
+      startHealthCheck()
+    }
   } catch (error) {
     console.warn(`Connection failed (attempt ${connectionAttempts}/${maxConnectionAttempts}):`, error)
+    connection.connectedToBackend = false
 
     if (connectionAttempts < maxConnectionAttempts) {
       setTimeout(() => {
@@ -43,6 +57,7 @@ async function connect() {
     } else {
       console.error(`Failed to connect after ${maxConnectionAttempts} attempts`)
     }
+    isConnecting = false
     return
   }
 
@@ -55,10 +70,13 @@ function createConnection() {
   })
 
   port.onDisconnect.addListener(() => {
-    currentPort = null
+    cleanup()
+    clearIntervals()
+    connection.connectedToBackend = false
   })
 
   port.onMessage.addListener((message) => {
+    lastBackendMessageAt = Date.now()
     handleBackendToPanelMessage(message, port)
   })
 
@@ -94,23 +112,76 @@ function injectBackendScript() {
   })
 }
 
+function reconnect() {
+  if (connectionAttempts >= maxConnectionAttempts) {
+    console.error("Reconnect - Max reconnection attempts reached. Stopping retries.")
+    clearIntervals()
+    connection.isPermanentlyDisconnected = true
+    return
+  }
+
+  connectionAttempts++
+  setTimeout(connect, 200)
+}
+
 function setupReconnectionHandlers() {
   chrome.devtools.network.onNavigated.addListener(() => {
     console.log("Page navigated, reconnecting...")
-    currentPort?.disconnect()
-    currentPort = null
-    connectionAttempts = 0
-    setTimeout(connect, 200)
+    connection.connectedToBackend = false
+    cleanup()
+    reconnect()
   })
 
   if (__IS_CHROME__) {
     chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
       if (tabId === chrome.devtools.inspectedWindow.tabId && changeInfo.status === "complete" && !currentPort) {
         console.log("Tab reloaded, reconnecting...")
-        connectionAttempts = 0
-        setTimeout(connect, 200)
+        connection.connectedToBackend = false
+        cleanup()
+        reconnect()
       }
     })
+  }
+}
+
+function startHealthCheck() {
+  if (!currentPort) {
+    console.warn("HealthCheck - Cannot start without an established connection.")
+    return
+  }
+
+  clearIntervals()
+
+  // Send every 0.5 seconds a health check message to the backend.
+  healthCheckInterval = setInterval(() => {
+    panelPostMessage({
+      action: PANEL_TO_BACKEND_MESSAGES.HEALTH_CHECK,
+      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    })
+  }, 500)
+
+  // Check every second (plus a small buffer) if the backend is still responsive.
+  backendCheckInterval = setInterval(() => {
+    if (Date.now() - lastBackendMessageAt > 1100) {
+      console.log("HealthCheck - Backend unresponsive, reconnecting...")
+      connection.connectedToBackend = false
+      reconnect()
+    }
+  }, 1100)
+}
+
+function clearIntervals() {
+  clearInterval(healthCheckInterval)
+  clearInterval(backendCheckInterval)
+}
+
+function cleanup() {
+  connectionAttempts = 0
+  isConnecting = false
+
+  if (currentPort) {
+    currentPort.disconnect()
+    currentPort = null
   }
 }
 
