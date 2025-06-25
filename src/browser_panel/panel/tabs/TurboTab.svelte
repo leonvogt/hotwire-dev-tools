@@ -204,8 +204,8 @@
   }
 </script>
 
-<Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize}>
-  <Pane class="turbo-stream-pane full-pane" size={options.turboPaneDimensions?.streams || 35}>
+<Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize} dblClickSplitter={false}>
+  <Pane class="turbo-stream-pane full-pane" size={options.turboPaneDimensions?.streams || 35} minSize={20}>
     <div class="card h-100">
       <div class="card-body">
         <div class="d-flex flex-column h-100">
@@ -258,7 +258,7 @@
     </div>
   </Pane>
 
-  <Pane class="turbo-frame-pane full-pane" size={options.turboPaneDimensions?.frames || 35}>
+  <Pane class="turbo-frame-pane full-pane" size={options.turboPaneDimensions?.frames || 35} minSize={20}>
     {#snippet turboFrameRow(frame, depth = 0)}
       {@const selector = `#${frame.id}`}
       {@const isCollapsed = collapsedFrames[frame.uuid] || false}
@@ -327,7 +327,7 @@
     </div>
   </Pane>
 
-  <Pane class="turbo-detail-pane full-pane" size={options.turboPaneDimensions?.details || 30}>
+  <Pane class="turbo-detail-pane full-pane" size={options.turboPaneDimensions?.details || 30} minSize={20}>
     <div class="card h-100">
       <div class="card-body">
         {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
