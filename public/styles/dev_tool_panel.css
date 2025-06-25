@@ -1,3 +1,40 @@
+/* Importing fonts */
+@font-face {
+  font-family: "AirbnbCereal";
+  src: url("../fonts/AirbnbCereal_W_Bd.otf") format("opentype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "AirbnbCereal";
+  src: url("../fonts/AirbnbCereal_W_Bk.otf") format("opentype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "AirbnbCereal";
+  src: url("../fonts/AirbnbCereal_W_Blk.otf") format("opentype");
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: "AirbnbCereal";
+  src: url("../fonts/AirbnbCereal_W_Lt.otf") format("opentype");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "AirbnbCereal";
+  src: url("../fonts/AirbnbCereal_W_Md.otf") format("opentype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "AirbnbCereal";
+  src: url("../fonts/AirbnbCereal_W_XBd.otf") format("opentype");
+  font-weight: 800;
+}
+
 /* General */
 :root {
   --primary-color: #007bff;
@@ -26,6 +63,7 @@
 
 body {
   margin: 0;
+  font-family: "AirbnbCereal", sans-serif;
 }
 
 button {
