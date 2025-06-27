@@ -24,7 +24,7 @@
     TURBO_STREAM: "turbo-stream",
   }
   const turboStreamAnimationDuration = 300
-  const ignoredAttributes = ["id", "loading", "src", "complete", "aria-busy", "busy"]
+  const ignoredAttributes = ["id", "data-hotwire-dev-tools-uuid"]
 
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)
@@ -50,17 +50,26 @@
     stream: null,
   })
 
-  // Set the first Turbo Frame as selected if none is selected
   $effect(() => {
     turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
     turboStreams = getTurboStreams()
 
+    // Set the first Turbo Frame as selected if none is selected
     if (!selected.uuid && turboFrames.length > 0) {
       selected = {
         type: SELECTABLE_TYPES.TURBO_FRAME,
         uuid: turboFrames[0].uuid,
         frame: turboFrames[0],
         stream: null,
+      }
+    } else if (selected.type === SELECTABLE_TYPES.TURBO_FRAME) {
+      // Update the selected frame if it has changed
+      const updatedFrame = turboFrames.find((f) => f.uuid === selected.uuid)
+      if (updatedFrame && updatedFrame !== selected.frame) {
+        selected = {
+          ...selected,
+          frame: updatedFrame,
+        }
       }
     }
   })
@@ -307,7 +316,7 @@
           <div class="d-flex flex-column h-100">
             <div class="d-flex justify-content-center align-items-center position-relative">
               <h2 class="pe-4">#{selected.frame.id}</h2>
-              {#if selected.frame.src}
+              {#if selected.frame.attributes.src}
                 <div class="position-absolute end-0">
                   <button class="btn-icon icon-dark" onclick={() => refreshTurboFrame(selected.frame.id)} title="Refresh Turbo Frames List">
                     {@html Icons.refresh}
@@ -320,14 +329,6 @@
               <div class="pane-section-heading">Attributes</div>
               <table class="table table-sm w-100">
                 <tbody>
-                  <tr>
-                    <td>Source</td>
-                    <td>{selected.frame.src || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <td>Loading</td>
-                    <td>{selected.frame.loading || "N/A"}</td>
-                  </tr>
                   {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
                     <tr>
                       <td>{key}</td>
@@ -345,7 +346,7 @@
                 </div>
               </div>
               <div class="html-preview">
-                <pre><code class="language-html">{@html hljs.highlight(selected.frame.html, { language: "html" }).value}</code></pre>
+                <pre><code class="language-html">{@html hljs.highlight(selected.frame.serializedTag, { language: "html" }).value}</code></pre>
               </div>
             </div>
           </div>

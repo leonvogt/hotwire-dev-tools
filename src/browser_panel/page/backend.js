@@ -1,6 +1,6 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { debounce, serializeHTMLElement, generateUUID, ensureUUIDOnElement, getUUIDFromElement } from "$utils/utils"
+import { debounce, stringifyHTMLElementTag, generateUUID, ensureUUIDOnElement, getUUIDFromElement } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
 
 // This is the backend script which interacts with the page's DOM.
@@ -27,10 +27,7 @@ function init() {
       const frameData = {
         id: frame.id,
         uuid: uuid,
-        src: frame.getAttribute("src"),
-        loading: frame.getAttribute("loading"),
-        innerHTML: frame.innerHTML,
-        html: serializeHTMLElement(frame),
+        serializedTag: stringifyHTMLElementTag(frame),
         attributes: Array.from(frame.attributes).reduce((map, attr) => {
           map[attr.name] = attr.value
           return map
@@ -54,13 +51,12 @@ function init() {
       if (!this.turboFrames.has(uuid)) return
 
       const frameData = this.turboFrames.get(uuid)
-      frameData.attributes[attributeName] = newValue
-      if (attributeName === "id") {
-        frameData.id = newValue
+      if (newValue === null) {
+        delete frameData.attributes[attributeName]
+      } else {
+        frameData.attributes[attributeName] = newValue
       }
-
-      frameData.innerHTML = frame.innerHTML
-      frameData.html = serializeHTMLElement(frame)
+      frameData.serializedTag = stringifyHTMLElementTag(frame)
 
       this.turboFrames.set(uuid, frameData)
       this.sendTurboFrames()

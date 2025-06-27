@@ -28,12 +28,13 @@ export const inspectElement = (selector) => {
   chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector('${selector}'))`)
 }
 
-export const serializeHTMLElement = (element, escapeHTML) => {
+export const stringifyHTMLElementTag = (element, escapeHTML) => {
   if (!(element instanceof Element)) {
     throw new Error("Expected an Element")
   }
 
   const attributes = Array.from(element.attributes)
+    .filter(({ name }) => name !== "data-hotwire-dev-tools-uuid")
     .map((attr) => `${attr.name}="${attr.value}"`)
     .join(" ")
 
