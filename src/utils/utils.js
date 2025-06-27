@@ -28,12 +28,13 @@ export const inspectElement = (selector) => {
   chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector('${selector}'))`)
 }
 
-export const serializeHTMLElement = (element, escapeHTML) => {
+export const stringifyHTMLElementTag = (element, escapeHTML) => {
   if (!(element instanceof Element)) {
     throw new Error("Expected an Element")
   }
 
   const attributes = Array.from(element.attributes)
+    .filter(({ name }) => name !== "data-hotwire-dev-tools-uuid")
     .map((attr) => `${attr.name}="${attr.value}"`)
     .join(" ")
 
@@ -98,4 +99,23 @@ export const handleKeyboardNavigation = (event, collection, currentIndex) => {
   }
 
   return newIndex
+}
+
+export const getUUIDFromElement = (element) => {
+  const uuid = element.getAttribute("data-hotwire-dev-tools-uuid")
+  return uuid || null
+}
+
+export const setUUIDToElement = (element) => {
+  const uuid = generateUUID()
+  element.setAttribute("data-hotwire-dev-tools-uuid", uuid)
+  return uuid
+}
+
+export const ensureUUIDOnElement = (element) => {
+  let uuid = getUUIDFromElement(element)
+  if (!uuid) {
+    uuid = setUUIDToElement(element)
+  }
+  return uuid
 }

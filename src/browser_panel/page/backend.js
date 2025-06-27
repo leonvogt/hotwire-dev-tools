@@ -1,6 +1,7 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { debounce, serializeHTMLElement, generateUUID } from "$utils/utils"
+import { debounce, stringifyHTMLElementTag, generateUUID, ensureUUIDOnElement, getUUIDFromElement } from "$utils/utils"
+import TurboFrameObserver from "./turbo_frame_observer.js"
 
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.
@@ -8,74 +9,107 @@ import { debounce, serializeHTMLElement, generateUUID } from "$utils/utils"
 function init() {
   class HotwireDevToolsBackend {
     constructor() {
-      this.observer = null
-      this._stopMutationObserver = false
+      this.turboFrameObserver = new TurboFrameObserver(this)
+      this.turboFrames = new Map()
     }
 
     start() {
-      this.sendTurboFrames()
-
-      document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
-
-      const events = ["turbolinks:load", "turbo:load", "turbo:frame-load", "hotwire-dev-tools:options-changed"]
-      events.forEach((event) => {
-        document.addEventListener(event, () => {
-          this.sendTurboFrames()
-          // this.observeNode(document.querySelector("body"))
-        })
-      })
-
-      document.addEventListener("turbo:before-cache", () => {
-        this.disconnectObserver()
-      })
+      this.turboFrameObserver.start()
+      this.addEventListeners()
     }
 
     shutdown() {
-      this.disconnectObserver()
+      this.turboFrameObserver.stop()
+    }
+
+    frameConnected(frame) {
+      const uuid = ensureUUIDOnElement(frame)
+      const frameData = {
+        id: frame.id,
+        uuid: uuid,
+        serializedTag: stringifyHTMLElementTag(frame),
+        attributes: Array.from(frame.attributes).reduce((map, attr) => {
+          map[attr.name] = attr.value
+          return map
+        }, {}),
+        children: [],
+        element: frame,
+      }
+
+      this.turboFrames.set(uuid, frameData)
+      this.sendTurboFrames()
+    }
+
+    frameDisconnected(frame) {
+      const uuid = getUUIDFromElement(frame)
+      this.turboFrames.delete(uuid)
+      this.sendTurboFrames()
+    }
+
+    frameAttributeChanged(frame, attributeName, oldValue, newValue) {
+      const uuid = getUUIDFromElement(frame)
+      if (!this.turboFrames.has(uuid)) return
+
+      const frameData = this.turboFrames.get(uuid)
+      if (newValue === null) {
+        delete frameData.attributes[attributeName]
+      } else {
+        frameData.attributes[attributeName] = newValue
+      }
+      frameData.serializedTag = stringifyHTMLElementTag(frame)
+
+      this.turboFrames.set(uuid, frameData)
+      this.sendTurboFrames()
+    }
+
+    addEventListeners() {
+      document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
     }
 
     sendTurboFrames = debounce(() => {
-      const allFrames = Array.from(document.querySelectorAll("turbo-frame"))
-      const frameMap = new Map()
+      // Create a deep copy of the turboFrames map, without DOM Elements
+      const stripDOMElements = (frameData) => {
+        const { element, children, ...cleanData } = frameData
+        const strippedChildren = children.map((child) => stripDOMElements(child))
+        return { ...cleanData, children: strippedChildren }
+      }
 
-      allFrames.forEach((frame) => {
-        let uuid = frame.getAttribute("data-hotwire-dev-tools-uuid")
-        if (!uuid) {
-          uuid = generateUUID()
-          frame.setAttribute("data-hotwire-dev-tools-uuid", uuid)
-        }
-        const data = {
-          id: frame.id,
-          uuid: uuid,
-          src: frame.src,
-          loading: frame.getAttribute("loading"),
-          innerHTML: frame.innerHTML,
-          html: serializeHTMLElement(frame),
-          attributes: Array.from(frame.attributes).reduce((map, attr) => {
-            map[attr.name] = attr.value
-            return map
-          }, {}),
-          children: [],
-        }
-        frameMap.set(frame, data)
-      })
+      const buildFrameTree = () => {
+        const rootFrames = []
+        this.turboFrames.forEach((frameData) => {
+          frameData.children = []
+        })
 
-      const topLevelFrames = []
-      allFrames.forEach((frame) => {
-        const parent = frame.parentElement?.closest("turbo-frame")
-        if (parent && frameMap.has(parent)) {
-          frameMap.get(parent).children.push(frameMap.get(frame))
-        } else {
-          topLevelFrames.push(frameMap.get(frame))
-        }
-      })
+        this.turboFrames.forEach((frameData) => {
+          const element = frameData.element
+          const parentElement = element.parentElement?.closest("turbo-frame")
+
+          if (parentElement) {
+            const parentUUID = this.getUUIDFromElement(parentElement)
+            if (parentUUID && this.turboFrames.has(parentUUID)) {
+              this.turboFrames.get(parentUUID).children.push(frameData)
+            } else {
+              // Parent exists but not in our tracking => add as root
+              rootFrames.push(frameData)
+            }
+          } else {
+            // No parent frame => this is a root frame
+            rootFrames.push(frameData)
+          }
+        })
+
+        return rootFrames
+      }
+
+      const turboFrameTree = buildFrameTree()
+      const sanitizedFrameTree = turboFrameTree.map((frame) => stripDOMElements(frame))
 
       this._postMessage({
-        frames: topLevelFrames,
+        frames: sanitizedFrameTree,
         url: btoa(window.location.href),
         type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_FRAMES,
       })
-    }, 100)
+    }, 10)
 
     handleIncomingTurboStream = (event) => {
       const turboStream = event.target
@@ -118,37 +152,6 @@ function init() {
         this.sendTurboFrames()
       } else {
         console.warn(`Hotwire DevTools Backend: Turbo frame with id "${id}" not found.`)
-      }
-    }
-
-    observeNode(node) {
-      const observerOptions = {
-        childList: true,
-        attributes: true,
-        subtree: true,
-      }
-
-      this.observer = new MutationObserver((mutations) => {
-        if (!this._stopMutationObserver) {
-          // Reduce the number of sent messages, by ignoring mutations that are from the highlighting process.
-          const isHighlightOverlayMutation = mutations.some((mutation) => {
-            const nodes = Array.from(mutation.addedNodes).concat(Array.from(mutation.removedNodes))
-            return Array.from(nodes).some((node) => node.nodeType === Node.ELEMENT_NODE && node.classList?.contains("hotwire-dev-tools-highlight-overlay"))
-          })
-
-          if (!isHighlightOverlayMutation) {
-            this.sendTurboFrames(mutations)
-          }
-        }
-      })
-
-      this.observer.observe(node, observerOptions)
-    }
-
-    disconnectObserver() {
-      if (this.observer) {
-        this.observer.disconnect()
-        this.observer = null
       }
     }
 
