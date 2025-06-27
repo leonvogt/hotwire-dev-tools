@@ -10,7 +10,7 @@
   import InspectButton from "$components/InspectButton.svelte"
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import IconButton from "$shoelace/IconButton.svelte"
-  import { getTurboFrames, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
+  import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
   import { panelPostMessage } from "../../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
@@ -29,9 +29,14 @@
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)
   let turboFrames = $state([])
+  let turboCables = $state([])
   let turboStreams = $state([])
   let collapsedFrames = $state({})
   let stickyFrames = $state({})
+
+  const connectedTurboCablesCount = $derived(() => {
+    return turboCables.filter((cable) => cable.connected).length
+  })
 
   const turboFrameCount = $derived(() => {
     const countFrames = (frames) => {
@@ -53,6 +58,7 @@
   $effect(() => {
     turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
     turboStreams = getTurboStreams()
+    turboCables = getTurboCables()
 
     // Set the first Turbo Frame as selected if none is selected
     if (!selected.uuid && turboFrames.length > 0) {
@@ -205,9 +211,16 @@
         <div class="d-flex flex-column h-100">
           <div class="d-flex justify-content-center align-items-center position-relative">
             <h2>Streams</h2>
-            {#if turboStreams.length > 0}
-              <IconButton class="position-absolute end-0" name="trash2" onclick={clearTurboStreams}></IconButton>
-            {/if}
+            <div class="position-absolute end-0">
+              {#if turboStreams.length > 0}
+                <IconButton name="trash2" onclick={clearTurboStreams}></IconButton>
+              {/if}
+              {#if turboCables.length > 0}
+                <sl-tooltip content={`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream Websockets are connected`}>
+                  <sl-icon name="circle-fill" class="turbo-cable-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></sl-icon>
+                </sl-tooltip>
+              {/if}
+            </div>
           </div>
           <div class="scrollable-list">
             {#if turboStreams.length > 0}
@@ -397,3 +410,12 @@
     </div>
   </Pane>
 </Splitpanes>
+
+<style>
+  .turbo-cable-icon {
+    color: var(--sl-color-danger-500);
+  }
+  .turbo-cable-icon.connected {
+    color: var(--sl-color-success-500);
+  }
+</style>

@@ -22,10 +22,7 @@ export default class TurboFrameObserver {
     if (!this.frames.has(uuid)) {
       const frameData = this.buildFrameData(element)
       this.frames.set(uuid, frameData)
-
-      if (this.delegate.frameConnected) {
-        this.delegate.frameConnected(element)
-      }
+      this.delegate.frameConnected(element)
     }
   }
 
@@ -34,10 +31,7 @@ export default class TurboFrameObserver {
 
     if (this.frames.has(uuid)) {
       this.frames.delete(uuid)
-
-      if (this.delegate.frameDisconnected) {
-        this.delegate.frameDisconnected(element)
-      }
+      this.delegate.frameDisconnected(element)
     }
   }
 
@@ -56,9 +50,7 @@ export default class TurboFrameObserver {
 
         frameData.serializedTag = stringifyHTMLElementTag(element)
 
-        if (this.delegate.frameAttributeChanged) {
-          this.delegate.frameAttributeChanged(element, attributeName, oldValue, newValue)
-        }
+        this.delegate.frameAttributeChanged(element, attributeName, oldValue, newValue)
       }
     }
   }

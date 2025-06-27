@@ -2,6 +2,7 @@ import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKE
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
 import { debounce, generateUUID } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
+import TurboCableObserver from "./turbo_cable_observer.js"
 import ElementObserver from "./element_observer.js"
 
 // This is the backend script which interacts with the page's DOM.
@@ -12,6 +13,7 @@ function init() {
     constructor() {
       this.observers = {
         turboFrame: new TurboFrameObserver(this),
+        turboCable: new TurboCableObserver(this),
       }
 
       this.elementObserver = new ElementObserver(document, this)
@@ -30,17 +32,22 @@ function init() {
       document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
     }
 
+    // ElementObserver delegate methods
     matchElement(element) {
-      return this.observers.turboFrame.matchElement(element)
+      return this.observers.turboFrame.matchElement(element) || this.observers.turboCable.matchElement(element)
     }
 
     matchElementsInTree(tree) {
-      return [...this.observers.turboFrame.matchElementsInTree(tree)]
+      return [...this.observers.turboFrame.matchElementsInTree(tree), ...this.observers.turboCable.matchElementsInTree(tree)]
     }
 
     elementMatched(element) {
       if (this.observers.turboFrame.matchElement(element)) {
         this.observers.turboFrame.elementMatched(element)
+      }
+
+      if (this.observers.turboCable.matchElement(element)) {
+        this.observers.turboCable.elementMatched(element)
       }
     }
 
@@ -48,24 +55,42 @@ function init() {
       if (this.observers.turboFrame.matchElement(element)) {
         this.observers.turboFrame.elementUnmatched(element)
       }
+
+      if (this.observers.turboCable.matchElement(element)) {
+        this.observers.turboCable.elementUnmatched(element)
+      }
     }
 
     elementAttributeChanged(element, attributeName, oldValue) {
       if (this.observers.turboFrame.matchElement(element)) {
         this.observers.turboFrame.elementAttributeChanged(element, attributeName, oldValue)
       }
+
+      if (this.observers.turboCable.matchElement(element)) {
+        this.observers.turboCable.elementAttributeChanged(element, attributeName, oldValue)
+      }
     }
 
+    // TurboFrameObserver delegate methods
     frameConnected(frame) {
       this.sendTurboFrames()
     }
-
     frameDisconnected(frame) {
       this.sendTurboFrames()
     }
-
     frameAttributeChanged(frame, attributeName, oldValue, newValue) {
       this.sendTurboFrames()
+    }
+
+    // TurboCableObserver delegate methods
+    turboCableConnected(element) {
+      this.sendTurboCableData()
+    }
+    turboCableDisconnected(element) {
+      this.sendTurboCableData()
+    }
+    turboCableAttributeChanged(element, attributeName, oldValue, newValue) {
+      this.sendTurboCableData()
     }
 
     sendTurboFrames = debounce(() => {
@@ -73,6 +98,14 @@ function init() {
         frames: this.observers.turboFrame.getFrameData(),
         url: btoa(window.location.href),
         type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_FRAMES,
+      })
+    }, 10)
+
+    sendTurboCableData = debounce(() => {
+      this._postMessage({
+        turboCables: this.observers.turboCable.getTurboCableData(),
+        url: btoa(window.location.href),
+        type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_CABLES,
       })
     }, 10)
 

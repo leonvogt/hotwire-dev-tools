@@ -21,14 +21,23 @@ export function createConnectionState() {
 export const connection = createConnectionState()
 
 let turboFrames = $state([])
+let turboCables = $state([])
 let turboStreams = $state([])
 
-export function setTurboFrames(frames) {
+export function setTurboFrames(frames, url) {
   turboFrames = frames
 }
 
 export function getTurboFrames() {
   return turboFrames
+}
+
+export function setTurboCables(cables, url) {
+  turboCables = cables
+}
+
+export function getTurboCables() {
+  return turboCables
 }
 
 export function addTurboStream(turboStream) {
