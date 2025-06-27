@@ -1,7 +1,8 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { debounce, stringifyHTMLElementTag, generateUUID, ensureUUIDOnElement, getUUIDFromElement } from "$utils/utils"
+import { debounce, generateUUID } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
+import ElementObserver from "./element_observer.js"
 
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.
@@ -9,103 +10,67 @@ import TurboFrameObserver from "./turbo_frame_observer.js"
 function init() {
   class HotwireDevToolsBackend {
     constructor() {
-      this.turboFrameObserver = new TurboFrameObserver(this)
-      this.turboFrames = new Map()
+      this.observers = {
+        turboFrame: new TurboFrameObserver(this),
+      }
+
+      this.elementObserver = new ElementObserver(document, this)
     }
 
     start() {
-      this.turboFrameObserver.start()
+      this.elementObserver.start()
       this.addEventListeners()
     }
 
-    shutdown() {
-      this.turboFrameObserver.stop()
-    }
-
-    frameConnected(frame) {
-      const uuid = ensureUUIDOnElement(frame)
-      const frameData = {
-        id: frame.id,
-        uuid: uuid,
-        serializedTag: stringifyHTMLElementTag(frame),
-        attributes: Array.from(frame.attributes).reduce((map, attr) => {
-          map[attr.name] = attr.value
-          return map
-        }, {}),
-        children: [],
-        element: frame,
-      }
-
-      this.turboFrames.set(uuid, frameData)
-      this.sendTurboFrames()
-    }
-
-    frameDisconnected(frame) {
-      const uuid = getUUIDFromElement(frame)
-      this.turboFrames.delete(uuid)
-      this.sendTurboFrames()
-    }
-
-    frameAttributeChanged(frame, attributeName, oldValue, newValue) {
-      const uuid = getUUIDFromElement(frame)
-      if (!this.turboFrames.has(uuid)) return
-
-      const frameData = this.turboFrames.get(uuid)
-      if (newValue === null) {
-        delete frameData.attributes[attributeName]
-      } else {
-        frameData.attributes[attributeName] = newValue
-      }
-      frameData.serializedTag = stringifyHTMLElementTag(frame)
-
-      this.turboFrames.set(uuid, frameData)
-      this.sendTurboFrames()
+    stop() {
+      this.elementObserver.stop()
     }
 
     addEventListeners() {
       document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
     }
 
+    matchElement(element) {
+      return this.observers.turboFrame.matchElement(element)
+    }
+
+    matchElementsInTree(tree) {
+      return [...this.observers.turboFrame.matchElementsInTree(tree)]
+    }
+
+    elementMatched(element) {
+      if (this.observers.turboFrame.matchElement(element)) {
+        this.observers.turboFrame.elementMatched(element)
+      }
+    }
+
+    elementUnmatched(element) {
+      if (this.observers.turboFrame.matchElement(element)) {
+        this.observers.turboFrame.elementUnmatched(element)
+      }
+    }
+
+    elementAttributeChanged(element, attributeName, oldValue) {
+      if (this.observers.turboFrame.matchElement(element)) {
+        this.observers.turboFrame.elementAttributeChanged(element, attributeName, oldValue)
+      }
+    }
+
+    frameConnected(frame) {
+      this.sendTurboFrames()
+    }
+
+    frameDisconnected(frame) {
+      this.sendTurboFrames()
+    }
+
+    frameAttributeChanged(frame, attributeName, oldValue, newValue) {
+      this.sendTurboFrames()
+    }
+
     sendTurboFrames = debounce(() => {
-      // Create a deep copy of the turboFrames map, without DOM Elements
-      const stripDOMElements = (frameData) => {
-        const { element, children, ...cleanData } = frameData
-        const strippedChildren = children.map((child) => stripDOMElements(child))
-        return { ...cleanData, children: strippedChildren }
-      }
-
-      const buildFrameTree = () => {
-        const rootFrames = []
-        this.turboFrames.forEach((frameData) => {
-          frameData.children = []
-        })
-
-        this.turboFrames.forEach((frameData) => {
-          const element = frameData.element
-          const parentElement = element.parentElement?.closest("turbo-frame")
-
-          if (parentElement) {
-            const parentUUID = this.getUUIDFromElement(parentElement)
-            if (parentUUID && this.turboFrames.has(parentUUID)) {
-              this.turboFrames.get(parentUUID).children.push(frameData)
-            } else {
-              // Parent exists but not in our tracking => add as root
-              rootFrames.push(frameData)
-            }
-          } else {
-            // No parent frame => this is a root frame
-            rootFrames.push(frameData)
-          }
-        })
-
-        return rootFrames
-      }
-
-      const turboFrameTree = buildFrameTree()
-      const sanitizedFrameTree = turboFrameTree.map((frame) => stripDOMElements(frame))
-
       this._postMessage({
-        frames: sanitizedFrameTree,
+        frames: this.observers.turboFrame.getFrameData(),
         url: btoa(window.location.href),
         type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_FRAMES,
       })
@@ -162,7 +127,6 @@ function init() {
     }
   }
 
-  // Using a function scope to avoid running into issues on re-injection
   const devtoolsBackend = new HotwireDevToolsBackend()
   window.HotwireDevToolsBackend = devtoolsBackend
   window.addEventListener("message", handshake)
@@ -182,7 +146,7 @@ function init() {
     if (e.data.payload === PANEL_TO_BACKEND_MESSAGES.SHUTDOWN) {
       window.removeEventListener("message", handleMessages)
       window.addEventListener("message", handshake)
-      devtoolsBackend.shutdown()
+      devtoolsBackend.stop()
       return
     }
     switch (e.data.payload.action) {
