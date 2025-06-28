@@ -63,7 +63,13 @@
 
 body {
   margin: 0;
-  font-family: "AirbnbCereal", sans-serif;
+  font-family:
+    "AirbnbCereal",
+    -apple-system,
+    BlinkMacSystemFont,
+    Roboto,
+    Helvetica Neue,
+    sans-serif;
 }
 
 button {
