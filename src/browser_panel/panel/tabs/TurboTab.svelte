@@ -24,7 +24,7 @@
     TURBO_STREAM: "turbo-stream",
   }
   const turboStreamAnimationDuration = 300
-  const ignoredAttributes = ["id", "data-hotwire-dev-tools-uuid"]
+  const ignoredAttributes = ["id", "data-hotwire-dev-tools-uuid", "style"]
 
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)
@@ -216,7 +216,7 @@
                 <IconButton name="trash2" onclick={clearTurboStreams}></IconButton>
               {/if}
               {#if turboCables.length > 0}
-                <sl-tooltip content={`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream Websockets are connected`}>
+                <sl-tooltip content={`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}>
                   <sl-icon name="circle-fill" class="turbo-cable-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></sl-icon>
                 </sl-tooltip>
               {/if}
@@ -345,7 +345,7 @@
 
             <div class="scrollable-list flow">
               <div class="pane-section-heading">Attributes</div>
-              <table class="table table-sm w-100">
+              <table class="table table-sm w-100 turbo-table">
                 <tbody>
                   {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
                     <tr>
@@ -422,5 +422,11 @@
   }
   .turbo-cable-icon.connected {
     color: var(--sl-color-success-500);
+  }
+
+  /* To prevent flickering when reloading async Turbo Frames */
+  .turbo-table td:first-child {
+    width: 3.5rem;
+    white-space: nowrap;
   }
 </style>
