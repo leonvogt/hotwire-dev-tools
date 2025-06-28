@@ -9,6 +9,7 @@ export const PORT_IDENTIFIERS = {
 
 export const BACKEND_TO_PANEL_MESSAGES = {
   SET_TURBO_FRAMES: "set-turbo-frames",
+  SET_TURBO_CABLES: "set-turbo-cables",
   TURBO_STREAM_RECEIVED: "turbo-stream-received",
   HEALTH_CHECK_RESPONSE: "health-check-response",
 }
