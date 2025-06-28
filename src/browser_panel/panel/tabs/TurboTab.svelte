@@ -283,7 +283,12 @@
           {/if}
           <div>{selector}</div>
         </div>
-        <InspectButton class="btn-hoverable me-2" {selector}></InspectButton>
+        <div>
+          {#if frame.attributes.busy !== undefined}
+            <sl-spinner></sl-spinner>
+          {/if}
+          <InspectButton class="btn-hoverable me-2" {selector}></InspectButton>
+        </div>
       </div>
 
       <!-- Recursively render children -->
