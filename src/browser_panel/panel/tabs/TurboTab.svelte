@@ -60,8 +60,11 @@
     turboStreams = getTurboStreams()
     turboCables = getTurboCables()
 
-    // Set the first Turbo Frame as selected if none is selected or the selected frame no longer exists
-    if (turboFrames.length > 0 && (!selected.uuid || !turboFrames.some((frame) => frame.id === selected.frame?.id))) {
+    const isStreamSelected = selected.type === SELECTABLE_TYPES.TURBO_STREAM
+    const selectedFrameMissing = !turboFrames.some((frame) => frame.id === selected.frame?.id)
+    const shouldSelectFirstFrame = turboFrames.length > 0 && !isStreamSelected && selectedFrameMissing
+
+    if (shouldSelectFirstFrame) {
       selected = {
         type: SELECTABLE_TYPES.TURBO_FRAME,
         uuid: turboFrames[0].uuid,
