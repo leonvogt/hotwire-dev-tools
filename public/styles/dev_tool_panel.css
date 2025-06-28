@@ -559,6 +559,14 @@ svg.icon-muted {
   font-size: var(--fs-900);
 }
 
+.code-keyword {
+  background: #eee;
+  width: fit-content;
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-weight: 600;
+}
+
 .scrollable-y {
   overflow-y: auto;
   scrollbar-width: thin;

@@ -349,7 +349,7 @@
                 <tbody>
                   {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
                     <tr>
-                      <td>{key}</td>
+                      <td><div class="code-keyword">{key}</div></td>
                       <td>{value}</td>
                     </tr>
                   {/each}
@@ -426,7 +426,7 @@
 
   /* To prevent flickering when reloading async Turbo Frames */
   .turbo-table td:first-child {
-    width: 3.5rem;
+    min-width: 3.5rem;
     white-space: nowrap;
   }
 </style>
