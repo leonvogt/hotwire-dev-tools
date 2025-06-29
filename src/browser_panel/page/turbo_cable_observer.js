@@ -1,4 +1,4 @@
-import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag } from "$utils/utils.js"
+import { ensureUUIDOnElement, getUUIDFromElement } from "$utils/utils.js"
 
 // The TurboCableObserver class is responsible for observing `<turbo-cable-stream-source>` elements,
 // which are used in Turbo Streams to manage WebSocket connections.

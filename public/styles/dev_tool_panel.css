@@ -307,8 +307,14 @@ svg.icon-muted {
 .d-flex {
   display: flex;
 }
+.justify-content-center {
+  justify-content: center;
+}
 .justify-content-between {
   justify-content: space-between;
+}
+.justify-content-end {
+  justify-content: flex-end;
 }
 .align-items-center {
   align-items: center;
@@ -318,10 +324,6 @@ svg.icon-muted {
 }
 .flex-column {
   flex-direction: column;
-}
-
-.justify-content-center {
-  justify-content: center;
 }
 
 .cursor-pointer {

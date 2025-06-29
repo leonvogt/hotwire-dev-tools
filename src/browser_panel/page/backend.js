@@ -1,6 +1,6 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES, MONITORING_EVENTS } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { debounce, generateUUID, getXpath } from "$utils/utils"
+import { debounce, generateUUID, getXpath, stringifyHTMLElementTag, stringifyHTMLElementTagShallow } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
 import TurboCableObserver from "./turbo_cable_observer.js"
 import ElementObserver from "./element_observer.js"
@@ -120,12 +120,42 @@ function init() {
     }, 10)
 
     sendTurboEvent = (eventName, event) => {
+      const uuid = generateUUID()
+      const time = new Date().toLocaleTimeString()
+      const serializedTargetTag = event.target ? stringifyHTMLElementTag(event.target, false) : null
+      const serializedTargetTagShallow = event.target ? stringifyHTMLElementTagShallow(event.target, false) : null
+      const details = event.detail ? JSON.parse(JSON.stringify(event.detail)) : {}
+      const keysToRemove = ["fetchResponse", "newStream", "currentElement", "newElement"]
+      keysToRemove.forEach((key) => {
+        if (details[key]) {
+          delete details[key]
+        }
+      })
+
+      let turboStreamContent
+      let action
+      let targetSelector
+      if (eventName === "turbo:before-stream-render") {
+        const target = event.target.getAttribute("target")
+        const targets = event.target.getAttribute("targets")
+
+        turboStreamContent = event.target.outerHTML
+        action = event.target.getAttribute("action")
+        targetSelector = target ? `#${target}` : targets
+      }
+
       this._postMessage({
         type: BACKEND_TO_PANEL_MESSAGES.TURBO_EVENT_RECEIVED,
         turboEvent: {
-          uuid: generateUUID(),
-          eventName: eventName,
-          details: event.detail,
+          uuid,
+          time,
+          serializedTargetTag,
+          serializedTargetTagShallow,
+          eventName,
+          details,
+          turboStreamContent,
+          action,
+          targetSelector,
           targetXPath: event.target ? getXpath(event.target) : null,
         },
       })

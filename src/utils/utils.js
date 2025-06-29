@@ -28,7 +28,7 @@ export const inspectElement = (selector) => {
   chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector('${selector}'))`)
 }
 
-export const stringifyHTMLElementTag = (element, escapeHTML) => {
+export const stringifyHTMLElementTag = (element, createClosingTag = true) => {
   if (!(element instanceof Element)) {
     throw new Error("Expected an Element")
   }
@@ -39,13 +39,21 @@ export const stringifyHTMLElementTag = (element, escapeHTML) => {
     .join(" ")
 
   const tagName = element.tagName.toLowerCase()
-  const string = `<${tagName}${attributes ? " " + attributes : ""}></${tagName}>`
-
-  if (escapeHTML) {
-    return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
+  let string = `<${tagName}${attributes ? " " + attributes : ""}>`
+  if (createClosingTag) {
+    string += `</${tagName}>`
   }
 
   return string
+}
+
+export const stringifyHTMLElementTagShallow = (element) => {
+  if (!(element instanceof Element)) {
+    throw new Error("Expected an Element")
+  }
+  const tagName = element.tagName.toLowerCase()
+  const id = element.id ? ` id="${element.id}"` : ""
+  return `<${tagName}${id} ...>`
 }
 
 export const generateUUID = () => {

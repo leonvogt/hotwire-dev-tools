@@ -51,6 +51,10 @@ export function getTurboEvents() {
   return turboEvents
 }
 
+export function clearTurboEvents() {
+  turboEvents = []
+}
+
 export function addTurboStream(turboStream) {
   const exists = turboStreams.some((stream) => stream.uuid === turboStream.uuid)
   if (exists) return

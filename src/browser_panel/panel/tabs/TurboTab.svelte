@@ -2,14 +2,12 @@
   import { Pane, Splitpanes } from "svelte-splitpanes"
   import { slide } from "svelte/transition"
   import NumberFlow from "@number-flow/svelte"
-  import hljs from "highlight.js/lib/core"
-  import xml from "highlight.js/lib/languages/xml"
-  hljs.registerLanguage("xml", xml)
 
   import CopyButton from "$components/CopyButton.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import IconButton from "$shoelace/IconButton.svelte"
+  import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
   import { panelPostMessage } from "../../messaging.js"
@@ -241,7 +239,7 @@
                   onmouseleave={() => hideHighlightOverlay()}
                 >
                   <div class="text-align-right text-muted">
-                    <span class="timestamp">{stream.time}</span>
+                    <span>{stream.time}</span>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
                     <div>{stream.action}</div>
@@ -367,7 +365,7 @@
                 </div>
               </div>
               <div class="html-preview">
-                <pre><code class="language-html">{@html hljs.highlight(selected.frame.serializedTag, { language: "html" }).value}</code></pre>
+                <pre><code class="language-html"><HTMLRenderer htmlString={selected.frame.serializedTag} /></code></pre>
               </div>
             </div>
           </div>
@@ -404,7 +402,7 @@
                 <CopyButton value={selected.stream.turboStreamContent} />
               </div>
               <div class="html-preview">
-                <pre><code class="language-html">{@html hljs.highlight(selected.stream.turboStreamContent, { language: "html" }).value}</code></pre>
+                <pre><code class="language-html"><HTMLRenderer htmlString={selected.stream.turboStreamContent} /></code></pre>
               </div>
             </div>
           </div>
