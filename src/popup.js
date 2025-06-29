@@ -1,5 +1,5 @@
 import Devtool from "$lib/devtool"
-import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS } from "$lib/monitoring_events"
+import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS } from "$lib/constants"
 
 const devTool = new Devtool()
 

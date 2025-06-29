@@ -1,7 +1,7 @@
 import { debounce } from "$utils/utils.js"
 import { turboStreamTargetElements } from "$utils/turbo_utils"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { MONITORING_EVENTS } from "$lib/monitoring_events"
+import { MONITORING_EVENTS } from "$lib/constants"
 
 import Devtool from "$lib/devtool"
 import DetailPanel from "$components/detail_panel"

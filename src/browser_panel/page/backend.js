@@ -1,6 +1,6 @@
-import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
+import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES, MONITORING_EVENTS } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { debounce, generateUUID } from "$utils/utils"
+import { debounce, generateUUID, getXpath } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
 import TurboCableObserver from "./turbo_cable_observer.js"
 import ElementObserver from "./element_observer.js"
@@ -30,6 +30,16 @@ function init() {
 
     addEventListeners() {
       document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
+
+      MONITORING_EVENTS.forEach((eventName) => {
+        window.addEventListener(eventName, (event) => {
+          // For some unknown reason, we can't use the event itself in Safari, without loosing custom properties, like event.detail.
+          // The only hacky workaround that seems to work is to use a setTimeout with some delay. (Issue#73)
+          setTimeout(() => {
+            this.sendTurboEvent(eventName, event)
+          }, 100)
+        })
+      })
     }
 
     // ElementObserver delegate methods
@@ -108,6 +118,18 @@ function init() {
         type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_CABLES,
       })
     }, 10)
+
+    sendTurboEvent = (eventName, event) => {
+      this._postMessage({
+        type: BACKEND_TO_PANEL_MESSAGES.TURBO_EVENT_RECEIVED,
+        turboEvent: {
+          uuid: generateUUID(),
+          eventName: eventName,
+          details: event.detail,
+          targetXPath: event.target ? getXpath(event.target) : null,
+        },
+      })
+    }
 
     handleIncomingTurboStream = (event) => {
       const turboStream = event.target

@@ -1,5 +1,5 @@
 import { BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS } from "$lib/constants"
-import { setTurboFrames, setTurboCables, addTurboStream } from "./State.svelte.js"
+import { setTurboFrames, setTurboCables, addTurboStream, addTurboEvent } from "./State.svelte.js"
 
 function setPort(port) {
   if (!window.__HotwireDevTools) {
@@ -24,6 +24,10 @@ export function handleBackendToPanelMessage(message, port) {
       break
     case BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED:
       addTurboStream(message.turboStream)
+      setPort(port)
+      break
+    case BACKEND_TO_PANEL_MESSAGES.TURBO_EVENT_RECEIVED:
+      addTurboEvent(message.turboEvent)
       setPort(port)
       break
     case BACKEND_TO_PANEL_MESSAGES.HEALTH_CHECK_RESPONSE:
