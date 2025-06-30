@@ -90,24 +90,27 @@
               {/if}
             </div>
           </div>
-          <div class="scrollable-list">
+          <div class="scrollable-list overflow-x-hidden">
             {#if turboEvents.length > 0}
               {#each turboEvents as event (event.uuid)}
                 <div
                   {@attach scrollIntoView}
-                  class="entry-row p-1 cursor-pointer"
+                  class="entry-row entry-row--table-layout p-1 cursor-pointer turbo-event-entry-row"
                   class:selected={selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.turboEvent.uuid === event.uuid}
                   role="button"
                   tabindex="0"
                   onclick={() => setSelectedTurboEvent(event)}
                   onkeyup={handleEventListKeyboardNavigation}
                 >
-                  <div class="text-align-right text-muted">
-                    <span>{event.time}</span>
-                  </div>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div>{event.eventName}</div>
-                    <div><HTMLRenderer htmlString={event.serializedTargetTagShallow} /></div>
+                  <div class="turbo-event-entry-wrapper">
+                    <div class="turbo-event-first-column">
+                      <strong>{event.eventName}</strong>
+                    </div>
+
+                    <div class="turbo-event-second-column">
+                      <div class="me-3">{event.time}</div>
+                      <div class="me-3 overflow-x-auto scrollbar-none"><HTMLRenderer htmlString={event.serializedTargetTag} /></div>
+                    </div>
                   </div>
                 </div>
               {/each}
@@ -128,13 +131,13 @@
       {#if typeof value === "object" && value !== null}
         {#if Array.isArray(value)}
           {#each value as item, i}
-            <p>
+            <p class="m-0">
               <strong>{i}</strong>: {@render valueViewer(item)}
             </p>
           {/each}
         {:else}
           {#each Object.entries(value) as [k, v]}
-            <p>
+            <p class="m-0">
               <strong>{k}</strong>: {@render valueViewer(v, k)}
             </p>
           {/each}
@@ -220,6 +223,22 @@
 </Splitpanes>
 
 <style>
+  .turbo-event-entry-wrapper {
+    display: table-row;
+  }
+  .turbo-event-first-column {
+    display: table-cell;
+    width: 60%;
+    vertical-align: top;
+    padding-right: 8px;
+  }
+  .turbo-event-second-column {
+    display: table-cell;
+    width: 40%;
+    vertical-align: top;
+    text-align: right;
+  }
+
   .turbo-events-table {
     table-layout: fixed;
   }
