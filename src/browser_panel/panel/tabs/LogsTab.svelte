@@ -5,6 +5,8 @@
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
+  import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS } from "$lib/constants.js"
+
   import IconButton from "$shoelace/IconButton.svelte"
   import CopyButton from "$components/CopyButton.svelte"
   import InspectButton from "$components/InspectButton.svelte"
@@ -18,6 +20,8 @@
 
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)
+  let turboEventsFilter = $state([...MONITORING_EVENTS])
+
   let turboEvents = $state([])
 
   let selected = $state({
@@ -66,6 +70,31 @@
     }, 10)
   }
 
+  const handleFilterToggle = (event) => {
+    const { value } = event.target
+    if (value === "all") {
+      turboEventsFilter = MONITORING_EVENTS
+    } else {
+      const isActive = turboEventsFilter.includes(value)
+      if (isActive) {
+        turboEventsFilter = turboEventsFilter.filter((e) => e !== value)
+      } else {
+        turboEventsFilter.push(value)
+      }
+    }
+  }
+
+  const handleFilterGroupToggle = (groupName) => {
+    const events = MONITORING_EVENT_GROUPS[groupName]
+    const isActive = events.every((e) => turboEventsFilter.includes(e))
+
+    if (isActive) {
+      turboEventsFilter = turboEventsFilter.filter((e) => !events.includes(e))
+    } else {
+      turboEventsFilter = [...new Set([...turboEventsFilter, ...events])]
+    }
+  }
+
   const handlePaneResize = (event) => {
     const dimensions = event.detail.map((pane) => pane.size)
     devTool.saveOptions({
@@ -85,11 +114,37 @@
           <div class="d-flex justify-content-center align-items-center position-relative">
             <h2>Events</h2>
             <div class="position-absolute end-0">
+              <sl-dropdown stayOpenOnSelect={true} class="mb-2">
+                <sl-button slot="trigger" caret>
+                  <sl-icon name="funnel"></sl-icon>
+                </sl-button>
+                <sl-menu>
+                  {#each Object.entries(MONITORING_EVENT_GROUPS) as [groupName, events]}
+                    <sl-menu-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
+                      <strong>{groupName}</strong>
+                    </sl-menu-item>
+
+                    {#each events as event}
+                      <sl-menu-item
+                        class="turbo-event-menu-item"
+                        type="checkbox"
+                        role="button"
+                        tabindex="0"
+                        onkeyup={(e) => handleFilterToggle(e)}
+                        onclick={(e) => handleFilterToggle(e)}
+                        value={event}
+                        checked={turboEventsFilter.includes(event)}>{event}</sl-menu-item
+                      >
+                    {/each}
+                  {/each}
+                </sl-menu>
+              </sl-dropdown>
               {#if turboEvents.length > 0}
                 <IconButton name="trash2" onclick={clearTurboEvents}></IconButton>
               {/if}
             </div>
           </div>
+
           <div class="scrollable-list overflow-x-hidden">
             {#if turboEvents.length > 0}
               {#each turboEvents as event (event.uuid)}
@@ -97,6 +152,7 @@
                   {@attach scrollIntoView}
                   class="entry-row entry-row--table-layout p-1 cursor-pointer turbo-event-entry-row"
                   class:selected={selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.turboEvent.uuid === event.uuid}
+                  class:d-none={!turboEventsFilter.includes(event.eventName)}
                   role="button"
                   tabindex="0"
                   onclick={() => setSelectedTurboEvent(event)}
@@ -241,5 +297,9 @@
 
   .turbo-events-table {
     table-layout: fixed;
+  }
+
+  .turbo-cable-icon {
+    padding: var(--sl-spacing-3x-small);
   }
 </style>
