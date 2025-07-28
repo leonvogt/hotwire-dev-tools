@@ -181,7 +181,6 @@
 
     const currentIndex = turboStreams.findIndex((stream) => stream.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboStreams, currentIndex)
-    console.log({ currentIndex, newIndex, turboStreams })
 
     setSelectedTurboStream(turboStreams[newIndex])
 

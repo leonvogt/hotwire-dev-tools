@@ -6,11 +6,16 @@
   let mergedClass = $derived(`fs-400 ${props.class ?? ""}`.trim())
 
   const scrollAndHighlight = () => {
-    panelPostMessage({
+    let message = {
       action: PANEL_TO_BACKEND_MESSAGES.SCROLL_AND_HIGHLIGHT,
       source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-      selector: props.selector,
-    })
+    }
+    if (props.selector) {
+      message.selector = props.selector
+    } else if (props.elementPath) {
+      message.elementPath = props.elementPath
+    }
+    panelPostMessage(message)
   }
 </script>
 

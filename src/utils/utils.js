@@ -128,59 +128,22 @@ export const ensureUUIDOnElement = (element) => {
   return uuid
 }
 
-export const getXpath = (el) => {
-  let element = el
-  let parent
-  let sames
-  let elementType
-  let result = ""
-
-  const filterNode = (_node) => {
-    if (_node.nodeName === element.nodeName) {
-      sames.push(_node)
-    }
+export const getElementPath = (element) => {
+  const path = []
+  while (element && element.parentElement) {
+    const siblings = Array.from(element.parentElement.children)
+    const index = siblings.indexOf(element)
+    path.unshift(index)
+    element = element.parentElement
   }
+  return path
+}
 
-  if (element instanceof Node === false) {
-    return result
+export const getElementFromIndexPath = (path) => {
+  let element = document.documentElement
+  for (const index of path) {
+    element = element.children[index]
+    if (!element) return null
   }
-
-  parent = el.parentNode
-
-  while (parent !== null) {
-    elementType = element.nodeType
-    sames = []
-    parent.childNodes.forEach(filterNode)
-
-    switch (elementType) {
-      case Node.ELEMENT_NODE: {
-        const nodeName = element.nodeName.toLowerCase()
-        const name = nodeName === "svg" ? `*[name()='${nodeName}']` : nodeName
-        const sameNodesCount = `[${[].indexOf.call(sames, element) + 1}]`
-
-        result = `/${name}${sames.length > 1 ? sameNodesCount : ""}${result}`
-        break
-      }
-      case Node.TEXT_NODE: {
-        result = `/text()${result}`
-        break
-      }
-      case Node.ATTRIBUTE_NODE: {
-        result = `/@${element.nodeName.toLowerCase()}${result}`
-        break
-      }
-      case Node.COMMENT_NODE: {
-        result = `/comment()${result}`
-        break
-      }
-      default: {
-        break
-      }
-    }
-
-    element = parent
-    parent = element.parentNode
-  }
-
-  return `./${result}`
+  return element
 }

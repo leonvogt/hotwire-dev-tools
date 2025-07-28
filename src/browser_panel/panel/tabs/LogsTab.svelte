@@ -1,11 +1,12 @@
 <script>
   import { Pane, Splitpanes } from "svelte-splitpanes"
 
+  import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS, HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getTurboEvents, clearTurboEvents } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
-  import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
-  import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS } from "$lib/constants.js"
+  import { panelPostMessage } from "../../messaging.js"
+  import { getDevtoolInstance } from "$lib/devtool.js"
 
   import IconButton from "$shoelace/IconButton.svelte"
   import CopyButton from "$components/CopyButton.svelte"
@@ -95,6 +96,21 @@
     }
   }
 
+  const addHighlightOverlayByPath = (elementPath) => {
+    panelPostMessage({
+      action: PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT,
+      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+      elementPath: elementPath,
+    })
+  }
+
+  const hideHighlightOverlay = () => {
+    panelPostMessage({
+      action: PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER,
+      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    })
+  }
+
   const handlePaneResize = (event) => {
     const dimensions = event.detail.map((pane) => pane.size)
     devTool.saveOptions({
@@ -157,6 +173,8 @@
                   tabindex="0"
                   onclick={() => setSelectedTurboEvent(event)}
                   onkeyup={handleEventListKeyboardNavigation}
+                  onmouseenter={() => addHighlightOverlayByPath(event.targetElementPath)}
+                  onmouseleave={() => hideHighlightOverlay()}
                 >
                   <div class="turbo-event-entry-wrapper">
                     <div class="turbo-event-first-column">
@@ -235,15 +253,14 @@
                     </tr>
                   {/if}
 
-                  {#if selected.turboEvent.targetSelector}
+                  {#if selected.turboEvent.targetElementPath}
                     <tr>
                       <td>Target</td>
                       <td>
                         <div class="d-flex justify-content-between align-items-center">
-                          <span>{selected.turboEvent.targetSelector}</span>
+                          <span><HTMLRenderer htmlString={selected.turboEvent.serializedTargetTag} /></span>
                           <div>
-                            <ScrollIntoViewButton selector={selected.turboEvent.targetSelector}></ScrollIntoViewButton>
-                            <InspectButton selector={selected.turboEvent.targetSelector}></InspectButton>
+                            <ScrollIntoViewButton elementPath={selected.turboEvent.targetElementPath}></ScrollIntoViewButton>
                           </div>
                         </div>
                       </td>

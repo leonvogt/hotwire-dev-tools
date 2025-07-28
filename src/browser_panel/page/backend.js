@@ -1,6 +1,6 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES, MONITORING_EVENTS } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { debounce, generateUUID, getXpath, stringifyHTMLElementTag, stringifyHTMLElementTagShallow } from "$utils/utils"
+import { debounce, generateUUID, getElementPath, getElementFromIndexPath, stringifyHTMLElementTag, stringifyHTMLElementTagShallow } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
 import TurboCableObserver from "./turbo_cable_observer.js"
 import ElementObserver from "./element_observer.js"
@@ -156,7 +156,7 @@ function init() {
           turboStreamContent,
           action,
           targetSelector,
-          targetXPath: event.target ? getXpath(event.target) : null,
+          targetElementPath: event.target ? getElementPath(event.target) : null,
         },
       })
     }
@@ -205,6 +205,15 @@ function init() {
       }
     }
 
+    getElementByPayload(payload) {
+      if (payload.elementPath) {
+        return getElementFromIndexPath(payload.elementPath)
+      } else if (payload.selector) {
+        return document.querySelector(payload.selector)
+      }
+      return null
+    }
+
     respondToHealthCheck() {
       this._postMessage({
         type: BACKEND_TO_PANEL_MESSAGES.HEALTH_CHECK_RESPONSE,
@@ -244,29 +253,28 @@ function init() {
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.REFRESH_TURBO_FRAME: {
-        console.log("Hotwire DevTools Backend: Refreshing Turbo frame with id:", e.data.payload.id)
-
         devtoolsBackend.refreshTurboFrame(e.data.payload.id)
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT: {
-        addHighlightOverlayToElements(e.data.payload.selector)
+        const element = devtoolsBackend.getElementByPayload(e.data.payload)
+        addHighlightOverlayToElements(element)
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER: {
-        if (e.data.payload.selector) {
-          removeHighlightOverlay(e.data.payload.selector)
+        const element = devtoolsBackend.getElementByPayload(e.data.payload)
+        if (element) {
+          removeHighlightOverlay(element)
         } else {
           removeHighlightOverlay()
         }
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.SCROLL_AND_HIGHLIGHT: {
-        const element = document.querySelector(e.data.payload.selector)
+        const element = devtoolsBackend.getElementByPayload(e.data.payload)
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "center" })
-
-          addHighlightOverlayToElements(e.data.payload.selector)
+          addHighlightOverlayToElements(element)
           setTimeout(() => {
             removeHighlightOverlay()
           }, 1000)
