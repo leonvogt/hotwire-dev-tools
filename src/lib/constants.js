@@ -11,6 +11,7 @@ export const BACKEND_TO_PANEL_MESSAGES = {
   SET_TURBO_FRAMES: "set-turbo-frames",
   SET_TURBO_CABLES: "set-turbo-cables",
   TURBO_STREAM_RECEIVED: "turbo-stream-received",
+  TURBO_EVENT_RECEIVED: "turbo-event-received",
   HEALTH_CHECK_RESPONSE: "health-check-response",
 }
 
@@ -26,4 +27,38 @@ export const PANEL_TO_BACKEND_MESSAGES = {
   GET_TURBO_FRAMES: "get-turbo-frames",
   REFRESH_TURBO_FRAME: "refresh-turbo-frame",
   SCROLL_AND_HIGHLIGHT: "scroll-and-highlight",
+}
+
+export const MONITORING_EVENTS = [
+  "turbo:click",
+  "turbo:before-visit",
+  "turbo:visit",
+  "turbo:before-cache",
+  "turbo:before-render",
+  "turbo:render",
+  "turbo:load",
+  "turbo:morph",
+  "turbo:before-morph-element",
+  "turbo:before-morph-attribute",
+  "turbo:morph-element",
+  "turbo:submit-start",
+  "turbo:submit-end",
+  "turbo:before-frame-render",
+  "turbo:frame-render",
+  "turbo:frame-load",
+  "turbo:frame-missing",
+  "turbo:before-stream-render",
+  "turbo:before-fetch-request",
+  "turbo:before-fetch-response",
+  "turbo:before-prefetch",
+  "turbo:fetch-request-error",
+]
+
+export const MONITORING_EVENT_GROUPS = {
+  Document: ["turbo:click", "turbo:before-visit", "turbo:visit", "turbo:before-cache", "turbo:before-render", "turbo:render", "turbo:load"],
+  "Page Refreshes": ["turbo:morph", "turbo:before-morph-element", "turbo:before-morph-attribute", "turbo:morph-element"],
+  Forms: ["turbo:submit-start", "turbo:submit-end"],
+  Frames: ["turbo:before-frame-render", "turbo:frame-render", "turbo:frame-load", "turbo:frame-missing"],
+  Streams: ["turbo:before-stream-render"],
+  "HTTP Requests": ["turbo:before-fetch-request", "turbo:before-fetch-response", "turbo:before-prefetch", "turbo:fetch-request-error"],
 }

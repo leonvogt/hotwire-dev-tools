@@ -1,6 +1,6 @@
-import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
+import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES, MONITORING_EVENTS } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { debounce, generateUUID } from "$utils/utils"
+import { debounce, generateUUID, getElementPath, getElementFromIndexPath, stringifyHTMLElementTag, stringifyHTMLElementTagShallow } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
 import TurboCableObserver from "./turbo_cable_observer.js"
 import ElementObserver from "./element_observer.js"
@@ -30,6 +30,16 @@ function init() {
 
     addEventListeners() {
       document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
+
+      MONITORING_EVENTS.forEach((eventName) => {
+        window.addEventListener(eventName, (event) => {
+          // For some unknown reason, we can't use the event itself in Safari, without loosing custom properties, like event.detail.
+          // The only hacky workaround that seems to work is to use a setTimeout with some delay. (Issue#73)
+          setTimeout(() => {
+            this.sendTurboEvent(eventName, event)
+          }, 100)
+        })
+      })
     }
 
     // ElementObserver delegate methods
@@ -109,6 +119,48 @@ function init() {
       })
     }, 10)
 
+    sendTurboEvent = (eventName, event) => {
+      const uuid = generateUUID()
+      const time = new Date().toLocaleTimeString()
+      const serializedTargetTag = event.target ? stringifyHTMLElementTag(event.target, false) : null
+      const serializedTargetTagShallow = event.target ? stringifyHTMLElementTagShallow(event.target, false) : null
+      const details = event.detail ? JSON.parse(JSON.stringify(event.detail)) : {}
+      const keysToRemove = ["fetchResponse", "newStream", "currentElement", "newElement"]
+      keysToRemove.forEach((key) => {
+        if (details[key]) {
+          delete details[key]
+        }
+      })
+
+      let turboStreamContent
+      let action
+      let targetSelector
+      if (eventName === "turbo:before-stream-render") {
+        const target = event.target.getAttribute("target")
+        const targets = event.target.getAttribute("targets")
+
+        turboStreamContent = event.target.outerHTML
+        action = event.target.getAttribute("action")
+        targetSelector = target ? `#${target}` : targets
+      }
+
+      this._postMessage({
+        type: BACKEND_TO_PANEL_MESSAGES.TURBO_EVENT_RECEIVED,
+        turboEvent: {
+          uuid,
+          time,
+          serializedTargetTag,
+          serializedTargetTagShallow,
+          eventName,
+          details,
+          turboStreamContent,
+          action,
+          targetSelector,
+          targetElementPath: event.target ? getElementPath(event.target) : null,
+        },
+      })
+    }
+
     handleIncomingTurboStream = (event) => {
       const turboStream = event.target
       const turboStreamContent = turboStream.outerHTML
@@ -153,6 +205,15 @@ function init() {
       }
     }
 
+    getElementByPayload(payload) {
+      if (payload.elementPath) {
+        return getElementFromIndexPath(payload.elementPath)
+      } else if (payload.selector) {
+        return document.querySelector(payload.selector)
+      }
+      return null
+    }
+
     respondToHealthCheck() {
       this._postMessage({
         type: BACKEND_TO_PANEL_MESSAGES.HEALTH_CHECK_RESPONSE,
@@ -192,29 +253,28 @@ function init() {
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.REFRESH_TURBO_FRAME: {
-        console.log("Hotwire DevTools Backend: Refreshing Turbo frame with id:", e.data.payload.id)
-
         devtoolsBackend.refreshTurboFrame(e.data.payload.id)
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT: {
-        addHighlightOverlayToElements(e.data.payload.selector)
+        const element = devtoolsBackend.getElementByPayload(e.data.payload)
+        addHighlightOverlayToElements(element)
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER: {
-        if (e.data.payload.selector) {
-          removeHighlightOverlay(e.data.payload.selector)
+        const element = devtoolsBackend.getElementByPayload(e.data.payload)
+        if (element) {
+          removeHighlightOverlay(element)
         } else {
           removeHighlightOverlay()
         }
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.SCROLL_AND_HIGHLIGHT: {
-        const element = document.querySelector(e.data.payload.selector)
+        const element = devtoolsBackend.getElementByPayload(e.data.payload)
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "center" })
-
-          addHighlightOverlayToElements(e.data.payload.selector)
+          addHighlightOverlayToElements(element)
           setTimeout(() => {
             removeHighlightOverlay()
           }, 1000)

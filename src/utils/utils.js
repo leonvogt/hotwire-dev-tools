@@ -28,7 +28,7 @@ export const inspectElement = (selector) => {
   chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector('${selector}'))`)
 }
 
-export const stringifyHTMLElementTag = (element, escapeHTML) => {
+export const stringifyHTMLElementTag = (element, createClosingTag = true) => {
   if (!(element instanceof Element)) {
     throw new Error("Expected an Element")
   }
@@ -39,13 +39,21 @@ export const stringifyHTMLElementTag = (element, escapeHTML) => {
     .join(" ")
 
   const tagName = element.tagName.toLowerCase()
-  const string = `<${tagName}${attributes ? " " + attributes : ""}></${tagName}>`
-
-  if (escapeHTML) {
-    return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
+  let string = `<${tagName}${attributes ? " " + attributes : ""}>`
+  if (createClosingTag) {
+    string += `</${tagName}>`
   }
 
   return string
+}
+
+export const stringifyHTMLElementTagShallow = (element) => {
+  if (!(element instanceof Element)) {
+    throw new Error("Expected an Element")
+  }
+  const tagName = element.tagName.toLowerCase()
+  const id = element.id ? ` id="${element.id}"` : ""
+  return `<${tagName}${id} ...>`
 }
 
 export const generateUUID = () => {
@@ -118,4 +126,24 @@ export const ensureUUIDOnElement = (element) => {
     uuid = setUUIDToElement(element)
   }
   return uuid
+}
+
+export const getElementPath = (element) => {
+  const path = []
+  while (element && element.parentElement) {
+    const siblings = Array.from(element.parentElement.children)
+    const index = siblings.indexOf(element)
+    path.unshift(index)
+    element = element.parentElement
+  }
+  return path
+}
+
+export const getElementFromIndexPath = (path) => {
+  let element = document.documentElement
+  for (const index of path) {
+    element = element.children[index]
+    if (!element) return null
+  }
+  return element
 }

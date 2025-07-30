@@ -23,6 +23,7 @@ export const connection = createConnectionState()
 let turboFrames = $state([])
 let turboCables = $state([])
 let turboStreams = $state([])
+let turboEvents = $state([])
 
 export function setTurboFrames(frames, url) {
   turboFrames = frames
@@ -38,6 +39,20 @@ export function setTurboCables(cables, url) {
 
 export function getTurboCables() {
   return turboCables
+}
+
+export function addTurboEvent(event) {
+  const exists = turboEvents.some((e) => e.uuid === event.uuid)
+  if (exists) return
+  turboEvents = [...turboEvents, event]
+}
+
+export function getTurboEvents() {
+  return turboEvents
+}
+
+export function clearTurboEvents() {
+  turboEvents = []
 }
 
 export function addTurboStream(turboStream) {
