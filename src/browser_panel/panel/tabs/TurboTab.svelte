@@ -329,6 +329,17 @@
             </div>
 
             <div class="scrollable-list flow">
+              {#if selected.frame.referenceElements.length > 0}
+                <div class="pane-section-heading">
+                  <span>Will get updated by elements</span>
+                </div>
+                {#each selected.frame.referenceElements as referenceElement (referenceElement.serializedTargetTag)}
+                  <div class="html-preview">
+                    <pre><code class="language-html"><HTMLRenderer htmlString={referenceElement.serializedTargetTag} /></code></pre>
+                  </div>
+                {/each}
+              {/if}
+
               <div class="pane-section-heading">Attributes</div>
               <table class="table table-sm w-100 turbo-table">
                 <tbody>
