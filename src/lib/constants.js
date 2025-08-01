@@ -22,14 +22,13 @@ export const PANEL_TO_BACKEND_MESSAGES = {
 
   // Triggered by the Panel itself
   HEALTH_CHECK: "healt-check",
-  HOVER_COMPONENT: "hover",
-  HIDE_HOVER: "hide-hover",
-  GET_TURBO_FRAMES: "get-turbo-frames",
+  HIGHLIGHT_ELEMENT: "highlight-element",
+  HIDE_HIGHLIGHTING: "hide-highlighting",
   REFRESH_TURBO_FRAME: "refresh-turbo-frame",
   SCROLL_AND_HIGHLIGHT: "scroll-and-highlight",
 }
 
-export const MONITORING_EVENTS = [
+export const TURBO_EVENTS = [
   "turbo:click",
   "turbo:before-visit",
   "turbo:visit",
@@ -54,7 +53,7 @@ export const MONITORING_EVENTS = [
   "turbo:fetch-request-error",
 ]
 
-export const MONITORING_EVENT_GROUPS = {
+export const TURBO_EVENTS_GROUPED = {
   Document: ["turbo:click", "turbo:before-visit", "turbo:visit", "turbo:before-cache", "turbo:before-render", "turbo:render", "turbo:load"],
   "Page Refreshes": ["turbo:morph", "turbo:before-morph-element", "turbo:before-morph-attribute", "turbo:morph-element"],
   Forms: ["turbo:submit-start", "turbo:submit-end"],

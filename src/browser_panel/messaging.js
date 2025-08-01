@@ -62,7 +62,7 @@ export const devToolPanelNameToTabId = (portName) => {
 // Common messages from the panel to the backend
 export const addHighlightOverlay = (selector) => {
   panelPostMessage({
-    action: PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT,
+    action: PANEL_TO_BACKEND_MESSAGES.HIGHLIGHT_ELEMENT,
     source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
     selector: selector,
   })
@@ -70,7 +70,7 @@ export const addHighlightOverlay = (selector) => {
 
 export const addHighlightOverlayByPath = (elementPath) => {
   panelPostMessage({
-    action: PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT,
+    action: PANEL_TO_BACKEND_MESSAGES.HIGHLIGHT_ELEMENT,
     source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
     elementPath: elementPath,
   })
@@ -78,7 +78,7 @@ export const addHighlightOverlayByPath = (elementPath) => {
 
 export const hideHighlightOverlay = () => {
   panelPostMessage({
-    action: PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER,
+    action: PANEL_TO_BACKEND_MESSAGES.HIDE_HIGHLIGHTING,
     source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
   })
 }

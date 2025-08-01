@@ -1,4 +1,4 @@
-import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES, MONITORING_EVENTS } from "$lib/constants"
+import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES, TURBO_EVENTS } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
 import { debounce, generateUUID, getElementPath, getElementFromIndexPath, stringifyHTMLElementTag, stringifyHTMLElementTagShallow, safeStringifyEventDetail } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
@@ -31,7 +31,7 @@ function init() {
     addEventListeners() {
       document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
 
-      MONITORING_EVENTS.forEach((eventName) => {
+      TURBO_EVENTS.forEach((eventName) => {
         window.addEventListener(eventName, (event) => {
           // For some unknown reason, we can't use the event itself in Safari, without loosing custom properties, like event.detail.
           // The only hacky workaround that seems to work is to use a setTimeout with some delay. (Issue#73)
@@ -248,20 +248,16 @@ function init() {
         devtoolsBackend.respondToHealthCheck()
         break
       }
-      case PANEL_TO_BACKEND_MESSAGES.GET_TURBO_FRAMES: {
-        devtoolsBackend.sendTurboFrames()
-        break
-      }
       case PANEL_TO_BACKEND_MESSAGES.REFRESH_TURBO_FRAME: {
         devtoolsBackend.refreshTurboFrame(e.data.payload.id)
         break
       }
-      case PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT: {
+      case PANEL_TO_BACKEND_MESSAGES.HIGHLIGHT_ELEMENT: {
         const element = devtoolsBackend.getElementByPayload(e.data.payload)
         addHighlightOverlayToElements(element)
         break
       }
-      case PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER: {
+      case PANEL_TO_BACKEND_MESSAGES.HIDE_HIGHLIGHTING: {
         const element = devtoolsBackend.getElementByPayload(e.data.payload)
         if (element) {
           removeHighlightOverlay(element)

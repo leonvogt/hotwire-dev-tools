@@ -1,5 +1,5 @@
 import Devtool from "$lib/devtool"
-import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS } from "$lib/constants"
+import { TURBO_EVENTS, TURBO_EVENTS_GROUPED } from "$lib/constants"
 
 const devTool = new Devtool()
 
@@ -108,7 +108,7 @@ const initializeForm = async (options) => {
 
   const activeEvents = Array.from(options.monitor?.events || [])
 
-  Object.entries(MONITORING_EVENT_GROUPS).forEach(([groupName, events]) => {
+  Object.entries(TURBO_EVENTS_GROUPED).forEach(([groupName, events]) => {
     const groupContainer = document.createElement("div")
     groupContainer.classList.add("monitor-events-group")
 
@@ -288,7 +288,7 @@ const setupEventListeners = (options) => {
     if (checked) {
       const allCheckboxes = document.querySelectorAll(".monitor-events-checkbox-container input[type='checkbox']")
       allCheckboxes.forEach((checkbox) => (checkbox.checked = true))
-      options.monitor.events = MONITORING_EVENTS
+      options.monitor.events = TURBO_EVENTS
     } else {
       options.monitor.events = []
     }
@@ -340,7 +340,7 @@ const setupEventListeners = (options) => {
       checkbox.checked = !allChecked
     })
 
-    options.monitor.events = allChecked ? [] : MONITORING_EVENTS
+    options.monitor.events = allChecked ? [] : TURBO_EVENTS
     saveOptions(options)
   })
 

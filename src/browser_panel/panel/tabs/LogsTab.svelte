@@ -1,7 +1,7 @@
 <script>
   import { Pane, Splitpanes } from "svelte-splitpanes"
 
-  import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS } from "$lib/constants.js"
+  import { TURBO_EVENTS, TURBO_EVENTS_GROUPED } from "$lib/constants.js"
   import { addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
   import { getTurboEvents, clearTurboEvents } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
@@ -21,7 +21,7 @@
 
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)
-  let turboEventsFilter = $state([...MONITORING_EVENTS])
+  let turboEventsFilter = $state([...TURBO_EVENTS])
 
   let turboEvents = $state([])
 
@@ -74,7 +74,7 @@
   const handleFilterToggle = (event) => {
     const { value } = event.target
     if (value === "all") {
-      turboEventsFilter = MONITORING_EVENTS
+      turboEventsFilter = TURBO_EVENTS
     } else {
       const isActive = turboEventsFilter.includes(value)
       if (isActive) {
@@ -86,7 +86,7 @@
   }
 
   const handleFilterGroupToggle = (groupName) => {
-    const events = MONITORING_EVENT_GROUPS[groupName]
+    const events = TURBO_EVENTS_GROUPED[groupName]
     const isActive = events.every((e) => turboEventsFilter.includes(e))
 
     if (isActive) {
@@ -120,7 +120,7 @@
                   <sl-icon name="funnel"></sl-icon>
                 </sl-button>
                 <sl-menu>
-                  {#each Object.entries(MONITORING_EVENT_GROUPS) as [groupName, events]}
+                  {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
                     <sl-menu-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
                       <strong>{groupName}</strong>
                     </sl-menu-item>

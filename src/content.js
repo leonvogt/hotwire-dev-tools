@@ -1,7 +1,7 @@
 import { debounce } from "$utils/utils.js"
 import { turboStreamTargetElements } from "$utils/turbo_utils"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { MONITORING_EVENTS } from "$lib/constants"
+import { TURBO_EVENTS } from "$lib/constants"
 
 import Devtool from "$lib/devtool"
 import DetailPanel from "$components/detail_panel"
@@ -256,7 +256,7 @@ const renderDetailPanel = () => {
 }
 
 const listenForEvents = () => {
-  MONITORING_EVENTS.forEach((eventName) => {
+  TURBO_EVENTS.forEach((eventName) => {
     window.addEventListener(eventName, (event) => {
       // For some unknown reason, we can't use the event itself in Safari, without loosing custom properties, like event.detail.
       // The only hacky workaround that seems to work is to use a setTimeout with some delay. (Issue#73)
