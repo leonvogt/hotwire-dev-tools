@@ -1,6 +1,6 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES, MONITORING_EVENTS } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
-import { debounce, generateUUID, getElementPath, getElementFromIndexPath, stringifyHTMLElementTag, stringifyHTMLElementTagShallow } from "$utils/utils"
+import { debounce, generateUUID, getElementPath, getElementFromIndexPath, stringifyHTMLElementTag, stringifyHTMLElementTagShallow, safeStringifyEventDetail } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
 import TurboCableObserver from "./turbo_cable_observer.js"
 import ElementObserver from "./element_observer.js"
@@ -124,7 +124,7 @@ function init() {
       const time = new Date().toLocaleTimeString()
       const serializedTargetTag = event.target ? stringifyHTMLElementTag(event.target, false) : null
       const serializedTargetTagShallow = event.target ? stringifyHTMLElementTagShallow(event.target, false) : null
-      const details = event.detail ? JSON.parse(JSON.stringify(event.detail)) : {}
+      const details = event.detail ? safeStringifyEventDetail(event.detail) : {}
       const keysToRemove = ["fetchResponse", "newStream", "currentElement", "newElement"]
       keysToRemove.forEach((key) => {
         if (details[key]) {

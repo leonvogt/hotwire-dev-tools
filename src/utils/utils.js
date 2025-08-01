@@ -147,3 +147,22 @@ export const getElementFromIndexPath = (path) => {
   }
   return element
 }
+
+export const safeStringifyEventDetail = (detail) => {
+  const seen = new WeakSet()
+  return JSON.parse(
+    JSON.stringify(detail, (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (seen.has(value)) {
+          return "[Circular Reference]"
+        }
+        seen.add(value)
+      }
+      // Remove problematic DOM elements and functions
+      if (value instanceof HTMLElement || typeof value === "function") {
+        return "[Object]"
+      }
+      return value
+    }),
+  )
+}
