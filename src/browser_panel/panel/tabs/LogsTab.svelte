@@ -1,11 +1,11 @@
 <script>
   import { Pane, Splitpanes } from "svelte-splitpanes"
 
-  import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS, HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
+  import { MONITORING_EVENTS, MONITORING_EVENT_GROUPS } from "$lib/constants.js"
+  import { addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
   import { getTurboEvents, clearTurboEvents } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
   import { horizontalPanes } from "../../theme.svelte.js"
-  import { panelPostMessage } from "../../messaging.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
 
   import IconButton from "$shoelace/IconButton.svelte"
@@ -94,21 +94,6 @@
     } else {
       turboEventsFilter = [...new Set([...turboEventsFilter, ...events])]
     }
-  }
-
-  const addHighlightOverlayByPath = (elementPath) => {
-    panelPostMessage({
-      action: PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT,
-      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-      elementPath: elementPath,
-    })
-  }
-
-  const hideHighlightOverlay = () => {
-    panelPostMessage({
-      action: PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER,
-      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-    })
   }
 
   const handlePaneResize = (event) => {

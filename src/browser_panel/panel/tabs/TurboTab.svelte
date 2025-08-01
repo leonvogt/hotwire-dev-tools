@@ -10,7 +10,7 @@
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
-  import { panelPostMessage } from "../../messaging.js"
+  import { panelPostMessage, addHighlightOverlay, addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
@@ -137,21 +137,6 @@
   const scrollIntoView = debounce((element) => {
     element.scrollIntoView({ behavior: "smooth", block: "end" })
   }, turboStreamAnimationDuration)
-
-  const addHighlightOverlay = (selector) => {
-    panelPostMessage({
-      action: PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT,
-      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-      selector: selector,
-    })
-  }
-
-  const hideHighlightOverlay = () => {
-    panelPostMessage({
-      action: PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER,
-      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-    })
-  }
 
   const refreshTurboFrame = (turboFrameId) => {
     panelPostMessage({

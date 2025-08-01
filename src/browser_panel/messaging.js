@@ -1,4 +1,4 @@
-import { BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS } from "$lib/constants"
+import { PANEL_TO_BACKEND_MESSAGES, BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS, HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "$lib/constants"
 import { setTurboFrames, setTurboCables, addTurboStream, addTurboEvent } from "./State.svelte.js"
 
 function setPort(port) {
@@ -12,7 +12,7 @@ function setPort(port) {
 // Here we receive messages from the backend script that runs in the page context,
 // and save them into the global state for the panel to use.
 // The panel will then automatically re-render the components based on the new state.
-export function handleBackendToPanelMessage(message, port) {
+export const handleBackendToPanelMessage = (message, port) => {
   switch (message.type) {
     case BACKEND_TO_PANEL_MESSAGES.SET_TURBO_FRAMES:
       setTurboFrames(message.frames, message.url)
@@ -39,7 +39,7 @@ export function handleBackendToPanelMessage(message, port) {
 }
 
 // Panel -> Backend messages
-export function panelPostMessage(message) {
+export const panelPostMessage = (message) => {
   if (window.__HotwireDevTools?.port) {
     window.__HotwireDevTools.port.postMessage(message)
   } else {
@@ -47,14 +47,38 @@ export function panelPostMessage(message) {
   }
 }
 
-export function isDevToolPanel(port) {
+export const isDevToolPanel = (port) => {
   return port.name.startsWith(PORT_IDENTIFIERS.INSPECTOR_PREFIX)
 }
 
-export function devToolPanelName(tabId) {
+export const devToolPanelName = (tabId) => {
   return PORT_IDENTIFIERS.INSPECTOR_PREFIX + tabId
 }
 
-export function devToolPanelNameToTabId(portName) {
+export const devToolPanelNameToTabId = (portName) => {
   return Number(portName.replace(PORT_IDENTIFIERS.INSPECTOR_PREFIX, ""))
+}
+
+// Common messages from the panel to the backend
+export const addHighlightOverlay = (selector) => {
+  panelPostMessage({
+    action: PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT,
+    source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    selector: selector,
+  })
+}
+
+export const addHighlightOverlayByPath = (elementPath) => {
+  panelPostMessage({
+    action: PANEL_TO_BACKEND_MESSAGES.HOVER_COMPONENT,
+    source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    elementPath: elementPath,
+  })
+}
+
+export const hideHighlightOverlay = () => {
+  panelPostMessage({
+    action: PANEL_TO_BACKEND_MESSAGES.HIDE_HOVER,
+    source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+  })
 }
