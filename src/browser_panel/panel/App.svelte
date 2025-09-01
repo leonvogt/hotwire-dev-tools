@@ -18,6 +18,7 @@
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { handleResize } from "../theme.svelte.js"
   import { connection } from "../State.svelte.js"
+  import StimulusTab from "./tabs/StimulusTab.svelte"
   import TurboTab from "./tabs/TurboTab.svelte"
   import LogsTab from "./tabs/LogsTab.svelte"
 
@@ -79,7 +80,7 @@
       </div>
 
       <div id="stimulus-tab" class="tabcontent">
-        <h2>Stimulus</h2>
+        <StimulusTab />
       </div>
 
       <div id="native-tab" class="tabcontent">

@@ -300,8 +300,4 @@
   .turbo-events-table {
     table-layout: fixed;
   }
-
-  .turbo-cable-icon {
-    padding: var(--sl-spacing-3x-small);
-  }
 </style>
