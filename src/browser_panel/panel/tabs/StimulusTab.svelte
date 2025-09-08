@@ -8,7 +8,7 @@
   import IconButton from "$shoelace/IconButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import { getStimulusData } from "../../State.svelte.js"
-  import { flattenNodes } from "$utils/utils.js"
+  import { flattenNodes, handleKeyboardNavigation } from "$utils/utils.js"
   import { panelPostMessage, addHighlightOverlay, addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
@@ -46,7 +46,20 @@
     }
   }
 
-  const handleEventListKeyboardNavigation = (event) => {}
+  const handleStimulusIdentifiersKeyboardNavigation = (event) => {
+    if (!uniqueIdentifiers.length) return
+
+    const currentIndex = uniqueIdentifiers.findIndex((identifier) => identifier === selected.identifier)
+    const newIndex = handleKeyboardNavigation(event, uniqueIdentifiers, currentIndex)
+    setSelectedIdentifier(uniqueIdentifiers[newIndex])
+
+    setTimeout(() => {
+      const selectedRow = document.querySelector(".stimulus-identifiers-list-pane .entry-row.selected")
+      if (selectedRow) {
+        selectedRow.scrollIntoView({ behavior: "smooth", block: "nearest" })
+      }
+    }, 10)
+  }
 </script>
 
 <Splitpanes horizontal={$horizontalPanes} dblClickSplitter={false}>
@@ -58,15 +71,16 @@
           <div class="scrollable-list">
             {#if stimulusControllers.length > 0}
               {#each uniqueIdentifiers as identifier, index (identifier)}
-                <div class="entry-row p-1 cursor-pointer" animate:flip>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                    class:selected={selected.identifier === identifier}
-                    role="button"
-                    tabindex="0"
-                    onclick={() => setSelectedIdentifier(identifier)}
-                    onkeyup={handleEventListKeyboardNavigation}
-                  >
+                <div
+                  class="entry-row p-1 cursor-pointer"
+                  animate:flip
+                  role="button"
+                  tabindex="0"
+                  onclick={() => setSelectedIdentifier(identifier)}
+                  onkeyup={handleStimulusIdentifiersKeyboardNavigation}
+                  class:selected={selected.identifier === identifier}
+                >
+                  <div class="d-flex justify-content-between align-items-center">
                     <div>{identifier}</div>
                     <div>{counts[identifier]}</div>
                   </div>
@@ -92,12 +106,12 @@
           </div>
           {#each getStimulusInstances(selected.identifier) as instance (instance.uuid)}
             <div class="entry-row entry-row--table-layout p-1 cursor-pointer" class:selected={selected.uuid === instance.uuid}>
-              <div class="turbo-event-entry-wrapper">
-                <div class="turbo-event-first-column">
+              <div class="d-table-row">
+                <div class="stimulus-instance-first-column">
                   <strong>{instance.identifier}</strong>
                 </div>
 
-                <div class="turbo-event-second-column">
+                <div class="stimulus-instance-second-column">
                   <div class="me-3 overflow-x-auto scrollbar-none"><HTMLRenderer htmlString={instance.serializedTag} /></div>
                 </div>
               </div>
@@ -106,7 +120,7 @@
         {:else}
           <div class="no-entry-hint">
             <span>Nothing selected</span>
-            <span>Select a Turbo Event to see its details</span>
+            <span>Select a Stimulus Controller to see its details</span>
           </div>
         {/if}
       </div>
@@ -115,23 +129,16 @@
 </Splitpanes>
 
 <style>
-  .turbo-event-entry-wrapper {
-    display: table-row;
-  }
-  .turbo-event-first-column {
+  .stimulus-instance-first-column {
     display: table-cell;
     width: 60%;
     vertical-align: top;
     padding-right: 8px;
   }
-  .turbo-event-second-column {
+  .stimulus-instance-second-column {
     display: table-cell;
     width: 40%;
     vertical-align: top;
     text-align: right;
-  }
-
-  .turbo-events-table {
-    table-layout: fixed;
   }
 </style>
