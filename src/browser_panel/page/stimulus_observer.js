@@ -80,6 +80,7 @@ export default class StimulusObserver {
   }
 
   buildStimulusElementData(element, identifier) {
+    const controller = window.Stimulus.getControllerForElementAndIdentifier(element, identifier)
     return {
       id: element.id,
       uuid: getUUIDFromElement(element),
@@ -89,9 +90,28 @@ export default class StimulusObserver {
         map[attr.name] = attr.value
         return map
       }, {}),
+      values: this.buildControllerValues(controller),
+      targets: this.buildControllerTargets(controller),
       children: [],
       element,
     }
+  }
+
+  buildControllerValues(controller) {
+    return Object.values(controller.valueDescriptorMap).map((descriptor) => {
+      return {
+        key: descriptor.key,
+        name: descriptor.name,
+        type: descriptor.type,
+        defaultValue: descriptor.defaultValue,
+        value: controller[descriptor.name],
+      }
+    })
+  }
+
+  buildControllerTargets(controller) {
+    const keys = Object.keys(Object.getOwnPropertyDescriptors(Object.getPrototypeOf(controller)))
+    return keys.filter((key) => key.endsWith("Target") && !key.startsWith("has"))
   }
 
   getStimulusData() {

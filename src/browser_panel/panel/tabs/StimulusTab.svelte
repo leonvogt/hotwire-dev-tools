@@ -21,6 +21,7 @@
   let selected = $state({
     identifier: null,
     uuid: null,
+    controller: null,
   })
   let stimulusControllers = $state([])
   let flattenStimulusControllers = $derived(flattenNodes(stimulusControllers))
@@ -43,6 +44,14 @@
   const setSelectedIdentifier = (identifier) => {
     selected = {
       identifier: identifier,
+    }
+  }
+
+  const setSelectedController = (instance) => {
+    selected = {
+      uuid: instance.uuid,
+      controller: instance,
+      identifier: instance.identifier,
     }
   }
 
@@ -97,6 +106,7 @@
       </div>
     </div>
   </Pane>
+
   <Pane class="stimulus-controller-list-pane full-pane" size={options.stimulusControllerPaneDimensions?.details || 35} minSize={20}>
     <div class="card h-100">
       <div class="card-body">
@@ -105,7 +115,14 @@
             <h2>Details for {selected.identifier}</h2>
           </div>
           {#each getStimulusInstances(selected.identifier) as instance (instance.uuid)}
-            <div class="entry-row entry-row--table-layout p-1 cursor-pointer" class:selected={selected.uuid === instance.uuid}>
+            <div
+              class="entry-row entry-row--table-layout p-1 cursor-pointer"
+              class:selected={selected.uuid === instance.uuid}
+              role="button"
+              tabindex="0"
+              onclick={() => setSelectedController(instance)}
+              onkeyup={handleStimulusIdentifiersKeyboardNavigation}
+            >
               <div class="d-table-row">
                 <div class="stimulus-instance-first-column">
                   <strong>{instance.identifier}</strong>
@@ -126,6 +143,38 @@
       </div>
     </div>
   </Pane>
+
+  <Pane class="stimulus-detail-pane full-pane" size={options.stimulusDetailsPaneDimensions?.details || 30} minSize={20}>
+    <div class="card h-100">
+      <div class="card-body">
+        {#if selected.controller}
+          <div class="d-flex flex-column h-100">
+            <div class="scrollable-list flow">
+              <div class="pane-section-heading">Values</div>
+              {console.log("selected.controller.values", Object.entries(selected.controller.values))}
+              <table class="table table-sm w-100 turbo-table">
+                <tbody>
+                  {#each Object.entries(selected.controller.values) as [_key, object]}
+                    {#each Object.entries(object) as [key, value]}
+                      <tr>
+                        <td><div class="code-keyword">{key}</div></td>
+                        <td>{value}</td>
+                      </tr>
+                    {/each}
+                  {/each}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {:else}
+          <div class="no-entry-hint">
+            <span>Nothing selected</span>
+            <span>Select a Stimulus Controller to see its details</span>
+          </div>
+        {/if}
+      </div>
+    </div></Pane
+  >
 </Splitpanes>
 
 <style>
