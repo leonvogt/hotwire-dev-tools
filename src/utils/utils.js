@@ -166,3 +166,7 @@ export const safeStringifyEventDetail = (detail) => {
     }),
   )
 }
+
+export const flattenNodes = (tree) => {
+  return tree.flatMap((node) => [node, ...flattenNodes(node.children || [])])
+}

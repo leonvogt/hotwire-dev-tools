@@ -640,6 +640,10 @@ svg.icon-muted {
   }
 }
 
+.d-table-row {
+  display: table-row;
+}
+
 /* Highlight.js GitHub Theme */
 pre code.hljs {
   display: block;

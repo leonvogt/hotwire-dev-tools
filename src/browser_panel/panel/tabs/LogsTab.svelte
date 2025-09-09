@@ -161,7 +161,7 @@
                   onmouseenter={() => addHighlightOverlayByPath(event.targetElementPath)}
                   onmouseleave={() => hideHighlightOverlay()}
                 >
-                  <div class="turbo-event-entry-wrapper">
+                  <div class="d-table-row">
                     <div class="turbo-event-first-column">
                       <strong>{event.eventName}</strong>
                     </div>
@@ -281,9 +281,6 @@
 </Splitpanes>
 
 <style>
-  .turbo-event-entry-wrapper {
-    display: table-row;
-  }
   .turbo-event-first-column {
     display: table-cell;
     width: 60%;
@@ -299,9 +296,5 @@
 
   .turbo-events-table {
     table-layout: fixed;
-  }
-
-  .turbo-cable-icon {
-    padding: var(--sl-spacing-3x-small);
   }
 </style>

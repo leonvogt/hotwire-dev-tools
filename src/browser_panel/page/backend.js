@@ -3,6 +3,7 @@ import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/hi
 import { debounce, generateUUID, getElementPath, getElementFromIndexPath, stringifyHTMLElementTag, stringifyHTMLElementTagShallow, safeStringifyEventDetail } from "$utils/utils"
 import TurboFrameObserver from "./turbo_frame_observer.js"
 import TurboCableObserver from "./turbo_cable_observer.js"
+import StimulusObserver from "./stimulus_observer.js"
 import ElementObserver from "./element_observer.js"
 
 // This is the backend script which interacts with the page's DOM.
@@ -14,6 +15,7 @@ function init() {
       this.observers = {
         turboFrame: new TurboFrameObserver(this),
         turboCable: new TurboCableObserver(this),
+        stimulus: new StimulusObserver(this),
       }
 
       this.elementObserver = new ElementObserver(document, this)
@@ -44,11 +46,11 @@ function init() {
 
     // ElementObserver delegate methods
     matchElement(element) {
-      return this.observers.turboFrame.matchElement(element) || this.observers.turboCable.matchElement(element)
+      return this.observers.turboFrame.matchElement(element) || this.observers.turboCable.matchElement(element) || this.observers.stimulus.matchElement(element)
     }
 
     matchElementsInTree(tree) {
-      return [...this.observers.turboFrame.matchElementsInTree(tree), ...this.observers.turboCable.matchElementsInTree(tree)]
+      return [...this.observers.turboFrame.matchElementsInTree(tree), ...this.observers.turboCable.matchElementsInTree(tree), ...this.observers.stimulus.matchElementsInTree(tree)]
     }
 
     elementMatched(element) {
@@ -58,6 +60,10 @@ function init() {
 
       if (this.observers.turboCable.matchElement(element)) {
         this.observers.turboCable.elementMatched(element)
+      }
+
+      if (this.observers.stimulus.matchElement(element)) {
+        this.observers.stimulus.elementMatched(element)
       }
     }
 
@@ -69,6 +75,10 @@ function init() {
       if (this.observers.turboCable.matchElement(element)) {
         this.observers.turboCable.elementUnmatched(element)
       }
+
+      if (this.observers.stimulus.matchElement(element)) {
+        this.observers.stimulus.elementUnmatched(element)
+      }
     }
 
     elementAttributeChanged(element, attributeName, oldValue) {
@@ -78,6 +88,10 @@ function init() {
 
       if (this.observers.turboCable.matchElement(element)) {
         this.observers.turboCable.elementAttributeChanged(element, attributeName, oldValue)
+      }
+
+      if (this.observers.stimulus.matchElement(element)) {
+        this.observers.stimulus.elementAttributeChanged(element, attributeName, oldValue)
       }
     }
 
@@ -101,6 +115,17 @@ function init() {
     }
     turboCableAttributeChanged(element, attributeName, oldValue, newValue) {
       this.sendTurboCableData()
+    }
+
+    // Stimulus delegate methods
+    stimulusControllerConnected(element) {
+      this.sendStimulusData()
+    }
+    stimulusControllerDisonnected(element) {
+      this.sendStimulusData()
+    }
+    stimulusControllerChanged(element, attributeName, oldValue, newValue) {
+      this.sendStimulusData()
     }
 
     sendTurboFrames = debounce(() => {
@@ -160,6 +185,14 @@ function init() {
         },
       })
     }
+
+    sendStimulusData = debounce(() => {
+      this._postMessage({
+        stimulusData: this.observers.stimulus.getStimulusData(),
+        url: btoa(window.location.href),
+        type: BACKEND_TO_PANEL_MESSAGES.SET_STIMULUS_CONTROLLERS,
+      })
+    }, 10)
 
     handleIncomingTurboStream = (event) => {
       const turboStream = event.target
