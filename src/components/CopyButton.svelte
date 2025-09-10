@@ -1,25 +1,26 @@
 <script>
   import { copyToClipboard } from "$utils/utils.js"
 
-  let { value } = $props()
+  let props = $props()
   let copied = $state(false)
+  let id = props.id ?? `copy-button-${crypto.randomUUID()}`
+  let value = props.value ?? ""
   let tooltip
 
   const handleCopy = () => {
-    tooltip.show()
+    tooltip.open = true
     copyToClipboard(value)
     copied = true
     setTimeout(() => {
       copied = false
-      tooltip.hide()
+      tooltip.open = false
     }, 800)
   }
 </script>
 
 <button class="btn-copy" onclick={handleCopy} aria-label="Copy to clipboard">
-  <sl-tooltip content="Copied" trigger="manual" bind:this={tooltip}>
-    <sl-icon class="copy-icon" class:copied name={copied ? "check2" : "copy"}></sl-icon>
-  </sl-tooltip>
+  <wa-tooltip for={id} trigger="manual" bind:this={tooltip}>Copied</wa-tooltip>
+  <wa-icon {id} class="copy-icon" class:copied name={copied ? "check" : "copy"}></wa-icon>
 </button>
 
 <style>
@@ -44,10 +45,10 @@
 
   .copy-icon.copied {
     transform: scale(1.25);
-    color: var(--sl-color-success-500);
+    color: var(--wa-color-success-fill-loud);
   }
 
   .copy-icon {
-    color: var(--sl-color-neutral-1000);
+    color: var(--wa-color-neutral-20);
   }
 </style>

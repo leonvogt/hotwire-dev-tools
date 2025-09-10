@@ -1,0 +1,15 @@
+import "@awesome.me/webawesome/dist/styles/webawesome.css"
+import "@awesome.me/webawesome/dist/styles/themes/default.css"
+
+import "@awesome.me/webawesome/dist/components/button/button.js"
+import "@awesome.me/webawesome/dist/components/select/select.js"
+import "@awesome.me/webawesome/dist/components/callout/callout.js"
+import "@awesome.me/webawesome/dist/components/dropdown/dropdown.js"
+import "@awesome.me/webawesome/dist/components/skeleton/skeleton.js"
+import "@awesome.me/webawesome/dist/components/tooltip/tooltip.js"
+import "@awesome.me/webawesome/dist/components/spinner/spinner.js"
+import "@awesome.me/webawesome/dist/components/badge/badge.js"
+
+// Set WebAwesome base path to point to the correct location of the WebAwesome icons
+import { setBasePath } from "@awesome.me/webawesome/dist/webawesome.js"
+setBasePath("/dist")

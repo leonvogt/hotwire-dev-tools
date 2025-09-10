@@ -6,7 +6,7 @@
   import CopyButton from "$components/CopyButton.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
-  import IconButton from "$shoelace/IconButton.svelte"
+  import IconButton from "$uikit/IconButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
@@ -198,12 +198,11 @@
             <h2>Streams</h2>
             <div class="position-absolute end-0">
               {#if turboStreams.length > 0}
-                <IconButton name="trash2" onclick={clearTurboStreams}></IconButton>
+                <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
               {/if}
               {#if turboCables.length > 0}
-                <sl-tooltip content={`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}>
-                  <sl-icon name="circle-fill" class="turbo-cable-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></sl-icon>
-                </sl-tooltip>
+                <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
+                <wa-icon name="circle" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
               {/if}
             </div>
           </div>
@@ -270,7 +269,7 @@
         </div>
         <div>
           {#if frame.attributes.busy !== undefined}
-            <sl-spinner></sl-spinner>
+            <wa-spinner></wa-spinner>
           {/if}
           <InspectButton class="btn-hoverable me-2" {selector}></InspectButton>
         </div>
@@ -291,9 +290,9 @@
         <div class="d-flex flex-column h-100">
           <div class="d-flex justify-content-center align-items-center position-relative">
             <h2>Frames</h2>
-            <sl-badge class="count-badge count-badge--small position-absolute end-0" variant="neutral" pill>
+            <wa-badge variant="neutral" style="font-size: var(--wa-font-size-xs);" class="position-absolute end-0" pill>
               <NumberFlow value={turboFrameCount()} animated={!isFirstFrameCountRender} />
-            </sl-badge>
+            </wa-badge>
           </div>
           <div class="scrollable-list" {@attach addTurboFrameListListeners}>
             {#if turboFrames.length > 0}
@@ -413,11 +412,11 @@
 </Splitpanes>
 
 <style>
-  .turbo-cable-icon {
-    color: var(--sl-color-danger-500);
+  #turbo-cable-indication-icon {
+    color: var(--wa-color-danger-fill-loud);
   }
-  .turbo-cable-icon.connected {
-    color: var(--sl-color-success-500);
+  #turbo-cable-indication-icon.connected {
+    color: var(--wa-color-success-fill-loud);
   }
 
   /* To prevent flickering when reloading async Turbo Frames */
