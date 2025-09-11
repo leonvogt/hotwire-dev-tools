@@ -1,5 +1,6 @@
 <script>
   import "$uikit/webawesome.svelte.js"
+  import "$uikit/color-scheme.js"
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { handleResize } from "../theme.svelte.js"
   import { connection } from "../State.svelte.js"
@@ -32,7 +33,7 @@
     if (!tabId || currentTab === tabId) return
 
     currentTab = tabId
-    document.querySelectorAll(".tabcontent").forEach((tab) => {
+    document.querySelectorAll(".tab-content").forEach((tab) => {
       tab.classList.remove("active")
     })
     document.getElementById(tabId).classList.add("active")
@@ -53,26 +54,43 @@
 {:else if devToolOptionsLoaded}
   <main {@attach addEventListeners}>
     <div id="container">
-      <div class="tablist">
-        <button class="tablinks" class:active={currentTab == "turbo-tab"} onclick={updateTab} data-tab-id="turbo-tab">Turbo</button>
-        <button class="tablinks" class:active={currentTab == "stimulus-tab"} onclick={updateTab} data-tab-id="stimulus-tab">Stimulus</button>
-        <button class="tablinks" class:active={currentTab == "native-tab"} onclick={updateTab} data-tab-id="native-tab">Native</button>
-        <button class="tablinks" class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Log</button>
-      </div>
-
-      <div id="turbo-tab" class="tabcontent active">
+      <nav class="navbar">
+        <button class:active={currentTab == "turbo-tab"} onclick={updateTab} data-tab-id="turbo-tab">Turbo</button>
+        <button class:active={currentTab == "stimulus-tab"} onclick={updateTab} data-tab-id="stimulus-tab">Stimulus</button>
+        <button class:active={currentTab == "native-tab"} onclick={updateTab} data-tab-id="native-tab">Native</button>
+        <button class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Log</button>
+      </nav>
+      <div id="turbo-tab" class="tab-content active">
+        <wa-select class="color-scheme-selector" appearance="filled" size="small" value="auto" title="Press \ to toggle">
+          <wa-icon class="only-light" slot="start" name="sun" variant="regular"></wa-icon>
+          <wa-icon class="only-dark" slot="start" name="moon" variant="regular"></wa-icon>
+          <wa-option value="light">
+            <wa-icon slot="start" name="sun" variant="regular"></wa-icon>
+            Light
+          </wa-option>
+          <wa-option value="dark">
+            <wa-icon slot="start" name="moon" variant="regular"></wa-icon>
+            Dark
+          </wa-option>
+          <wa-divider></wa-divider>
+          <wa-option value="auto">
+            <wa-icon class="only-light" slot="start" name="sun" variant="regular"></wa-icon>
+            <wa-icon class="only-dark" slot="start" name="moon" variant="regular"></wa-icon>
+            System
+          </wa-option>
+        </wa-select>
         <TurboTab />
       </div>
 
-      <div id="stimulus-tab" class="tabcontent">
+      <div id="stimulus-tab" class="tab-content">
         <StimulusTab />
       </div>
 
-      <div id="native-tab" class="tabcontent">
+      <div id="native-tab" class="tab-content">
         <h2>Native</h2>
       </div>
 
-      <div id="logs-tab" class="tabcontent">
+      <div id="logs-tab" class="tab-content">
         <LogsTab />
       </div>
     </div>
