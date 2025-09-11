@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "$src/*": ["src/*"],
-      "$shoelace/*": ["src/shoelace/*"],
+      "$uikit/*": ["src/uikit/*"],
       "$components/*": ["src/components/*"],
       "$utils/*": ["src/utils/*"],
       "$lib/*": ["src/lib/*"]

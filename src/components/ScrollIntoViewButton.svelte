@@ -1,9 +1,10 @@
 <script>
-  import IconButton from "$shoelace/IconButton.svelte"
+  import IconButton from "$uikit/IconButton.svelte"
   import { panelPostMessage } from "$src/browser_panel/messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   let props = $props()
   let mergedClass = $derived(`fs-400 ${props.class ?? ""}`.trim())
+  let id = props.id ?? `scroll-into-view-button-${crypto.randomUUID()}`
 
   const scrollAndHighlight = () => {
     let message = {
@@ -19,13 +20,13 @@
   }
 </script>
 
-<sl-tooltip content="Scroll into view">
-  <IconButton
-    {...props}
-    class={mergedClass}
-    name="eye-fill"
-    onclick={() => {
-      scrollAndHighlight()
-    }}
-  ></IconButton>
-</sl-tooltip>
+<wa-tooltip for={id}>Scroll into view</wa-tooltip>
+<IconButton
+  {...props}
+  class={mergedClass}
+  {id}
+  name="eye"
+  onclick={() => {
+    scrollAndHighlight()
+  }}
+></IconButton>

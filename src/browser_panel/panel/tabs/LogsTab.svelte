@@ -8,7 +8,7 @@
   import { horizontalPanes } from "../../theme.svelte.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
 
-  import IconButton from "$shoelace/IconButton.svelte"
+  import IconButton from "$uikit/IconButton.svelte"
   import CopyButton from "$components/CopyButton.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
@@ -115,31 +115,29 @@
           <div class="d-flex justify-content-center align-items-center position-relative">
             <h2>Events</h2>
             <div class="position-absolute end-0">
-              <sl-dropdown stayOpenOnSelect={true} class="mb-2">
-                <sl-button slot="trigger" caret>
-                  <sl-icon name="funnel"></sl-icon>
-                </sl-button>
-                <sl-menu>
-                  {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
-                    <sl-menu-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
-                      <strong>{groupName}</strong>
-                    </sl-menu-item>
+              <wa-dropdown class="mb-2">
+                <wa-button slot="trigger" with-caret label="Filter Events">
+                  <wa-icon name="funnel"></wa-icon>
+                </wa-button>
+                {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
+                  <wa-dropdown-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
+                    <strong>{groupName}</strong>
+                  </wa-dropdown-item>
 
-                    {#each events as event}
-                      <sl-menu-item
-                        class="turbo-event-menu-item"
-                        type="checkbox"
-                        role="button"
-                        tabindex="0"
-                        onkeyup={(e) => handleFilterToggle(e)}
-                        onclick={(e) => handleFilterToggle(e)}
-                        value={event}
-                        checked={turboEventsFilter.includes(event)}>{event}</sl-menu-item
-                      >
-                    {/each}
+                  {#each events as event}
+                    <wa-dropdown-item
+                      class="turbo-event-menu-item"
+                      type="checkbox"
+                      role="button"
+                      tabindex="0"
+                      onkeyup={(e) => handleFilterToggle(e)}
+                      onclick={(e) => handleFilterToggle(e)}
+                      value={event}
+                      checked={turboEventsFilter.includes(event)}>{event}</wa-dropdown-item
+                    >
                   {/each}
-                </sl-menu>
-              </sl-dropdown>
+                {/each}
+              </wa-dropdown>
               {#if turboEvents.length > 0}
                 <IconButton name="trash2" onclick={clearTurboEvents}></IconButton>
               {/if}

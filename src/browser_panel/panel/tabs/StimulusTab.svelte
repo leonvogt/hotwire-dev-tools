@@ -5,7 +5,7 @@
   import CopyButton from "$components/CopyButton.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
-  import IconButton from "$shoelace/IconButton.svelte"
+  import IconButton from "$uikit/IconButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import { getStimulusData } from "../../State.svelte.js"
   import { flattenNodes, handleKeyboardNavigation } from "$utils/utils.js"

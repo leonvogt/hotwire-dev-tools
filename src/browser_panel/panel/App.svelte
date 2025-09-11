@@ -1,20 +1,5 @@
 <script>
-  import "@shoelace-style/shoelace/dist/themes/light.css"
-  import "@shoelace-style/shoelace/dist/shoelace.js"
-
-  // Set Shoelace base path to point to the correct location of the Shoelace icons
-  import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js"
-  setBasePath("/dist")
-
-  // Register our custom icons
-  import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/icon-library.js"
-  registerIconLibrary("custom", {
-    resolver: (name) => {
-      return `/icons/${name}.svg`
-    },
-    mutator: (svg) => svg.setAttribute("fill", "currentColor"),
-  })
-
+  import "$uikit/webawesome.svelte.js"
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { handleResize } from "../theme.svelte.js"
   import { connection } from "../State.svelte.js"
@@ -55,8 +40,8 @@
 </script>
 
 {#if connection.isPermanentlyDisconnected}
-  <sl-alert variant="danger" class="m-5" open>
-    <sl-icon slot="icon" name="exclamation-octagon"></sl-icon>
+  <wa-callout variant="danger" class="m-5">
+    <wa-icon slot="icon" name="triangle-exclamation"></wa-icon>
     <strong>Connection Timeout</strong><br />
     Unable to connect to the current page. Try closing and reopening the inspection panel to resolve the issue.
     <div class="mt-4">
@@ -64,7 +49,7 @@
       <br />
       <a href="https://github.com/leonvogt/hotwire-dev-tools/issues/new" target="_blank" rel="noopener noreferrer">https://github.com/leonvogt/hotwire-dev-tools/issues/new</a>
     </div>
-  </sl-alert>
+  </wa-callout>
 {:else if devToolOptionsLoaded}
   <main {@attach addEventListeners}>
     <div id="container">
@@ -96,7 +81,7 @@
   <div class="h-100vh d-flex justify-content-center align-items-center flex-column gap-5">
     <div class="show-in-200ms">
       <div class="mb-2">Setting up Hotwire DevTool...</div>
-      <sl-skeleton effect="sheen"></sl-skeleton>
+      <p><wa-skeleton effect="sheen"></wa-skeleton></p>
     </div>
     <div class="show-in-1000ms text-align-center">
       <div class="mb-2">Hmm... this is taking a bit longer than expected.</div>
@@ -109,7 +94,7 @@
         <div>If there isn't something showing up, you can also try to inspect the extension itself by:</div>
         <br />
         <div>
-          Opening the "Debug Add-ons" page in Firefox: <u>about:debugging#/runtime/this-firefox</u>
+          Open the "Debug Add-ons" page in Firefox: <u>about:debugging#/runtime/this-firefox</u>
         </div>
         <div>Then clicking on the "Inspect" button next to the Hotwire DevTool. There you should see the console output.</div>
       {/if}

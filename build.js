@@ -60,7 +60,7 @@ const esbuildConfig = {
   metafile: true,
   alias: {
     $src: path.resolve(__dirname, "src"),
-    $shoelace: path.resolve(__dirname, "src/shoelace"),
+    $uikit: path.resolve(__dirname, "src/uikit"),
     $components: path.resolve(__dirname, "src/components"),
     $utils: path.resolve(__dirname, "src/utils"),
     $lib: path.resolve(__dirname, "src/lib"),
@@ -92,18 +92,6 @@ const esbuildConfig = {
   ],
 }
 
-const copyAssets = async () => {
-  // Copy default Shoelace icons
-  await fs.copy("node_modules/@shoelace-style/shoelace/dist/assets", "public/dist/assets")
-
-  // Copy Font Awesome icons
-  // Currently commented out, since we copy the necessary icons directly to public/icons folder.
-  // That way we can copy specific icons from different sources and don't need to import a whole library.
-  // await fs.copy("node_modules/@fortawesome/fontawesome-free/svgs/solid", "public/dist/assets/fontawesome/solid")
-  // await fs.copy("node_modules/@fortawesome/fontawesome-free/svgs/regular", "public/dist/assets/fontawesome/regular")
-  console.log("Copied assets")
-}
-
 async function generateManifest() {
   try {
     const template = await fs.readFile(templatePath, "utf8")
@@ -122,7 +110,6 @@ const buildAndWatch = async () => {
 
 async function buildProject() {
   await generateManifest()
-  await copyAssets()
 
   if (process.argv.includes("--watch")) {
     buildAndWatch()

@@ -1,5 +1,5 @@
 <script>
-  import IconButton from "$shoelace/IconButton.svelte"
+  import IconButton from "$uikit/IconButton.svelte"
   import { inspectElement } from "$utils/utils.js"
 
   let props = $props()
