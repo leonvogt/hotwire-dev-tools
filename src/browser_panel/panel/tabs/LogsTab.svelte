@@ -105,6 +105,12 @@
       },
     })
   }
+
+  const preventDropdownClose = (dropdown) => {
+    dropdown?.addEventListener("wa-select", (event) => {
+      event.preventDefault()
+    })
+  }
 </script>
 
 <Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize} dblClickSplitter={false}>
@@ -115,9 +121,9 @@
           <div class="d-flex justify-content-center align-items-center position-relative">
             <h2>Events</h2>
             <div class="position-absolute end-0">
-              <wa-dropdown class="mb-2">
-                <wa-button slot="trigger" with-caret label="Filter Events">
-                  <wa-icon name="funnel"></wa-icon>
+              <wa-dropdown class="mb-2" use:preventDropdownClose>
+                <wa-button slot="trigger" label="Filter Events">
+                  <wa-icon name="filter"></wa-icon>
                 </wa-button>
                 {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
                   <wa-dropdown-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
