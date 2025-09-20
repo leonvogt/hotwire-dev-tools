@@ -12,5 +12,13 @@ import "@awesome.me/webawesome/dist/components/spinner/spinner.js"
 import "@awesome.me/webawesome/dist/components/badge/badge.js"
 
 // Set WebAwesome base path to point to the correct location of the WebAwesome icons
-import { setBasePath } from "@awesome.me/webawesome/dist/webawesome.js"
+import { setBasePath, registerIconLibrary } from "@awesome.me/webawesome/dist/webawesome.js"
 setBasePath("/dist")
+
+// Register our custom icons
+registerIconLibrary("custom", {
+  resolver: (name) => {
+    return `/icons/${name}.svg`
+  },
+  mutator: (svg) => svg.setAttribute("fill", "currentColor"),
+})
