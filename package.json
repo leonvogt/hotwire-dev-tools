@@ -6,7 +6,7 @@
     "format": "npx prettier --write ."
   },
   "dependencies": {
-    "@awesome.me/webawesome": "^3.0.0-beta.4",
+    "@awesome.me/webawesome": "^3.0.0-beta.6",
     "@number-flow/svelte": "^0.3.9",
     "esbuild-svelte": "^0.9.3",
     "highlight.js": "^11.11.1",
