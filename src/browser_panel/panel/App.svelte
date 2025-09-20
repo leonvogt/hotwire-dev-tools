@@ -2,7 +2,7 @@
   import "$uikit/webawesome.svelte.js"
   import "$uikit/color-scheme.js"
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
-  import { handleResize } from "../theme.svelte.js"
+  import { orientation, handleResize } from "../theme.svelte.js"
   import { connection } from "../State.svelte.js"
   import StimulusTab from "./tabs/StimulusTab.svelte"
   import TurboTab from "./tabs/TurboTab.svelte"
@@ -33,7 +33,7 @@
     if (!tabId || currentTab === tabId) return
 
     currentTab = tabId
-    document.querySelectorAll(".tabcontent").forEach((tab) => {
+    document.querySelectorAll(".tab-content").forEach((tab) => {
       tab.classList.remove("active")
     })
     document.getElementById(tabId).classList.add("active")
@@ -52,28 +52,27 @@
     </div>
   </wa-callout>
 {:else if devToolOptionsLoaded}
-  <main {@attach addEventListeners}>
+  <main class={$orientation} {@attach addEventListeners}>
     <div id="container">
-      <div class="tablist">
-        <button class="tablinks" class:active={currentTab == "turbo-tab"} onclick={updateTab} data-tab-id="turbo-tab">Turbo</button>
-        <button class="tablinks" class:active={currentTab == "stimulus-tab"} onclick={updateTab} data-tab-id="stimulus-tab">Stimulus</button>
-        <button class="tablinks" class:active={currentTab == "native-tab"} onclick={updateTab} data-tab-id="native-tab">Native</button>
-        <button class="tablinks" class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Log</button>
-      </div>
-
-      <div id="turbo-tab" class="tabcontent active">
+      <nav class="navbar wa-brand">
+        <button class:active={currentTab == "turbo-tab"} onclick={updateTab} data-tab-id="turbo-tab">Turbo</button>
+        <button class:active={currentTab == "stimulus-tab"} onclick={updateTab} data-tab-id="stimulus-tab">Stimulus</button>
+        <button class:active={currentTab == "native-tab"} onclick={updateTab} data-tab-id="native-tab">Native</button>
+        <button class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Log</button>
+      </nav>
+      <div id="turbo-tab" class="tab-content active">
         <TurboTab />
       </div>
 
-      <div id="stimulus-tab" class="tabcontent">
+      <div id="stimulus-tab" class="tab-content">
         <StimulusTab />
       </div>
 
-      <div id="native-tab" class="tabcontent">
+      <div id="native-tab" class="tab-content">
         <h2>Native</h2>
       </div>
 
-      <div id="logs-tab" class="tabcontent">
+      <div id="logs-tab" class="tab-content">
         <LogsTab />
       </div>
     </div>
