@@ -1,5 +1,6 @@
 <script>
   import "$uikit/webawesome.svelte.js"
+  import "$uikit/color-scheme.js"
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { handleResize } from "../theme.svelte.js"
   import { connection } from "../State.svelte.js"
