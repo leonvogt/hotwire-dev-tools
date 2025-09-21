@@ -42,8 +42,15 @@
   }
 
   const setSelectedIdentifier = (identifier) => {
-    selected = {
-      identifier: identifier,
+    const instances = getStimulusInstances(identifier)
+    if (instances.length) {
+      setSelectedController(instances[0])
+    } else {
+      selected = {
+        identifier: identifier,
+        uuid: null,
+        controller: null,
+      }
     }
   }
 
@@ -76,7 +83,9 @@
     <div class="card h-100">
       <div class="card-body">
         <div class="d-flex flex-column h-100">
-          <h2>Controllers</h2>
+          {#if stimulusControllers.length === 0}
+            <h2>Controllers</h2>
+          {/if}
           <div class="scrollable-list">
             {#if stimulusControllers.length > 0}
               {#each uniqueIdentifiers as identifier, index (identifier)}
@@ -111,9 +120,6 @@
     <div class="card h-100">
       <div class="card-body">
         {#if selected.identifier}
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h2>Details for {selected.identifier}</h2>
-          </div>
           {#each getStimulusInstances(selected.identifier) as instance (instance.uuid)}
             <div
               class="entry-row entry-row--table-layout p-1 cursor-pointer"
