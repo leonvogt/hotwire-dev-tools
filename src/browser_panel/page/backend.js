@@ -238,11 +238,11 @@ function init() {
       }
     }
 
-    getElementByPayload(payload) {
+    getElementsByPayload(payload) {
       if (payload.elementPath) {
-        return getElementFromIndexPath(payload.elementPath)
+        return [getElementFromIndexPath(payload.elementPath)]
       } else if (payload.selector) {
-        return document.querySelector(payload.selector)
+        return document.querySelectorAll(payload.selector)
       }
       return null
     }
@@ -286,22 +286,23 @@ function init() {
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HIGHLIGHT_ELEMENT: {
-        const element = devtoolsBackend.getElementByPayload(e.data.payload)
-        addHighlightOverlayToElements(element)
+        const elements = devtoolsBackend.getElementsByPayload(e.data.payload)
+        addHighlightOverlayToElements(elements)
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HIDE_HIGHLIGHTING: {
-        const element = devtoolsBackend.getElementByPayload(e.data.payload)
-        if (element) {
-          removeHighlightOverlay(element)
+        const elements = devtoolsBackend.getElementsByPayload(e.data.payload)
+        if (elements) {
+          removeHighlightOverlay(elements)
         } else {
           removeHighlightOverlay()
         }
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.SCROLL_AND_HIGHLIGHT: {
-        const element = devtoolsBackend.getElementByPayload(e.data.payload)
-        if (element) {
+        const elements = devtoolsBackend.getElementsByPayload(e.data.payload)
+        if (elements) {
+          const element = elements[0]
           element.scrollIntoView({ behavior: "smooth", block: "center" })
           addHighlightOverlayToElements(element)
           setTimeout(() => {

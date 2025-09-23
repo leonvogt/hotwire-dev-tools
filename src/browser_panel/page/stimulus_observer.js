@@ -98,6 +98,8 @@ export default class StimulusObserver {
   }
 
   buildControllerValues(controller) {
+    if (!controller || !controller.valueDescriptorMap) return []
+
     return Object.values(controller.valueDescriptorMap).map((descriptor) => {
       return {
         key: descriptor.key,
@@ -110,6 +112,8 @@ export default class StimulusObserver {
   }
 
   buildControllerTargets(controller) {
+    if (!controller) return []
+
     const keys = Object.keys(Object.getOwnPropertyDescriptors(Object.getPrototypeOf(controller)))
     return keys.filter((key) => key.endsWith("Target") && !key.startsWith("has"))
   }
@@ -125,6 +129,7 @@ export default class StimulusObserver {
 
       this.controllerElements.forEach((controllersData) => {
         const controllerData = controllersData[0]
+        if (!controllerData) return
         const element = controllerData.element
         const parentElement = element.parentElement?.closest("[data-controller]")
 
