@@ -20,7 +20,7 @@
 
 <button class="btn-copy" onclick={handleCopy} aria-label="Copy to clipboard">
   <wa-tooltip for={id} trigger="manual" bind:this={tooltip}>Copied</wa-tooltip>
-  <wa-icon {id} class="copy-icon" class:copied name={copied ? "check" : "copy"}></wa-icon>
+  <wa-icon {id} class="copy-icon" class:copied name={copied ? "check" : "copy"} label="copy-icon"></wa-icon>
 </button>
 
 <style>
@@ -35,6 +35,8 @@
     padding: 0.5rem;
     cursor: pointer;
     transition: 50ms color;
+    padding: 0;
+    height: 100%;
   }
 
   .copy-icon {

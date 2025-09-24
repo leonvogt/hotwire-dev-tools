@@ -202,7 +202,7 @@
               {/if}
               {#if turboCables.length > 0}
                 <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
-                <wa-icon name="circle" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
+                <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
               {/if}
             </div>
           </div>
@@ -327,7 +327,7 @@
               {/if}
             </div>
 
-            <div class="scrollable-list flow">
+            <div class="scrollable-list">
               {#if selected.frame.referenceElements.length > 0}
                 <div class="pane-section-heading">
                   <span>Will get updated by elements</span>
@@ -368,7 +368,7 @@
             <div class="d-flex justify-content-center">
               <h2>{selected.stream.action} {selected.stream.targetSelector}</h2>
             </div>
-            <div class="scrollable-list flow">
+            <div class="scrollable-list">
               <div class="pane-section-heading">Attributes</div>
               <table class="table table-sm w-100">
                 <tbody>

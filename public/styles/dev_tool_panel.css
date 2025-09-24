@@ -262,10 +262,6 @@ svg.icon-muted {
   padding: 0.5rem;
 }
 
-.flow > * + * {
-  margin-top: 1em;
-}
-
 .full-pane {
   display: flex;
   flex-direction: column;
@@ -283,18 +279,10 @@ svg.icon-muted {
   height: 100%;
 }
 
-.count-badge.count-badge--small::part(base) {
-  font-size: var(--fs-100);
-}
-
 .collapse-icon {
   font-size: var(--fs-400);
   transition: transform 0.3s ease;
   transform-origin: center center;
-}
-
-.collapse-icon::part(base) {
-  padding: 0.25rem;
 }
 
 .collapse-icon.rotated {
@@ -307,6 +295,30 @@ svg.icon-muted {
 
 .children-container.collapsed {
   display: block;
+}
+
+/* Web Awesome Overrides */
+.small-icon-button::part(base) {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.small-icon-button:not(.disabled):not(.loading)::part(base):hover {
+  background-color: transparent !important;
+}
+
+.count-badge.count-badge--small::part(base) {
+  font-size: var(--fs-100);
+}
+
+.collapse-icon::part(base) {
+  padding: 0.25rem;
+}
+
+wa-tooltip .copy-icon:not(.copied) {
+  color: var(--wa-color-surface-raised) !important;
 }
 
 /* Utilities */
@@ -330,6 +342,11 @@ svg.icon-muted {
 }
 .flex-column {
   flex-direction: column;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .cursor-pointer {
@@ -642,6 +659,13 @@ svg.icon-muted {
 
 .d-table-row {
   display: table-row;
+}
+
+.code-key {
+  color: var(--wa-color-blue-60);
+}
+.code-value {
+  color: var(--wa-color-purple-50);
 }
 
 /* Highlight.js GitHub Theme */

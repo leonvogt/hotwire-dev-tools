@@ -123,7 +123,7 @@
             <div class="position-absolute end-0">
               <wa-dropdown class="mb-2" use:preventDropdownClose>
                 <wa-button slot="trigger" label="Filter Events">
-                  <wa-icon name="filter"></wa-icon>
+                  <wa-icon name="filter" label="filter"></wa-icon>
                 </wa-button>
                 {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
                   <wa-dropdown-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
@@ -223,7 +223,7 @@
               </h2>
             </div>
 
-            <div class="scrollable-list flow">
+            <div class="scrollable-list">
               {#if selected.turboEvent.eventName === "turbo:before-stream-render"}
                 <div class="d-flex justify-content-end">
                   <CopyButton value={selected.turboEvent.turboStreamContent} />

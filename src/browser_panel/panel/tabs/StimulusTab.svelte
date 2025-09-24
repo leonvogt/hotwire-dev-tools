@@ -3,6 +3,7 @@
   import { flip } from "svelte/animate"
 
   import CopyButton from "$components/CopyButton.svelte"
+  import TreeItem from "$components/TreeItem.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import IconButton from "$uikit/IconButton.svelte"
@@ -145,7 +146,10 @@
                 </div>
 
                 <div class="stimulus-instance-second-column">
-                  <div class="me-3 overflow-x-auto scrollbar-none"><HTMLRenderer htmlString={instance.serializedTag} /></div>
+                  <div class="me-3 overflow-x-auto scrollbar-none">
+                    <InspectButton class="btn-hoverable me-2" selector={`[data-hotwire-dev-tools-uuid="${instance.uuid}"]`}></InspectButton>
+                    <HTMLRenderer htmlString={instance.serializedTag} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -165,20 +169,54 @@
       <div class="card-body">
         {#if selected.controller}
           <div class="d-flex flex-column h-100">
-            <div class="scrollable-list flow">
+            <div class="scrollable-list">
               <div class="pane-section-heading">Values</div>
-              <table class="table table-sm w-100 turbo-table">
-                <tbody>
-                  {#each Object.entries(selected.controller.values) as [_key, object]}
-                    {#each Object.entries(object) as [key, value]}
-                      <tr>
-                        <td><div class="code-keyword">{key}</div></td>
-                        <td>{value}</td>
-                      </tr>
-                    {/each}
-                  {/each}
-                </tbody>
-              </table>
+              {#each Object.entries(selected.controller.values) as [_key, valueObject]}
+                <div class="d-flex gap-2">
+                  {#if typeof valueObject.value === "object" && valueObject.value !== null}
+                    <wa-tree>
+                      <wa-tree-item expanded>
+                        {valueObject.name}
+                        {#each Object.entries(valueObject.value) as [label, children]}
+                          <TreeItem {label} {children} />
+                        {/each}
+                      </wa-tree-item>
+                    </wa-tree>
+                  {:else}
+                    <span class="code-key">{valueObject.name}:</span>
+                    <span class="code-value">
+                      {valueObject.value}
+                    </span>
+                  {/if}
+                  <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button">
+                    <wa-icon name="copy" label="Home"></wa-icon>
+                  </wa-button>
+                  <wa-tooltip for={`rich-tooltip-${valueObject.key}`} trigger="click" style="--max-width: 100%;">
+                    <div class="">
+                      <div class="flex-center">Type: {valueObject.type}</div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span>{`data-${selected.identifier}-${valueObject.key}`}</span>
+                        <CopyButton value={`data-${selected.identifier}-${valueObject.key}`} />
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span>{`this.${valueObject.name}`}</span>
+                        <CopyButton value={`this.${valueObject.name}`} />
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span>{`this.${valueObject.name}s`}</span>
+                        <CopyButton value={`this.${valueObject.name}s`} />
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span>{`this.has${valueObject.name[0].toUpperCase() + valueObject.name.slice(1)}`}</span>
+                        <CopyButton value={`this.has${valueObject.name[0].toUpperCase() + valueObject.name.slice(1)}`} />
+                      </div>
+                    </div>
+                  </wa-tooltip>
+                </div>
+              {/each}
             </div>
           </div>
         {:else}
