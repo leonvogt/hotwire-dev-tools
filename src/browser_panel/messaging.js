@@ -86,3 +86,13 @@ export const hideHighlightOverlay = () => {
     source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
   })
 }
+
+export const updateDataAttribute = (selector, key, value) => {
+  panelPostMessage({
+    action: PANEL_TO_BACKEND_MESSAGES.UPDATE_DATA_ATTRIBUTE,
+    source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    selector: selector,
+    key: key,
+    value: value,
+  })
+}

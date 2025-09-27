@@ -10,13 +10,15 @@
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import { getStimulusData } from "../../State.svelte.js"
   import { flattenNodes, handleKeyboardNavigation, debounce } from "$utils/utils.js"
-  import { panelPostMessage, addHighlightOverlay, addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
+  import { updateDataAttribute, addHighlightOverlay, hideHighlightOverlay } from "../../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
   import * as Icons from "$utils/icons.js"
   import { collapseEntryRows, toggleStickyParent, checkStickyVisibility } from "$src/utils/collapsible.js"
 
+  let editedValues = $state({})
+  let currentlyEditing = $state([])
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)
   let selected = $state({
@@ -83,6 +85,17 @@
         selectedRow.scrollIntoView({ behavior: "smooth", block: "nearest" })
       }
     }, 10)
+  }
+
+  const getEditedValue = (uuid, key, defaultValue) => {
+    if (!editedValues[uuid]) editedValues[uuid] = {}
+    if (editedValues[uuid][key] === undefined) editedValues[uuid][key] = defaultValue
+    return editedValues[uuid][key]
+  }
+
+  const setEditedValue = (uuid, key, value) => {
+    if (!editedValues[uuid]) editedValues[uuid] = {}
+    editedValues[uuid][key] = value
   }
 </script>
 
@@ -172,7 +185,9 @@
             <div class="scrollable-list">
               <div class="pane-section-heading">Values</div>
               {#each Object.entries(selected.controller.values) as [_key, valueObject]}
-                <div class="d-flex gap-2">
+                {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
+                {@const isCurrentlyEditing = currentlyEditing.includes(selected.uuid)}
+                <div class="d-flex gap-2 mb-2">
                   {#if typeof valueObject.value === "object" && valueObject.value !== null}
                     <wa-tree>
                       <wa-tree-item expanded>
@@ -184,19 +199,48 @@
                     </wa-tree>
                   {:else}
                     <span class="code-key">{valueObject.name}:</span>
-                    <span class="code-value">
-                      {valueObject.value}
-                    </span>
+                    <div class="d-flex code-value">
+                      {#if isCurrentlyEditing}
+                        <wa-input size="extra-small" value={valueObject.value} oninput={(e) => setEditedValue(selected.uuid, valueObject.key, e.target.value)}></wa-input>
+                        <IconButton
+                          name="check"
+                          onclick={() => {
+                            updateDataAttribute(`[data-hotwire-dev-tools-uuid="${selected.uuid}"]`, dataAttribute, getEditedValue(selected.uuid, valueObject.key))
+                            currentlyEditing = currentlyEditing.filter((id) => id !== selected.uuid)
+                          }}
+                        ></IconButton>
+                        <IconButton
+                          name="xmark"
+                          onclick={() => {
+                            if (editedValues[selected.uuid]) {
+                              delete editedValues[selected.uuid][valueObject.key]
+                              if (Object.keys(editedValues[selected.uuid]).length === 0) {
+                                delete editedValues[selected.uuid]
+                              }
+                            }
+                            currentlyEditing = currentlyEditing.filter((id) => id !== selected.uuid)
+                          }}
+                        ></IconButton>
+                      {:else}
+                        {valueObject.value}
+                        <IconButton
+                          name="pencil"
+                          onclick={() => {
+                            if (!currentlyEditing.includes(selected.uuid)) currentlyEditing = [...currentlyEditing, selected.uuid]
+                          }}
+                        ></IconButton>
+                      {/if}
+                    </div>
                   {/if}
-                  <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button">
-                    <wa-icon name="copy" label="Home"></wa-icon>
+                  <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button" class:d-none={isCurrentlyEditing}>
+                    <wa-icon name="info" label="Info"></wa-icon>
                   </wa-button>
                   <wa-tooltip for={`rich-tooltip-${valueObject.key}`} trigger="click" style="--max-width: 100%;">
                     <div class="">
                       <div class="flex-center">Type: {valueObject.type}</div>
                       <div class="d-flex justify-content-between align-items-center">
-                        <span>{`data-${selected.identifier}-${valueObject.key}`}</span>
-                        <CopyButton value={`data-${selected.identifier}-${valueObject.key}`} />
+                        <span>{dataAttribute}</span>
+                        <CopyButton value={dataAttribute} />
                       </div>
 
                       <div class="d-flex justify-content-between align-items-center">

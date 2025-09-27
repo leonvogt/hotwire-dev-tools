@@ -27,6 +27,7 @@ export const PANEL_TO_BACKEND_MESSAGES = {
   HIDE_HIGHLIGHTING: "hide-highlighting",
   REFRESH_TURBO_FRAME: "refresh-turbo-frame",
   SCROLL_AND_HIGHLIGHT: "scroll-and-highlight",
+  UPDATE_DATA_ATTRIBUTE: "update-data-attribute",
 }
 
 export const TURBO_EVENTS = [

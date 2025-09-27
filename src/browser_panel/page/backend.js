@@ -313,6 +313,19 @@ function init() {
         }
         break
       }
+      case PANEL_TO_BACKEND_MESSAGES.UPDATE_DATA_ATTRIBUTE: {
+        const elements = devtoolsBackend.getElementsByPayload(e.data.payload)
+
+        if (elements) {
+          elements.forEach((element) => {
+            if (e.data.payload.value === null || e.data.payload.value === undefined || e.data.payload.value === "") {
+              element.removeAttribute(e.data.payload.key)
+            } else {
+              element.setAttribute(e.data.payload.key, e.data.payload.value)
+            }
+          })
+        }
+      }
     }
   }
 }

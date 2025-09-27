@@ -320,6 +320,9 @@ svg.icon-muted {
 wa-tooltip .copy-icon:not(.copied) {
   color: var(--wa-color-surface-raised) !important;
 }
+wa-input[size="extra-small"] {
+  --wa-form-control-height: 100%;
+}
 
 /* Utilities */
 .d-flex {
