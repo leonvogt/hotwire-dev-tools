@@ -11,6 +11,7 @@ import "@awesome.me/webawesome/dist/components/tooltip/tooltip.js"
 import "@awesome.me/webawesome/dist/components/spinner/spinner.js"
 import "@awesome.me/webawesome/dist/components/badge/badge.js"
 import "@awesome.me/webawesome/dist/components/tree/tree.js"
+import "@awesome.me/webawesome/dist/components/input/input.js"
 
 // Set WebAwesome base path to point to the correct location of the WebAwesome icons
 import { setBasePath, registerIconLibrary } from "@awesome.me/webawesome/dist/webawesome.js"

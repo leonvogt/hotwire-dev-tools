@@ -60,20 +60,15 @@ export default class StimulusObserver {
   }
 
   elementAttributeChanged(element, attributeName, oldValue) {
+    if (attributeName == "data-hotwire-dev-tools-uuid") return
     if (this.matchElement(element)) {
       const uuid = getUUIDFromElement(element)
       if (this.controllerElements.has(uuid)) {
         const newValue = element.getAttribute(attributeName)
-        this.controllerElements.get(uuid).forEach((controllerData) => {
-          if (newValue === null) {
-            delete controllerData.attributes[attributeName]
-          } else {
-            controllerData.attributes[attributeName] = newValue
-          }
-
-          controllerData.serializedTag = stringifyHTMLElementTag(element)
+        const newControllerElementData = this.controllerElements.get(uuid).map((controllerData) => {
+          return this.buildStimulusElementData(element, controllerData.identifier)
         })
-
+        this.controllerElements.set(uuid, newControllerElementData)
         this.delegate.stimulusControllerChanged(element, attributeName, oldValue, newValue)
       }
     }
