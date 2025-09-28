@@ -72,7 +72,7 @@
     }
   }
 
-  const handleStimulusIdentifiersKeyboardNavigation = (event) => {
+  const handleIdentifiersKeyboardNavigation = (event) => {
     if (!uniqueIdentifiers.length) return
 
     const currentIndex = uniqueIdentifiers.findIndex((identifier) => identifier === selected.identifier)
@@ -81,6 +81,24 @@
 
     setTimeout(() => {
       const selectedRow = document.querySelector(".stimulus-identifiers-list-pane .entry-row.selected")
+      if (selectedRow) {
+        selectedRow.scrollIntoView({ behavior: "smooth", block: "nearest" })
+      }
+    }, 10)
+  }
+
+  const handleInstancesKeyboardNavigation = (event) => {
+    const instances = getStimulusInstances(selected.identifier)
+    if (!instances.length) return
+
+    const currentIndex = instances.findIndex((instance) => instance.uuid === selected.uuid)
+    const newIndex = handleKeyboardNavigation(event, instances, currentIndex)
+    console.log(instances[newIndex])
+
+    setSelectedController(instances[newIndex])
+
+    setTimeout(() => {
+      const selectedRow = document.querySelector(".stimulus-controller-list-pane .entry-row.selected")
       if (selectedRow) {
         selectedRow.scrollIntoView({ behavior: "smooth", block: "nearest" })
       }
@@ -115,7 +133,7 @@
                 role="button"
                 tabindex="0"
                 onclick={() => setSelectedIdentifier(identifier)}
-                onkeyup={handleStimulusIdentifiersKeyboardNavigation}
+                onkeyup={handleIdentifiersKeyboardNavigation}
                 onmouseenter={() => addHighlightOverlay(`[data-controller~="${identifier}"]`)}
                 onmouseleave={() => hideHighlightOverlay()}
                 class:selected={selected.identifier === identifier}
@@ -149,7 +167,7 @@
               role="button"
               tabindex="0"
               onclick={() => setSelectedController(instance)}
-              onkeyup={handleStimulusIdentifiersKeyboardNavigation}
+              onkeyup={handleInstancesKeyboardNavigation}
               onmouseenter={() => addHighlightOverlay(`[data-hotwire-dev-tools-uuid="${instance.uuid}"]`)}
               onmouseleave={() => hideHighlightOverlay()}
             >
