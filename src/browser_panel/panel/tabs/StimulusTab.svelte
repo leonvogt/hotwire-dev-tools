@@ -202,14 +202,19 @@
                     <span class="code-key">{valueObject.name}:</span>
                     <div class="d-flex code-value">
                       {#if isCurrentlyEditing}
-                        <wa-input size="extra-small" value={valueObject.value} oninput={(e) => setEditedValue(selected.uuid, valueObject.key, e.target.value)}></wa-input>
-                        <IconButton
-                          name="check"
-                          onclick={() => {
+                        <form
+                          class="d-flex"
+                          onsubmit={(e) => {
+                            e.preventDefault()
                             updateDataAttribute(`[data-hotwire-dev-tools-uuid="${selected.uuid}"]`, dataAttribute, getEditedValue(selected.uuid, valueObject.key))
                             currentlyEditing = currentlyEditing.filter((k) => k !== uniqueKey)
                           }}
-                        ></IconButton>
+                        >
+                          <wa-input size="extra-small" value={valueObject.value} oninput={(e) => setEditedValue(selected.uuid, valueObject.key, e.target.value)}></wa-input>
+                          <wa-button class="small-icon-button" variant="neutral" appearance="plain" type="submit">
+                            <wa-icon name="check"></wa-icon>
+                          </wa-button>
+                        </form>
                         <IconButton
                           name="xmark"
                           onclick={() => {
