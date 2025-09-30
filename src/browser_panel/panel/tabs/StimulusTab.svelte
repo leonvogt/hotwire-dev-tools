@@ -115,6 +115,27 @@
     if (!editedValues[uuid]) editedValues[uuid] = {}
     editedValues[uuid][key] = value
   }
+
+  const gatherEditedObject = (uuid, originalObject) => {
+    if (!editedValues[uuid]) return originalObject
+    const editedObject = { ...originalObject }
+    for (const key in originalObject) {
+      if (editedValues[uuid][key] !== undefined) {
+        editedObject[key] = editedValues[uuid][key]
+      }
+    }
+    return editedObject
+  }
+
+  const addToCurrentlyEditing = (key) => {
+    if (!currentlyEditing.includes(key)) {
+      currentlyEditing = [...currentlyEditing, key]
+    }
+  }
+
+  const removeFromCurrentlyEditing = (key) => {
+    currentlyEditing = currentlyEditing.filter((k) => k !== key)
+  }
 </script>
 
 <Splitpanes horizontal={$horizontalPanes} dblClickSplitter={false}>
@@ -207,55 +228,86 @@
                 {@const uniqueKey = `${selected.uuid}-${valueObject.key}`}
                 {@const isCurrentlyEditing = currentlyEditing.includes(uniqueKey)}
                 <div class="d-flex gap-2 mb-2">
-                  {#if typeof valueObject.value === "object" && valueObject.value !== null}
-                    <wa-tree>
+                  <wa-tree>
+                    {#if typeof valueObject.value === "object" && valueObject.value !== null}
                       <wa-tree-item expanded>
                         {valueObject.name}
-                        {#each Object.entries(valueObject.value) as [label, children]}
-                          <TreeItem {label} {children} />
+                        {#each Object.entries(valueObject.value) as [key, value]}
+                          <wa-tree-item>
+                            <div class="d-flex code-value">
+                              <span class="code-key">{key}:</span>
+                              {#if currentlyEditing.includes(`${selected.uuid}-${valueObject.key}-${key}`)}
+                                <form
+                                  class="d-flex"
+                                  onsubmit={(e) => {
+                                    e.preventDefault()
+                                    updateDataAttribute(`[data-hotwire-dev-tools-uuid="${selected.uuid}"]`, dataAttribute, JSON.stringify(gatherEditedObject(selected.uuid, valueObject.value)))
+                                    removeFromCurrentlyEditing(`${selected.uuid}-${valueObject.key}-${key}`)
+                                  }}
+                                >
+                                  <wa-input size="extra-small" value={getEditedValue(selected.uuid, key, value)} oninput={(e) => setEditedValue(selected.uuid, key, e.target.value)}></wa-input>
+                                  <wa-button class="small-icon-button" variant="neutral" appearance="plain" type="submit">
+                                    <wa-icon name="check"></wa-icon>
+                                  </wa-button>
+                                </form>
+                                <IconButton
+                                  name="xmark"
+                                  onclick={() => {
+                                    if (editedValues[selected.uuid]) {
+                                      delete editedValues[selected.uuid][key]
+                                      if (Object.keys(editedValues[selected.uuid]).length === 0) {
+                                        delete editedValues[selected.uuid]
+                                      }
+                                    }
+                                    removeFromCurrentlyEditing(`${selected.uuid}-${valueObject.key}-${key}`)
+                                  }}
+                                ></IconButton>
+                              {:else}
+                                {value}
+                                <IconButton name="pencil" onclick={() => addToCurrentlyEditing(`${selected.uuid}-${valueObject.key}-${key}`)}></IconButton>
+                              {/if}
+                            </div>
+                          </wa-tree-item>
                         {/each}
                       </wa-tree-item>
-                    </wa-tree>
-                  {:else}
-                    <span class="code-key">{valueObject.name}:</span>
-                    <div class="d-flex code-value">
-                      {#if isCurrentlyEditing}
-                        <form
-                          class="d-flex"
-                          onsubmit={(e) => {
-                            e.preventDefault()
-                            updateDataAttribute(`[data-hotwire-dev-tools-uuid="${selected.uuid}"]`, dataAttribute, getEditedValue(selected.uuid, valueObject.key))
-                            currentlyEditing = currentlyEditing.filter((k) => k !== uniqueKey)
-                          }}
-                        >
-                          <wa-input size="extra-small" value={valueObject.value} oninput={(e) => setEditedValue(selected.uuid, valueObject.key, e.target.value)}></wa-input>
-                          <wa-button class="small-icon-button" variant="neutral" appearance="plain" type="submit">
-                            <wa-icon name="check"></wa-icon>
-                          </wa-button>
-                        </form>
-                        <IconButton
-                          name="xmark"
-                          onclick={() => {
-                            if (editedValues[selected.uuid]) {
-                              delete editedValues[selected.uuid][valueObject.key]
-                              if (Object.keys(editedValues[selected.uuid]).length === 0) {
-                                delete editedValues[selected.uuid]
-                              }
-                            }
-                            currentlyEditing = currentlyEditing.filter((k) => k !== uniqueKey)
-                          }}
-                        ></IconButton>
-                      {:else}
-                        {valueObject.value}
-                        <IconButton
-                          name="pencil"
-                          onclick={() => {
-                            currentlyEditing = [...currentlyEditing, uniqueKey]
-                          }}
-                        ></IconButton>
-                      {/if}
-                    </div>
-                  {/if}
+                    {:else}
+                      <wa-tree-item expanded>
+                        <span class="code-key">{valueObject.name}:</span>
+                        <div class="d-flex code-value">
+                          {#if isCurrentlyEditing}
+                            <form
+                              class="d-flex"
+                              onsubmit={(e) => {
+                                e.preventDefault()
+                                updateDataAttribute(`[data-hotwire-dev-tools-uuid="${selected.uuid}"]`, dataAttribute, getEditedValue(selected.uuid, valueObject.key))
+                                removeFromCurrentlyEditing(uniqueKey)
+                              }}
+                            >
+                              <wa-input size="extra-small" value={valueObject.value} oninput={(e) => setEditedValue(selected.uuid, valueObject.key, e.target.value)}></wa-input>
+                              <wa-button class="small-icon-button" variant="neutral" appearance="plain" type="submit">
+                                <wa-icon name="check"></wa-icon>
+                              </wa-button>
+                            </form>
+                            <IconButton
+                              name="xmark"
+                              onclick={() => {
+                                if (editedValues[selected.uuid]) {
+                                  delete editedValues[selected.uuid][valueObject.key]
+                                  if (Object.keys(editedValues[selected.uuid]).length === 0) {
+                                    delete editedValues[selected.uuid]
+                                  }
+                                }
+                                removeFromCurrentlyEditing(uniqueKey)
+                              }}
+                            ></IconButton>
+                          {:else}
+                            {valueObject.value}
+                            <IconButton name="pencil" onclick={() => addToCurrentlyEditing(uniqueKey)}></IconButton>
+                          {/if}
+                        </div>
+                      </wa-tree-item>
+                    {/if}
+                  </wa-tree>
                   <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button" class:d-none={isCurrentlyEditing}>
                     <wa-icon name="info" label="Info"></wa-icon>
                   </wa-button>
