@@ -37,14 +37,21 @@
           <wa-tree-item>
             <div class="d-flex code-value">
               <span class="code-key">{key}:</span>
-              <ValueEditor {value} isEditing={editingStates[key] || false} onEdit={() => handleEdit(key)} onSave={(newVal) => handleSave(key, newVal)} onCancel={() => handleCancel(key)} />
+              <ValueEditor {value} valueType={"string"} isEditing={editingStates[key] || false} onEdit={() => handleEdit(key)} onSave={(newVal) => handleSave(key, newVal)} onCancel={() => handleCancel(key)} />
             </div>
           </wa-tree-item>
         {/each}
       {:else}
         <span class="code-key">{valueObject.name}:</span>
         <div class="d-flex code-value">
-          <ValueEditor value={valueObject.value} isEditing={editingStates["main"] || false} onEdit={() => handleEdit(null)} onSave={(newVal) => handleSave(null, newVal)} onCancel={() => handleCancel(null)} />
+          <ValueEditor
+            value={valueObject.value}
+            valueType={valueObject.type}
+            isEditing={editingStates["main"] || false}
+            onEdit={() => handleEdit(null)}
+            onSave={(newVal) => handleSave(null, newVal)}
+            onCancel={() => handleCancel(null)}
+          />
         </div>
       {/if}
     </wa-tree-item>
