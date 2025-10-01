@@ -3,10 +3,12 @@
   import { flip } from "svelte/animate"
 
   import ValueTreeItem from "$src/components/Stimulus/ValueTreeItem.svelte"
+  import TargetTreeItem from "$src/components/Stimulus/TargetTreeItem.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
+  import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import { getStimulusData } from "../../State.svelte.js"
-  import { flattenNodes, handleKeyboardNavigation, debounce } from "$utils/utils.js"
+  import { flattenNodes, handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
   import { addHighlightOverlay, hideHighlightOverlay } from "../../messaging.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
@@ -153,7 +155,7 @@
               tabindex="0"
               onclick={() => setSelectedController(instance)}
               onkeyup={handleInstancesKeyboardNavigation}
-              onmouseenter={() => addHighlightOverlay(`[data-hotwire-dev-tools-uuid="${instance.uuid}"]`)}
+              onmouseenter={() => addHighlightOverlay(selectorByUUID(instance.uuid))}
               onmouseleave={() => hideHighlightOverlay()}
             >
               <div class="d-table-row">
@@ -163,7 +165,7 @@
 
                 <div class="stimulus-instance-second-column">
                   <div class="me-3 overflow-x-auto scrollbar-none">
-                    <InspectButton class="btn-hoverable me-2" selector={`[data-hotwire-dev-tools-uuid="${instance.uuid}"]`}></InspectButton>
+                    <InspectButton class="btn-hoverable me-2" selector={selectorByUUID(instance.uuid)}></InspectButton>
                     <HTMLRenderer htmlString={instance.serializedTag} />
                   </div>
                 </div>
@@ -190,6 +192,10 @@
               {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + valueObject.key)}
                 {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
                 <ValueTreeItem {valueObject} {selected} {dataAttribute} />
+              {/each}
+              <div class="pane-section-heading">Targets</div>
+              {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + target.name)}
+                <TargetTreeItem {target} {selected} />
               {/each}
             </div>
           </div>

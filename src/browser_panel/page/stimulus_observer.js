@@ -1,18 +1,4 @@
-// ;[
-//   {
-//     controllers: [
-//       {
-//         identifier: "my-controller",
-//         selector: "[data-controller~='my-controller']",
-//         values: [{ name: "auto-start", value: "true" }],
-//         class: "my-controller",
-//       },
-//     ],
-//     targets: [{ name: "item", selector: "[data-my-controller-target='item']" }],
-//   },
-// ]
-
-import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, getElementPath } from "$utils/utils.js"
+import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, capitalizeFirstChar } from "$utils/utils.js"
 
 export default class StimulusObserver {
   constructor(delegate) {
@@ -110,7 +96,20 @@ export default class StimulusObserver {
     if (!controller) return []
 
     const keys = Object.keys(Object.getOwnPropertyDescriptors(Object.getPrototypeOf(controller)))
-    return keys.filter((key) => key.endsWith("Target") && !key.startsWith("has"))
+    const targetKeys = keys.filter((key) => key.endsWith("Target") && !key.startsWith("has"))
+    return targetKeys.map((targetKey) => {
+      const targets = controller[`has${capitalizeFirstChar(targetKey)}`] ? controller[`${targetKey}s`] : []
+      return {
+        name: targetKey,
+        elements: Array.from(targets).map((target) => {
+          return {
+            id: target.id,
+            uuid: ensureUUIDOnElement(target),
+            serializedTag: stringifyHTMLElementTag(target),
+          }
+        }),
+      }
+    })
   }
 
   getStimulusData() {

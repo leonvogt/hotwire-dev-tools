@@ -3,6 +3,7 @@
   import NestedValue from "./NestedValue.svelte"
   import CopyButton from "$components/CopyButton.svelte"
   import { updateDataAttribute } from "../../browser_panel/messaging"
+  import { capitalizeFirstChar, selectorByUUID } from "$utils/utils.js"
 
   let { valueObject, selected, dataAttribute } = $props()
 
@@ -62,7 +63,7 @@
 
     const serializedValue = serializeValue(updatedValue, valueObject.type)
 
-    updateDataAttribute(`[data-hotwire-dev-tools-uuid="${selected.uuid}"]`, dataAttribute, serializedValue)
+    updateDataAttribute(selectorByUUID(selected.uuid), dataAttribute, serializedValue)
 
     editingStates[path.join(".")] = false
   }
@@ -98,12 +99,11 @@
           />
         </div>
       {/if}
+      <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button">
+        <wa-icon name="info" label="Info"></wa-icon>
+      </wa-button>
     </wa-tree-item>
   </wa-tree>
-
-  <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button" class:d-none={Object.values(editingStates).some(Boolean)}>
-    <wa-icon name="info" label="Info"></wa-icon>
-  </wa-button>
 
   <wa-tooltip for={`rich-tooltip-${valueObject.key}`} trigger="click" style="--max-width: 100%;">
     <div>
@@ -117,8 +117,8 @@
         <CopyButton value={`this.${valueObject.name}Value`} />
       </div>
       <div class="d-flex justify-content-between align-items-center">
-        <span>{`this.has${valueObject.name[0].toUpperCase() + valueObject.name.slice(1)}Value`}</span>
-        <CopyButton value={`this.has${valueObject.name[0].toUpperCase() + valueObject.name.slice(1)}Value`} />
+        <span>{`this.has${capitalizeFirstChar(valueObject)}Value`}</span>
+        <CopyButton value={`this.has${capitalizeFirstChar(valueObject)}Value`} />
       </div>
     </div>
   </wa-tooltip>

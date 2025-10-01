@@ -18,7 +18,7 @@
   }
   initializeDevToolOptions()
 
-  let currentTab = $state("turbo-tab")
+  let currentTab = $state("stimulus-tab")
 
   const addEventListeners = () => {
     window.addEventListener("resize", handleResize)
@@ -78,11 +78,11 @@
           </wa-option>
         </wa-select>
       </nav>
-      <div id="turbo-tab" class="tab-content active">
+      <div id="turbo-tab" class="tab-content">
         <TurboTab />
       </div>
 
-      <div id="stimulus-tab" class="tab-content">
+      <div id="stimulus-tab" class="tab-content active">
         <StimulusTab />
       </div>
 

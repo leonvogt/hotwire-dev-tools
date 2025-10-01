@@ -170,3 +170,14 @@ export const safeStringifyEventDetail = (detail) => {
 export const flattenNodes = (tree) => {
   return tree.flatMap((node) => [node, ...flattenNodes(node.children || [])])
 }
+
+export const capitalizeFirstChar = (str) => {
+  if (typeof str !== "string" || str === undefined || str.length === 0) {
+    return str
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export const selectorByUUID = (uuid) => {
+  return `[data-hotwire-dev-tools-uuid="${uuid}"]`
+}
