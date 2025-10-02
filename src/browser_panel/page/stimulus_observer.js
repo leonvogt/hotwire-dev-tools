@@ -66,6 +66,7 @@ export default class StimulusObserver {
       id: element.id,
       uuid: getUUIDFromElement(element),
       identifier: identifier,
+      targetsAttribute: controller?.context?.schema?.targetAttributeForScope(controller?.identifier),
       serializedTag: stringifyHTMLElementTag(element),
       attributes: Array.from(element.attributes).reduce((map, attr) => {
         map[attr.name] = attr.value
@@ -73,6 +74,7 @@ export default class StimulusObserver {
       }, {}),
       values: this.buildControllerValues(controller),
       targets: this.buildControllerTargets(controller),
+      outlets: this.buildControllerOutlets(controller),
       children: [],
       element,
     }
@@ -101,11 +103,36 @@ export default class StimulusObserver {
       const targets = controller[`has${capitalizeFirstChar(targetKey)}`] ? controller[`${targetKey}s`] : []
       return {
         name: targetKey,
+        key: targetKey.replace("Target", ""),
         elements: Array.from(targets).map((target) => {
           return {
             id: target.id,
             uuid: ensureUUIDOnElement(target),
             serializedTag: stringifyHTMLElementTag(target),
+          }
+        }),
+      }
+    })
+  }
+
+  buildControllerOutlets(controller) {
+    if (!controller) return []
+
+    const keys = Object.keys(Object.getOwnPropertyDescriptors(Object.getPrototypeOf(controller)))
+    const outletKeys = keys.filter((key) => key.endsWith("Outlet") && !key.startsWith("has"))
+    return outletKeys.map((outletKey) => {
+      const outlets = controller[`has${capitalizeFirstChar(outletKey)}`] ? controller[`${outletKey}s`] : []
+      const key = outletKey.replace("Outlet", "")
+      return {
+        name: outletKey,
+        key: key,
+        htmlAttribute: `${controller.context.schema.outletAttributeForScope(controller.identifier, key)}=""`,
+        selector: controller.outlets.getSelectorForOutletName(key),
+        elements: Array.from(outlets).map((outlet) => {
+          return {
+            id: outlet.id,
+            uuid: ensureUUIDOnElement(outlet.element),
+            serializedTag: stringifyHTMLElementTag(outlet.element),
           }
         }),
       }
