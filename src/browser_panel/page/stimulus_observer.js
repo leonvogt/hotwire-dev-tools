@@ -61,7 +61,7 @@ export default class StimulusObserver {
   }
 
   buildStimulusElementData(element, identifier) {
-    const controller = window.Stimulus.getControllerForElementAndIdentifier(element, identifier)
+    const controller = window.Stimulus?.getControllerForElementAndIdentifier(element, identifier)
     return {
       id: element.id,
       uuid: getUUIDFromElement(element),
@@ -75,6 +75,7 @@ export default class StimulusObserver {
       values: this.buildControllerValues(controller),
       targets: this.buildControllerTargets(controller),
       outlets: this.buildControllerOutlets(controller),
+      classes: this.buildControllerClasses(controller),
       children: [],
       element,
     }
@@ -135,6 +136,23 @@ export default class StimulusObserver {
             serializedTag: stringifyHTMLElementTag(outlet.element),
           }
         }),
+      }
+    })
+  }
+
+  buildControllerClasses(controller) {
+    if (!controller) return []
+
+    const keys = Object.keys(Object.getOwnPropertyDescriptors(Object.getPrototypeOf(controller)))
+    const classKeys = keys.filter((key) => key.endsWith("Class") && !key.startsWith("has"))
+    return classKeys.map((classKey) => {
+      const classes = controller[`has${capitalizeFirstChar(classKey)}`] ? controller[`${classKey}es`] : []
+      const key = classKey.replace("Class", "")
+      return {
+        name: classKey,
+        key: key,
+        htmlAttribute: `${controller.classes.getAttributeName(key)}=""`,
+        classes: Array.from(classes),
       }
     })
   }

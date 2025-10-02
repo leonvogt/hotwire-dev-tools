@@ -5,6 +5,7 @@
   import ValueTreeItem from "$src/components/Stimulus/ValueTreeItem.svelte"
   import TargetTreeItem from "$src/components/Stimulus/TargetTreeItem.svelte"
   import OutletTreeItem from "$src/components/Stimulus/OutletTreeItem.svelte"
+  import ClassTreeItem from "$src/components/Stimulus/ClassTreeItem.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
@@ -201,6 +202,10 @@
               <div class="pane-section-heading">Outlets</div>
               {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + outlet.name)}
                 <OutletTreeItem {outlet} {selected} />
+              {/each}
+              <div class="pane-section-heading">Classes</div>
+              {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + klass.name)}
+                <ClassTreeItem {klass} {selected} />
               {/each}
             </div>
           </div>
