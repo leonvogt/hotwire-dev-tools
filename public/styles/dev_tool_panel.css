@@ -671,6 +671,12 @@ wa-input[size="extra-small"] {
   color: var(--wa-color-purple-50);
 }
 
+.error-text-underline {
+  text-decoration: underline wavy #f14c4c;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
 /* Highlight.js GitHub Theme */
 pre code.hljs {
   display: block;

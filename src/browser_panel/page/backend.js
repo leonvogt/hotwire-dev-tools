@@ -24,6 +24,7 @@ function init() {
     start() {
       this.elementObserver.start()
       this.addEventListeners()
+      this.sendRegisteredStimulusControllers()
     }
 
     stop() {
@@ -171,6 +172,14 @@ function init() {
         type: BACKEND_TO_PANEL_MESSAGES.SET_STIMULUS_DATA,
       })
     }, 10)
+
+    sendRegisteredStimulusControllers = () => {
+      this._postMessage({
+        identifiers: Array.from(window.Stimulus?.router.modulesByIdentifier.keys() || []),
+        url: btoa(window.location.href),
+        type: BACKEND_TO_PANEL_MESSAGES.SET_REGISTERED_STIMULUS_IDENTIFIERS,
+      })
+    }
 
     handleIncomingTurboStream = (event) => {
       const turboStream = event.target

@@ -25,6 +25,7 @@ let turboCables = $state([])
 let turboStreams = $state([])
 let turboEvents = $state([])
 let stimulusData = $state([])
+let registeredStimulusIdentifiers = $state([])
 
 export function setTurboFrames(frames, url) {
   turboFrames = frames
@@ -48,6 +49,14 @@ export function setStimulusData(data, url) {
 
 export function getStimulusData() {
   return stimulusData
+}
+
+export function setRegisteredStimulusIdentifiers(identifiers, url) {
+  registeredStimulusIdentifiers = identifiers
+}
+
+export function getRegisteredStimulusIdentifiers() {
+  return registeredStimulusIdentifiers
 }
 
 export function addTurboEvent(event) {

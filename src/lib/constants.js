@@ -11,6 +11,7 @@ export const BACKEND_TO_PANEL_MESSAGES = {
   SET_TURBO_FRAMES: "set-turbo-frames",
   SET_TURBO_CABLES: "set-turbo-cables",
   SET_STIMULUS_DATA: "set-stimulus-data",
+  SET_REGISTERED_STIMULUS_IDENTIFIERS: "set-registered-stimulus-identifiers",
   TURBO_STREAM_RECEIVED: "turbo-stream-received",
   TURBO_EVENT_RECEIVED: "turbo-event-received",
   HEALTH_CHECK_RESPONSE: "health-check-response",

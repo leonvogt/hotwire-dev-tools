@@ -8,8 +8,7 @@
   import ClassTreeItem from "$src/components/Stimulus/ClassTreeItem.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
-  import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
-  import { getStimulusData } from "../../State.svelte.js"
+  import { getStimulusData, getRegisteredStimulusIdentifiers } from "../../State.svelte.js"
   import { flattenNodes, handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
   import { addHighlightOverlay, hideHighlightOverlay } from "../../messaging.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
@@ -23,6 +22,7 @@
     controller: null,
   })
   let stimulusControllers = $state([])
+  let registeredStimulusIdentifiers = $state([])
   let flattenStimulusControllers = $derived(flattenNodes(stimulusControllers))
   let uniqueIdentifiers = $derived([...new Set(flattenStimulusControllers.map((n) => n.identifier).filter(Boolean))].sort())
   let counts = $derived(
@@ -45,6 +45,10 @@
       // Update selected controller reference, to store the latest data
       selected.controller = instance
     }
+  })
+
+  $effect(() => {
+    registeredStimulusIdentifiers = getRegisteredStimulusIdentifiers()
   })
 
   const getStimulusInstances = (identifier) => {
@@ -104,6 +108,11 @@
       }
     }, 10)
   }
+
+  const isIdentifierRegistered = (identifier) => {
+    if (!registeredStimulusIdentifiers.length) return true
+    return registeredStimulusIdentifiers.includes(identifier)
+  }
 </script>
 
 <Splitpanes horizontal={$horizontalPanes} dblClickSplitter={false}>
@@ -128,7 +137,14 @@
                 class:selected={selected.identifier === identifier}
               >
                 <div class="d-flex justify-content-between align-items-center">
-                  <div>{identifier}</div>
+                  <div id={`identifier-${index}`} class:error-text-underline={!isIdentifierRegistered(identifier)}>
+                    {identifier}
+                  </div>
+                  {#if !isIdentifierRegistered(identifier)}
+                    <wa-tooltip for={`identifier-${index}`} style="--max-width: 200px;">
+                      <div>This controller does not appear to be registered in window.Stimulus.</div>
+                    </wa-tooltip>
+                  {/if}
                   <div>{counts[identifier]}</div>
                 </div>
               </div>
