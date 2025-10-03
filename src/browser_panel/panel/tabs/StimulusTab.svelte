@@ -79,6 +79,11 @@
   const handleIdentifiersKeyboardNavigation = (event) => {
     if (!uniqueIdentifiers.length) return
 
+    if (event.key === "ArrowRight") {
+      document.querySelector(".stimulus-controller-list-pane .entry-row.selected").focus()
+      return
+    }
+
     const currentIndex = uniqueIdentifiers.findIndex((identifier) => identifier === selected.identifier)
     const newIndex = handleKeyboardNavigation(event, uniqueIdentifiers, currentIndex)
     setSelectedIdentifier(uniqueIdentifiers[newIndex])
@@ -94,6 +99,11 @@
   const handleInstancesKeyboardNavigation = (event) => {
     const instances = getStimulusInstances(selected.identifier)
     if (!instances.length) return
+
+    if (event.key === "ArrowLeft") {
+      document.querySelector(".stimulus-identifiers-list-pane .entry-row.selected").focus()
+      return
+    }
 
     const currentIndex = instances.findIndex((instance) => instance.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, instances, currentIndex)
