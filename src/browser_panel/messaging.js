@@ -22,7 +22,7 @@ export const handleBackendToPanelMessage = (message, port) => {
       setTurboCables(message.turboCables, message.url)
       setPort(port)
       break
-    case BACKEND_TO_PANEL_MESSAGES.SET_STIMULUS_CONTROLLERS:
+    case BACKEND_TO_PANEL_MESSAGES.SET_STIMULUS_DATA:
       setStimulusData(message.stimulusData, message.url)
       setPort(port)
       break

@@ -95,36 +95,14 @@ function init() {
       }
     }
 
-    // TurboFrameObserver delegate methods
-    frameConnected(frame) {
+    // Delegate methods
+    turboFramesChanged() {
       this.sendTurboFrames()
     }
-    frameDisconnected(frame) {
-      this.sendTurboFrames()
-    }
-    frameAttributeChanged(frame, attributeName, oldValue, newValue) {
-      this.sendTurboFrames()
-    }
-
-    // TurboCableObserver delegate methods
-    turboCableConnected(element) {
+    turboCableChaned() {
       this.sendTurboCableData()
     }
-    turboCableDisconnected(element) {
-      this.sendTurboCableData()
-    }
-    turboCableAttributeChanged(element, attributeName, oldValue, newValue) {
-      this.sendTurboCableData()
-    }
-
-    // Stimulus delegate methods
-    stimulusControllerConnected(element) {
-      this.sendStimulusData()
-    }
-    stimulusControllerDisonnected(element) {
-      this.sendStimulusData()
-    }
-    stimulusControllerChanged(element, attributeName, oldValue, newValue) {
+    stimulusDataChanged() {
       this.sendStimulusData()
     }
 
@@ -190,7 +168,7 @@ function init() {
       this._postMessage({
         stimulusData: this.observers.stimulus.getStimulusData(),
         url: btoa(window.location.href),
-        type: BACKEND_TO_PANEL_MESSAGES.SET_STIMULUS_CONTROLLERS,
+        type: BACKEND_TO_PANEL_MESSAGES.SET_STIMULUS_DATA,
       })
     }, 10)
 

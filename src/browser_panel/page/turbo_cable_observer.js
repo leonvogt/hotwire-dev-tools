@@ -24,7 +24,7 @@ export default class TurboCableObserver {
     if (!this.streamSources.has(uuid)) {
       const turboCableData = this.buildTurboCableData(element)
       this.streamSources.set(uuid, turboCableData)
-      this.delegate.turboCableConnected(element)
+      this.delegate.turboCableChaned()
     }
   }
 
@@ -33,7 +33,7 @@ export default class TurboCableObserver {
 
     if (this.streamSources.has(uuid)) {
       this.streamSources.delete(uuid)
-      this.delegate.turboCableDisconnected(element)
+      this.delegate.turboCableChaned()
     }
   }
 
@@ -51,7 +51,7 @@ export default class TurboCableObserver {
         }
         turboCableData.connected = element.hasAttribute("connected")
 
-        this.delegate.turboCableAttributeChanged(element, attributeName, oldValue, newValue)
+        this.delegate.turboCableChaned()
       }
     }
   }

@@ -33,7 +33,7 @@ export default class StimulusObserver {
       const controllerData = this.buildStimulusElementData(element, identifier)
       this.controllerElements.get(uuid).push(controllerData)
     })
-    this.delegate.stimulusControllerConnected(element)
+    this.delegate.stimulusDataChanged()
   }
 
   elementUnmatched(element) {
@@ -41,7 +41,7 @@ export default class StimulusObserver {
 
     if (this.controllerElements.has(uuid)) {
       this.controllerElements.delete(uuid)
-      this.delegate.stimulusControllerDisonnected(element)
+      this.delegate.stimulusDataChanged()
     }
   }
 
@@ -50,12 +50,11 @@ export default class StimulusObserver {
     if (this.matchElement(element)) {
       const uuid = getUUIDFromElement(element)
       if (this.controllerElements.has(uuid)) {
-        const newValue = element.getAttribute(attributeName)
         const newControllerElementData = this.controllerElements.get(uuid).map((controllerData) => {
           return this.buildStimulusElementData(element, controllerData.identifier)
         })
         this.controllerElements.set(uuid, newControllerElementData)
-        this.delegate.stimulusControllerChanged(element, attributeName, oldValue, newValue)
+        this.delegate.stimulusDataChanged()
       }
     }
   }
