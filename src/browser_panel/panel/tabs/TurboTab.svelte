@@ -191,54 +191,52 @@
 
 <Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize} dblClickSplitter={false}>
   <Pane class="turbo-stream-pane full-pane" size={options.turboPaneDimensions?.streams || 35} minSize={20}>
-    <div class="card h-100">
-      <div class="card-body">
-        <div class="d-flex flex-column h-100">
-          <div class="d-flex justify-content-center align-items-center position-relative">
-            <h2>Streams</h2>
-            <div class="position-absolute end-0">
-              {#if turboStreams.length > 0}
-                <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
-              {/if}
-              {#if turboCables.length > 0}
-                <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
-                <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
-              {/if}
-            </div>
-          </div>
-          <div class="scrollable-list">
-            {#if turboStreams.length > 0}
-              {#each turboStreams as stream (stream.uuid)}
-                <div
-                  {@attach scrollIntoView}
-                  class="entry-row p-1 cursor-pointer"
-                  transition:slide={{ duration: turboStreamAnimationDuration }}
-                  class:selected={selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid === stream.uuid}
-                  role="button"
-                  tabindex="0"
-                  onclick={() => setSelectedTurboStream(stream)}
-                  onkeyup={handleStreamListKeyboardNavigation}
-                  onmouseenter={() => addHighlightOverlay(stream.targetSelector)}
-                  onmouseleave={() => hideHighlightOverlay()}
-                >
-                  <div class="text-align-right text-muted">
-                    <span>{stream.time}</span>
-                  </div>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div>{stream.action}</div>
-                    <div>{stream.targetSelector}</div>
-                  </div>
-                </div>
-              {/each}
-            {:else}
-              <div class="no-entry-hint">
-                <span>No Turbo Streams seen yet</span>
-                <span>We'll keep looking</span>
-              </div>
+    <div class="pane-container">
+      <div class="pane-header flex-center">
+        {#if turboStreams.length <= 0}
+          <h3 class="pane-header-title">Streams</h3>
+        {:else}
+          <div class="position-absolute end-0">
+            <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
+            {#if turboCables.length > 0}
+              <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
+              <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
             {/if}
           </div>
-        </div>
+        {/if}
       </div>
+
+      {#if turboStreams.length > 0}
+        <div class="pane-scrollable-list">
+          {#each turboStreams as stream (stream.uuid)}
+            <div
+              {@attach scrollIntoView}
+              class="entry-row p-1 cursor-pointer"
+              transition:slide={{ duration: turboStreamAnimationDuration }}
+              class:selected={selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid === stream.uuid}
+              role="button"
+              tabindex="0"
+              onclick={() => setSelectedTurboStream(stream)}
+              onkeyup={handleStreamListKeyboardNavigation}
+              onmouseenter={() => addHighlightOverlay(stream.targetSelector)}
+              onmouseleave={() => hideHighlightOverlay()}
+            >
+              <div class="text-align-right text-muted">
+                <span>{stream.time}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>{stream.action}</div>
+                <div>{stream.targetSelector}</div>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {:else}
+        <div class="no-entry-hint">
+          <span>No Turbo Streams seen yet</span>
+          <span>We'll keep looking</span>
+        </div>
+      {/if}
     </div>
   </Pane>
 
@@ -285,128 +283,120 @@
       {/if}
     {/snippet}
 
-    <div class="card h-100">
-      <div class="card-body">
-        <div class="d-flex flex-column h-100">
-          <div class="d-flex justify-content-center align-items-center position-relative">
-            <h2>Frames</h2>
-            <wa-badge variant="neutral" style="font-size: var(--wa-font-size-xs);" class="position-absolute end-0" pill>
-              <NumberFlow value={turboFrameCount()} animated={!isFirstFrameCountRender} />
-            </wa-badge>
-          </div>
-          <div class="scrollable-list" {@attach addTurboFrameListListeners}>
-            {#if turboFrames.length > 0}
-              {#each turboFrames as frame (frame.uuid)}
-                {@render turboFrameRow(frame)}
-              {/each}
-            {:else}
-              <div class="no-entry-hint">
-                <span>No Turbo Frames found on this page</span>
-                <span>We'll keep looking</span>
-              </div>
-            {/if}
-          </div>
-        </div>
+    <div class="pane-container">
+      <div class="pane-header flex-center">
+        {#if turboFrameCount() <= 0}
+          <h3 class="pane-header-title">Frames</h3>
+        {/if}
+        <wa-badge variant="neutral" style="font-size: var(--wa-font-size-xs);" class="position-absolute end-0 me-2" pill>
+          <NumberFlow value={turboFrameCount()} animated={!isFirstFrameCountRender} />
+        </wa-badge>
       </div>
+      {#if turboFrames.length > 0}
+        <div class="pane-scrollable-list" {@attach addTurboFrameListListeners}>
+          {#each turboFrames as frame (frame.uuid)}
+            {@render turboFrameRow(frame)}
+          {/each}
+        </div>
+      {:else}
+        <div class="no-entry-hint">
+          <span>No Turbo Frames found on this page</span>
+          <span>We'll keep looking</span>
+        </div>
+      {/if}
     </div>
   </Pane>
 
   <Pane class="turbo-detail-pane full-pane" size={options.turboPaneDimensions?.details || 30} minSize={20}>
-    <div class="card h-100">
-      <div class="card-body">
-        {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
-          <div class="d-flex flex-column h-100">
-            <div class="d-flex justify-content-center align-items-center position-relative">
-              <h2 class="pe-4">#{selected.frame.id}</h2>
-              {#if selected.frame.attributes.src}
-                <div class="position-absolute end-0">
-                  <button class="btn-icon icon-dark" onclick={() => refreshTurboFrame(selected.frame.id)} title="Refresh Turbo Frames List">
-                    {@html Icons.refresh}
-                  </button>
-                </div>
-              {/if}
+    <div class="pane-container">
+      {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
+        <div class="pane-header flex-center">
+          <h3 class="pane-header-title">#{selected.frame.id}</h3>
+          {#if selected.frame.attributes.src}
+            <div class="position-absolute end-0">
+              <button class="btn-icon icon-dark" onclick={() => refreshTurboFrame(selected.frame.id)} title="Refresh Turbo Frames List">
+                {@html Icons.refresh}
+              </button>
             </div>
+          {/if}
+        </div>
 
-            <div class="scrollable-list">
-              {#if selected.frame.referenceElements.length > 0}
-                <div class="pane-section-heading">
-                  <span>Will get updated by elements</span>
-                </div>
-                {#each selected.frame.referenceElements as referenceElement (referenceElement.serializedTargetTag)}
-                  <div class="html-preview">
-                    <pre><code class="language-html"><HTMLRenderer htmlString={referenceElement.serializedTargetTag} /></code></pre>
+        <div class="pane-scrollable-list">
+          {#if selected.frame.referenceElements.length > 0}
+            <div class="pane-section-heading">
+              <span>Will get updated by elements</span>
+            </div>
+            {#each selected.frame.referenceElements as referenceElement (referenceElement.serializedTargetTag)}
+              <div class="html-preview">
+                <pre><code class="language-html"><HTMLRenderer htmlString={referenceElement.serializedTargetTag} /></code></pre>
+              </div>
+            {/each}
+          {/if}
+
+          <div class="pane-section-heading">Attributes</div>
+          <table class="table table-sm w-100 turbo-table">
+            <tbody>
+              {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
+                <tr>
+                  <td><div class="code-keyword">{key}</div></td>
+                  <td>{value}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+
+          <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+            <span>HTML</span>
+            <div>
+              <ScrollIntoViewButton selector={`#${selected.frame.id}`}></ScrollIntoViewButton>
+              <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
+            </div>
+          </div>
+          <div class="html-preview">
+            <pre><code class="language-html"><HTMLRenderer htmlString={selected.frame.serializedTag} /></code></pre>
+          </div>
+        </div>
+      {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
+        <div class="pane-header flex-center">
+          <h3 class="pane-header-title">{selected.stream.action} {selected.stream.targetSelector}</h3>
+        </div>
+        <div class="pane-scrollable-list">
+          <div class="pane-section-heading">Attributes</div>
+          <table class="table table-sm w-100">
+            <tbody>
+              <tr>
+                <td>Action</td>
+                <td>{selected.stream.action}</td>
+              </tr>
+              <tr>
+                <td>Target</td>
+                <td>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>{selected.stream.targetSelector}</span>
+                    <div>
+                      <ScrollIntoViewButton selector={selected.stream.targetSelector}></ScrollIntoViewButton>
+                      <InspectButton selector={selected.stream.targetSelector}></InspectButton>
+                    </div>
                   </div>
-                {/each}
-              {/if}
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-              <div class="pane-section-heading">Attributes</div>
-              <table class="table table-sm w-100 turbo-table">
-                <tbody>
-                  {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
-                    <tr>
-                      <td><div class="code-keyword">{key}</div></td>
-                      <td>{value}</td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-
-              <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
-                <span>HTML</span>
-                <div>
-                  <ScrollIntoViewButton selector={`#${selected.frame.id}`}></ScrollIntoViewButton>
-                  <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
-                </div>
-              </div>
-              <div class="html-preview">
-                <pre><code class="language-html"><HTMLRenderer htmlString={selected.frame.serializedTag} /></code></pre>
-              </div>
-            </div>
+          <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+            <span>HTML</span>
+            <CopyButton value={selected.stream.turboStreamContent} />
           </div>
-        {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
-          <div class="d-flex flex-column h-100">
-            <div class="d-flex justify-content-center">
-              <h2>{selected.stream.action} {selected.stream.targetSelector}</h2>
-            </div>
-            <div class="scrollable-list">
-              <div class="pane-section-heading">Attributes</div>
-              <table class="table table-sm w-100">
-                <tbody>
-                  <tr>
-                    <td>Action</td>
-                    <td>{selected.stream.action}</td>
-                  </tr>
-                  <tr>
-                    <td>Target</td>
-                    <td>
-                      <div class="d-flex justify-content-between align-items-center">
-                        <span>{selected.stream.targetSelector}</span>
-                        <div>
-                          <ScrollIntoViewButton selector={selected.stream.targetSelector}></ScrollIntoViewButton>
-                          <InspectButton selector={selected.stream.targetSelector}></InspectButton>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
-                <span>HTML</span>
-                <CopyButton value={selected.stream.turboStreamContent} />
-              </div>
-              <div class="html-preview">
-                <pre><code class="language-html"><HTMLRenderer htmlString={selected.stream.turboStreamContent} /></code></pre>
-              </div>
-            </div>
+          <div class="html-preview">
+            <pre><code class="language-html"><HTMLRenderer htmlString={selected.stream.turboStreamContent} /></code></pre>
           </div>
-        {:else}
-          <div class="no-entry-hint">
-            <span>Nothing selected</span>
-            <span>Select a Turbo Frame or Turbo Stream to see its details</span>
-          </div>
-        {/if}
-      </div>
+        </div>
+      {:else}
+        <div class="pane-header flex-center"></div>
+        <div class="no-entry-hint">
+          <span>Nothing to see here</span>
+        </div>
+      {/if}
     </div>
   </Pane>
 </Splitpanes>

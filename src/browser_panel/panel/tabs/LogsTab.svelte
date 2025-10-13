@@ -115,77 +115,73 @@
 
 <Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize} dblClickSplitter={false}>
   <Pane class="turbo-event-pane full-pane" size={options.logPaneDimensions?.events || 50} minSize={20}>
-    <div class="card h-100">
-      <div class="card-body">
-        <div class="d-flex flex-column h-100">
-          <div class="d-flex justify-content-center align-items-center position-relative">
-            <h2>Events</h2>
-            <div class="position-absolute end-0">
-              <wa-dropdown class="mb-2" use:preventDropdownClose>
-                <wa-button slot="trigger" label="Filter Events">
-                  <wa-icon name="filter" label="filter"></wa-icon>
-                </wa-button>
-                {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
-                  <wa-dropdown-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
-                    <strong>{groupName}</strong>
-                  </wa-dropdown-item>
+    <div class="pane-container">
+      <div class="pane-header flex-center">
+        <h3 class="pane-header-title">Events</h3>
+        <div class="position-absolute end-0">
+          <wa-dropdown class="mb-2" use:preventDropdownClose>
+            <wa-button slot="trigger" class="small-icon-button" variant="neutral" appearance="plain">
+              <wa-icon name="filter" label="filter"></wa-icon>
+            </wa-button>
+            {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
+              <wa-dropdown-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
+                <strong>{groupName}</strong>
+              </wa-dropdown-item>
 
-                  {#each events as event}
-                    <wa-dropdown-item
-                      class="turbo-event-menu-item"
-                      type="checkbox"
-                      role="button"
-                      tabindex="0"
-                      onkeyup={(e) => handleFilterToggle(e)}
-                      onclick={(e) => handleFilterToggle(e)}
-                      value={event}
-                      checked={turboEventsFilter.includes(event)}>{event}</wa-dropdown-item
-                    >
-                  {/each}
-                {/each}
-              </wa-dropdown>
-              {#if turboEvents.length > 0}
-                <IconButton name="trash2" onclick={clearTurboEvents}></IconButton>
-              {/if}
-            </div>
-          </div>
-
-          <div class="scrollable-list overflow-x-hidden">
-            {#if turboEvents.length > 0}
-              {#each turboEvents as event (event.uuid)}
-                <div
-                  {@attach scrollIntoView}
-                  class="entry-row entry-row--table-layout p-1 cursor-pointer turbo-event-entry-row"
-                  class:selected={selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.turboEvent.uuid === event.uuid}
-                  class:d-none={!turboEventsFilter.includes(event.eventName)}
+              {#each events as event}
+                <wa-dropdown-item
+                  class="turbo-event-menu-item"
+                  type="checkbox"
                   role="button"
                   tabindex="0"
-                  onclick={() => setSelectedTurboEvent(event)}
-                  onkeyup={handleEventListKeyboardNavigation}
-                  onmouseenter={() => addHighlightOverlayByPath(event.targetElementPath)}
-                  onmouseleave={() => hideHighlightOverlay()}
+                  onkeyup={(e) => handleFilterToggle(e)}
+                  onclick={(e) => handleFilterToggle(e)}
+                  value={event}
+                  checked={turboEventsFilter.includes(event)}>{event}</wa-dropdown-item
                 >
-                  <div class="d-table-row">
-                    <div class="turbo-event-first-column">
-                      <strong>{event.eventName}</strong>
-                    </div>
-
-                    <div class="turbo-event-second-column">
-                      <div class="me-3">{event.time}</div>
-                      <div class="me-3 overflow-x-auto scrollbar-none"><HTMLRenderer htmlString={event.serializedTargetTag} /></div>
-                    </div>
-                  </div>
-                </div>
               {/each}
-            {:else}
-              <div class="no-entry-hint">
-                <span>No Turbo Events spotted yet</span>
-                <span>We'll keep looking</span>
-              </div>
-            {/if}
-          </div>
+            {/each}
+          </wa-dropdown>
+          {#if turboEvents.length > 0}
+            <IconButton name="trash2" onclick={clearTurboEvents}></IconButton>
+          {/if}
         </div>
       </div>
+
+      {#if turboEvents.length > 0}
+        <div class="scrollable-list overflow-x-hidden">
+          {#each turboEvents as event (event.uuid)}
+            <div
+              {@attach scrollIntoView}
+              class="entry-row entry-row--table-layout p-1 cursor-pointer turbo-event-entry-row"
+              class:selected={selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.turboEvent.uuid === event.uuid}
+              class:d-none={!turboEventsFilter.includes(event.eventName)}
+              role="button"
+              tabindex="0"
+              onclick={() => setSelectedTurboEvent(event)}
+              onkeyup={handleEventListKeyboardNavigation}
+              onmouseenter={() => addHighlightOverlayByPath(event.targetElementPath)}
+              onmouseleave={() => hideHighlightOverlay()}
+            >
+              <div class="d-table-row">
+                <div class="turbo-event-first-column">
+                  <strong>{event.eventName}</strong>
+                </div>
+
+                <div class="turbo-event-second-column">
+                  <div class="me-3">{event.time}</div>
+                  <div class="me-3 overflow-x-auto scrollbar-none"><HTMLRenderer htmlString={event.serializedTargetTag} /></div>
+                </div>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {:else}
+        <div class="no-entry-hint">
+          <span>No Turbo Events spotted yet</span>
+          <span>We'll keep looking</span>
+        </div>
+      {/if}
     </div>
   </Pane>
 
@@ -212,74 +208,71 @@
       {/if}
     {/snippet}
 
-    <div class="card h-100">
-      <div class="card-body">
-        {#if selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.uuid}
-          <div class="d-flex flex-column h-100">
-            <div class="d-flex justify-content-center">
-              <h2 class="pe-4 d-flex align-items-center gap-2">
-                <span>Event</span>
-                <div class="code-keyword">{selected.turboEvent.eventName}</div>
-              </h2>
-            </div>
+    <div class="pane-container">
+      {#if selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.uuid}
+        <div class="pane-header flex-center">
+          <h3 class="pane-header-title">
+            <span>Event</span>
+            <div class="code-keyword">{selected.turboEvent.eventName}</div>
+          </h3>
+        </div>
 
-            <div class="scrollable-list">
-              {#if selected.turboEvent.eventName === "turbo:before-stream-render"}
-                <div class="d-flex justify-content-end">
-                  <CopyButton value={selected.turboEvent.turboStreamContent} />
-                </div>
-                <div class="html-preview">
-                  <pre><code class="language-html"><HTMLRenderer htmlString={selected.turboEvent.turboStreamContent} /></code></pre>
-                </div>
+        <div class="scrollable-list">
+          {#if selected.turboEvent.eventName === "turbo:before-stream-render"}
+            <div class="d-flex justify-content-end">
+              <CopyButton value={selected.turboEvent.turboStreamContent} />
+            </div>
+            <div class="html-preview">
+              <pre><code class="language-html"><HTMLRenderer htmlString={selected.turboEvent.turboStreamContent} /></code></pre>
+            </div>
+          {/if}
+
+          <table class="table table-sm w-100 turbo-events-table">
+            <tbody>
+              {#if selected.turboEvent.action}
+                <tr>
+                  <td><div class="code-keyword">action</div></td>
+                  <td>{selected.turboEvent.action}</td>
+                </tr>
               {/if}
 
-              <table class="table table-sm w-100 turbo-events-table">
-                <tbody>
-                  {#if selected.turboEvent.action}
-                    <tr>
-                      <td><div class="code-keyword">action</div></td>
-                      <td>{selected.turboEvent.action}</td>
-                    </tr>
-                  {/if}
+              {#if selected.turboEvent.targetElementPath}
+                <tr>
+                  <td>Target</td>
+                  <td>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span><HTMLRenderer htmlString={selected.turboEvent.serializedTargetTag} /></span>
+                      <div>
+                        <ScrollIntoViewButton elementPath={selected.turboEvent.targetElementPath}></ScrollIntoViewButton>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              {:else}
+                <tr>
+                  <td>Target</td>
+                  <td><HTMLRenderer htmlString={selected.turboEvent.serializedTargetTag} /></td>
+                </tr>
+              {/if}
 
-                  {#if selected.turboEvent.targetElementPath}
-                    <tr>
-                      <td>Target</td>
-                      <td>
-                        <div class="d-flex justify-content-between align-items-center">
-                          <span><HTMLRenderer htmlString={selected.turboEvent.serializedTargetTag} /></span>
-                          <div>
-                            <ScrollIntoViewButton elementPath={selected.turboEvent.targetElementPath}></ScrollIntoViewButton>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  {:else}
-                    <tr>
-                      <td>Target</td>
-                      <td><HTMLRenderer htmlString={selected.turboEvent.serializedTargetTag} /></td>
-                    </tr>
-                  {/if}
-
-                  {#if selected.turboEvent.details}
-                    {#each Object.entries(selected.turboEvent.details) as [key, value]}
-                      <tr>
-                        <td><div class="code-keyword">{key}</div></td>
-                        <td>{@render valueViewer(value)}</td>
-                      </tr>
-                    {/each}
-                  {/if}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        {:else}
-          <div class="no-entry-hint">
-            <span>Nothing selected</span>
-            <span>Select a Turbo Event to see its details</span>
-          </div>
-        {/if}
-      </div>
+              {#if selected.turboEvent.details}
+                {#each Object.entries(selected.turboEvent.details) as [key, value]}
+                  <tr>
+                    <td><div class="code-keyword">{key}</div></td>
+                    <td>{@render valueViewer(value)}</td>
+                  </tr>
+                {/each}
+              {/if}
+            </tbody>
+          </table>
+        </div>
+      {:else}
+        <div class="pane-header"></div>
+        <div class="no-entry-hint">
+          <span>Nothing selected</span>
+          <span>Select a Turbo Event to see its details</span>
+        </div>
+      {/if}
     </div>
   </Pane>
 </Splitpanes>

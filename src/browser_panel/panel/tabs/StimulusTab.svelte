@@ -127,53 +127,54 @@
 
 <Splitpanes horizontal={$horizontalPanes} dblClickSplitter={false}>
   <Pane class="stimulus-identifiers-list-pane full-pane" size={options.stimulusIdentifiersPaneDimensions?.streams || 35} minSize={20}>
-    <div class="h-100">
-      <div class="d-flex flex-column h-100">
+    <div class="pane-container">
+      <div class="pane-header flex-center">
         {#if stimulusControllers.length === 0}
-          <h2>Controllers</h2>
+          <h3 class="pane-header-title">Controllers</h3>
         {/if}
-        <div class="scrollable-list">
-          {#if stimulusControllers.length > 0}
-            {#each uniqueIdentifiers as identifier, index (identifier)}
-              <div
-                class="entry-row p-1 cursor-pointer"
-                animate:flip={{ delay: 0, duration: 200 }}
-                role="button"
-                tabindex="0"
-                onclick={() => setSelectedIdentifier(identifier)}
-                onkeyup={handleIdentifiersKeyboardNavigation}
-                onmouseenter={() => addHighlightOverlay(`[data-controller~="${identifier}"]`)}
-                onmouseleave={() => hideHighlightOverlay()}
-                class:selected={selected.identifier === identifier}
-              >
-                <div class="d-flex justify-content-between align-items-center">
-                  <div id={`identifier-${index}`} class:error-text-underline={!isIdentifierRegistered(identifier)}>
-                    {identifier}
-                  </div>
-                  {#if !isIdentifierRegistered(identifier)}
-                    <wa-tooltip for={`identifier-${index}`} style="--max-width: 200px;">
-                      <div>This controller does not appear to be registered in window.Stimulus.</div>
-                    </wa-tooltip>
-                  {/if}
-                  <div>{counts[identifier]}</div>
-                </div>
-              </div>
-            {/each}
-          {:else}
-            <div class="no-entry-hint">
-              <span>No Stimulus Controllers seen yet</span>
-              <span>We'll keep looking</span>
-            </div>
-          {/if}
-        </div>
       </div>
+      {#if stimulusControllers.length > 0}
+        <div class="pane-scrollable-list">
+          {#each uniqueIdentifiers as identifier, index (identifier)}
+            <div
+              class="entry-row p-1 cursor-pointer"
+              animate:flip={{ delay: 0, duration: 200 }}
+              role="button"
+              tabindex="0"
+              onclick={() => setSelectedIdentifier(identifier)}
+              onkeyup={handleIdentifiersKeyboardNavigation}
+              onmouseenter={() => addHighlightOverlay(`[data-controller~="${identifier}"]`)}
+              onmouseleave={() => hideHighlightOverlay()}
+              class:selected={selected.identifier === identifier}
+            >
+              <div class="d-flex justify-content-between align-items-center">
+                <div id={`identifier-${index}`} class:error-text-underline={!isIdentifierRegistered(identifier)}>
+                  {identifier}
+                </div>
+                {#if !isIdentifierRegistered(identifier)}
+                  <wa-tooltip for={`identifier-${index}`} style="--max-width: 200px;">
+                    <div>This controller does not appear to be registered in window.Stimulus.</div>
+                  </wa-tooltip>
+                {/if}
+                <div>{counts[identifier]}</div>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {:else}
+        <div class="no-entry-hint">
+          <span>No Stimulus Controllers seen yet</span>
+          <span>We'll keep looking</span>
+        </div>
+      {/if}
     </div>
   </Pane>
 
   <Pane class="stimulus-controller-list-pane full-pane" size={options.stimulusControllerPaneDimensions?.details || 35} minSize={20}>
-    <div class="h-100">
-      <div class="scrollable-list">
-        {#if selected.identifier}
+    <div class="pane-container">
+      <div class="pane-header flex-center"></div>
+      {#if selected.identifier}
+        <div class="pane-scrollable-list">
           {#each getStimulusInstances(selected.identifier) as instance (instance.uuid)}
             <div
               class="entry-row entry-row--table-layout p-1 cursor-pointer"
@@ -200,50 +201,47 @@
               </div>
             </div>
           {/each}
-        {:else}
-          <div class="no-entry-hint">
-            <span>Nothing selected</span>
-            <span>Select a Stimulus Controller to see its details</span>
-          </div>
-        {/if}
-      </div>
+        </div>
+      {:else}
+        <div class="no-entry-hint">
+          <span>Nothing selected</span>
+          <span>Select a Stimulus Controller to see its details</span>
+        </div>
+      {/if}
     </div>
   </Pane>
 
   <Pane class="stimulus-detail-pane full-pane" size={options.stimulusDetailsPaneDimensions?.details || 30} minSize={20}>
-    <div class="card h-100">
-      <div class="card-body">
-        {#if selected.controller}
-          <div class="d-flex flex-column h-100">
-            <div class="scrollable-list">
-              <div class="pane-section-heading">Values</div>
-              {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + valueObject.key)}
-                {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
-                <ValueTreeItem {valueObject} {selected} {dataAttribute} />
-              {/each}
-              <div class="pane-section-heading">Targets</div>
-              {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + target.name)}
-                <TargetTreeItem {target} {selected} />
-              {/each}
-              <div class="pane-section-heading">Outlets</div>
-              {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + outlet.name)}
-                <OutletTreeItem {outlet} {selected} />
-              {/each}
-              <div class="pane-section-heading">Classes</div>
-              {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + klass.name)}
-                <ClassTreeItem {klass} {selected} />
-              {/each}
-            </div>
-          </div>
-        {:else}
-          <div class="no-entry-hint">
-            <span>Nothing selected</span>
-            <span>Select a Stimulus Controller to see its details</span>
-          </div>
-        {/if}
-      </div>
-    </div></Pane
-  >
+    <div class="pane-container">
+      <div class="pane-header flex-center"></div>
+      {#if selected.controller}
+        <div class="pane-scrollable-list">
+          <div class="pane-section-heading">Values</div>
+          {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + valueObject.key)}
+            {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
+            <ValueTreeItem {valueObject} {selected} {dataAttribute} />
+          {/each}
+          <div class="pane-section-heading">Targets</div>
+          {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + target.name)}
+            <TargetTreeItem {target} {selected} />
+          {/each}
+          <div class="pane-section-heading">Outlets</div>
+          {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + outlet.name)}
+            <OutletTreeItem {outlet} {selected} />
+          {/each}
+          <div class="pane-section-heading">Classes</div>
+          {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + klass.name)}
+            <ClassTreeItem {klass} {selected} />
+          {/each}
+        </div>
+      {:else}
+        <div class="no-entry-hint">
+          <span>Nothing selected</span>
+          <span>Select a Stimulus Controller to see its details</span>
+        </div>
+      {/if}
+    </div>
+  </Pane>
 </Splitpanes>
 
 <style>

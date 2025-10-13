@@ -37,8 +37,6 @@
 
 /* General */
 :root {
-  --primary-color: #007bff;
-  --primary-color-hover: #0056b3;
   --dark-color: #212529;
   --selected-bg: var(--wa-color-brand-fill-normal);
   --hover-for-selected-bg: var(--wa-color-brand-fill-quiet);
@@ -169,13 +167,6 @@ svg.icon-muted {
   fill: var(--dark-color);
 }
 
-.btn-inspect {
-  color: var(--primary-color);
-}
-.btn-inspect:hover {
-  color: var(--primary-color-hover);
-}
-
 .no-entry-hint {
   display: flex;
   justify-content: center;
@@ -183,6 +174,39 @@ svg.icon-muted {
   align-items: center;
   color: var(--wa-color-text-quiet);
   padding: 1em;
+  height: 100%;
+}
+
+.pane-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pane-header {
+  border-bottom: 3px solid var(--wa-color-surface-border);
+  margin-bottom: 0.5em;
+  height: 2.25rem;
+  position: relative;
+}
+.pane-header wa-badge {
+  padding: 0.15em 0.5em;
+}
+
+.pane-header-title {
+  text-align: center;
+  margin: 0;
+}
+
+.pane-scrollable-list {
+  overflow-y: auto;
+  max-height: 100%;
+  scrollbar-width: thin;
+  flex: 1;
+}
+
+.pane-scrollable-list .entry-row {
+  padding-right: 12px; /* To avoid content being hidden under scrollbar */
 }
 
 .entry-row {
@@ -213,7 +237,7 @@ svg.icon-muted {
 }
 .entry-row.selected {
   background-color: var(--selected-bg);
-  border-left: 3px solid var(--primary-color);
+  border-left: 3px solid var(--wa-color-brand-fill-loud);
 }
 
 .entry-row .btn-hoverable {
@@ -244,11 +268,13 @@ svg.icon-muted {
 }
 
 .pane-section-heading {
-  font-weight: bold;
-  font-size: 1.2em;
+  font-size: 0.9em;
   margin-bottom: 0.5em;
-  padding: 0.5em;
-  background-color: var(--wa-color-surface-lowered);
+  padding: 0.2em 0.2em;
+  background-color: #333842;
+  color: #ccc;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .table td {
@@ -298,6 +324,9 @@ svg.icon-muted {
 }
 
 /* Web Awesome Overrides */
+.wa-dark {
+  --wa-color-surface-default: #282c34;
+}
 .small-icon-button::part(base) {
   padding: 0;
   margin: 0;

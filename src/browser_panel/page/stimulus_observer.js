@@ -8,9 +8,7 @@ export default class StimulusObserver {
 
   matchElement(element) {
     if (element.dataset?.controller !== undefined) return true
-
     return false
-    // return this.elementHasStimulusAttributes(element)
   }
 
   matchElementsInTree(tree) {
