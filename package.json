@@ -6,17 +6,15 @@
     "format": "npx prettier --write ."
   },
   "dependencies": {
-    "@awesome.me/webawesome": "^3.0.0-beta.6",
+    "@awesome.me/webawesome": "^3.0.0",
     "@number-flow/svelte": "^0.3.9",
+    "esbuild": "^0.25.4",
     "esbuild-svelte": "^0.9.3",
+    "fs-extra": "^11.3.0",
     "highlight.js": "^11.11.1",
+    "mustache": "^4.2.0",
+    "prettier": "^3.5.3",
     "svelte": "^5.33.18",
     "svelte-splitpanes": "^8.0.9"
-  },
-  "devDependencies": {
-    "esbuild": "^0.25.4",
-    "fs-extra": "^11.3.0",
-    "mustache": "^4.2.0",
-    "prettier": "^3.5.3"
   }
 }
