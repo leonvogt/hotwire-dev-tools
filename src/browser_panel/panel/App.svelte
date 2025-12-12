@@ -12,14 +12,14 @@
   setDevtoolInstance()
   const devTool = getDevtoolInstance()
   let devToolOptionsLoaded = $state(false)
+  let currentTab = $state("turbo-tab")
 
   const initializeDevToolOptions = async () => {
     await devTool.setOptions()
+    currentTab = devTool.options.currentTab || "turbo-tab"
     devToolOptionsLoaded = true
   }
   initializeDevToolOptions()
-
-  let currentTab = $state("turbo-tab")
 
   const addEventListeners = () => {
     window.addEventListener("resize", handleResize)
@@ -34,10 +34,7 @@
     if (!tabId || currentTab === tabId) return
 
     currentTab = tabId
-    document.querySelectorAll(".tab-content").forEach((tab) => {
-      tab.classList.remove("active")
-    })
-    document.getElementById(tabId).classList.add("active")
+    devTool.saveOptions({ currentTab })
 
     // Request fresh state from backend when switching tabs
     if (connection.connectedToBackend && !connection.isPermanentlyDisconnected) {
@@ -84,19 +81,19 @@
           </wa-option>
         </wa-select>
       </nav>
-      <div id="turbo-tab" class="tab-content active">
+      <div id="turbo-tab" class="tab-content" class:active={currentTab == "turbo-tab"}>
         <TurboTab />
       </div>
 
-      <div id="stimulus-tab" class="tab-content">
+      <div id="stimulus-tab" class="tab-content" class:active={currentTab == "stimulus-tab"}>
         <StimulusTab />
       </div>
 
-      <div id="native-tab" class="tab-content">
+      <div id="native-tab" class="tab-content" class:active={currentTab == "native-tab"}>
         <h2>Native</h2>
       </div>
 
-      <div id="logs-tab" class="tab-content">
+      <div id="logs-tab" class="tab-content" class:active={currentTab == "logs-tab"}>
         <LogsTab />
       </div>
     </div>
