@@ -324,38 +324,48 @@
         <wa-tab panel="details">Details</wa-tab>
 
         <wa-tab-panel name="overview">
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <wa-tooltip for="config-turbo-session">Checks 'window.Turbo.session.drive' to see if Turbo Drive is enabled</wa-tooltip>
+                  <div id="config-turbo-session">Turbo Drive</div>
+                </td>
+                <td>{typeof turboConfig.turboDriveEnabled === "boolean" ? (turboConfig.turboDriveEnabled ? "On" : "Off") : "-"}</td>
+              </tr>
+              {#if turboConfig.prefetchDisabled}
+                <tr>
+                  <td>
+                    <wa-tooltip for="config-turbo-prefetch">Checks the meta tag 'turbo-prefetch' to see if Link Prefetch is enabled</wa-tooltip>
+                    <div id="config-turbo-prefetch">Link Prefetch</div>
+                  </td>
+                  <td>Off</td>
+                </tr>
+              {/if}
+              <tr>
+                <td>
+                  <wa-tooltip for="config-turbo-refresh">Defines how Turbo handles page refreshes. Meta Tag: turbo-refresh-method</wa-tooltip>
+                  <div id="config-turbo-refresh">Refresh Control</div>
+                </td>
+                <td>{turboConfig.refreshMethod || "-"}</td>
+              </tr>
+              <tr>
+                <td>
+                  <wa-tooltip for="config-turbo-visit-control">Defines if Turbo should perform a full page reload. Meta Tag: turbo-visit-control</wa-tooltip>
+                  <div id="config-turbo-visit-control">Visit Control</div>
+                </td>
+                <td>{turboConfig.visitControl || "-"}</td>
+              </tr>
+              <tr>
+                <td>
+                  <wa-tooltip for="config-turbo-cache-control">Defines the turbo caching behavior. Meta Tag: turbo-cache-control</wa-tooltip>
+                  <div id="config-turbo-cache-control">Cache Control</div>
+                </td>
+                <td>{turboConfig.cacheControl || "-"}</td>
+              </tr>
+            </tbody>
+          </table>
           <div class="pane-scrollable-list">
-            <!-- Turbo Configuration Section -->
-            <div class="pane-section-heading">Turbo Configuration</div>
-            <div class="entry-row p-2 border-bottom">
-              <table class="table table-sm w-100 mb-0">
-                <tbody>
-                  <tr title="Checks 'window.Turbo.session.drive' to see if Turbo Drive is enabled">
-                    <td><div class="code-keyword">Turbo Drive</div></td>
-                    <td>{typeof turboConfig.turboDriveEnabled === "boolean" ? (turboConfig.turboDriveEnabled ? "On" : "Off") : "-"}</td>
-                  </tr>
-                  {#if turboConfig.prefetchDisabled}
-                    <tr title="Checks the meta tag 'turbo-prefetch' to see if Link Prefetch is enabled">
-                      <td><div class="code-keyword">Link Prefetch</div></td>
-                      <td>Off</td>
-                    </tr>
-                  {/if}
-                  <tr title="Defines how Turbo handles page refreshes. Meta Tag: turbo-refresh-method">
-                    <td><div class="code-keyword">Refresh Control</div></td>
-                    <td>{turboConfig.refreshMethod || "-"}</td>
-                  </tr>
-                  <tr title="Defines if Turbo should perform a full page reload. Meta Tag: turbo-visit-control">
-                    <td><div class="code-keyword">Visit Control</div></td>
-                    <td>{turboConfig.visitControl || "-"}</td>
-                  </tr>
-                  <tr title="Defines the turbo caching behavior. Meta Tag: turbo-cache-control">
-                    <td><div class="code-keyword">Cache Control</div></td>
-                    <td>{turboConfig.cacheControl || "-"}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
             {#if turboPermanentElements.length > 0}
               <div class="pane-section-heading">Permanent Elements ({turboPermanentElements.length})</div>
               {#each turboPermanentElements as element (element.uuid)}
