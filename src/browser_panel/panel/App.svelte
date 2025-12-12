@@ -4,6 +4,7 @@
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { orientation, handleResize } from "../theme.svelte.js"
   import { connection } from "../State.svelte.js"
+  import { refreshAllState } from "../messaging.js"
   import StimulusTab from "./tabs/StimulusTab.svelte"
   import TurboTab from "./tabs/TurboTab.svelte"
   import LogsTab from "./tabs/LogsTab.svelte"
@@ -37,6 +38,11 @@
       tab.classList.remove("active")
     })
     document.getElementById(tabId).classList.add("active")
+
+    // Request fresh state from backend when switching tabs
+    if (connection.connectedToBackend && !connection.isPermanentlyDisconnected) {
+      refreshAllState()
+    }
   }
 </script>
 

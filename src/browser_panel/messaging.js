@@ -100,3 +100,10 @@ export const updateDataAttribute = (selector, key, value) => {
     value: value,
   })
 }
+
+export const refreshAllState = () => {
+  panelPostMessage({
+    action: PANEL_TO_BACKEND_MESSAGES.REFRESH_ALL_STATE,
+    source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+  })
+}

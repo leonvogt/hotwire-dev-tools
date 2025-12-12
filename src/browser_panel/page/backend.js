@@ -181,6 +181,13 @@ function init() {
       })
     }
 
+    sendAllState() {
+      this.sendTurboFrames()
+      this.sendTurboCableData()
+      this.sendStimulusData()
+      this.sendRegisteredStimulusControllers()
+    }
+
     handleIncomingTurboStream = (event) => {
       const turboStream = event.target
       const turboStreamContent = turboStream.outerHTML
@@ -270,6 +277,10 @@ function init() {
       }
       case PANEL_TO_BACKEND_MESSAGES.REFRESH_TURBO_FRAME: {
         devtoolsBackend.refreshTurboFrame(e.data.payload.id)
+        break
+      }
+      case PANEL_TO_BACKEND_MESSAGES.REFRESH_ALL_STATE: {
+        devtoolsBackend.sendAllState()
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HIGHLIGHT_ELEMENT: {

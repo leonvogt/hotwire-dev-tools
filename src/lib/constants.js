@@ -27,6 +27,7 @@ export const PANEL_TO_BACKEND_MESSAGES = {
   HIGHLIGHT_ELEMENT: "highlight-element",
   HIDE_HIGHLIGHTING: "hide-highlighting",
   REFRESH_TURBO_FRAME: "refresh-turbo-frame",
+  REFRESH_ALL_STATE: "refresh-all-state",
   SCROLL_AND_HIGHLIGHT: "scroll-and-highlight",
   UPDATE_DATA_ATTRIBUTE: "update-data-attribute",
 }
