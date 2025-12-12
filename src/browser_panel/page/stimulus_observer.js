@@ -73,6 +73,7 @@ export default class StimulusObserver {
       targets: this.buildControllerTargets(controller),
       outlets: this.buildControllerOutlets(controller),
       classes: this.buildControllerClasses(controller),
+      actions: this.buildControllerActions(controller),
       children: [],
       element,
     }
@@ -150,6 +151,28 @@ export default class StimulusObserver {
         key: key,
         htmlAttribute: `${controller.classes.getAttributeName(key)}=""`,
         classes: Array.from(classes),
+      }
+    })
+  }
+
+  buildControllerActions(controller) {
+    if (!controller?.context?.bindingObserver) return []
+
+    return controller.context.bindingObserver.bindings.map((binding) => {
+      const action = binding.action
+      return {
+        descriptor: action.toString(),
+        eventName: action.eventName,
+        methodName: action.methodName,
+        element: {
+          tagName: action.element.tagName.toLowerCase(),
+          id: action.element.id || null,
+          classes: Array.from(action.element.classList),
+        },
+        keyFilter: action.keyFilter || null,
+        eventTarget: action.eventTargetName || "element",
+        params: action.params,
+        hasParams: Object.keys(action.params).length > 0,
       }
     })
   }

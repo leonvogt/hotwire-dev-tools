@@ -6,6 +6,7 @@
   import TargetTreeItem from "$src/components/Stimulus/TargetTreeItem.svelte"
   import OutletTreeItem from "$src/components/Stimulus/OutletTreeItem.svelte"
   import ClassTreeItem from "$src/components/Stimulus/ClassTreeItem.svelte"
+  import ActionTreeItem from "$src/components/Stimulus/ActionTreeItem.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import { getStimulusData, getRegisteredStimulusIdentifiers } from "../../State.svelte.js"
@@ -217,7 +218,7 @@
       {#if selected.controller}
         <div class="pane-scrollable-list">
           {#if selected.controller.values.length > 0}
-            <div class="pane-section-heading">Values</div>
+            <div class="pane-section-heading">Valuesss</div>
             {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + valueObject.key)}
               {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
               <ValueTreeItem {valueObject} {selected} {dataAttribute} />
@@ -241,10 +242,16 @@
               <ClassTreeItem {klass} {selected} />
             {/each}
           {/if}
-          {#if selected.controller.values.length === 0 && selected.controller.targets.length === 0 && selected.controller.outlets.length === 0 && selected.controller.classes.length === 0}
+          {#if selected.controller.actions.length > 0}
+            <div class="pane-section-heading">Actions</div>
+            {#each selected.controller.actions as action (selected.uuid + action.descriptor)}
+              <ActionTreeItem {action} {selected} />
+            {/each}
+          {/if}
+          {#if selected.controller.values.length === 0 && selected.controller.targets.length === 0 && selected.controller.outlets.length === 0 && selected.controller.classes.length === 0 && selected.controller.actions.length === 0}
             <div class="no-entry-hint">
               <span>No details available</span>
-              <span>This controller has no values, targets, outlets or classes</span>
+              <span>This controller has no values, targets, outlets, classes or actions</span>
             </div>
           {/if}
         </div>
