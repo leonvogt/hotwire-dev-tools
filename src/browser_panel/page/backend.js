@@ -4,6 +4,7 @@ import { debounce, generateUUID, getElementPath, getElementFromIndexPath, string
 import TurboFrameObserver from "./turbo_frame_observer.js"
 import TurboCableObserver from "./turbo_cable_observer.js"
 import StimulusObserver from "./stimulus_observer.js"
+import TurboAttributeElementsObserver from "./turbo_attribute_elements_observer.js"
 import ElementObserver from "./element_observer.js"
 
 // This is the backend script which interacts with the page's DOM.
@@ -11,11 +12,14 @@ import ElementObserver from "./element_observer.js"
 // It also handles messages from the panel to perform actions like refreshing Turbo frames.
 function init() {
   class HotwireDevToolsBackend {
+    EVENTS_FOR_TURBO_CONFIG = ["turbo:load", "turbo:render"]
+
     constructor() {
       this.observers = {
         turboFrame: new TurboFrameObserver(this),
         turboCable: new TurboCableObserver(this),
         stimulus: new StimulusObserver(this),
+        turboAttributes: new TurboAttributeElementsObserver(this),
       }
 
       this.elementObserver = new ElementObserver(document, this)
@@ -24,11 +28,19 @@ function init() {
     start() {
       this.elementObserver.start()
       this.addEventListeners()
+
+      // The following wouldn't send because they aren't connected to a observer.
+      // So we send them manually on start.
       this.sendRegisteredStimulusControllers()
+      this.sendTurboConfig()
     }
 
     stop() {
       this.elementObserver.stop()
+      document.removeEventListener("turbo:before-stream-render", this.handleIncomingTurboStream)
+      this.EVENTS_FOR_TURBO_CONFIG.forEach((eventName) => {
+        window.removeEventListener(eventName, this.sendTurboConfig)
+      })
     }
 
     addEventListeners() {
@@ -43,15 +55,24 @@ function init() {
           }, 100)
         })
       })
+
+      this.EVENTS_FOR_TURBO_CONFIG.forEach((eventName) => {
+        window.addEventListener(eventName, this.sendTurboConfig, { passive: true })
+      })
     }
 
     // ElementObserver delegate methods
     matchElement(element) {
-      return this.observers.turboFrame.matchElement(element) || this.observers.turboCable.matchElement(element) || this.observers.stimulus.matchElement(element)
+      return this.observers.turboFrame.matchElement(element) || this.observers.turboCable.matchElement(element) || this.observers.stimulus.matchElement(element) || this.observers.turboAttributes.matchElement(element)
     }
 
     matchElementsInTree(tree) {
-      return [...this.observers.turboFrame.matchElementsInTree(tree), ...this.observers.turboCable.matchElementsInTree(tree), ...this.observers.stimulus.matchElementsInTree(tree)]
+      return [
+        ...this.observers.turboFrame.matchElementsInTree(tree),
+        ...this.observers.turboCable.matchElementsInTree(tree),
+        ...this.observers.stimulus.matchElementsInTree(tree),
+        ...this.observers.turboAttributes.matchElementsInTree(tree),
+      ]
     }
 
     elementMatched(element) {
@@ -65,6 +86,10 @@ function init() {
 
       if (this.observers.stimulus.matchElement(element)) {
         this.observers.stimulus.elementMatched(element)
+      }
+
+      if (this.observers.turboAttributes.matchElement(element)) {
+        this.observers.turboAttributes.elementMatched(element)
       }
     }
 
@@ -80,6 +105,10 @@ function init() {
       if (this.observers.stimulus.matchElement(element)) {
         this.observers.stimulus.elementUnmatched(element)
       }
+
+      if (this.observers.turboAttributes.matchElement(element)) {
+        this.observers.turboAttributes.elementUnmatched(element)
+      }
     }
 
     elementAttributeChanged(element, attributeName, oldValue) {
@@ -94,6 +123,10 @@ function init() {
       if (this.observers.stimulus.matchElement(element)) {
         this.observers.stimulus.elementAttributeChanged(element, attributeName, oldValue)
       }
+
+      if (this.observers.turboAttributes.matchElement(element)) {
+        this.observers.turboAttributes.elementAttributeChanged(element, attributeName, oldValue)
+      }
     }
 
     // Delegate methods
@@ -105,6 +138,12 @@ function init() {
     }
     stimulusDataChanged() {
       this.sendStimulusData()
+    }
+    turboPermanentElementsChanged() {
+      this.sendTurboPermanentElements()
+    }
+    turboTemporaryElementsChanged() {
+      this.sendTurboTemporaryElements()
     }
 
     sendTurboFrames = debounce(() => {
@@ -181,11 +220,49 @@ function init() {
       })
     }
 
+    sendTurboPermanentElements = debounce(() => {
+      this._postMessage({
+        turboPermanentElements: this.observers.turboAttributes.getPermanentElementsData(),
+        url: btoa(window.location.href),
+        type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_PERMANENT_ELEMENTS,
+      })
+    }, 10)
+
+    sendTurboTemporaryElements = debounce(() => {
+      this._postMessage({
+        turboTemporaryElements: this.observers.turboAttributes.getTemporaryElementsData(),
+        url: btoa(window.location.href),
+        type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_TEMPORARY_ELEMENTS,
+      })
+    }, 10)
+
+    sendTurboConfig = debounce(() => {
+      const getMetaContent = (name) => {
+        const element = document.querySelector(`meta[name="${name}"]`)
+        return element ? element.getAttribute("content") : null
+      }
+
+      this._postMessage({
+        turboConfig: {
+          turboDriveEnabled: typeof window.Turbo?.session?.drive === "boolean" ? window.Turbo.session.drive : null,
+          prefetchDisabled: getMetaContent("turbo-prefetch") === "false",
+          refreshMethod: getMetaContent("turbo-refresh-method"),
+          visitControl: getMetaContent("turbo-visit-control"),
+          cacheControl: getMetaContent("turbo-cache-control"),
+        },
+        url: btoa(window.location.href),
+        type: BACKEND_TO_PANEL_MESSAGES.SET_TURBO_CONFIG,
+      })
+    }, 200)
+
     sendAllState() {
       this.sendTurboFrames()
       this.sendTurboCableData()
       this.sendStimulusData()
       this.sendRegisteredStimulusControllers()
+      this.sendTurboPermanentElements()
+      this.sendTurboTemporaryElements()
+      this.sendTurboConfig()
     }
 
     handleIncomingTurboStream = (event) => {

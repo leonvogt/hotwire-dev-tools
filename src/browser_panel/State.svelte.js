@@ -26,6 +26,9 @@ let turboStreams = $state([])
 let turboEvents = $state([])
 let stimulusData = $state([])
 let registeredStimulusIdentifiers = $state([])
+let turboPermanentElements = $state([])
+let turboTemporaryElements = $state([])
+let turboConfig = $state({})
 
 export function setTurboFrames(frames, url) {
   turboFrames = frames
@@ -57,6 +60,30 @@ export function setRegisteredStimulusIdentifiers(identifiers, url) {
 
 export function getRegisteredStimulusIdentifiers() {
   return registeredStimulusIdentifiers
+}
+
+export function setTurboPermanentElements(elements, url) {
+  turboPermanentElements = elements
+}
+
+export function getTurboPermanentElements() {
+  return turboPermanentElements
+}
+
+export function setTurboTemporaryElements(elements, url) {
+  turboTemporaryElements = elements
+}
+
+export function getTurboTemporaryElements() {
+  return turboTemporaryElements
+}
+
+export function setTurboConfig(config, url) {
+  turboConfig = config
+}
+
+export function getTurboConfig() {
+  return turboConfig
 }
 
 export function addTurboEvent(event) {

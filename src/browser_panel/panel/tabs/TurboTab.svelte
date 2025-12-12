@@ -8,7 +8,7 @@
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import IconButton from "$uikit/IconButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
-  import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams } from "../../State.svelte.js"
+  import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams, getTurboPermanentElements, getTurboTemporaryElements, getTurboConfig } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
   import { panelPostMessage, addHighlightOverlay, addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
@@ -29,6 +29,9 @@
   let turboFrames = $state([])
   let turboCables = $state([])
   let turboStreams = $state([])
+  let turboPermanentElements = $state([])
+  let turboTemporaryElements = $state([])
+  let turboConfig = $state({})
   let collapsedFrames = $state({})
   let stickyFrames = $state({})
 
@@ -57,6 +60,9 @@
     turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
     turboStreams = getTurboStreams()
     turboCables = getTurboCables()
+    turboPermanentElements = getTurboPermanentElements()
+    turboTemporaryElements = getTurboTemporaryElements()
+    turboConfig = getTurboConfig()
 
     const isStreamSelected = selected.type === SELECTABLE_TYPES.TURBO_STREAM
     const selectedFrameMissing = !turboFrames.some((frame) => frame.id === selected.frame?.id)
@@ -119,6 +125,8 @@
       frame: frame,
       stream: null,
     }
+    document.querySelector(".turbo-detail-pane wa-tab[panel='overview']").removeAttribute("active")
+    document.querySelector(".turbo-detail-pane wa-tab[panel='details']").setAttribute("active", "")
   }
 
   const setSelectedTurboStream = (stream) => {
@@ -128,6 +136,8 @@
       frame: null,
       stream: stream,
     }
+    document.querySelector(".turbo-detail-pane wa-tab[panel='overview']").removeAttribute("active")
+    document.querySelector(".turbo-detail-pane wa-tab[panel='details']").setAttribute("active", "")
   }
 
   const addTurboFrameListListeners = (scrollableList) => {
@@ -309,94 +319,201 @@
 
   <Pane class="turbo-detail-pane full-pane" size={options.turboPaneDimensions?.details || 30} minSize={20}>
     <div class="pane-container">
-      {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
-        <div class="pane-header flex-center">
-          <h3 class="pane-header-title">#{selected.frame.id}</h3>
-          {#if selected.frame.attributes.src}
-            <div class="position-absolute end-0">
-              <button class="btn-icon icon-dark" onclick={() => refreshTurboFrame(selected.frame.id)} title="Refresh Turbo Frames List">
-                {@html Icons.refresh}
-              </button>
-            </div>
-          {/if}
-        </div>
+      <wa-tab-group>
+        <wa-tab panel="overview">Overview</wa-tab>
+        <wa-tab panel="details">Details</wa-tab>
 
-        <div class="pane-scrollable-list">
-          {#if selected.frame.referenceElements.length > 0}
-            <div class="pane-section-heading">
-              <span>Will get updated by elements</span>
+        <wa-tab-panel name="overview">
+          <div class="pane-scrollable-list">
+            <!-- Turbo Configuration Section -->
+            <div class="pane-section-heading">Turbo Configuration</div>
+            <div class="entry-row p-2 border-bottom">
+              <table class="table table-sm w-100 mb-0">
+                <tbody>
+                  <tr title="Checks 'window.Turbo.session.drive' to see if Turbo Drive is enabled">
+                    <td><div class="code-keyword">Turbo Drive</div></td>
+                    <td>{typeof turboConfig.turboDriveEnabled === "boolean" ? (turboConfig.turboDriveEnabled ? "On" : "Off") : "-"}</td>
+                  </tr>
+                  {#if turboConfig.prefetchDisabled}
+                    <tr title="Checks the meta tag 'turbo-prefetch' to see if Link Prefetch is enabled">
+                      <td><div class="code-keyword">Link Prefetch</div></td>
+                      <td>Off</td>
+                    </tr>
+                  {/if}
+                  <tr title="Defines how Turbo handles page refreshes. Meta Tag: turbo-refresh-method">
+                    <td><div class="code-keyword">Refresh Control</div></td>
+                    <td>{turboConfig.refreshMethod || "-"}</td>
+                  </tr>
+                  <tr title="Defines if Turbo should perform a full page reload. Meta Tag: turbo-visit-control">
+                    <td><div class="code-keyword">Visit Control</div></td>
+                    <td>{turboConfig.visitControl || "-"}</td>
+                  </tr>
+                  <tr title="Defines the turbo caching behavior. Meta Tag: turbo-cache-control">
+                    <td><div class="code-keyword">Cache Control</div></td>
+                    <td>{turboConfig.cacheControl || "-"}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            {#each selected.frame.referenceElements as referenceElement (referenceElement.serializedTargetTag)}
-              <div class="html-preview">
-                <pre><code class="language-html"><HTMLRenderer htmlString={referenceElement.serializedTargetTag} /></code></pre>
-              </div>
-            {/each}
-          {/if}
 
-          <div class="pane-section-heading">Attributes</div>
-          <table class="table table-sm w-100 turbo-table">
-            <tbody>
-              {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
-                <tr>
-                  <td><div class="code-keyword">{key}</div></td>
-                  <td>{value}</td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-
-          <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
-            <span>HTML</span>
-            <div>
-              <ScrollIntoViewButton selector={`#${selected.frame.id}`}></ScrollIntoViewButton>
-              <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
-            </div>
-          </div>
-          <div class="html-preview">
-            <pre><code class="language-html"><HTMLRenderer htmlString={selected.frame.serializedTag} /></code></pre>
-          </div>
-        </div>
-      {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
-        <div class="pane-header flex-center">
-          <h3 class="pane-header-title">{selected.stream.action} {selected.stream.targetSelector}</h3>
-        </div>
-        <div class="pane-scrollable-list">
-          <div class="pane-section-heading">Attributes</div>
-          <table class="table table-sm w-100">
-            <tbody>
-              <tr>
-                <td>Action</td>
-                <td>{selected.stream.action}</td>
-              </tr>
-              <tr>
-                <td>Target</td>
-                <td>
+            {#if turboPermanentElements.length > 0}
+              <div class="pane-section-heading">Permanent Elements ({turboPermanentElements.length})</div>
+              {#each turboPermanentElements as element (element.uuid)}
+                <div class="entry-row p-2 border-bottom">
                   <div class="d-flex justify-content-between align-items-center">
-                    <span>{selected.stream.targetSelector}</span>
+                    <div class="d-flex align-items-center">
+                      <code class="me-2">&lt;{element.tag}&gt;</code>
+                      {#if element.id}
+                        <span class="badge bg-secondary me-2">#{element.id}</span>
+                      {/if}
+                      {#if element.classes.length > 0}
+                        {#each element.classes as className}
+                          <span class="badge bg-info me-1">.{className}</span>
+                        {/each}
+                      {/if}
+                    </div>
                     <div>
-                      <ScrollIntoViewButton selector={selected.stream.targetSelector}></ScrollIntoViewButton>
-                      <InspectButton selector={selected.stream.targetSelector}></InspectButton>
+                      <ScrollIntoViewButton elementPath={element.elementPath}></ScrollIntoViewButton>
+                      <InspectButton elementPath={element.elementPath}></InspectButton>
                     </div>
                   </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  {#if element.attributeValue}
+                    <div class="mt-1 text-muted small">data-turbo-permanent="{element.attributeValue}"</div>
+                  {:else}
+                    <div class="mt-1 text-muted small">data-turbo-permanent</div>
+                  {/if}
+                </div>
+              {/each}
+            {/if}
 
-          <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
-            <span>HTML</span>
-            <CopyButton value={selected.stream.turboStreamContent} />
+            {#if turboTemporaryElements.length > 0}
+              <div class="pane-section-heading">Temporary Elements ({turboTemporaryElements.length})</div>
+              {#each turboTemporaryElements as element (element.uuid)}
+                <div class="entry-row p-2 border-bottom">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                      <code class="me-2">&lt;{element.tag}&gt;</code>
+                      {#if element.id}
+                        <span class="badge bg-secondary me-2">#{element.id}</span>
+                      {/if}
+                      {#if element.classes.length > 0}
+                        {#each element.classes as className}
+                          <span class="badge bg-info me-1">.{className}</span>
+                        {/each}
+                      {/if}
+                    </div>
+                    <div>
+                      <ScrollIntoViewButton elementPath={element.elementPath}></ScrollIntoViewButton>
+                      <InspectButton elementPath={element.elementPath}></InspectButton>
+                    </div>
+                  </div>
+                  {#if element.attributeValue}
+                    <div class="mt-1 text-muted small">data-turbo-temporary="{element.attributeValue}"</div>
+                  {:else}
+                    <div class="mt-1 text-muted small">data-turbo-temporary</div>
+                  {/if}
+                </div>
+              {/each}
+            {/if}
+
+            {#if turboPermanentElements.length === 0 && turboTemporaryElements.length === 0}
+              <div class="no-entry-hint">
+                <span>No Turbo permanent or temporary elements found</span>
+                <span>Elements with data-turbo-permanent or data-turbo-temporary will appear here</span>
+              </div>
+            {/if}
           </div>
-          <div class="html-preview">
-            <pre><code class="language-html"><HTMLRenderer htmlString={selected.stream.turboStreamContent} /></code></pre>
-          </div>
-        </div>
-      {:else}
-        <div class="pane-header flex-center"></div>
-        <div class="no-entry-hint">
-          <span>Nothing to see here</span>
-        </div>
-      {/if}
+        </wa-tab-panel>
+        <wa-tab-panel name="details">
+          {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
+            <div class="pane-header flex-center">
+              <h3 class="pane-header-title">#{selected.frame.id}</h3>
+              {#if selected.frame.attributes.src}
+                <div class="position-absolute end-0">
+                  <button class="btn-icon icon-dark" onclick={() => refreshTurboFrame(selected.frame.id)} title="Refresh Turbo Frames List">
+                    {@html Icons.refresh}
+                  </button>
+                </div>
+              {/if}
+            </div>
+
+            <div class="pane-scrollable-list">
+              {#if selected.frame.referenceElements.length > 0}
+                <div class="pane-section-heading">
+                  <span>Will get updated by elements</span>
+                </div>
+                {#each selected.frame.referenceElements as referenceElement (referenceElement.serializedTargetTag)}
+                  <div class="html-preview">
+                    <pre><code class="language-html"><HTMLRenderer htmlString={referenceElement.serializedTargetTag} /></code></pre>
+                  </div>
+                {/each}
+              {/if}
+
+              <div class="pane-section-heading">Attributes</div>
+              <table class="table table-sm w-100 turbo-table">
+                <tbody>
+                  {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
+                    <tr>
+                      <td><div class="code-keyword">{key}</div></td>
+                      <td>{value}</td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
+
+              <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+                <span>HTML</span>
+                <div>
+                  <ScrollIntoViewButton selector={`#${selected.frame.id}`}></ScrollIntoViewButton>
+                  <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
+                </div>
+              </div>
+              <div class="html-preview">
+                <pre><code class="language-html"><HTMLRenderer htmlString={selected.frame.serializedTag} /></code></pre>
+              </div>
+            </div>
+          {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
+            <div class="pane-header flex-center">
+              <h3 class="pane-header-title">{selected.stream.action} {selected.stream.targetSelector}</h3>
+            </div>
+            <div class="pane-scrollable-list">
+              <div class="pane-section-heading">Attributes</div>
+              <table class="table table-sm w-100">
+                <tbody>
+                  <tr>
+                    <td>Action</td>
+                    <td>{selected.stream.action}</td>
+                  </tr>
+                  <tr>
+                    <td>Target</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span>{selected.stream.targetSelector}</span>
+                        <div>
+                          <ScrollIntoViewButton selector={selected.stream.targetSelector}></ScrollIntoViewButton>
+                          <InspectButton selector={selected.stream.targetSelector}></InspectButton>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+                <span>HTML</span>
+                <CopyButton value={selected.stream.turboStreamContent} />
+              </div>
+              <div class="html-preview">
+                <pre><code class="language-html"><HTMLRenderer htmlString={selected.stream.turboStreamContent} /></code></pre>
+              </div>
+            </div>
+          {:else}
+            <div class="no-entry-hint">
+              <span>Nothing to see here</span>
+            </div>
+          {/if}
+        </wa-tab-panel>
+      </wa-tab-group>
     </div>
   </Pane>
 </Splitpanes>

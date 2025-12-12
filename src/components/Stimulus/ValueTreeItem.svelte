@@ -78,7 +78,7 @@
 </script>
 
 <div class="d-flex gap-2 mb-2">
-  <wa-tree>
+  <wa-tree class="value-tree-item">
     <wa-tree-item expanded>
       {#if isComplex(valueObject.value)}
         {valueObject.name}

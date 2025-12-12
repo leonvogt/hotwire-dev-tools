@@ -269,12 +269,14 @@ svg.icon-muted {
 
 .pane-section-heading {
   font-size: 0.9em;
-  margin-bottom: 0.5em;
   padding: 0.2em 0.2em;
   background-color: #333842;
   color: #ccc;
-  text-transform: uppercase;
   font-weight: 600;
+  margin-bottom: 0.25em;
+}
+.pane-scrollable-list .pane-section-heading:not(:first-child) {
+  margin-top: 0.5em;
 }
 
 .table td {
@@ -344,6 +346,12 @@ svg.icon-muted {
 
 .collapse-icon::part(base) {
   padding: 0.25rem;
+}
+
+/* Remove default selection styles from wa-tree-item */
+.value-tree-item wa-tree-item[selected]::part(item) {
+  background-color: var(--wa-color-surface-default);
+  border-inline-start-color: var(--wa-color-surface-default);
 }
 
 wa-tooltip .copy-icon:not(.copied) {

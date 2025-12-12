@@ -1,5 +1,5 @@
 import { PANEL_TO_BACKEND_MESSAGES, BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS, HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "$lib/constants"
-import { setTurboFrames, setTurboCables, setStimulusData, setRegisteredStimulusIdentifiers, addTurboStream, addTurboEvent } from "./State.svelte.js"
+import { setTurboFrames, setTurboCables, setStimulusData, setRegisteredStimulusIdentifiers, setTurboPermanentElements, setTurboTemporaryElements, setTurboConfig, addTurboStream, addTurboEvent } from "./State.svelte.js"
 
 function setPort(port) {
   if (!window.__HotwireDevTools) {
@@ -28,6 +28,18 @@ export const handleBackendToPanelMessage = (message, port) => {
       break
     case BACKEND_TO_PANEL_MESSAGES.SET_REGISTERED_STIMULUS_IDENTIFIERS:
       setRegisteredStimulusIdentifiers(message.identifiers, message.url)
+      setPort(port)
+      break
+    case BACKEND_TO_PANEL_MESSAGES.SET_TURBO_PERMANENT_ELEMENTS:
+      setTurboPermanentElements(message.turboPermanentElements, message.url)
+      setPort(port)
+      break
+    case BACKEND_TO_PANEL_MESSAGES.SET_TURBO_TEMPORARY_ELEMENTS:
+      setTurboTemporaryElements(message.turboTemporaryElements, message.url)
+      setPort(port)
+      break
+    case BACKEND_TO_PANEL_MESSAGES.SET_TURBO_CONFIG:
+      setTurboConfig(message.turboConfig, message.url)
       setPort(port)
       break
     case BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED:

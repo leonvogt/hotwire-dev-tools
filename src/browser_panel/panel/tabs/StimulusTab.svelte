@@ -216,23 +216,37 @@
       <div class="pane-header flex-center"></div>
       {#if selected.controller}
         <div class="pane-scrollable-list">
-          <div class="pane-section-heading">Values</div>
-          {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + valueObject.key)}
-            {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
-            <ValueTreeItem {valueObject} {selected} {dataAttribute} />
-          {/each}
-          <div class="pane-section-heading">Targets</div>
-          {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + target.name)}
-            <TargetTreeItem {target} {selected} />
-          {/each}
-          <div class="pane-section-heading">Outlets</div>
-          {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + outlet.name)}
-            <OutletTreeItem {outlet} {selected} />
-          {/each}
-          <div class="pane-section-heading">Classes</div>
-          {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + klass.name)}
-            <ClassTreeItem {klass} {selected} />
-          {/each}
+          {#if selected.controller.values.length > 0}
+            <div class="pane-section-heading">Values</div>
+            {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + valueObject.key)}
+              {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
+              <ValueTreeItem {valueObject} {selected} {dataAttribute} />
+            {/each}
+          {/if}
+          {#if selected.controller.targets.length > 0}
+            <div class="pane-section-heading">Targets</div>
+            {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + target.name)}
+              <TargetTreeItem {target} {selected} />
+            {/each}
+          {/if}
+          {#if selected.controller.outlets.length > 0}
+            <div class="pane-section-heading">Outlets</div>
+            {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + outlet.name)}
+              <OutletTreeItem {outlet} {selected} />
+            {/each}
+          {/if}
+          {#if selected.controller.classes.length > 0}
+            <div class="pane-section-heading">Classes</div>
+            {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + klass.name)}
+              <ClassTreeItem {klass} {selected} />
+            {/each}
+          {/if}
+          {#if selected.controller.values.length === 0 && selected.controller.targets.length === 0 && selected.controller.outlets.length === 0 && selected.controller.classes.length === 0}
+            <div class="no-entry-hint">
+              <span>No details available</span>
+              <span>This controller has no values, targets, outlets or classes</span>
+            </div>
+          {/if}
         </div>
       {:else}
         <div class="no-entry-hint">
