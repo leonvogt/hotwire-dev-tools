@@ -8,6 +8,7 @@
   import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import IconButton from "$uikit/IconButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
+  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams, getTurboPermanentElements, getTurboTemporaryElements, getTurboConfig } from "../../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
   import { panelPostMessage, addHighlightOverlay, addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
@@ -119,6 +120,8 @@
   })
 
   const setSelectedTurboFrame = (frame) => {
+    if (!frame) return
+
     selected = {
       type: SELECTABLE_TYPES.TURBO_FRAME,
       uuid: frame.uuid,
@@ -130,6 +133,8 @@
   }
 
   const setSelectedTurboStream = (stream) => {
+    if (!stream) return
+
     selected = {
       type: SELECTABLE_TYPES.TURBO_STREAM,
       uuid: stream.uuid,
@@ -275,7 +280,7 @@
           {#if frame.children && frame.children.length}
             <IconButton class="collapse-icon {isCollapsed ? 'rotated' : ''}" name="chevron-down" onclick={(event) => collapseEntryRows(frame.uuid, event, collapsedFrames, stickyFrames)}></IconButton>
           {/if}
-          <div>{selector}</div>
+          <StripedHtmlTag element={frame} />
         </div>
         <div>
           {#if frame.attributes.busy !== undefined}
@@ -454,9 +459,9 @@
                 <div class="pane-section-heading">
                   <span>Will get updated by elements</span>
                 </div>
-                {#each selected.frame.referenceElements as referenceElement (referenceElement.serializedTargetTag)}
+                {#each selected.frame.referenceElements as referenceElement}
                   <div class="html-preview">
-                    <pre><code class="language-html"><HTMLRenderer htmlString={referenceElement.serializedTargetTag} /></code></pre>
+                    <pre><code class="language-html"><StripedHtmlTag element={referenceElement} /></code></pre>
                   </div>
                 {/each}
               {/if}

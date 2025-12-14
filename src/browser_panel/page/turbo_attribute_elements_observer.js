@@ -1,4 +1,4 @@
-import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, getElementPath } from "$utils/utils.js"
+import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, getElementPath, serializeAttributes } from "$utils/utils.js"
 
 export default class TurboAttributeElementsObserver {
   constructor(delegate) {
@@ -13,7 +13,7 @@ export default class TurboAttributeElementsObserver {
 
   matchElementsInTree(tree) {
     if (!tree || !tree.querySelectorAll) return []
-    
+
     const match = this.matchElement(tree) ? [tree] : []
     const permanentMatches = Array.from(tree.querySelectorAll("[data-turbo-permanent]"))
     const temporaryMatches = Array.from(tree.querySelectorAll("[data-turbo-temporary]"))
@@ -22,7 +22,7 @@ export default class TurboAttributeElementsObserver {
 
   elementMatched(element) {
     if (!element || !element.hasAttribute) return
-    
+
     const uuid = ensureUUIDOnElement(element)
     const isPermanent = element.hasAttribute("data-turbo-permanent")
     const isTemporary = element.hasAttribute("data-turbo-temporary")
@@ -69,7 +69,7 @@ export default class TurboAttributeElementsObserver {
 
   elementAttributeChanged(element, attributeName, oldValue) {
     if (!element || !element.hasAttribute) return
-    
+
     if (attributeName === "data-turbo-permanent" || attributeName === "data-turbo-temporary") {
       const uuid = getUUIDFromElement(element)
 
@@ -96,6 +96,7 @@ export default class TurboAttributeElementsObserver {
     return {
       uuid: getUUIDFromElement(element),
       id: element.id || null,
+      attributes: serializeAttributes(element),
       tag: element.tagName.toLowerCase(),
       classes: Array.from(element.classList),
       serializedElement: stringifyHTMLElementTag(element),

@@ -181,3 +181,10 @@ export const capitalizeFirstChar = (str) => {
 export const selectorByUUID = (uuid) => {
   return `[data-hotwire-dev-tools-uuid="${uuid}"]`
 }
+
+export const serializeAttributes = (element) => {
+  return Array.from(element.attributes).reduce((map, attr) => {
+    map[attr.name] = attr.value
+    return map
+  }, {})
+}

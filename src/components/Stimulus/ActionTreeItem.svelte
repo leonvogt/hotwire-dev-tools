@@ -1,27 +1,22 @@
 <script>
-  import CopyButton from "$components/CopyButton.svelte"
+  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
+  import InspectButton from "$components/InspectButton.svelte"
+  import { addHighlightOverlay, hideHighlightOverlay } from "$src/browser_panel/messaging"
+  import { selectorByUUID } from "$utils/utils.js"
 
   let { action, selected } = $props()
 </script>
 
-<div class="entry-row">
+<div class="entry-row" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(action.element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
   <div class="d-flex justify-content-between align-items-center py-2">
     <div class="d-flex flex-column">
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <strong>{action.eventName}</strong>
+        <wa-icon name="arrow-right"></wa-icon>
         <span class="code-keyword me-2">{action.methodName}()</span>
-        <span class="badge bg-secondary me-2">{action.eventName}</span>
-        {#if action.keyFilter}
-          <span class="badge bg-info me-2">{action.keyFilter}</span>
-        {/if}
       </div>
       <div class="mt-1">
-        <span class="text-muted small">on {action.element.tagName}</span>
-        {#if action.element.id}
-          <span class="text-muted small">#{action.element.id}</span>
-        {/if}
-        {#if action.element.classes.length > 0}
-          <span class="text-muted small">.{action.element.classes.join(".")}</span>
-        {/if}
+        <StripedHtmlTag element={action.element} />
       </div>
       {#if action.hasParams}
         <div class="mt-1">
@@ -33,7 +28,7 @@
       {/if}
     </div>
     <div>
-      <CopyButton value={action.descriptor} />
+      <InspectButton selector={selectorByUUID(action.element.uuid)}></InspectButton>
     </div>
   </div>
 </div>

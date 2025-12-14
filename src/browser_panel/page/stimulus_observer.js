@@ -1,4 +1,4 @@
-import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, capitalizeFirstChar } from "$utils/utils.js"
+import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, capitalizeFirstChar, serializeAttributes } from "$utils/utils.js"
 
 export default class StimulusObserver {
   constructor(delegate) {
@@ -7,8 +7,13 @@ export default class StimulusObserver {
   }
 
   matchElement(element) {
-    if (element.dataset?.controller !== undefined) return true
-    return false
+    const controllerValue = element.dataset?.controller
+    if (controllerValue === undefined) return false
+    const identifiers = controllerValue
+      .split(" ")
+      .map((id) => id.trim())
+      .filter((id) => id.length > 0)
+    return identifiers.length > 0
   }
 
   matchElementsInTree(tree) {
@@ -64,17 +69,14 @@ export default class StimulusObserver {
       uuid: getUUIDFromElement(element),
       identifier: identifier,
       targetsAttribute: controller?.context?.schema?.targetAttributeForScope(controller?.identifier),
+      attributes: serializeAttributes(element),
+      tagName: element.tagName.toLowerCase(),
       serializedTag: stringifyHTMLElementTag(element),
-      attributes: Array.from(element.attributes).reduce((map, attr) => {
-        map[attr.name] = attr.value
-        return map
-      }, {}),
       values: this.buildControllerValues(controller),
       targets: this.buildControllerTargets(controller),
       outlets: this.buildControllerOutlets(controller),
       classes: this.buildControllerClasses(controller),
       actions: this.buildControllerActions(controller),
-      children: [],
       element,
     }
   }
@@ -107,6 +109,7 @@ export default class StimulusObserver {
           return {
             id: target.id,
             uuid: ensureUUIDOnElement(target),
+            attributes: serializeAttributes(target),
             serializedTag: stringifyHTMLElementTag(target),
           }
         }),
@@ -131,6 +134,7 @@ export default class StimulusObserver {
           return {
             id: outlet.id,
             uuid: ensureUUIDOnElement(outlet.element),
+            attributes: serializeAttributes(outlet.element),
             serializedTag: stringifyHTMLElementTag(outlet.element),
           }
         }),
@@ -165,9 +169,11 @@ export default class StimulusObserver {
         eventName: action.eventName,
         methodName: action.methodName,
         element: {
-          tagName: action.element.tagName.toLowerCase(),
           id: action.element.id || null,
+          attributes: serializeAttributes(action.element),
+          tagName: action.element.tagName.toLowerCase(),
           classes: Array.from(action.element.classList),
+          uuid: ensureUUIDOnElement(action.element),
         },
         keyFilter: action.keyFilter || null,
         eventTarget: action.eventTargetName || "element",
@@ -178,53 +184,20 @@ export default class StimulusObserver {
   }
 
   getStimulusData() {
-    const buildStimulusTree = () => {
-      const root = []
-      this.controllerElements.forEach((controllersData) => {
-        controllersData.forEach((controllerData) => {
-          controllerData.children = []
-        })
+    const allControllers = []
+
+    this.controllerElements.forEach((controllersData) => {
+      controllersData.forEach((controllerData) => {
+        allControllers.push(controllerData)
       })
-
-      this.controllerElements.forEach((controllersData) => {
-        const controllerData = controllersData[0]
-        if (!controllerData) return
-        const element = controllerData.element
-        const parentElement = element.parentElement?.closest("[data-controller]")
-
-        if (parentElement) {
-          const parentUUID = getUUIDFromElement(parentElement)
-          if (parentUUID && this.controllerElements.has(parentUUID)) {
-            this.controllerElements.get(parentUUID).forEach((parentControllerData) => {
-              parentControllerData.children.push(controllerData)
-            })
-          } else {
-            // Parent exists but not in our tracking => add as root
-            root.push(controllerData)
-          }
-        } else {
-          // No parent frame => this is a root frame
-          root.push(controllerData)
-        }
-      })
-
-      return root
-    }
+    })
 
     // Remove DOM elements before sending
     const stripDOMElements = (data) => {
-      const { element, children, ...cleanData } = data
-      const strippedChildren = children.map((child) => stripDOMElements(child))
-      return { ...cleanData, children: strippedChildren }
+      const { element, ...cleanData } = data
+      return cleanData
     }
 
-    const controllerTree = buildStimulusTree()
-    return controllerTree.map((element) => stripDOMElements(element))
-  }
-
-  elementHasStimulusAttributes(element) {
-    return Array.from(element.attributes).some((attr) => {
-      return attr.name.startsWith("data-") && (attr.name.endsWith("-target") || attr.name.endsWith("-value") || attr.name.endsWith("-action") || attr.name.endsWith("-outlet") || attr.name.endsWith("-class"))
-    })
+    return allControllers.map((controller) => stripDOMElements(controller))
   }
 }

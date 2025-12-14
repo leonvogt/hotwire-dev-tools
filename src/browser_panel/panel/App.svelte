@@ -62,6 +62,7 @@
         <button class:active={currentTab == "stimulus-tab"} onclick={updateTab} data-tab-id="stimulus-tab">Stimulus</button>
         <button class:active={currentTab == "native-tab"} onclick={updateTab} data-tab-id="native-tab">Native</button>
         <button class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Log</button>
+
         <wa-select class="color-scheme-selector" appearance="filled" size="small" value="auto" title="Press \ to toggle">
           <wa-icon class="only-light" slot="start" name="sun" variant="regular"></wa-icon>
           <wa-icon class="only-dark" slot="start" name="moon" variant="regular"></wa-icon>

@@ -9,9 +9,10 @@
   import ActionTreeItem from "$src/components/Stimulus/ActionTreeItem.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
+  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import { getStimulusData, getRegisteredStimulusIdentifiers } from "../../State.svelte.js"
-  import { flattenNodes, handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
-  import { addHighlightOverlay, hideHighlightOverlay } from "../../messaging.js"
+  import { handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
+  import { addHighlightOverlay, hideHighlightOverlay } from "$src/browser_panel/messaging"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
 
@@ -24,10 +25,9 @@
   })
   let stimulusControllers = $state([])
   let registeredStimulusIdentifiers = $state([])
-  let flattenStimulusControllers = $derived(flattenNodes(stimulusControllers))
-  let uniqueIdentifiers = $derived([...new Set(flattenStimulusControllers.map((n) => n.identifier).filter(Boolean))].sort())
+  let uniqueIdentifiers = $derived([...new Set(stimulusControllers.map((n) => n.identifier).filter(Boolean))].sort())
   let counts = $derived(
-    flattenStimulusControllers.reduce((acc, n) => {
+    stimulusControllers.reduce((acc, n) => {
       if (n.identifier) acc[n.identifier] = (acc[n.identifier] || 0) + 1
       return acc
     }, {}),
@@ -36,16 +36,17 @@
   $effect(() => {
     stimulusControllers = getStimulusData()
 
-    const instance = flattenStimulusControllers.find((n) => n.uuid === selected.uuid)
+    const instance = stimulusControllers.find((n) => n.uuid === selected.uuid && n.identifier === selected.identifier)
     const selectedInstanceMissing = selected.uuid && !instance
     const shouldSelectFirstController = stimulusControllers.length > 0 && (!selected.identifier || selectedInstanceMissing)
     if (shouldSelectFirstController) {
       const instance = getStimulusInstances(uniqueIdentifiers[0])[0]
       setSelectedController(instance)
-    } else if (selected.uuid && instance) {
-      // Update selected controller reference, to store the latest data
-      selected.controller = instance
-    }
+    } //  else if (selected.uuid && instance) {
+    //   // Update selected controller reference, to store the latest data
+    //   selected.controller = instance
+    //   selected.identifier = instance.identifier
+    // }
   })
 
   $effect(() => {
@@ -53,7 +54,7 @@
   })
 
   const getStimulusInstances = (identifier) => {
-    return flattenStimulusControllers.filter((n) => n.identifier === identifier)
+    return stimulusControllers.filter((n) => n.identifier === identifier)
   }
 
   const setSelectedIdentifier = (identifier) => {
@@ -191,13 +192,12 @@
             >
               <div class="d-table-row">
                 <div class="stimulus-instance-first-column">
-                  <strong>{instance.identifier}</strong>
+                  <StripedHtmlTag element={instance} />
                 </div>
 
                 <div class="stimulus-instance-second-column">
                   <div class="me-3 overflow-x-auto scrollbar-none">
                     <InspectButton class="btn-hoverable me-2" selector={selectorByUUID(instance.uuid)}></InspectButton>
-                    <HTMLRenderer htmlString={instance.serializedTag} />
                   </div>
                 </div>
               </div>
@@ -219,33 +219,33 @@
       {#if selected.controller}
         <div class="pane-scrollable-list">
           {#if selected.controller.values.length > 0}
-            <div class="pane-section-heading">Valuesss</div>
-            {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + valueObject.key)}
+            <div class="pane-section-heading">Values</div>
+            {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + selected.identifier + valueObject.key)}
               {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
               <ValueTreeItem {valueObject} {selected} {dataAttribute} />
             {/each}
           {/if}
           {#if selected.controller.targets.length > 0}
             <div class="pane-section-heading">Targets</div>
-            {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + target.name)}
+            {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + selected.identifier + target.name)}
               <TargetTreeItem {target} {selected} />
             {/each}
           {/if}
           {#if selected.controller.outlets.length > 0}
             <div class="pane-section-heading">Outlets</div>
-            {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + outlet.name)}
+            {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + selected.identifier + outlet.name)}
               <OutletTreeItem {outlet} {selected} />
             {/each}
           {/if}
           {#if selected.controller.classes.length > 0}
             <div class="pane-section-heading">Classes</div>
-            {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + klass.name)}
+            {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + selected.identifier + klass.name)}
               <ClassTreeItem {klass} {selected} />
             {/each}
           {/if}
           {#if selected.controller.actions.length > 0}
             <div class="pane-section-heading">Actions</div>
-            {#each selected.controller.actions as action (selected.uuid + action.descriptor)}
+            {#each selected.controller.actions as action (selected.uuid + selected.identifier + action.descriptor)}
               <ActionTreeItem {action} {selected} />
             {/each}
           {/if}
