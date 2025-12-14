@@ -79,6 +79,7 @@
 
   const handleIdentifiersKeyboardNavigation = (event) => {
     if (!uniqueIdentifiers.length) return
+    event.preventDefault() // Prevents automatic browser scrolling
 
     if (event.key === "ArrowRight") {
       document.querySelector(".stimulus-controller-list-pane .entry-row.selected").focus()
@@ -100,6 +101,7 @@
   const handleInstancesKeyboardNavigation = (event) => {
     const instances = getStimulusInstances(selected.identifier)
     if (!instances.length) return
+    event.preventDefault() // Prevents automatic browser scrolling
 
     if (event.key === "ArrowLeft") {
       document.querySelector(".stimulus-identifiers-list-pane .entry-row.selected").focus()
@@ -108,7 +110,6 @@
 
     const currentIndex = instances.findIndex((instance) => instance.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, instances, currentIndex)
-    console.log(instances[newIndex])
 
     setSelectedController(instances[newIndex])
 
@@ -143,7 +144,7 @@
               role="button"
               tabindex="0"
               onclick={() => setSelectedIdentifier(identifier)}
-              onkeyup={handleIdentifiersKeyboardNavigation}
+              onkeydown={handleIdentifiersKeyboardNavigation}
               onmouseenter={() => addHighlightOverlay(`[data-controller~="${identifier}"]`)}
               onmouseleave={() => hideHighlightOverlay()}
               class:selected={selected.identifier === identifier}
@@ -184,7 +185,7 @@
               role="button"
               tabindex="0"
               onclick={() => setSelectedController(instance)}
-              onkeyup={handleInstancesKeyboardNavigation}
+              onkeydown={handleInstancesKeyboardNavigation}
               onmouseenter={() => addHighlightOverlay(selectorByUUID(instance.uuid))}
               onmouseleave={() => hideHighlightOverlay()}
             >

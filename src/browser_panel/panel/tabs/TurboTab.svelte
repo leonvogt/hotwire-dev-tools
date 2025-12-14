@@ -158,6 +158,7 @@
 
   const handleFrameListKeyboardNavigation = (event) => {
     if (!turboFrames.length) return
+    event.preventDefault() // Prevents automatic browser scrolling
 
     const currentIndex = turboFrames.findIndex((frame) => frame.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboFrames, currentIndex)
@@ -173,6 +174,7 @@
 
   const handleStreamListKeyboardNavigation = (event) => {
     if (!turboStreams.length) return
+    event.preventDefault() // Prevents automatic browser scrolling
 
     const currentIndex = turboStreams.findIndex((stream) => stream.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboStreams, currentIndex)
@@ -227,7 +229,7 @@
               role="button"
               tabindex="0"
               onclick={() => setSelectedTurboStream(stream)}
-              onkeyup={handleStreamListKeyboardNavigation}
+              onkeydown={handleStreamListKeyboardNavigation}
               onmouseenter={() => addHighlightOverlay(stream.targetSelector)}
               onmouseleave={() => hideHighlightOverlay()}
             >
@@ -265,7 +267,7 @@
         style="--depth: {depth}"
         data-frame-uuid={frame.uuid}
         onclick={() => setSelectedTurboFrame(frame)}
-        onkeyup={handleFrameListKeyboardNavigation}
+        onkeydown={handleFrameListKeyboardNavigation}
         onmouseenter={() => addHighlightOverlay(selector)}
         onmouseleave={() => hideHighlightOverlay()}
       >

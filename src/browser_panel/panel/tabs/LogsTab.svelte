@@ -58,6 +58,7 @@
 
   const handleEventListKeyboardNavigation = (event) => {
     if (!turboEvents.length) return
+    event.preventDefault() // Prevents automatic browser scrolling
 
     const currentIndex = turboEvents.findIndex((e) => e.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboEvents, currentIndex)
@@ -159,7 +160,7 @@
               role="button"
               tabindex="0"
               onclick={() => setSelectedTurboEvent(event)}
-              onkeyup={handleEventListKeyboardNavigation}
+              onkeydown={handleEventListKeyboardNavigation}
               onmouseenter={() => addHighlightOverlayByPath(event.targetElementPath)}
               onmouseleave={() => hideHighlightOverlay()}
             >
