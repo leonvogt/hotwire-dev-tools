@@ -331,7 +331,7 @@
         <wa-tab panel="details">Details</wa-tab>
 
         <wa-tab-panel name="overview">
-          <table>
+          <table class="table table-sm turbo-overview-table">
             <tbody>
               <tr>
                 <td>
@@ -546,6 +546,11 @@
   /* To prevent flickering when reloading async Turbo Frames */
   .turbo-table td:first-child {
     min-width: 3.5rem;
+    white-space: nowrap;
+  }
+
+  .turbo-overview-table td:first-child {
+    width: 10rem;
     white-space: nowrap;
   }
 </style>
