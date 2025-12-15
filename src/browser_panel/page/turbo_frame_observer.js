@@ -48,7 +48,7 @@ export default class TurboFrameObserver {
           frameData.attributes[attributeName] = newValue
         }
 
-        frameData.serializedTag = stringifyHTMLElementTag(element)
+        // frameData.serializedTag = stringifyHTMLElementTag(element)
 
         this.delegate.turboFramesChanged()
       }
@@ -64,8 +64,7 @@ export default class TurboFrameObserver {
       tagName: element.tagName.toLowerCase(),
       referenceElements: Array.from(document.querySelectorAll(`[data-turbo-frame='${element.id}']`)).map((element) => {
         return {
-          serializedTargetTag: stringifyHTMLElementTag(element, false),
-          elementPath: getElementPath(element),
+          uuid: ensureUUIDOnElement(element),
           attributes: serializeAttributes(element),
           tagName: element.tagName.toLowerCase(),
         }

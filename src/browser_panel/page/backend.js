@@ -133,7 +133,7 @@ function init() {
     turboFramesChanged() {
       this.sendTurboFrames()
     }
-    turboCableChaned() {
+    turboCableChanged() {
       this.sendTurboCableData()
     }
     stimulusDataChanged() {
@@ -376,6 +376,7 @@ function init() {
       }
       case PANEL_TO_BACKEND_MESSAGES.SCROLL_AND_HIGHLIGHT: {
         const elements = devtoolsBackend.getElementsByPayload(e.data.payload)
+
         if (elements) {
           const element = elements[0]
           element.scrollIntoView({ behavior: "smooth", block: "center" })

@@ -4,8 +4,8 @@
 
 <span class="html-tag">
   <span class="tag-name">{element.tagName.toLowerCase()}</span>
-  {#if element.id}
-    <span class="tag-id">#{element.id}</span>
+  {#if element.attributes.id}
+    <span class="tag-id">#{element.attributes.id}</span>
   {:else if element.attributes.class}
     {#each element.attributes.class.split(" ") as className}
       <span class="tag-class">.{className}</span>

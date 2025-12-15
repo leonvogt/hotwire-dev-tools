@@ -1,27 +1,24 @@
 <script>
   import CopyButton from "$components/CopyButton.svelte"
-  import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
-  import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import InspectButton from "$components/InspectButton.svelte"
-  import { capitalizeFirstChar, selectorByUUID } from "$utils/utils.js"
+  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
+  import { addHighlightOverlay, hideHighlightOverlay } from "$src/browser_panel/messaging"
+  import { selectorByUUID } from "$utils/utils.js"
 
   let { target, selected } = $props()
 </script>
 
 <div class="d-flex gap-2 mb-2">
-  <wa-tree>
+  <wa-tree class="w-100">
     <wa-tree-item>
       <span class="code-key">{target.key}</span>
       {#if target.elements.length === 0}
         <span class="text-muted">(no targets)</span>
       {:else}
         {#each target.elements as element}
-          <wa-tree-item>
-            <div>
-              <HTMLRenderer htmlString={element.serializedTag} />
-              <ScrollIntoViewButton selector={selectorByUUID(element.uuid)}></ScrollIntoViewButton>
-              <InspectButton selector={selectorByUUID(element.uuid)}></InspectButton>
-            </div>
+          <wa-tree-item role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
+            <StripedHtmlTag {element} />
+            <InspectButton uuid={element.uuid}></InspectButton>
           </wa-tree-item>
         {/each}
       {/if}

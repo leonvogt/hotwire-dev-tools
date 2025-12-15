@@ -8,7 +8,6 @@
   import ClassTreeItem from "$src/components/Stimulus/ClassTreeItem.svelte"
   import ActionTreeItem from "$src/components/Stimulus/ActionTreeItem.svelte"
   import InspectButton from "$components/InspectButton.svelte"
-  import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import { getStimulusData, getRegisteredStimulusIdentifiers } from "../../State.svelte.js"
   import { handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
@@ -35,22 +34,27 @@
 
   $effect(() => {
     stimulusControllers = getStimulusData()
-
-    const instance = stimulusControllers.find((n) => n.uuid === selected.uuid && n.identifier === selected.identifier)
-    const selectedInstanceMissing = selected.uuid && !instance
-    const shouldSelectFirstController = stimulusControllers.length > 0 && (!selected.identifier || selectedInstanceMissing)
-    if (shouldSelectFirstController) {
-      const instance = getStimulusInstances(uniqueIdentifiers[0])[0]
-      setSelectedController(instance)
-    } //  else if (selected.uuid && instance) {
-    //   // Update selected controller reference, to store the latest data
-    //   selected.controller = instance
-    //   selected.identifier = instance.identifier
-    // }
   })
 
   $effect(() => {
     registeredStimulusIdentifiers = getRegisteredStimulusIdentifiers()
+  })
+
+  $effect(() => {
+    const currentData = stimulusControllers
+
+    const instance = currentData.find((n) => n.uuid === selected.uuid && n.identifier === selected.identifier)
+    const selectedInstanceMissing = selected.uuid && !instance
+    const shouldSelectFirstController = currentData.length > 0 && (!selected.identifier || selectedInstanceMissing)
+
+    if (shouldSelectFirstController) {
+      const instance = getStimulusInstances(uniqueIdentifiers[0])[0]
+      setSelectedController(instance)
+    } else if (selected.uuid && instance && instance !== selected.controller) {
+      // Update selected controller reference, to store the latest data
+      selected.controller = instance
+      selected.identifier = instance.identifier
+    }
   })
 
   const getStimulusInstances = (identifier) => {
@@ -71,6 +75,7 @@
   }
 
   const setSelectedController = (instance) => {
+    if (!instance) return
     selected = {
       uuid: instance.uuid,
       controller: instance,
@@ -197,7 +202,7 @@
 
                 <div class="stimulus-instance-second-column">
                   <div class="me-3 overflow-x-auto scrollbar-none">
-                    <InspectButton class="btn-hoverable me-2" selector={selectorByUUID(instance.uuid)}></InspectButton>
+                    <InspectButton class="btn-hoverable me-2" uuid={instance.uuid}></InspectButton>
                   </div>
                 </div>
               </div>

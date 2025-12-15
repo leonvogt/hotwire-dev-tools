@@ -1,4 +1,4 @@
-import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, getElementPath, serializeAttributes } from "$utils/utils.js"
+import { ensureUUIDOnElement, getUUIDFromElement, serializeAttributes } from "$utils/utils.js"
 
 export default class TurboAttributeElementsObserver {
   constructor(delegate) {
@@ -94,16 +94,11 @@ export default class TurboAttributeElementsObserver {
 
   buildElementData(element, type) {
     return {
-      uuid: getUUIDFromElement(element),
-      id: element.id || null,
-      attributes: serializeAttributes(element),
-      tag: element.tagName.toLowerCase(),
-      classes: Array.from(element.classList),
-      serializedElement: stringifyHTMLElementTag(element),
-      elementPath: getElementPath(element),
       type: type,
-      innerHTML: element.innerHTML?.substring(0, 500) || "", // Truncate for performance
-      outerHTML: element.outerHTML?.substring(0, 1000) || "", // Truncate for performance
+      id: element.id || null,
+      uuid: getUUIDFromElement(element),
+      attributes: serializeAttributes(element),
+      tagName: element.tagName.toLowerCase(),
     }
   }
 

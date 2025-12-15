@@ -10,8 +10,8 @@
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams, getTurboPermanentElements, getTurboTemporaryElements, getTurboConfig } from "../../State.svelte.js"
-  import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
-  import { panelPostMessage, addHighlightOverlay, addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
+  import { debounce, handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
+  import { panelPostMessage, addHighlightOverlay, hideHighlightOverlay } from "../../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
@@ -64,21 +64,24 @@
     turboPermanentElements = getTurboPermanentElements()
     turboTemporaryElements = getTurboTemporaryElements()
     turboConfig = getTurboConfig()
+  })
 
+  $effect(() => {
+    const currentFrames = turboFrames
     const isStreamSelected = selected.type === SELECTABLE_TYPES.TURBO_STREAM
-    const selectedFrameMissing = !turboFrames.some((frame) => frame.id === selected.frame?.id)
-    const shouldSelectFirstFrame = turboFrames.length > 0 && !isStreamSelected && selectedFrameMissing
+    const selectedFrameMissing = !findFrameByUuid(currentFrames, selected.uuid)
+    const shouldSelectFirstFrame = currentFrames.length > 0 && !isStreamSelected && selectedFrameMissing
 
     if (shouldSelectFirstFrame) {
       selected = {
         type: SELECTABLE_TYPES.TURBO_FRAME,
-        uuid: turboFrames[0].uuid,
-        frame: turboFrames[0],
+        uuid: currentFrames[0].uuid,
+        frame: currentFrames[0],
         stream: null,
       }
     } else if (selected.type === SELECTABLE_TYPES.TURBO_FRAME) {
       // Update the selected frame if it has changed
-      const updatedFrame = turboFrames.find((f) => f.uuid === selected.uuid)
+      const updatedFrame = findFrameByUuid(currentFrames, selected.uuid)
       if (updatedFrame && updatedFrame !== selected.frame) {
         selected = {
           ...selected,
@@ -118,6 +121,19 @@
       }, 0)
     }
   })
+
+  const findFrameByUuid = (frames, uuid) => {
+    for (const frame of frames) {
+      if (frame.uuid === uuid) {
+        return frame
+      }
+      if (frame.children && frame.children.length > 0) {
+        const found = findFrameByUuid(frame.children, uuid)
+        if (found) return found
+      }
+    }
+    return null
+  }
 
   const setSelectedTurboFrame = (frame) => {
     if (!frame) return
@@ -212,15 +228,17 @@
       <div class="pane-header flex-center">
         {#if turboStreams.length <= 0}
           <h3 class="pane-header-title">Streams</h3>
-        {:else}
-          <div class="position-absolute end-0">
-            <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
-            {#if turboCables.length > 0}
-              <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
-              <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
-            {/if}
-          </div>
         {/if}
+
+        <div class="position-absolute end-0">
+          {#if turboStreams.length > 0}
+            <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
+          {/if}
+          {#if turboCables.length > 0}
+            <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
+            <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
+          {/if}
+        </div>
       </div>
 
       {#if turboStreams.length > 0}
@@ -376,29 +394,11 @@
             {#if turboPermanentElements.length > 0}
               <div class="pane-section-heading">Permanent Elements ({turboPermanentElements.length})</div>
               {#each turboPermanentElements as element (element.uuid)}
-                <div class="entry-row p-2 border-bottom">
+                <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                   <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                      <code class="me-2">&lt;{element.tag}&gt;</code>
-                      {#if element.id}
-                        <span class="badge bg-secondary me-2">#{element.id}</span>
-                      {/if}
-                      {#if element.classes.length > 0}
-                        {#each element.classes as className}
-                          <span class="badge bg-info me-1">.{className}</span>
-                        {/each}
-                      {/if}
-                    </div>
-                    <div>
-                      <ScrollIntoViewButton elementPath={element.elementPath}></ScrollIntoViewButton>
-                      <InspectButton elementPath={element.elementPath}></InspectButton>
-                    </div>
+                    <StripedHtmlTag {element} />
+                    <InspectButton uuid={element.uuid}></InspectButton>
                   </div>
-                  {#if element.attributeValue}
-                    <div class="mt-1 text-muted small">data-turbo-permanent="{element.attributeValue}"</div>
-                  {:else}
-                    <div class="mt-1 text-muted small">data-turbo-permanent</div>
-                  {/if}
                 </div>
               {/each}
             {/if}
@@ -406,29 +406,11 @@
             {#if turboTemporaryElements.length > 0}
               <div class="pane-section-heading">Temporary Elements ({turboTemporaryElements.length})</div>
               {#each turboTemporaryElements as element (element.uuid)}
-                <div class="entry-row p-2 border-bottom">
+                <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                   <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                      <code class="me-2">&lt;{element.tag}&gt;</code>
-                      {#if element.id}
-                        <span class="badge bg-secondary me-2">#{element.id}</span>
-                      {/if}
-                      {#if element.classes.length > 0}
-                        {#each element.classes as className}
-                          <span class="badge bg-info me-1">.{className}</span>
-                        {/each}
-                      {/if}
-                    </div>
-                    <div>
-                      <ScrollIntoViewButton elementPath={element.elementPath}></ScrollIntoViewButton>
-                      <InspectButton elementPath={element.elementPath}></InspectButton>
-                    </div>
+                    <StripedHtmlTag {element} />
+                    <InspectButton uuid={element.uuid}></InspectButton>
                   </div>
-                  {#if element.attributeValue}
-                    <div class="mt-1 text-muted small">data-turbo-temporary="{element.attributeValue}"</div>
-                  {:else}
-                    <div class="mt-1 text-muted small">data-turbo-temporary</div>
-                  {/if}
                 </div>
               {/each}
             {/if}
@@ -457,26 +439,31 @@
             <div class="pane-scrollable-list">
               {#if selected.frame.referenceElements.length > 0}
                 <div class="pane-section-heading">
-                  <span>Will get updated by elements</span>
+                  <span>Targeted by</span>
                 </div>
                 {#each selected.frame.referenceElements as referenceElement}
-                  <div class="html-preview">
-                    <pre><code class="language-html"><StripedHtmlTag element={referenceElement} /></code></pre>
+                  <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(referenceElement.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <StripedHtmlTag element={referenceElement} />
+                      <InspectButton uuid={referenceElement.uuid}></InspectButton>
+                    </div>
                   </div>
                 {/each}
               {/if}
 
-              <div class="pane-section-heading">Attributes</div>
-              <table class="table table-sm w-100 turbo-table">
-                <tbody>
-                  {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
-                    <tr>
-                      <td><div class="code-keyword">{key}</div></td>
-                      <td>{value}</td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
+              {#if Object.keys(selected.frame.attributes).filter((key) => !ignoredAttributes.includes(key)).length > 0}
+                <div class="pane-section-heading">Attributes</div>
+                <table class="table table-sm w-100 turbo-table">
+                  <tbody>
+                    {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
+                      <tr>
+                        <td><div class="code-keyword">{key}</div></td>
+                        <td>{value}</td>
+                      </tr>
+                    {/each}
+                  </tbody>
+                </table>
+              {/if}
 
               <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
                 <span>HTML</span>

@@ -1,4 +1,4 @@
-import { ensureUUIDOnElement, getUUIDFromElement } from "$utils/utils.js"
+import { ensureUUIDOnElement, getUUIDFromElement, serializeAttributes } from "$utils/utils.js"
 
 // The TurboCableObserver class is responsible for observing `<turbo-cable-stream-source>` elements,
 // which are used in Turbo Streams to manage WebSocket connections.
@@ -24,7 +24,7 @@ export default class TurboCableObserver {
     if (!this.streamSources.has(uuid)) {
       const turboCableData = this.buildTurboCableData(element)
       this.streamSources.set(uuid, turboCableData)
-      this.delegate.turboCableChaned()
+      this.delegate.turboCableChanged()
     }
   }
 
@@ -33,7 +33,7 @@ export default class TurboCableObserver {
 
     if (this.streamSources.has(uuid)) {
       this.streamSources.delete(uuid)
-      this.delegate.turboCableChaned()
+      this.delegate.turboCableChanged()
     }
   }
 
@@ -51,7 +51,7 @@ export default class TurboCableObserver {
         }
         turboCableData.connected = element.hasAttribute("connected")
 
-        this.delegate.turboCableChaned()
+        this.delegate.turboCableChanged()
       }
     }
   }
@@ -59,10 +59,7 @@ export default class TurboCableObserver {
   buildTurboCableData(element) {
     return {
       connected: element.hasAttribute("connected"),
-      attributes: Array.from(element.attributes).reduce((map, attr) => {
-        map[attr.name] = attr.value
-        return map
-      }, {}),
+      attributes: serializeAttributes(element),
     }
   }
 

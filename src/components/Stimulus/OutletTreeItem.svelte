@@ -1,11 +1,9 @@
 <script>
   import CopyButton from "$components/CopyButton.svelte"
-  import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
-  import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
+  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import InspectButton from "$components/InspectButton.svelte"
-  import { capitalizeFirstChar, selectorByUUID } from "$utils/utils.js"
 
-  let { outlet, selected } = $props()
+  let { outlet } = $props()
 </script>
 
 <div class="d-flex gap-2 mb-2">
@@ -18,9 +16,8 @@
         {#each outlet.elements as element}
           <wa-tree-item>
             <div>
-              <HTMLRenderer htmlString={element.serializedTag} />
-              <ScrollIntoViewButton selector={selectorByUUID(element.uuid)}></ScrollIntoViewButton>
-              <InspectButton selector={selectorByUUID(element.uuid)}></InspectButton>
+              <StripedHtmlTag {element} />
+              <InspectButton uuid={element.uuid}></InspectButton>
             </div>
           </wa-tree-item>
         {/each}

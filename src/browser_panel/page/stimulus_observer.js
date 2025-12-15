@@ -1,4 +1,4 @@
-import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, capitalizeFirstChar, serializeAttributes } from "$utils/utils.js"
+import { ensureUUIDOnElement, getUUIDFromElement, capitalizeFirstChar, serializeAttributes } from "$utils/utils.js"
 
 export default class StimulusObserver {
   constructor(delegate) {
@@ -71,7 +71,6 @@ export default class StimulusObserver {
       targetsAttribute: controller?.context?.schema?.targetAttributeForScope(controller?.identifier),
       attributes: serializeAttributes(element),
       tagName: element.tagName.toLowerCase(),
-      serializedTag: stringifyHTMLElementTag(element),
       values: this.buildControllerValues(controller),
       targets: this.buildControllerTargets(controller),
       outlets: this.buildControllerOutlets(controller),
@@ -110,7 +109,7 @@ export default class StimulusObserver {
             id: target.id,
             uuid: ensureUUIDOnElement(target),
             attributes: serializeAttributes(target),
-            serializedTag: stringifyHTMLElementTag(target),
+            tagName: target.tagName.toLowerCase(),
           }
         }),
       }
@@ -135,7 +134,7 @@ export default class StimulusObserver {
             id: outlet.id,
             uuid: ensureUUIDOnElement(outlet.element),
             attributes: serializeAttributes(outlet.element),
-            serializedTag: stringifyHTMLElementTag(outlet.element),
+            tagName: outlet.element.tagName.toLowerCase(),
           }
         }),
       }

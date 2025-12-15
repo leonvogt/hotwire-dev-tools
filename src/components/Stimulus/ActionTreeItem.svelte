@@ -4,14 +4,19 @@
   import { addHighlightOverlay, hideHighlightOverlay } from "$src/browser_panel/messaging"
   import { selectorByUUID } from "$utils/utils.js"
 
-  let { action, selected } = $props()
+  let { action } = $props()
 </script>
 
 <div class="entry-row" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(action.element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
   <div class="d-flex justify-content-between align-items-center py-2">
     <div class="d-flex flex-column">
       <div class="d-flex align-items-center gap-2">
-        <strong>{action.eventName}</strong>
+        <strong>
+          {action.eventName}
+          {#if action.keyFilter}
+            {action.keyFilter}
+          {/if}
+        </strong>
         <wa-icon name="arrow-right"></wa-icon>
         <span class="code-keyword me-2">{action.methodName}()</span>
       </div>
@@ -28,7 +33,7 @@
       {/if}
     </div>
     <div>
-      <InspectButton selector={selectorByUUID(action.element.uuid)}></InspectButton>
+      <InspectButton uuid={action.element.uuid}></InspectButton>
     </div>
   </div>
 </div>

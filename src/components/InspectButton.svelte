@@ -1,9 +1,13 @@
 <script>
   import IconButton from "$uikit/IconButton.svelte"
-  import { inspectElement } from "$utils/utils.js"
+  import { inspectElement, selectorByUUID } from "$utils/utils.js"
 
-  let props = $props()
-  let mergedClass = $derived(`fs-400 ${props.class ?? ""}`.trim())
+  let { selector, elementPath, uuid, class: className, ...restProps } = $props()
+
+  let mergedClass = $derived(`fs-400 ${className ?? ""}`.trim())
+  if (uuid) {
+    selector = selectorByUUID(uuid)
+  }
 </script>
 
-<IconButton {...props} class={mergedClass} name="inspect" library="custom" onclick={() => inspectElement(props.selector)}></IconButton>
+<IconButton {...restProps} class={mergedClass} name="inspect" library="custom" onclick={() => inspectElement(selector)}></IconButton>
