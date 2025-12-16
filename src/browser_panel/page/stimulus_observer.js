@@ -49,7 +49,6 @@ export default class StimulusObserver {
   }
 
   elementAttributeChanged(element, attributeName, oldValue) {
-    if (attributeName == "data-hotwire-dev-tools-uuid") return
     if (this.matchElement(element)) {
       const uuid = getUUIDFromElement(element)
       if (this.controllerElements.has(uuid)) {

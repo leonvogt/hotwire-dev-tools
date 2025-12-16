@@ -23,7 +23,7 @@
     TURBO_STREAM: "turbo-stream",
   }
   const turboStreamAnimationDuration = 300
-  const ignoredAttributes = ["id", "data-hotwire-dev-tools-uuid", "style"]
+  const ignoredAttributes = ["id", "data-hotwire-dev-tools-id", "style"]
 
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)

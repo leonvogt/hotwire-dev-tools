@@ -89,6 +89,8 @@ export default class ElementObserver {
   }
 
   processAttributeChange(node, attributeName, oldValue) {
+    if (attributeName == "data-hotwire-dev-tools-id") return
+
     const element = this.elementFromNode(node)
     if (element && this.elements.has(element)) {
       if (this.delegate.elementAttributeChanged) {

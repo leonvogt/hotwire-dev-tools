@@ -34,7 +34,7 @@ export const stringifyHTMLElementTag = (element, createClosingTag = true) => {
   }
 
   const attributes = Array.from(element.attributes)
-    .filter(({ name }) => name !== "data-hotwire-dev-tools-uuid")
+    .filter(({ name }) => name !== "data-hotwire-dev-tools-id")
     .map((attr) => `${attr.name}="${attr.value}"`)
     .join(" ")
 
@@ -57,7 +57,9 @@ export const stringifyHTMLElementTagShallow = (element) => {
 }
 
 export const generateUUID = () => {
-  return crypto.randomUUID()
+  // 8 Chars should be enough for our use case
+  // Orignal UUIDs could make the inspection tab quite noisy
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 5)
 }
 
 // Copy to clipboard is bit tricky from a devtool panel context.
@@ -110,13 +112,13 @@ export const handleKeyboardNavigation = (event, collection, currentIndex) => {
 }
 
 export const getUUIDFromElement = (element) => {
-  const uuid = element.getAttribute("data-hotwire-dev-tools-uuid")
+  const uuid = element.getAttribute("data-hotwire-dev-tools-id")
   return uuid || null
 }
 
 export const setUUIDToElement = (element) => {
   const uuid = generateUUID()
-  element.setAttribute("data-hotwire-dev-tools-uuid", uuid)
+  element.setAttribute("data-hotwire-dev-tools-id", uuid)
   return uuid
 }
 
@@ -167,10 +169,6 @@ export const safeStringifyEventDetail = (detail) => {
   )
 }
 
-export const flattenNodes = (tree) => {
-  return tree.flatMap((node) => [node, ...flattenNodes(node.children || [])])
-}
-
 export const capitalizeFirstChar = (str) => {
   if (typeof str !== "string" || str === undefined || str.length === 0) {
     return str
@@ -179,7 +177,7 @@ export const capitalizeFirstChar = (str) => {
 }
 
 export const selectorByUUID = (uuid) => {
-  return `[data-hotwire-dev-tools-uuid="${uuid}"]`
+  return `[data-hotwire-dev-tools-id="${uuid}"]`
 }
 
 export const serializeAttributes = (element) => {
