@@ -16,9 +16,11 @@
         <span class="text-muted">(no targets)</span>
       {:else}
         {#each target.elements as element}
-          <wa-tree-item role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
-            <StripedHtmlTag {element} />
-            <InspectButton uuid={element.uuid}></InspectButton>
+          <wa-tree-item class="w-100" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
+            <div class="w-100 d-flex justify-content-between">
+              <StripedHtmlTag {element} />
+              <InspectButton uuid={element.uuid}></InspectButton>
+            </div>
           </wa-tree-item>
         {/each}
       {/if}

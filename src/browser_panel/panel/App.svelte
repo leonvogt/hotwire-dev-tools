@@ -1,6 +1,5 @@
 <script>
   import "$uikit/webawesome.svelte.js"
-  import "$uikit/color-scheme.js"
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { orientation, handleResize } from "../theme.svelte.js"
   import { connection } from "../State.svelte.js"
@@ -13,10 +12,13 @@
   const devTool = getDevtoolInstance()
   let devToolOptionsLoaded = $state(false)
   let currentTab = $state("turbo-tab")
+  let currentTheme = $state("light")
 
   const initializeDevToolOptions = async () => {
     await devTool.setOptions()
     currentTab = devTool.options.currentTab || "turbo-tab"
+    currentTheme = devTool.options.currentTheme || "light"
+    setTheme(currentTheme)
     devToolOptionsLoaded = true
   }
   initializeDevToolOptions()
@@ -41,6 +43,12 @@
       refreshAllState()
     }
   }
+
+  const setTheme = (theme) => {
+    currentTheme = theme
+    document.documentElement.classList.toggle("wa-dark", currentTheme === "dark")
+    devTool.saveOptions({ currentTheme })
+  }
 </script>
 
 {#if connection.isPermanentlyDisconnected}
@@ -63,25 +71,15 @@
         <button class:active={currentTab == "native-tab"} onclick={updateTab} data-tab-id="native-tab">Native</button>
         <button class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Log</button>
 
-        <wa-select class="color-scheme-selector" appearance="filled" size="small" value="auto" title="Press \ to toggle">
-          <wa-icon class="only-light" slot="start" name="sun" variant="regular"></wa-icon>
-          <wa-icon class="only-dark" slot="start" name="moon" variant="regular"></wa-icon>
-          <wa-option value="light">
-            <wa-icon slot="start" name="sun" variant="regular"></wa-icon>
-            Light
-          </wa-option>
-          <wa-option value="dark">
-            <wa-icon slot="start" name="moon" variant="regular"></wa-icon>
-            Dark
-          </wa-option>
-          <wa-divider></wa-divider>
-          <wa-option value="auto">
-            <wa-icon class="only-light" slot="start" name="sun" variant="regular"></wa-icon>
-            <wa-icon class="only-dark" slot="start" name="moon" variant="regular"></wa-icon>
-            System
-          </wa-option>
-        </wa-select>
+        <button class="theme-toggle-btn" aria-label="Toggle Color Scheme" onclick={() => setTheme(currentTheme === "light" ? "dark" : "light")}>
+          {#if currentTheme === "light"}
+            <wa-icon name="moon" variant="regular"></wa-icon>
+          {:else}
+            <wa-icon name="sun" variant="regular"></wa-icon>
+          {/if}
+        </button>
       </nav>
+
       <div id="turbo-tab" class="tab-content" class:active={currentTab == "turbo-tab"}>
         <TurboTab />
       </div>

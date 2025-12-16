@@ -12,8 +12,8 @@
         <span class="text-muted">(0)</span>
       {:else}
         {#each klass.classes as value}
-          <wa-tree-item>
-            <div class="d-flex justify-content-between align-items-center">
+          <wa-tree-item class="w-100">
+            <div class="w-100 d-flex justify-content-between align-items-center">
               <span>{value}</span>
               <CopyButton {value} />
             </div>

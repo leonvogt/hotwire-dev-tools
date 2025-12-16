@@ -66,34 +66,40 @@ body {
     sans-serif;
 }
 
-button {
-  cursor: pointer;
-}
-
 .navbar {
-  border: 1px solid var(--wa-color-surface-border);
-  background-color: var(--wa-color-surface-lowered);
+  border: 0.125rem solid var(--wa-color-surface-border);
+  width: 7.5rem;
   display: flex;
   flex-direction: column;
-  width: 7.5rem;
 
   button {
     background-color: inherit;
-    color: var(--wa-color-text-normal);
+    color: var(--wa-color-neutral-on-quiet);
     justify-content: start;
     border-radius: 0;
     border: none;
     outline: none;
-    transition: 0.3s;
     height: 4rem;
   }
 
-  button:hover {
-    background-color: var(--wa-color-surface-raised);
+  button.active {
+    color: var(--wa-color-brand-on-quiet);
+    border-inline-start: solid 0.125rem var(--wa-color-brand-fill-loud);
   }
 
-  button.active {
-    background-color: var(--wa-color-surface-raised);
+  /* Theme toggle button styling */
+  .theme-toggle-btn {
+    margin-top: auto;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .theme-toggle-btn:hover {
+    background-color: var(--wa-color-surface-hover) !important;
+  }
+
+  .theme-toggle-btn wa-icon {
+    margin: auto;
   }
 }
 .portrait .navbar {
@@ -215,8 +221,13 @@ svg.icon-muted {
   padding: 0.25rem;
 
   --indent-size: 1rem;
-  padding-left: calc(var(--depth, 0) * var(--indent-size) + 0.5rem);
+  --minimum-base-padding: 0.5rem;
+  padding-left: calc(var(--depth, 0) * var(--indent-size) + var(--minimum-base-padding));
 }
+.entry-row.leaf-node {
+  --indent-size: 1.5rem;
+}
+
 .entry-row--table-layout {
   display: table;
   width: 100%;
@@ -352,6 +363,10 @@ svg.icon-muted {
 .value-tree-item wa-tree-item[selected]::part(item) {
   background-color: var(--wa-color-surface-default);
   border-inline-start-color: var(--wa-color-surface-default);
+}
+
+wa-tree-item.w-100::part(label) {
+  width: 100%;
 }
 
 wa-tooltip .copy-icon:not(.copied) {

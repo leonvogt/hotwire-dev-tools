@@ -14,8 +14,8 @@
         <span class="text-muted">(no outlets)</span>
       {:else}
         {#each outlet.elements as element}
-          <wa-tree-item>
-            <div>
+          <wa-tree-item class="w-100">
+            <div class="w-100 d-flex justify-content-between">
               <StripedHtmlTag {element} />
               <InspectButton uuid={element.uuid}></InspectButton>
             </div>

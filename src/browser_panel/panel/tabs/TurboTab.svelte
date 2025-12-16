@@ -280,11 +280,14 @@
       {@const selector = `#${frame.id}`}
       {@const isCollapsed = collapsedFrames[frame.uuid] || false}
       {@const hasChildren = frame.children && frame.children.length > 0}
+      {@const isLeafNode = !hasChildren && depth > 0}
 
       <div
         class="d-flex justify-content-between align-items-center cursor-pointer entry-row"
         class:selected={selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.frame.id === frame.id}
-        class:ps-0={hasChildren}
+        class:with-children={hasChildren}
+        class:leaf-node={isLeafNode}
+        class:ps-0={hasChildren && depth === 0}
         role="button"
         tabindex="0"
         style="--depth: {depth}"
@@ -295,7 +298,7 @@
         onmouseleave={() => hideHighlightOverlay()}
       >
         <div class="d-flex align-items-center">
-          {#if frame.children && frame.children.length}
+          {#if hasChildren}
             <IconButton class="collapse-icon {isCollapsed ? 'rotated' : ''}" name="chevron-down" onclick={(event) => collapseEntryRows(frame.uuid, event, collapsedFrames, stickyFrames)}></IconButton>
           {/if}
           <StripedHtmlTag element={frame} />
