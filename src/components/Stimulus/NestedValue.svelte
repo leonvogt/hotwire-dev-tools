@@ -13,7 +13,7 @@
   {#each Object.entries(data) as [key, value]}
     <wa-tree-item>
       {#if isPrimitive(value)}
-        <div class="d-flex code-value">
+        <div class="d-flex gap-2 code-value">
           <span class="code-key">{key}:</span>
           <ValueEditor
             {value}
@@ -36,7 +36,7 @@
   {#each data as item, i}
     <wa-tree-item>
       {#if isPrimitive(item)}
-        <div class="d-flex code-value">
+        <div class="d-flex gap-2 code-value">
           <span class="code-key">{i}:</span>
           <ValueEditor
             value={item}

@@ -24,7 +24,7 @@
 </script>
 
 {#if isEditing}
-  <form class="d-flex" onsubmit={handleSubmit}>
+  <form class="d-flex gap-2" onsubmit={handleSubmit}>
     <wa-input size="extra-small" value={editValue} {type} oninput={(e) => (editValue = e.target.value)}></wa-input>
     <wa-button class="small-icon-button" variant="neutral" appearance="plain" type="submit">
       <wa-icon name="check"></wa-icon>
@@ -35,5 +35,5 @@
   <wa-switch checked={value} onchange={(e) => onSave(e.target.checked)}></wa-switch>
 {:else}
   {value}
-  <IconButton name="pencil" onclick={handleEdit}></IconButton>
+  <IconButton name="pencil" onclick={handleEdit} size="small"></IconButton>
 {/if}

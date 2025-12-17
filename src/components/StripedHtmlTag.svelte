@@ -34,18 +34,18 @@
   }
 
   .tag-name {
-    color: #80a3e6;
+    color: var(--color-tag);
   }
   .tag-id,
   .tag-class,
   .tag-attribute-value {
-    color: #ef9364;
+    color: var(--color-tag-class);
   }
 
   .tag-attribute {
     margin-left: 0.5em;
   }
   .tag-attribute-name {
-    color: #d44fba;
+    color: var(--color-tag-attribute-name);
   }
 </style>

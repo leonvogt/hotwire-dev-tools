@@ -78,7 +78,7 @@
 </script>
 
 <div class="d-flex gap-2 mb-2">
-  <wa-tree class="value-tree-item">
+  <wa-tree>
     <wa-tree-item expanded>
       {#if isComplex(valueObject.value)}
         {valueObject.name}
@@ -87,8 +87,8 @@
         {/if}
         <NestedValue data={valueObject.value} {editingStates} onEdit={handleEdit} onSave={handleSave} onCancel={handleCancel} />
       {:else}
-        <span class="code-key">{valueObject.name}:</span>
-        <div class="d-flex code-value">
+        <div class="d-flex gap-2 code-value">
+          <span class="code-key">{valueObject.name}:</span>
           <ValueEditor
             value={String(valueObject.value)}
             valueType={valueObject.type}

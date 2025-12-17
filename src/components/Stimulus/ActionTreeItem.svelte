@@ -12,9 +12,10 @@
     <div class="d-flex flex-column">
       <div class="d-flex align-items-center gap-2">
         <strong>
-          {action.eventName}
           {#if action.keyFilter}
-            {action.keyFilter}
+            {`${action.eventName}.${action.keyFilter}`}
+          {:else}
+            {action.eventName}
           {/if}
         </strong>
         <wa-icon name="arrow-right"></wa-icon>
@@ -33,7 +34,7 @@
       {/if}
     </div>
     <div>
-      <InspectButton uuid={action.element.uuid}></InspectButton>
+      <InspectButton class="btn-hoverable" uuid={action.element.uuid}></InspectButton>
     </div>
   </div>
 </div>

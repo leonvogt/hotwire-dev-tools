@@ -37,9 +37,10 @@
 
 /* General */
 :root {
-  --dark-color: #212529;
-  --selected-bg: var(--wa-color-brand-fill-normal);
-  --hover-for-selected-bg: var(--wa-color-brand-fill-quiet);
+  --color-tag: #80a3e6;
+  --color-tag-id: #ef9364;
+  --color-tag-class: #ef9364;
+  --color-tag-attribute-name: #d44fba;
 
   --fs-100: 0.625rem;
   --fs-200: 0.75rem;
@@ -160,17 +161,14 @@ body {
 .btn-icon svg {
   width: 1rem;
   height: 1rem;
-  fill: white;
 }
 
-.icon-dark svg,
-svg.icon-dark {
-  fill: var(--dark-color);
+button.action-icon svg {
+  fill: var(--wa-color-text-normal);
 }
 
-.icon-muted svg,
-svg.icon-muted {
-  fill: var(--dark-color);
+button.action-icon:active svg {
+  fill: var(--wa-color-shadow);
 }
 
 .no-entry-hint {
@@ -244,10 +242,10 @@ svg.icon-muted {
 }
 
 .entry-row:hover {
-  background-color: var(--hover-for-selected-bg);
+  background-color: var(--wa-color-brand-fill-quiet);
 }
 .entry-row.selected {
-  background-color: var(--selected-bg);
+  background-color: var(--wa-color-brand-fill-normal);
   border-left: 3px solid var(--wa-color-brand-fill-loud);
 }
 
@@ -360,7 +358,7 @@ svg.icon-muted {
 }
 
 /* Remove default selection styles from wa-tree-item */
-.value-tree-item wa-tree-item[selected]::part(item) {
+.stimulus-detail-pane wa-tree-item[selected]::part(item) {
   background-color: var(--wa-color-surface-default);
   border-inline-start-color: var(--wa-color-surface-default);
 }

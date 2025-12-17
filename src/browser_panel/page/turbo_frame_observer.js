@@ -1,4 +1,4 @@
-import { ensureUUIDOnElement, getUUIDFromElement, stringifyHTMLElementTag, getElementPath, serializeAttributes } from "$utils/utils.js"
+import { ensureUUIDOnElement, getUUIDFromElement, serializeAttributes } from "$utils/utils.js"
 
 export default class TurboFrameObserver {
   constructor(delegate) {
@@ -47,9 +47,6 @@ export default class TurboFrameObserver {
         } else {
           frameData.attributes[attributeName] = newValue
         }
-
-        // frameData.serializedTag = stringifyHTMLElementTag(element)
-
         this.delegate.turboFramesChanged()
       }
     }
@@ -59,8 +56,8 @@ export default class TurboFrameObserver {
     return {
       id: element.id,
       uuid: getUUIDFromElement(element),
-      serializedTag: stringifyHTMLElementTag(element),
       attributes: serializeAttributes(element),
+      hasUniqueId: document.querySelectorAll(`turbo-frame[id='${element.id}']`).length === 1,
       tagName: element.tagName.toLowerCase(),
       referenceElements: Array.from(document.querySelectorAll(`[data-turbo-frame='${element.id}']`)).map((element) => {
         return {

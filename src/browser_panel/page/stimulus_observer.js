@@ -67,7 +67,6 @@ export default class StimulusObserver {
       id: element.id,
       uuid: getUUIDFromElement(element),
       identifier: identifier,
-      targetsAttribute: controller?.context?.schema?.targetAttributeForScope(controller?.identifier),
       attributes: serializeAttributes(element),
       tagName: element.tagName.toLowerCase(),
       values: this.buildControllerValues(controller),
@@ -126,7 +125,6 @@ export default class StimulusObserver {
       return {
         name: outletKey,
         key: key,
-        htmlAttribute: `${controller.context.schema.outletAttributeForScope(controller.identifier, key)}=""`,
         selector: controller.outlets.getSelectorForOutletName(key),
         elements: Array.from(outlets).map((outlet) => {
           return {
@@ -151,7 +149,6 @@ export default class StimulusObserver {
       return {
         name: classKey,
         key: key,
-        htmlAttribute: `${controller.classes.getAttributeName(key)}=""`,
         classes: Array.from(classes),
       }
     })

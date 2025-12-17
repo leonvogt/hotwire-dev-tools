@@ -51,6 +51,6 @@
   }
 
   .copy-icon {
-    color: var(--wa-color-neutral-20);
+    color: var(--wa-color-text-quiet);
   }
 </style>

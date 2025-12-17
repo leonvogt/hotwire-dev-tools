@@ -278,8 +278,8 @@
   <Pane class="turbo-frame-pane full-pane" size={options.turboPaneDimensions?.frames || 35} minSize={20}>
     {#snippet turboFrameRow(frame, depth = 0)}
       {@const selector = `#${frame.id}`}
-      {@const isCollapsed = collapsedFrames[frame.uuid] || false}
       {@const hasChildren = frame.children && frame.children.length > 0}
+      {@const isCollapsed = collapsedFrames[frame.uuid] || false}
       {@const isLeafNode = !hasChildren && depth > 0}
 
       <div
@@ -302,6 +302,10 @@
             <IconButton class="collapse-icon {isCollapsed ? 'rotated' : ''}" name="chevron-down" onclick={(event) => collapseEntryRows(frame.uuid, event, collapsedFrames, stickyFrames)}></IconButton>
           {/if}
           <StripedHtmlTag element={frame} />
+          {#if !frame.hasUniqueId}
+            <wa-tooltip for={`unique-id-warning-icon-${frame.uuid}`}>Warning: Multiple &lt;turbo-frame&gt; elements share the same ID</wa-tooltip>
+            <wa-icon name="triangle-exclamation" id={`unique-id-warning-icon-${frame.uuid}`} style="color: var(--wa-color-yellow-70);"></wa-icon>
+          {/if}
         </div>
         <div>
           {#if frame.attributes.busy !== undefined}
@@ -400,7 +404,7 @@
                 <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                   <div class="d-flex justify-content-between align-items-center">
                     <StripedHtmlTag {element} />
-                    <InspectButton uuid={element.uuid}></InspectButton>
+                    <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
                   </div>
                 </div>
               {/each}
@@ -412,7 +416,7 @@
                 <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                   <div class="d-flex justify-content-between align-items-center">
                     <StripedHtmlTag {element} />
-                    <InspectButton uuid={element.uuid}></InspectButton>
+                    <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
                   </div>
                 </div>
               {/each}
@@ -431,8 +435,8 @@
             <div class="pane-header flex-center">
               <h3 class="pane-header-title">#{selected.frame.id}</h3>
               {#if selected.frame.attributes.src}
-                <div class="position-absolute end-0">
-                  <button class="btn-icon icon-dark" onclick={() => refreshTurboFrame(selected.frame.id)} title="Refresh Turbo Frames List">
+                <div class="position-absolute end-0 me-2">
+                  <button class="btn-icon action-icon" onclick={() => refreshTurboFrame(selected.frame.id)} aria-label="Refresh Turbo Frames List">
                     {@html Icons.refresh}
                   </button>
                 </div>
@@ -448,7 +452,7 @@
                   <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(referenceElement.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                     <div class="d-flex justify-content-between align-items-center">
                       <StripedHtmlTag element={referenceElement} />
-                      <InspectButton uuid={referenceElement.uuid}></InspectButton>
+                      <InspectButton class="btn-hoverable" uuid={referenceElement.uuid}></InspectButton>
                     </div>
                   </div>
                 {/each}
@@ -467,17 +471,6 @@
                   </tbody>
                 </table>
               {/if}
-
-              <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
-                <span>HTML</span>
-                <div>
-                  <ScrollIntoViewButton selector={`#${selected.frame.id}`}></ScrollIntoViewButton>
-                  <InspectButton selector={`#${selected.frame.id}`}></InspectButton>
-                </div>
-              </div>
-              <div class="html-preview">
-                <pre><code class="language-html"><HTMLRenderer htmlString={selected.frame.serializedTag} /></code></pre>
-              </div>
             </div>
           {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
             <div class="pane-header flex-center">
@@ -535,7 +528,7 @@
 
   /* To prevent flickering when reloading async Turbo Frames */
   .turbo-table td:first-child {
-    min-width: 3.5rem;
+    min-width: 7rem;
     white-space: nowrap;
   }
 

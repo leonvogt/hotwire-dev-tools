@@ -1,39 +1,24 @@
 <script>
-  import CopyButton from "$components/CopyButton.svelte"
   import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import InspectButton from "$components/InspectButton.svelte"
 
   let { outlet } = $props()
 </script>
 
-<div class="d-flex gap-2 mb-2">
-  <wa-tree>
-    <wa-tree-item>
-      <span class="code-key">{outlet.key}</span>
-      {#if outlet.elements.length === 0}
-        <span class="text-muted">(no outlets)</span>
-      {:else}
-        {#each outlet.elements as element}
-          <wa-tree-item class="w-100">
-            <div class="w-100 d-flex justify-content-between">
-              <StripedHtmlTag {element} />
-              <InspectButton uuid={element.uuid}></InspectButton>
-            </div>
-          </wa-tree-item>
-        {/each}
-      {/if}
-      <wa-button id={`rich-tooltip-${outlet.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button">
-        <wa-icon name="info" label="Info"></wa-icon>
-      </wa-button>
-    </wa-tree-item>
-  </wa-tree>
-
-  <wa-tooltip for={`rich-tooltip-${outlet.key}`} trigger="click" style="--max-width: 100%;">
-    <div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span>{outlet.htmlAttribute}</span>
-        <CopyButton value={outlet.htmlAttribute} />
-      </div>
-    </div>
-  </wa-tooltip>
-</div>
+<wa-tree>
+  <wa-tree-item>
+    <span class="code-key">{outlet.key}</span>
+    {#if outlet.elements.length === 0}
+      <span class="text-muted">(no outlets)</span>
+    {:else}
+      {#each outlet.elements as element}
+        <wa-tree-item class="w-100">
+          <div class="entry-row w-100 d-flex justify-content-between">
+            <StripedHtmlTag {element} />
+            <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
+          </div>
+        </wa-tree-item>
+      {/each}
+    {/if}
+  </wa-tree-item>
+</wa-tree>

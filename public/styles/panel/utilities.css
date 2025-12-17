@@ -215,6 +215,18 @@
   margin-bottom: 3rem;
 }
 
+.ms-1 {
+  margin-left: 0.25rem;
+}
+.ms-2 {
+  margin-left: 0.5rem;
+}
+.ms-3 {
+  margin-left: 1rem;
+}
+.me-1 {
+  margin-right: 0.25rem;
+}
 .me-2 {
   margin-right: 0.5rem;
 }
