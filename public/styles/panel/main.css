@@ -54,6 +54,8 @@
   --fs-800: 1.875rem;
   --fs-900: 2.25rem;
 
+  --font-family-monospace: "AirbnbCereal", monospace;
+
   --wa-border-width-scale: 1;
   --wa-space-scale: 0.625;
 }
@@ -69,7 +71,7 @@ body {
 code,
 pre,
 .mono-font {
-  font-family: "AirbnbCereal", monospace;
+  font-family: var(--font-family-monospace);
   font-size: 0.9em;
   width: fit-content;
 }
@@ -88,6 +90,7 @@ pre,
     border: none;
     outline: none;
     height: 4rem;
+    min-height: 2.5rem;
   }
 
   button.active {
@@ -109,6 +112,9 @@ pre,
   .theme-toggle-btn wa-icon {
     margin: auto;
   }
+}
+.landscape .navbar {
+  height: 100vh;
 }
 .portrait .navbar {
   flex-direction: row;
@@ -209,6 +215,17 @@ button.action-icon:active svg {
   margin: 0;
 }
 
+.pane-footer {
+  height: 2rem;
+  position: relative;
+  background-color: var(--wa-color-surface-raised);
+}
+.pane-footer-title {
+  text-align: center;
+  margin: 0;
+  font-size: 1rem;
+}
+
 .pane-scrollable-list {
   overflow-y: auto;
   max-height: 100%;
@@ -223,7 +240,7 @@ button.action-icon:active svg {
 .entry-row {
   border-bottom: 1px solid var(--wa-color-surface-border);
   user-select: none;
-  padding: 0.25rem;
+  padding: 0.2rem;
 
   --indent-size: 1rem;
   --minimum-base-padding: 0.5rem;
@@ -231,6 +248,10 @@ button.action-icon:active svg {
 }
 .entry-row.leaf-node {
   --indent-size: 1.5rem;
+}
+.entry-row.disabled {
+  color: var(--wa-color-text-quiet);
+  cursor: not-allowed;
 }
 
 .entry-row--table-layout {
@@ -281,6 +302,7 @@ button.action-icon:active svg {
   padding-right: 25px;
   margin-bottom: 1em;
   scrollbar-width: none;
+  font-family: var(--font-family-monospace);
 }
 
 .pane-section-heading {
@@ -341,15 +363,24 @@ button.action-icon:active svg {
   display: block;
 }
 
+.count-badge {
+  font-size: var(--wa-font-size-xs);
+  height: 1.25rem;
+  min-width: 1.25rem;
+}
+
 /* Web Awesome Overrides */
 .wa-dark {
   --wa-color-surface-default: #282c34;
+  --wa-color-surface-lowered: #21252b;
+  --wa-color-surface-raised: #2c313c;
 }
 .small-icon-button::part(base) {
   padding: 0;
   margin: 0;
   height: 100%;
   width: 100%;
+  aspect-ratio: auto;
 }
 
 .small-icon-button:not(.disabled):not(.loading)::part(base):hover {
@@ -379,4 +410,13 @@ wa-tooltip .copy-icon:not(.copied) {
 }
 wa-input[size="extra-small"] {
   --wa-form-control-height: 100%;
+}
+
+.pane-container wa-tab-group,
+.pane-container wa-tab-panel,
+.pane-container wa-tab-panel::part(base),
+.pane-container wa-tab-group::part(base),
+.pane-container wa-tab-group::part(body) {
+  height: 100%;
+  padding: 0;
 }

@@ -65,6 +65,10 @@
   width: 100%;
 }
 
+.w-fit-content {
+  width: fit-content;
+}
+
 .max-w-100 {
   max-width: 100%;
 }
@@ -312,6 +316,7 @@
 }
 
 .code-keyword {
+  font-family: var(--font-family-monospace);
   background: var(--wa-color-surface-lowered);
   width: fit-content;
   border-radius: 3px;

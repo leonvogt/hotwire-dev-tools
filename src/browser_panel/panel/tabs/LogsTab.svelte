@@ -62,6 +62,8 @@
 
     const currentIndex = turboEvents.findIndex((e) => e.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboEvents, currentIndex)
+    if (newIndex === undefined) return
+
     setSelectedTurboEvent(turboEvents[newIndex])
 
     setTimeout(() => {

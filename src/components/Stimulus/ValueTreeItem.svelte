@@ -113,12 +113,12 @@
         <CopyButton value={dataAttribute} />
       </div>
       <div class="d-flex justify-content-between align-items-center">
-        <span>{`this.${valueObject.name}Value`}</span>
-        <CopyButton value={`this.${valueObject.name}Value`} />
+        <span>{`this.${valueObject.name}`}</span>
+        <CopyButton value={`this.${valueObject.name}`} />
       </div>
       <div class="d-flex justify-content-between align-items-center">
-        <span>{`this.has${capitalizeFirstChar(valueObject)}Value`}</span>
-        <CopyButton value={`this.has${capitalizeFirstChar(valueObject)}Value`} />
+        <span>{`this.has${capitalizeFirstChar(valueObject.name)}`}</span>
+        <CopyButton value={`this.has${capitalizeFirstChar(valueObject.name)}`} />
       </div>
     </div>
   </wa-tooltip>

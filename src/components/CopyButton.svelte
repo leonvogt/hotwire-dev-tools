@@ -1,10 +1,9 @@
 <script>
   import { copyToClipboard } from "$utils/utils.js"
 
-  let props = $props()
+  let { id, value = "" } = $props()
   let copied = $state(false)
-  let id = props.id ?? `copy-button-${crypto.randomUUID()}`
-  let value = props.value ?? ""
+  let buttonId = $derived(id ? id : `copy-button-${crypto.randomUUID()}`)
   let tooltip
 
   const handleCopy = () => {
@@ -19,8 +18,8 @@
 </script>
 
 <button class="btn-copy" onclick={handleCopy} aria-label="Copy to clipboard">
-  <wa-tooltip for={id} trigger="manual" bind:this={tooltip}>Copied</wa-tooltip>
-  <wa-icon {id} class="copy-icon" class:copied name={copied ? "check" : "copy"} label="copy-icon"></wa-icon>
+  <wa-tooltip for={buttonId} trigger="manual" bind:this={tooltip}>Copied</wa-tooltip>
+  <wa-icon id={buttonId} class="copy-icon" class:copied name={copied ? "check" : "copy"} label="copy-icon"></wa-icon>
 </button>
 
 <style>

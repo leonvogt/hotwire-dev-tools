@@ -10,7 +10,7 @@
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams, getTurboPermanentElements, getTurboTemporaryElements, getTurboConfig } from "../../State.svelte.js"
-  import { debounce, handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
+  import { checkIfAtBottom, scrollToBottom, handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
   import { panelPostMessage, addHighlightOverlay, hideHighlightOverlay } from "../../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
@@ -22,7 +22,7 @@
     TURBO_FRAME: "turbo-frame",
     TURBO_STREAM: "turbo-stream",
   }
-  const turboStreamAnimationDuration = 300
+  const turboStreamAnimationDuration = 50
   const ignoredAttributes = ["id", "data-hotwire-dev-tools-id", "style"]
 
   const devTool = getDevtoolInstance()
@@ -35,6 +35,9 @@
   let turboConfig = $state({})
   let collapsedFrames = $state({})
   let stickyFrames = $state({})
+
+  let streamListContainer = $state(null)
+  let shouldAutoScroll = $state(true)
 
   const connectedTurboCablesCount = $derived(() => {
     return turboCables.filter((cable) => cable.connected).length
@@ -122,6 +125,14 @@
     }
   })
 
+  $effect(() => {
+    if (streamListContainer && turboStreams.length > 0) {
+      if (shouldAutoScroll) {
+        scrollToBottom(streamListContainer, false)
+      }
+    }
+  })
+
   const findFrameByUuid = (frames, uuid) => {
     for (const frame of frames) {
       if (frame.uuid === uuid) {
@@ -165,10 +176,6 @@
     scrollableList.addEventListener("scroll", () => checkStickyVisibility(scrollableList, stickyFrames, collapsedFrames))
   }
 
-  const scrollIntoView = debounce((element) => {
-    element.scrollIntoView({ behavior: "smooth", block: "end" })
-  }, turboStreamAnimationDuration)
-
   const refreshTurboFrame = (turboFrameId) => {
     panelPostMessage({
       action: PANEL_TO_BACKEND_MESSAGES.REFRESH_TURBO_FRAME,
@@ -183,6 +190,8 @@
 
     const currentIndex = turboFrames.findIndex((frame) => frame.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboFrames, currentIndex)
+    if (newIndex === undefined) return
+
     setSelectedTurboFrame(turboFrames[newIndex])
 
     setTimeout(() => {
@@ -199,6 +208,7 @@
 
     const currentIndex = turboStreams.findIndex((stream) => stream.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboStreams, currentIndex)
+    if (newIndex === undefined) return
 
     setSelectedTurboStream(turboStreams[newIndex])
 
@@ -225,27 +235,16 @@
 <Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize} dblClickSplitter={false}>
   <Pane class="turbo-stream-pane full-pane" size={options.turboPaneDimensions?.streams || 35} minSize={20}>
     <div class="pane-container">
-      <div class="pane-header flex-center">
-        {#if turboStreams.length <= 0}
-          <h3 class="pane-header-title">Streams</h3>
-        {/if}
-
-        <div class="position-absolute end-0">
-          {#if turboStreams.length > 0}
-            <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
-          {/if}
-          {#if turboCables.length > 0}
-            <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
-            <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
-          {/if}
-        </div>
-      </div>
-
       {#if turboStreams.length > 0}
-        <div class="pane-scrollable-list">
+        <div
+          class="pane-scrollable-list"
+          bind:this={streamListContainer}
+          onscroll={(e) => {
+            shouldAutoScroll = checkIfAtBottom(e.currentTarget)
+          }}
+        >
           {#each turboStreams as stream (stream.uuid)}
             <div
-              {@attach scrollIntoView}
               class="entry-row p-1 cursor-pointer"
               transition:slide={{ duration: turboStreamAnimationDuration }}
               class:selected={selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid === stream.uuid}
@@ -265,6 +264,18 @@
               </div>
             </div>
           {/each}
+        </div>
+
+        <div class="pane-footer flex-center">
+          <div class="position-absolute end-0">
+            {#if turboStreams.length > 0}
+              <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
+            {/if}
+            {#if turboCables.length > 0}
+              <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
+              <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
+            {/if}
+          </div>
         </div>
       {:else}
         <div class="no-entry-hint">
@@ -326,19 +337,18 @@
     {/snippet}
 
     <div class="pane-container">
-      <div class="pane-header flex-center">
-        {#if turboFrameCount() <= 0}
-          <h3 class="pane-header-title">Frames</h3>
-        {/if}
-        <wa-badge variant="neutral" style="font-size: var(--wa-font-size-xs);" class="position-absolute end-0 me-2" pill>
-          <NumberFlow value={turboFrameCount()} animated={!isFirstFrameCountRender} />
-        </wa-badge>
-      </div>
       {#if turboFrames.length > 0}
         <div class="pane-scrollable-list" {@attach addTurboFrameListListeners}>
           {#each turboFrames as frame (frame.uuid)}
             {@render turboFrameRow(frame)}
           {/each}
+        </div>
+        <div class="pane-footer">
+          <div class="d-flex justify-content-end align-items-center h-100">
+            <wa-badge variant="neutral" class="count-badge me-2" pill>
+              <NumberFlow value={turboFrameCount()} animated={!isFirstFrameCountRender} />
+            </wa-badge>
+          </div>
         </div>
       {:else}
         <div class="no-entry-hint">
@@ -360,7 +370,7 @@
             <tbody>
               <tr>
                 <td>
-                  <wa-tooltip for="config-turbo-session">Checks 'window.Turbo.session.drive' to see if Turbo Drive is enabled</wa-tooltip>
+                  <wa-tooltip for="config-turbo-session">Checks <code>window.Turbo.session.drive</code></wa-tooltip>
                   <div id="config-turbo-session">Turbo Drive</div>
                 </td>
                 <td>{typeof turboConfig.turboDriveEnabled === "boolean" ? (turboConfig.turboDriveEnabled ? "On" : "Off") : "-"}</td>
@@ -368,7 +378,7 @@
               {#if turboConfig.prefetchDisabled}
                 <tr>
                   <td>
-                    <wa-tooltip for="config-turbo-prefetch">Checks the meta tag 'turbo-prefetch' to see if Link Prefetch is enabled</wa-tooltip>
+                    <wa-tooltip for="config-turbo-prefetch">Checks the meta tag <code>turbo-prefetch</code></wa-tooltip>
                     <div id="config-turbo-prefetch">Link Prefetch</div>
                   </td>
                   <td>Off</td>
@@ -376,27 +386,57 @@
               {/if}
               <tr>
                 <td>
-                  <wa-tooltip for="config-turbo-refresh">Defines how Turbo handles page refreshes. Meta Tag: turbo-refresh-method</wa-tooltip>
-                  <div id="config-turbo-refresh">Refresh Control</div>
-                </td>
-                <td>{turboConfig.refreshMethod || "-"}</td>
-              </tr>
-              <tr>
-                <td>
-                  <wa-tooltip for="config-turbo-visit-control">Defines if Turbo should perform a full page reload. Meta Tag: turbo-visit-control</wa-tooltip>
+                  <wa-tooltip for="config-turbo-visit-control">
+                    Meta Tag: <code>turbo-visit-control</code>
+                    <hr />
+                    <div class="info-card-hint">
+                      <code>reload</code>: forces a full page reload
+                    </div>
+                    <div class="info-card-hint">
+                      <code>unset</code>(default): allows Turbo to handle visits normally
+                    </div>
+                  </wa-tooltip>
                   <div id="config-turbo-visit-control">Visit Control</div>
                 </td>
-                <td>{turboConfig.visitControl || "-"}</td>
+                <td>
+                  {#if turboConfig.visitControl}
+                    {turboConfig.visitControl}
+                  {:else}
+                    <wa-tooltip for="config-turbo-visit-value"> Uses default Turbo visit behavior. </wa-tooltip>
+                    <div class="mono-font" id="config-turbo-visit-value">-</div>
+                  {/if}
+                </td>
               </tr>
+
               <tr>
                 <td>
-                  <wa-tooltip for="config-turbo-cache-control">Defines the turbo caching behavior. Meta Tag: turbo-cache-control</wa-tooltip>
+                  <wa-tooltip for="config-turbo-cache-control">
+                    Meta Tag: <code>turbo-cache-control</code>
+                    <hr />
+                    <div class="info-card-hint">
+                      <code>no-cache</code>: always fetched from the network, even on restore
+                    </div>
+                    <div class="info-card-hint">
+                      <code>no-preview</code>: skipped in preview, used only on restore
+                    </div>
+                    <div class="info-card-hint">
+                      <code>unset</code>(default): shows cached preview if valid
+                    </div>
+                  </wa-tooltip>
                   <div id="config-turbo-cache-control">Cache Control</div>
                 </td>
-                <td>{turboConfig.cacheControl || "-"}</td>
+                <td>
+                  {#if turboConfig.cacheControl}
+                    {turboConfig.cacheControl}
+                  {:else}
+                    <wa-tooltip for="config-turbo-cache-control-value"> Uses default Turbo behavior: shows cached preview if valid. </wa-tooltip>
+                    <div class="mono-font" id="config-turbo-cache-control-value">-</div>
+                  {/if}
+                </td>
               </tr>
             </tbody>
           </table>
+
           <div class="pane-scrollable-list">
             {#if turboPermanentElements.length > 0}
               <div class="pane-section-heading">Permanent Elements ({turboPermanentElements.length})</div>
@@ -431,87 +471,94 @@
           </div>
         </wa-tab-panel>
         <wa-tab-panel name="details">
-          {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
-            <div class="pane-header flex-center">
-              <h3 class="pane-header-title">#{selected.frame.id}</h3>
-              {#if selected.frame.attributes.src}
-                <div class="position-absolute end-0 me-2">
-                  <button class="btn-icon action-icon" onclick={() => refreshTurboFrame(selected.frame.id)} aria-label="Refresh Turbo Frames List">
-                    {@html Icons.refresh}
-                  </button>
-                </div>
-              {/if}
-            </div>
-
-            <div class="pane-scrollable-list">
-              {#if selected.frame.referenceElements.length > 0}
-                <div class="pane-section-heading">
-                  <span>Targeted by</span>
-                </div>
-                {#each selected.frame.referenceElements as referenceElement}
-                  <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(referenceElement.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <StripedHtmlTag element={referenceElement} />
-                      <InspectButton class="btn-hoverable" uuid={referenceElement.uuid}></InspectButton>
-                    </div>
+          <div class="pane-container">
+            {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
+              <div class="pane-scrollable-list">
+                {#if selected.frame.referenceElements.length > 0}
+                  <div class="pane-section-heading">
+                    <span>Targeted by</span>
                   </div>
-                {/each}
-              {/if}
+                  {#each selected.frame.referenceElements as referenceElement}
+                    <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(referenceElement.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <StripedHtmlTag element={referenceElement} />
+                        <InspectButton class="btn-hoverable" uuid={referenceElement.uuid}></InspectButton>
+                      </div>
+                    </div>
+                  {/each}
+                {/if}
 
-              {#if Object.keys(selected.frame.attributes).filter((key) => !ignoredAttributes.includes(key)).length > 0}
+                {#if Object.keys(selected.frame.attributes).filter((key) => !ignoredAttributes.includes(key)).length > 0}
+                  <div class="pane-section-heading">Attributes</div>
+                  <table class="table table-sm w-100 turbo-table">
+                    <tbody>
+                      {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
+                        <tr>
+                          <td><div class="code-keyword">{key}</div></td>
+                          <td>{value}</td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                {/if}
+              </div>
+              <div class="pane-footer flex-center">
+                <div class="pane-footer-title">
+                  #{selected.frame.id}
+                </div>
+                <CopyButton class="ms-2" value={selected.frame.id} />
+                {#if selected.frame.attributes.src}
+                  <div class="position-absolute end-0 me-2">
+                    <button class="btn-icon action-icon" onclick={() => refreshTurboFrame(selected.frame.id)} aria-label="Refresh Turbo Frames List">
+                      {@html Icons.refresh}
+                    </button>
+                  </div>
+                {/if}
+              </div>
+            {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
+              <div class="pane-scrollable-list">
                 <div class="pane-section-heading">Attributes</div>
-                <table class="table table-sm w-100 turbo-table">
+                <table class="table table-sm w-100">
                   <tbody>
-                    {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
-                      <tr>
-                        <td><div class="code-keyword">{key}</div></td>
-                        <td>{value}</td>
-                      </tr>
-                    {/each}
+                    <tr>
+                      <td>Action</td>
+                      <td>{selected.stream.action}</td>
+                    </tr>
+                    <tr>
+                      <td>Target</td>
+                      <td>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span>{selected.stream.targetSelector}</span>
+                          <div>
+                            <ScrollIntoViewButton selector={selected.stream.targetSelector}></ScrollIntoViewButton>
+                            <InspectButton selector={selected.stream.targetSelector}></InspectButton>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
-              {/if}
-            </div>
-          {:else if selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid}
-            <div class="pane-header flex-center">
-              <h3 class="pane-header-title">{selected.stream.action} {selected.stream.targetSelector}</h3>
-            </div>
-            <div class="pane-scrollable-list">
-              <div class="pane-section-heading">Attributes</div>
-              <table class="table table-sm w-100">
-                <tbody>
-                  <tr>
-                    <td>Action</td>
-                    <td>{selected.stream.action}</td>
-                  </tr>
-                  <tr>
-                    <td>Target</td>
-                    <td>
-                      <div class="d-flex justify-content-between align-items-center">
-                        <span>{selected.stream.targetSelector}</span>
-                        <div>
-                          <ScrollIntoViewButton selector={selected.stream.targetSelector}></ScrollIntoViewButton>
-                          <InspectButton selector={selected.stream.targetSelector}></InspectButton>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
 
-              <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
-                <span>HTML</span>
-                <CopyButton value={selected.stream.turboStreamContent} />
+                <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+                  <span>HTML</span>
+                  <CopyButton value={selected.stream.turboStreamContent} />
+                </div>
+                <div class="html-preview">
+                  <pre><code class="language-html"><HTMLRenderer htmlString={selected.stream.turboStreamContent} /></code></pre>
+                </div>
               </div>
-              <div class="html-preview">
-                <pre><code class="language-html"><HTMLRenderer htmlString={selected.stream.turboStreamContent} /></code></pre>
+              <div class="pane-footer flex-center">
+                <div class="pane-footer-title mono-font">
+                  {selected.stream.action}
+                  {selected.stream.targetSelector}
+                </div>
               </div>
-            </div>
-          {:else}
-            <div class="no-entry-hint">
-              <span>Nothing to see here</span>
-            </div>
-          {/if}
+            {:else}
+              <div class="no-entry-hint">
+                <span>Nothing to see here</span>
+              </div>
+            {/if}
+          </div>
         </wa-tab-panel>
       </wa-tab-group>
     </div>

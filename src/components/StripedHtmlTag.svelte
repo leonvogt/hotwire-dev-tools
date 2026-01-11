@@ -10,6 +10,15 @@
     {#each element.attributes.class.split(" ") as className}
       <span class="tag-class">.{className}</span>
     {/each}
+  {:else}
+    <!-- No ID or class -->
+    <!-- If it's a <a> tag with an href, show that -->
+    {#if element.tagName.toLowerCase() === "a" && element.attributes.href}
+      <span class="tag-attribute">
+        <span class="tag-attribute-name">href=</span>
+        <span class="tag-attribute-value">"{element.attributes.href}"</span>
+      </span>
+    {/if}
   {/if}
   {#each Object.entries(additionalAttributes) as [key, value]}
     <span class="tag-attribute">
@@ -31,6 +40,7 @@
   .tag-attribute-name,
   .tag-attribute-value {
     font-size: initial;
+    font-family: var(--font-family-monospace);
   }
 
   .tag-name {
@@ -42,10 +52,8 @@
     color: var(--color-tag-class);
   }
 
-  .tag-attribute {
-    margin-left: 0.5em;
-  }
   .tag-attribute-name {
+    padding-left: 0.5em;
     color: var(--color-tag-attribute-name);
   }
 </style>

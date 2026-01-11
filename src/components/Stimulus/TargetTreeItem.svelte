@@ -8,7 +8,7 @@
 </script>
 
 <wa-tree class="w-100">
-  <wa-tree-item>
+  <wa-tree-item expanded>
     <span class="code-key">{target.key}</span>
     {#if target.elements.length === 0}
       <span class="text-muted ms-2">(no targets)</span>

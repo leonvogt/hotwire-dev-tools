@@ -186,3 +186,19 @@ export const serializeAttributes = (element) => {
     return map
   }, {})
 }
+
+export const checkIfAtBottom = (container) => {
+  if (!container) return false
+  const threshold = 10
+  return container.scrollHeight - container.scrollTop - container.clientHeight < threshold
+}
+
+export const scrollToBottom = debounce((container) => {
+  if (!container) return
+  requestAnimationFrame(() => {
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: "auto",
+    })
+  })
+}, 60)

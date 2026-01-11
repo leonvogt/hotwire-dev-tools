@@ -14,6 +14,7 @@
   import { addHighlightOverlay, hideHighlightOverlay } from "$src/browser_panel/messaging"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
+  import CopyButton from "$src/components/CopyButton.svelte"
 
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)
@@ -95,6 +96,8 @@
 
     const currentIndex = uniqueIdentifiers.findIndex((identifier) => identifier === selected.identifier)
     const newIndex = handleKeyboardNavigation(event, uniqueIdentifiers, currentIndex)
+    if (newIndex === undefined) return
+
     setSelectedIdentifier(uniqueIdentifiers[newIndex])
 
     setTimeout(() => {
@@ -117,6 +120,7 @@
 
     const currentIndex = instances.findIndex((instance) => instance.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, instances, currentIndex)
+    if (newIndex === undefined) return
 
     setSelectedController(instances[newIndex])
 
@@ -143,16 +147,11 @@
   <Splitpanes horizontal={$horizontalPanes} dblClickSplitter={false}>
     <Pane class="stimulus-identifiers-list-pane full-pane" size={options.stimulusIdentifiersPaneDimensions?.streams || 35} minSize={20}>
       <div class="pane-container">
-        <div class="pane-header flex-center">
-          {#if stimulusControllers.length === 0}
-            <h3 class="pane-header-title">Controllers</h3>
-          {/if}
-        </div>
         {#if stimulusControllers.length > 0}
           <div class="pane-scrollable-list">
             {#each uniqueIdentifiers as identifier, index (identifier)}
               <div
-                class="entry-row p-1 cursor-pointer"
+                class="entry-row cursor-pointer"
                 animate:flip={{ delay: 0, duration: 200 }}
                 role="button"
                 tabindex="0"
@@ -178,14 +177,28 @@
 
             {#if notUsedStimulusIdentifiers.length > 0}
               {#each notUsedStimulusIdentifiers as identifier (identifier)}
-                <div class="entry-row p-1" animate:flip={{ delay: 0, duration: 200 }}>
-                  <div class="d-flex justify-content-between align-items-center text-muted">
+                <div class="entry-row disabled" animate:flip={{ delay: 0, duration: 200 }}>
+                  <div class="d-flex justify-content-between align-items-center">
                     {identifier}
                     <div>0</div>
                   </div>
                 </div>
               {/each}
             {/if}
+          </div>
+          <div class="pane-footer d-flex justify-content-end align-items-center">
+            <wa-tooltip for="stimulus-count-infos" style="--max-width: 20rem;">
+              <div>
+                <strong class="stimulus-count-info">{uniqueIdentifiers.length}</strong> Stimulus Controllers in use
+              </div>
+              <div>
+                <strong class="stimulus-count-info">{registeredStimulusIdentifiers.length}</strong> Total Stimulus Controllers
+              </div>
+              <div>
+                <strong class="stimulus-count-info">{counts ? Object.values(counts).reduce((a, b) => a + b, 0) : 0}</strong> Total Stimulus Controller instances
+              </div>
+            </wa-tooltip>
+            <div id="stimulus-count-infos" class="footer-text">{uniqueIdentifiers.length} / {registeredStimulusIdentifiers.length}</div>
           </div>
         {:else}
           <div class="no-entry-hint">
@@ -198,12 +211,11 @@
 
     <Pane class="stimulus-controller-list-pane full-pane" size={options.stimulusControllerPaneDimensions?.details || 35} minSize={20}>
       <div class="pane-container">
-        <div class="pane-header flex-center"></div>
         {#if selected.identifier}
           <div class="pane-scrollable-list">
             {#each getStimulusInstances(selected.identifier) as instance (instance.uuid)}
               <div
-                class="entry-row entry-row--table-layout p-1 cursor-pointer"
+                class="entry-row entry-row--table-layout cursor-pointer"
                 class:selected={selected.uuid === instance.uuid}
                 animate:flip={{ delay: 0, duration: 200 }}
                 role="button"
@@ -219,13 +231,19 @@
                   </div>
 
                   <div class="stimulus-instance-second-column">
-                    <div class="me-3 overflow-x-auto scrollbar-none">
+                    <div class="overflow-x-auto scrollbar-none">
                       <InspectButton class="btn-hoverable me-2" uuid={instance.uuid}></InspectButton>
                     </div>
                   </div>
                 </div>
               </div>
             {/each}
+          </div>
+          <div class="pane-footer flex-center">
+            <div class="pane-footer-title">
+              {selected.identifier}
+            </div>
+            <CopyButton class="ms-2" value={selected.identifier} />
           </div>
         {:else}
           <div class="no-entry-hint">
@@ -238,7 +256,6 @@
 
     <Pane class="stimulus-detail-pane full-pane" size={options.stimulusDetailsPaneDimensions?.details || 30} minSize={20}>
       <div class="pane-container">
-        <div class="pane-header flex-center"></div>
         {#if selected.controller}
           <div class="pane-scrollable-list">
             {#if selected.controller.values.length > 0}
@@ -301,6 +318,12 @@
     display: table-cell;
     width: 40%;
     vertical-align: top;
+    text-align: right;
+  }
+  .stimulus-count-info {
+    display: inline-block;
+    width: 3ch;
+    font-family: monospace;
     text-align: right;
   }
 </style>
