@@ -4,11 +4,11 @@
   let { klass } = $props()
 </script>
 
-<wa-tree>
+<wa-tree class="stimulus-classes-tree">
   <wa-tree-item expanded>
-    <span class="code-key">{klass.key}</span>
+    <span>{klass.key}</span>
     {#if klass.classes.length === 0}
-      <span class="text-muted">(0)</span>
+      <small class="text-muted ms-2">(0)</small>
     {:else}
       {#each klass.classes as value}
         <wa-tree-item class="w-100">

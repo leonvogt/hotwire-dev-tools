@@ -404,7 +404,14 @@ button.action-icon:active svg {
   display: flex;
   gap: 0.5rem;
   margin-right: 2rem;
-  color: var(--wa-color-purple-50);
+}
+
+.stimulus-outlet-tree,
+.stimulus-target-tree,
+.stimulus-classes-tree {
+  .entry-row {
+    margin-left: -1rem;
+  }
 }
 
 /* Remove default selection styles from wa-tree-item */

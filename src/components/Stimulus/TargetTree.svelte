@@ -7,11 +7,11 @@
   let { target } = $props()
 </script>
 
-<wa-tree class="w-100">
+<wa-tree class="w-100 stimulus-target-tree">
   <wa-tree-item expanded>
-    <span class="code-key">{target.key}</span>
+    <span>{target.key}</span>
     {#if target.elements.length === 0}
-      <span class="text-muted ms-2">(no targets)</span>
+      <small class="text-muted ms-2">(0)</small>
     {:else}
       {#each target.elements as element}
         <wa-tree-item class="w-100" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()}>

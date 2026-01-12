@@ -88,7 +88,7 @@
         <NestedValue data={valueObject.value} {editingStates} onEdit={handleEdit} onSave={handleSave} onCancel={handleCancel} />
       {:else}
         <div class="stimulus-value-editor-wrapper">
-          <span class="code-key">{valueObject.name}:</span>
+          <span>{valueObject.name}:</span>
           <ValueEditor
             value={String(valueObject.value)}
             valueType={valueObject.type}
@@ -100,7 +100,7 @@
         </div>
       {/if}
       {#if valueObject.value === valueObject.defaultValue}
-        <wa-badge variant="neutral" appearance="outlined" size="small">DEFAULT</wa-badge>
+        <wa-badge id={`rich-tooltip-${valueObject.key}-default-value`} variant="neutral" appearance="outlined" size="small">DEFAULT</wa-badge>
       {/if}
       <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button info-button">
         <wa-icon name="info" label="Info"></wa-icon>
@@ -111,7 +111,6 @@
   <wa-tooltip for={`rich-tooltip-${valueObject.key}`} trigger="click" style="--max-width: 100%;">
     <div>
       <div class="flex-center">Type: {valueObject.type}</div>
-      <div class="flex-center">Default: {valueObject.defaultValue}</div>
       <div class="d-flex justify-content-between align-items-center">
         <span>{dataAttribute}</span>
         <CopyButton value={dataAttribute} />
@@ -124,6 +123,12 @@
         <span>{`this.has${capitalizeFirstChar(valueObject.name)}`}</span>
         <CopyButton value={`this.has${capitalizeFirstChar(valueObject.name)}`} />
       </div>
+    </div>
+  </wa-tooltip>
+
+  <wa-tooltip for={`rich-tooltip-${valueObject.key}-default-value`} style="--max-width: 100%;">
+    <div>
+      <div class="flex-center">Default: {valueObject.defaultValue}</div>
     </div>
   </wa-tooltip>
 </div>

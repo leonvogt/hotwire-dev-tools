@@ -14,7 +14,7 @@
     <wa-tree-item class="w-100">
       {#if isPrimitive(value)}
         <div class="stimulus-value-editor-wrapper">
-          <span class="code-key">{key}:</span>
+          <span>{key}:</span>
           <ValueEditor
             {value}
             isEditing={editingStates[[...path, key].join(".")] || false}
@@ -24,7 +24,7 @@
           />
         </div>
       {:else}
-        <span class="code-key">{key}:</span>
+        <span>{key}:</span>
         {#if isArray(value)}
           <span class="text-muted ms-1">{value.length}</span>
         {/if}
@@ -37,7 +37,7 @@
     <wa-tree-item class="w-100">
       {#if isPrimitive(item)}
         <div class="stimulus-value-editor-wrapper">
-          <span class="code-key">{i}:</span>
+          <span>{i}:</span>
           <ValueEditor
             value={item}
             isEditing={editingStates[[...path, i].join(".")] || false}
@@ -47,7 +47,7 @@
           />
         </div>
       {:else}
-        <span class="code-key">{i}:</span>
+        <span>{i}:</span>
         {#if isArray(item)}
           <span class="text-muted ms-1">Array [{item.length}]</span>
         {/if}

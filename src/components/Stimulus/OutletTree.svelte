@@ -5,11 +5,11 @@
   let { outlet } = $props()
 </script>
 
-<wa-tree>
-  <wa-tree-item>
-    <span class="code-key">{outlet.key}</span>
+<wa-tree class="stimulus-outlet-tree">
+  <wa-tree-item expanded>
+    <span>{outlet.key}</span>
     {#if outlet.elements.length === 0}
-      <span class="text-muted">(no outlets)</span>
+      <small class="text-muted ms-2">(0)</small>
     {:else}
       {#each outlet.elements as element}
         <wa-tree-item class="w-100">

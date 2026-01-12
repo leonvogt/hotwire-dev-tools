@@ -2,11 +2,11 @@
   import { Pane, Splitpanes } from "svelte-splitpanes"
   import { flip } from "svelte/animate"
 
-  import ValueTreeItem from "$src/components/Stimulus/ValueTreeItem.svelte"
-  import TargetTreeItem from "$src/components/Stimulus/TargetTreeItem.svelte"
-  import OutletTreeItem from "$src/components/Stimulus/OutletTreeItem.svelte"
-  import ClassTreeItem from "$src/components/Stimulus/ClassTreeItem.svelte"
-  import ActionTreeItem from "$src/components/Stimulus/ActionTreeItem.svelte"
+  import ValueTree from "$src/components/Stimulus/ValueTree.svelte"
+  import TargetTree from "$src/components/Stimulus/TargetTree.svelte"
+  import OutletTree from "$src/components/Stimulus/OutletTree.svelte"
+  import ClassTree from "$src/components/Stimulus/ClassTree.svelte"
+  import ActionTree from "$src/components/Stimulus/ActionTree.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import { getStimulusData, getRegisteredStimulusIdentifiers } from "../../State.svelte.js"
@@ -262,31 +262,31 @@
               <div class="pane-section-heading">Values</div>
               {#each Object.entries(selected.controller.values) as [_key, valueObject] (selected.uuid + selected.identifier + valueObject.key)}
                 {@const dataAttribute = `data-${selected.identifier}-${valueObject.key}`}
-                <ValueTreeItem {valueObject} {selected} {dataAttribute} />
+                <ValueTree {valueObject} {selected} {dataAttribute} />
               {/each}
             {/if}
             {#if selected.controller.targets.length > 0}
               <div class="pane-section-heading">Targets</div>
               {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + selected.identifier + target.name)}
-                <TargetTreeItem {target} {selected} />
+                <TargetTree {target} {selected} />
               {/each}
             {/if}
             {#if selected.controller.outlets.length > 0}
               <div class="pane-section-heading">Outlets</div>
               {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + selected.identifier + outlet.name)}
-                <OutletTreeItem {outlet} {selected} />
+                <OutletTree {outlet} {selected} />
               {/each}
             {/if}
             {#if selected.controller.classes.length > 0}
               <div class="pane-section-heading">Classes</div>
               {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + selected.identifier + klass.name)}
-                <ClassTreeItem {klass} {selected} />
+                <ClassTree {klass} {selected} />
               {/each}
             {/if}
             {#if selected.controller.actions.length > 0}
               <div class="pane-section-heading">Actions</div>
               {#each selected.controller.actions as action (selected.uuid + selected.identifier + action.descriptor)}
-                <ActionTreeItem {action} {selected} />
+                <ActionTree {action} {selected} />
               {/each}
             {/if}
             {#if selected.controller.values.length === 0 && selected.controller.targets.length === 0 && selected.controller.outlets.length === 0 && selected.controller.classes.length === 0 && selected.controller.actions.length === 0}

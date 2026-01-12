@@ -81,7 +81,7 @@
 {:else if type === "boolean"}
   <wa-switch checked={value} onchange={(e) => onSave(e.target.checked)}></wa-switch>
 {:else}
-  {value}
+  <span class="code-value">{value}</span>
   <IconButton name="pencil" onclick={handleEdit} size="small"></IconButton>
 {/if}
 
