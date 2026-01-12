@@ -11,9 +11,9 @@
 
 {#if isObject(data)}
   {#each Object.entries(data) as [key, value]}
-    <wa-tree-item>
+    <wa-tree-item class="w-100">
       {#if isPrimitive(value)}
-        <div class="d-flex gap-2 code-value">
+        <div class="stimulus-value-editor-wrapper">
           <span class="code-key">{key}:</span>
           <ValueEditor
             {value}
@@ -34,9 +34,9 @@
   {/each}
 {:else if isArray(data)}
   {#each data as item, i}
-    <wa-tree-item>
+    <wa-tree-item class="w-100">
       {#if isPrimitive(item)}
-        <div class="d-flex gap-2 code-value">
+        <div class="stimulus-value-editor-wrapper">
           <span class="code-key">{i}:</span>
           <ValueEditor
             value={item}

@@ -77,9 +77,9 @@
   }
 </script>
 
-<div class="d-flex gap-2 mb-2">
-  <wa-tree>
-    <wa-tree-item expanded>
+<div class="d-flex gap-2 mb-2 stimulus-value-tree-item">
+  <wa-tree class="w-100">
+    <wa-tree-item class="w-100" expanded>
       {#if isComplex(valueObject.value)}
         {valueObject.name}
         {#if isArray(valueObject.value)}
@@ -87,7 +87,7 @@
         {/if}
         <NestedValue data={valueObject.value} {editingStates} onEdit={handleEdit} onSave={handleSave} onCancel={handleCancel} />
       {:else}
-        <div class="d-flex gap-2 code-value">
+        <div class="stimulus-value-editor-wrapper">
           <span class="code-key">{valueObject.name}:</span>
           <ValueEditor
             value={String(valueObject.value)}
@@ -99,7 +99,10 @@
           />
         </div>
       {/if}
-      <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button">
+      {#if valueObject.value === valueObject.defaultValue}
+        <wa-badge variant="neutral" appearance="outlined" size="small">DEFAULT</wa-badge>
+      {/if}
+      <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button info-button">
         <wa-icon name="info" label="Info"></wa-icon>
       </wa-button>
     </wa-tree-item>
@@ -108,6 +111,7 @@
   <wa-tooltip for={`rich-tooltip-${valueObject.key}`} trigger="click" style="--max-width: 100%;">
     <div>
       <div class="flex-center">Type: {valueObject.type}</div>
+      <div class="flex-center">Default: {valueObject.defaultValue}</div>
       <div class="d-flex justify-content-between align-items-center">
         <span>{dataAttribute}</span>
         <CopyButton value={dataAttribute} />
@@ -123,3 +127,20 @@
     </div>
   </wa-tooltip>
 </div>
+
+<style>
+  wa-tree {
+    margin-right: 2rem;
+  }
+
+  wa-badge {
+    height: 1rem;
+    padding: 0.7em 0.4em;
+    font-size: 0.7rem;
+  }
+
+  wa-button.info-button {
+    margin-bottom: 0.15rem;
+    margin-left: auto;
+  }
+</style>

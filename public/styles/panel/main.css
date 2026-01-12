@@ -395,6 +395,18 @@ button.action-icon:active svg {
   padding: 0.25rem;
 }
 
+.stimulus-value-tree-item wa-button.small-icon-button {
+  font-size: 0.8rem;
+}
+
+.stimulus-value-editor-wrapper {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+  margin-right: 2rem;
+  color: var(--wa-color-purple-50);
+}
+
 /* Remove default selection styles from wa-tree-item */
 .stimulus-detail-pane wa-tree-item[selected]::part(item) {
   background-color: var(--wa-color-surface-default);
