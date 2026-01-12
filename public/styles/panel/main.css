@@ -232,6 +232,9 @@ button.action-icon:active svg {
   scrollbar-width: thin;
   flex: 1;
 }
+.pane-scrollable-list--inside-tab {
+  max-height: calc(100% - 2rem);
+}
 
 .pane-scrollable-list .entry-row {
   padding-right: 12px; /* To avoid content being hidden under scrollbar */

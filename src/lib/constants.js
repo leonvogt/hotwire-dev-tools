@@ -33,6 +33,8 @@ export const PANEL_TO_BACKEND_MESSAGES = {
   REFRESH_ALL_STATE: "refresh-all-state",
   SCROLL_AND_HIGHLIGHT: "scroll-and-highlight",
   UPDATE_DATA_ATTRIBUTE: "update-data-attribute",
+  SHOW_TURBO_FRAME_CONNECTIONS: "show-turbo-frame-connections",
+  HIDE_TURBO_FRAME_CONNECTIONS: "hide-turbo-frame-connections",
 }
 
 export const TURBO_EVENTS = [

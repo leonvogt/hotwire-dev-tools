@@ -12,6 +12,7 @@
     "esbuild-svelte": "^0.9.3",
     "fs-extra": "^11.3.0",
     "highlight.js": "^11.11.1",
+    "leader-line": "^1.0.8",
     "mustache": "^4.2.0",
     "prettier": "^3.5.3",
     "svelte": "^5.33.18",

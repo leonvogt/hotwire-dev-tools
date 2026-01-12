@@ -6,6 +6,7 @@ import TurboCableObserver from "./turbo_cable_observer.js"
 import StimulusObserver from "./stimulus_observer.js"
 import TurboAttributeElementsObserver from "./turbo_attribute_elements_observer.js"
 import ElementObserver from "./element_observer.js"
+import LeaderLine from "$lib/leader_line.js"
 
 // This is the backend script which interacts with the page's DOM.
 // It observes changes and relays information to the DevTools panel.
@@ -401,6 +402,26 @@ function init() {
             }
           })
         }
+        break
+      }
+      case PANEL_TO_BACKEND_MESSAGES.SHOW_TURBO_FRAME_CONNECTIONS: {
+        document.querySelectorAll(".leader-line").forEach((line) => line.remove())
+
+        const turboFrameId = e.data.payload.turboFrameId
+        const triggerSelector = e.data.payload.triggerSelector || "[data-turbo-frame='" + turboFrameId + "']"
+
+        document.querySelectorAll(triggerSelector).forEach((trigger) => {
+          const turboFrame = document.getElementById(trigger.dataset.turboFrame)
+          if (turboFrame) {
+            new LeaderLine(trigger, turboFrame)
+          }
+        })
+        break
+      }
+      case PANEL_TO_BACKEND_MESSAGES.HIDE_TURBO_FRAME_CONNECTIONS: {
+        // Remove all LeaderLines
+        document.querySelectorAll(".leader-line").forEach((line) => line.remove())
+        break
       }
     }
   }
