@@ -184,6 +184,42 @@
     })
   }
 
+  const showTurboFrameConnections = (triggerElement) => {
+    if (selected.type !== SELECTABLE_TYPES.TURBO_FRAME || !selected.uuid) return
+
+    const triggerSelector = triggerElement ? selectorByUUID(triggerElement.uuid) : null
+
+    addHighlightOverlay(`${triggerSelector}, ${selectorByUUID(selected.uuid)}`)
+    panelPostMessage({
+      action: PANEL_TO_BACKEND_MESSAGES.SHOW_TURBO_FRAME_CONNECTIONS,
+      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+      turboFrameId: selected.frame.id,
+      triggerSelector: triggerSelector,
+    })
+  }
+
+  const showAllTurboFrameConnections = () => {
+    if (selected.type !== SELECTABLE_TYPES.TURBO_FRAME || !selected.uuid) return
+    const triggerElements = selected.frame.referenceElements
+    const selectors = triggerElements.map((el) => selectorByUUID(el.uuid))
+    selectors.push(selectorByUUID(selected.uuid))
+    addHighlightOverlay(selectors.join(", "))
+    panelPostMessage({
+      action: PANEL_TO_BACKEND_MESSAGES.SHOW_TURBO_FRAME_CONNECTIONS,
+      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+      turboFrameId: selected.frame.id,
+      triggerSelector: `[data-turbo-frame='${selected.frame.id}']`,
+    })
+  }
+
+  const hideTurboFrameConnections = () => {
+    panelPostMessage({
+      action: PANEL_TO_BACKEND_MESSAGES.HIDE_TURBO_FRAME_CONNECTIONS,
+      source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    })
+    hideHighlightOverlay()
+  }
+
   const handleFrameListKeyboardNavigation = (event) => {
     if (!turboFrames.length) return
     event.preventDefault() // Prevents automatic browser scrolling
@@ -475,11 +511,11 @@
             {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
               <div class="pane-scrollable-list">
                 {#if selected.frame.referenceElements.length > 0}
-                  <div class="pane-section-heading">
+                  <div class="pane-section-heading" onmouseenter={showAllTurboFrameConnections} onmouseleave={hideTurboFrameConnections} role="button" tabindex="0">
                     <span>Targeted by</span>
                   </div>
                   {#each selected.frame.referenceElements as referenceElement}
-                    <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(referenceElement.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
+                    <div class="entry-row p-2 border-bottom" onmouseenter={() => showTurboFrameConnections(referenceElement)} onmouseleave={hideTurboFrameConnections} role="button" tabindex="0">
                       <div class="d-flex justify-content-between align-items-center">
                         <StripedHtmlTag element={referenceElement} />
                         <InspectButton class="btn-hoverable" uuid={referenceElement.uuid}></InspectButton>
