@@ -58,6 +58,8 @@
 
   --wa-border-width-scale: 1;
   --wa-space-scale: 0.625;
+
+  --pane-footer-height: 2rem;
 }
 
 body {
@@ -200,6 +202,10 @@ button.action-icon:active svg {
   height: 100%;
 }
 
+wa-tab-panel .pane-container {
+  max-height: calc(100% - var(--pane-footer-height));
+}
+
 .pane-header {
   border-bottom: 3px solid var(--wa-color-surface-border);
   margin-bottom: 0.5em;
@@ -216,7 +222,7 @@ button.action-icon:active svg {
 }
 
 .pane-footer {
-  height: 2rem;
+  height: var(--pane-footer-height);
   position: relative;
   background-color: var(--wa-color-surface-raised);
 }
@@ -438,4 +444,8 @@ wa-input[size="extra-small"] {
 .pane-container wa-tab-group::part(body) {
   height: 100%;
   padding: 0;
+}
+
+.pane-container wa-tab::part(base) {
+  padding: 0.2rem 1.5em;
 }
