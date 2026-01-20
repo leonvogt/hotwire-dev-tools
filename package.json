@@ -2,6 +2,7 @@
   "scripts": {
     "build": "NODE_ENV=production node build.js --no-watch",
     "dev": "NODE_ENV=development node build.js --watch",
+    "dev:panel": "NODE_ENV=development node build.js --watch & npx serve public -l 3333 --cors",
     "lint": "npx prettier --check .",
     "format": "npx prettier --write ."
   },

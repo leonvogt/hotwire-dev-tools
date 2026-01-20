@@ -34,17 +34,22 @@ const outputFileNames = {
   "inject_script.js": "hotwire_dev_tools_inject_script.js",
 }
 
+// Dev-only entry points (excluded from production builds)
+const devEntryPoints = ["./src/browser_panel/panel/dev.js"]
+
+const baseEntryPoints = [
+  "./src/content.js",
+  "./src/popup.js",
+  "./src/background.js",
+  "./src/inject_script.js",
+  "./src/browser_panel/panel/panel.js",
+  "./src/browser_panel/panel/register.js",
+  "./src/browser_panel/page/backend.js",
+  "./src/browser_panel/proxy.js",
+]
+
 const esbuildConfig = {
-  entryPoints: [
-    "./src/content.js",
-    "./src/popup.js",
-    "./src/background.js",
-    "./src/inject_script.js",
-    "./src/browser_panel/panel/panel.js",
-    "./src/browser_panel/panel/register.js",
-    "./src/browser_panel/page/backend.js",
-    "./src/browser_panel/proxy.js",
-  ],
+  entryPoints: production ? baseEntryPoints : [...baseEntryPoints, ...devEntryPoints],
   bundle: true,
   minify: production,
   sourcemap: !production && browser !== "safari",
@@ -103,6 +108,27 @@ async function generateManifest() {
   }
 }
 
+async function cleanupDevFiles() {
+  const devFiles = [
+    path.join(__dirname, "public", "dev.html"),
+    path.join(__dirname, "public", "dist", "browser_panel", "panel", "dev.js"),
+    path.join(__dirname, "public", "dist", "browser_panel", "panel", "dev.js.map"),
+    path.join(__dirname, "public", "dist", "browser_panel", "panel", "dev.css"),
+    path.join(__dirname, "public", "dist", "browser_panel", "panel", "dev.css.map"),
+  ]
+
+  for (const file of devFiles) {
+    try {
+      if (await fs.pathExists(file)) {
+        await fs.remove(file)
+        console.log(`Removed dev file: ${path.basename(file)}`)
+      }
+    } catch (err) {
+      // Ignore errors if file doesn't exist
+    }
+  }
+}
+
 const buildAndWatch = async () => {
   const context = await esbuild.context({ ...esbuildConfig, logLevel: "info" })
   context.watch()
@@ -114,7 +140,10 @@ async function buildProject() {
   if (process.argv.includes("--watch")) {
     buildAndWatch()
   } else {
-    esbuild.build(esbuildConfig)
+    await esbuild.build(esbuildConfig)
+    if (production) {
+      await cleanupDevFiles()
+    }
   }
 }
 

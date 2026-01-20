@@ -1,0 +1,38 @@
+<!doctype html>
+<html class="wa-theme-default wa-palette-shoelace wa-brand-blue wa-neutral-gray wa-success-green wa-warning-yellow wa-danger-red" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotwire Dev Tools - Development Mode</title>
+
+    <link rel="stylesheet" href="styles/panel/main.css" />
+    <link rel="stylesheet" href="styles/panel/utilities.css" />
+    <link rel="stylesheet" href="styles/panel/code_highlight.css" />
+
+    <!-- Svelte Styles -->
+    <link rel="stylesheet" href="dist/browser_panel/panel/dev.css" />
+
+    <style>
+      /* Development mode indicator */
+      body::before {
+        content: "🔧 DEV MODE";
+        position: fixed;
+        top: 4px;
+        right: 4px;
+        background: #f59e0b;
+        color: #000;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 4px;
+        z-index: 9999;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module" src="dist/browser_panel/panel/dev.js"></script>
+  </body>
+</html>
