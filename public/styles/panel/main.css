@@ -202,9 +202,9 @@ button.action-icon:active svg {
   height: 100%;
 }
 
-wa-tab-panel .pane-container {
+/* wa-tab-panel .pane-container {
   max-height: calc(100% - var(--pane-footer-height));
-}
+} */
 
 .pane-header {
   border-bottom: 3px solid var(--wa-color-surface-border);

@@ -10,9 +10,8 @@
 
   import IconButton from "$uikit/IconButton.svelte"
   import CopyButton from "$components/CopyButton.svelte"
-  import InspectButton from "$components/InspectButton.svelte"
-  import ScrollIntoViewButton from "$components/ScrollIntoViewButton.svelte"
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
+  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
 
   const SELECTABLE_TYPES = {
     TURBO_EVENT: "turbo-event",
@@ -119,44 +118,12 @@
 <Splitpanes horizontal={$horizontalPanes} on:resized={handlePaneResize} dblClickSplitter={false}>
   <Pane class="turbo-event-pane full-pane" size={options.logPaneDimensions?.events || 50} minSize={20}>
     <div class="pane-container">
-      <div class="pane-header flex-center">
-        <h3 class="pane-header-title">Events</h3>
-        <div class="position-absolute end-0">
-          <wa-dropdown class="mb-2" use:preventDropdownClose>
-            <wa-button slot="trigger" class="small-icon-button" variant="neutral" appearance="plain">
-              <wa-icon name="filter" label="filter"></wa-icon>
-            </wa-button>
-            {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
-              <wa-dropdown-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
-                <strong>{groupName}</strong>
-              </wa-dropdown-item>
-
-              {#each events as event}
-                <wa-dropdown-item
-                  class="turbo-event-menu-item"
-                  type="checkbox"
-                  role="button"
-                  tabindex="0"
-                  onkeyup={(e) => handleFilterToggle(e)}
-                  onclick={(e) => handleFilterToggle(e)}
-                  value={event}
-                  checked={turboEventsFilter.includes(event)}>{event}</wa-dropdown-item
-                >
-              {/each}
-            {/each}
-          </wa-dropdown>
-          {#if turboEvents.length > 0}
-            <IconButton name="trash2" onclick={clearTurboEvents}></IconButton>
-          {/if}
-        </div>
-      </div>
-
       {#if turboEvents.length > 0}
-        <div class="scrollable-list overflow-x-hidden">
+        <div class="pane-scrollable-list">
           {#each turboEvents as event (event.uuid)}
             <div
               {@attach scrollIntoView}
-              class="entry-row entry-row--table-layout p-1 cursor-pointer turbo-event-entry-row"
+              class="entry-row cursor-pointer"
               class:selected={selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.turboEvent.uuid === event.uuid}
               class:d-none={!turboEventsFilter.includes(event.eventName)}
               role="button"
@@ -166,18 +133,45 @@
               onmouseenter={() => addHighlightOverlayByPath(event.targetElementPath)}
               onmouseleave={() => hideHighlightOverlay()}
             >
-              <div class="d-table-row">
-                <div class="turbo-event-first-column">
-                  <strong>{event.eventName}</strong>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2 overflow-hidden">
+                  <strong class="text-nowrap">{event.eventName}</strong>
+                  {#if event.targetElement}
+                    <span class="text-muted text-truncate"><StripedHtmlTag element={event.targetElement} /></span>
+                  {/if}
                 </div>
-
-                <div class="turbo-event-second-column">
-                  <div class="me-3">{event.time}</div>
-                  <div class="me-3 overflow-x-auto scrollbar-none"><HTMLRenderer htmlString={event.serializedTargetTag} /></div>
-                </div>
+                <span class="text-muted text-nowrap ms-2">{event.time}</span>
               </div>
             </div>
           {/each}
+        </div>
+        <div class="pane-footer flex-center">
+          <div class="position-absolute end-0">
+            <wa-dropdown use:preventDropdownClose>
+              <wa-button slot="trigger" class="small-icon-button" variant="neutral" appearance="plain">
+                <wa-icon name="filter" label="filter"></wa-icon>
+              </wa-button>
+              {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
+                <wa-dropdown-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
+                  <strong>{groupName}</strong>
+                </wa-dropdown-item>
+
+                {#each events as event}
+                  <wa-dropdown-item
+                    class="turbo-event-menu-item"
+                    type="checkbox"
+                    role="button"
+                    tabindex="0"
+                    onkeyup={(e) => handleFilterToggle(e)}
+                    onclick={(e) => handleFilterToggle(e)}
+                    value={event}
+                    checked={turboEventsFilter.includes(event)}>{event}</wa-dropdown-item
+                  >
+                {/each}
+              {/each}
+            </wa-dropdown>
+            <IconButton name="trash" onclick={clearTurboEvents}></IconButton>
+          </div>
         </div>
       {:else}
         <div class="no-entry-hint">
@@ -213,16 +207,10 @@
 
     <div class="pane-container">
       {#if selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.uuid}
-        <div class="pane-header flex-center">
-          <h3 class="pane-header-title">
-            <span>Event</span>
-            <div class="code-keyword">{selected.turboEvent.eventName}</div>
-          </h3>
-        </div>
-
-        <div class="scrollable-list">
+        <div class="pane-scrollable-list">
           {#if selected.turboEvent.eventName === "turbo:before-stream-render"}
-            <div class="d-flex justify-content-end">
+            <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+              <span>HTML</span>
               <CopyButton value={selected.turboEvent.turboStreamContent} />
             </div>
             <div class="html-preview">
@@ -230,6 +218,7 @@
             </div>
           {/if}
 
+          <div class="pane-section-heading">Details</div>
           <table class="table table-sm w-100 turbo-events-table">
             <tbody>
               {#if selected.turboEvent.action}
@@ -245,9 +234,6 @@
                   <td>
                     <div class="d-flex justify-content-between align-items-center">
                       <span><HTMLRenderer htmlString={selected.turboEvent.serializedTargetTag} /></span>
-                      <div>
-                        <ScrollIntoViewButton elementPath={selected.turboEvent.targetElementPath}></ScrollIntoViewButton>
-                      </div>
                     </div>
                   </td>
                 </tr>
@@ -269,8 +255,13 @@
             </tbody>
           </table>
         </div>
+        <div class="pane-footer flex-center">
+          <div class="pane-footer-title">
+            <span class="code-keyword">{selected.turboEvent.eventName}</span>
+          </div>
+          <CopyButton class="ms-2" value={selected.turboEvent.eventName} />
+        </div>
       {:else}
-        <div class="pane-header"></div>
         <div class="no-entry-hint">
           <span>Nothing selected</span>
           <span>Select a Turbo Event to see its details</span>
@@ -281,19 +272,6 @@
 </Splitpanes>
 
 <style>
-  .turbo-event-first-column {
-    display: table-cell;
-    width: 60%;
-    vertical-align: top;
-    padding-right: 8px;
-  }
-  .turbo-event-second-column {
-    display: table-cell;
-    width: 40%;
-    vertical-align: top;
-    text-align: right;
-  }
-
   .turbo-events-table {
     table-layout: fixed;
   }
