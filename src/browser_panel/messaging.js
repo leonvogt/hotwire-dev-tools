@@ -119,3 +119,13 @@ export const refreshAllState = () => {
     source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
   })
 }
+
+export const dispatchEvent = (selector, eventName, keyFilter = null) => {
+  panelPostMessage({
+    action: PANEL_TO_BACKEND_MESSAGES.DISPATCH_EVENT,
+    source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    selector: selector,
+    eventName: eventName,
+    keyFilter: keyFilter,
+  })
+}

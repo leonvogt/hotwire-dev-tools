@@ -1,10 +1,15 @@
 <script>
   import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import InspectButton from "$components/InspectButton.svelte"
-  import { addHighlightOverlay, hideHighlightOverlay } from "$src/browser_panel/messaging"
+  import IconButton from "$uikit/IconButton.svelte"
+  import { addHighlightOverlay, hideHighlightOverlay, dispatchEvent } from "$src/browser_panel/messaging"
   import { selectorByUUID } from "$utils/utils.js"
 
   let { action } = $props()
+
+  const triggerAction = () => {
+    dispatchEvent(selectorByUUID(action.element.uuid), action.eventName, action.keyFilter)
+  }
 </script>
 
 <div class="entry-row" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(action.element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
@@ -33,7 +38,9 @@
         </div>
       {/if}
     </div>
-    <div>
+
+    <div class="d-flex gap-2">
+      <IconButton class="btn-hoverable" name="play" onclick={triggerAction}></IconButton>
       <InspectButton class="btn-hoverable" uuid={action.element.uuid}></InspectButton>
     </div>
   </div>

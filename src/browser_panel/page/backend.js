@@ -345,6 +345,57 @@ function init() {
       return null
     }
 
+    dispatchEvent(elements, eventName, keyFilter) {
+      if (!elements || elements.length === 0) {
+        console.warn("No elements found for dispatching event")
+        return
+      }
+
+      elements.forEach((element) => {
+        // Key mappings from Stimulus schema
+        const keyMappings = {
+          enter: "Enter",
+          tab: "Tab",
+          esc: "Escape",
+          space: " ",
+          up: "ArrowUp",
+          down: "ArrowDown",
+          left: "ArrowLeft",
+          right: "ArrowRight",
+          home: "Home",
+          end: "End",
+          page_up: "PageUp",
+          page_down: "PageDown",
+        }
+
+        const isKeyboardEvent = ["keydown", "keyup", "keypress"].includes(eventName)
+        if (isKeyboardEvent && keyFilter) {
+          const filters = keyFilter.split("+")
+          const modifiers = { ctrlKey: false, altKey: false, shiftKey: false, metaKey: false }
+          let mainKey = ""
+
+          filters.forEach((filter) => {
+            if (filter === "ctrl") modifiers.ctrlKey = true
+            else if (filter === "alt") modifiers.altKey = true
+            else if (filter === "shift") modifiers.shiftKey = true
+            else if (filter === "meta") modifiers.metaKey = true
+            else mainKey = keyMappings[filter] || filter
+          })
+
+          element.dispatchEvent(
+            new KeyboardEvent(eventName, {
+              key: mainKey,
+              bubbles: true,
+              cancelable: true,
+              ...modifiers,
+            }),
+          )
+        } else {
+          element.dispatchEvent(new Event(eventName, { bubbles: true, cancelable: true }))
+        }
+      })
+    }
+
     respondToHealthCheck() {
       this._postMessage({
         type: BACKEND_TO_PANEL_MESSAGES.HEALTH_CHECK_RESPONSE,
@@ -439,6 +490,14 @@ function init() {
       }
       case PANEL_TO_BACKEND_MESSAGES.HIDE_TURBO_FRAME_CONNECTIONS: {
         devtoolsBackend.removeTurboFrameConnections()
+        break
+      }
+      case PANEL_TO_BACKEND_MESSAGES.DISPATCH_EVENT: {
+        const elements = devtoolsBackend.getElementsByPayload(e.data.payload)
+        const eventName = e.data.payload.eventName
+        const keyFilter = e.data.payload.keyFilter
+
+        devtoolsBackend.dispatchEvent(elements, eventName, keyFilter)
         break
       }
     }
