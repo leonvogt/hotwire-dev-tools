@@ -15,7 +15,7 @@
     "highlight.js": "^11.11.1",
     "mustache": "^4.2.0",
     "prettier": "^3.5.3",
-    "svelte": "^5.33.18",
+    "svelte": "^5.53.0",
     "svelte-splitpanes": "^8.0.9"
   }
 }
