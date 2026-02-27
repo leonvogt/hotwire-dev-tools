@@ -10,8 +10,8 @@
   import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
   import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
   import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams, getTurboPermanentElements, getTurboTemporaryElements, getTurboConfig } from "../../State.svelte.js"
-  import { checkIfAtBottom, scrollToBottom, handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
-  import { panelPostMessage, addHighlightOverlay, hideHighlightOverlay } from "../../messaging.js"
+  import { checkIfAtBottom, scrollToBottom, handleKeyboardNavigation, selectorByUUID, debounce } from "$utils/utils.js"
+  import { panelPostMessage, addHighlightOverlay, hideHighlightOverlay, updateDataAttribute } from "../../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../../theme.svelte.js"
@@ -125,13 +125,9 @@
     }
   })
 
-  $effect(() => {
-    if (streamListContainer && turboStreams.length > 0) {
-      if (shouldAutoScroll) {
-        scrollToBottom(streamListContainer, false)
-      }
-    }
-  })
+  const scrollIntoView = debounce((element) => {
+    element.scrollIntoView({ behavior: "smooth", block: "end" })
+  }, 10)
 
   const findFrameByUuid = (frames, uuid) => {
     for (const frame of frames) {
@@ -281,8 +277,8 @@
         >
           {#each turboStreams as stream (stream.uuid)}
             <div
+              {@attach scrollIntoView}
               class="entry-row p-1 cursor-pointer"
-              transition:slide={{ duration: turboStreamAnimationDuration }}
               class:selected={selected.type === SELECTABLE_TYPES.TURBO_STREAM && selected.uuid === stream.uuid}
               role="button"
               tabindex="0"
@@ -510,6 +506,39 @@
           <div class="pane-container">
             {#if selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.uuid}
               <div class="pane-scrollable-list">
+                <div class="pane-section-heading">Turbo Settings</div>
+                <table class="table table-sm w-100 turbo-table">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <wa-tooltip for={`turbo-action-tooltip-${selected.uuid}`}>
+                          Customizes the Visit action.
+                          <hr />
+                          <div class="info-card-hint">
+                            <code>advance</code> (default): pushes a new entry onto the browser's history stack
+                          </div>
+                          <div class="info-card-hint">
+                            <code>replace</code>: replaces the current history entry
+                          </div>
+                        </wa-tooltip>
+                        <div class="code-keyword" id={`turbo-action-tooltip-${selected.uuid}`}>data-turbo-action</div>
+                      </td>
+                      <td>
+                        <wa-select
+                          value={selected.frame.attributes["data-turbo-action"] || "advance"}
+                          onchange={(e) => {
+                            const newValue = e.target.value
+                            updateDataAttribute(selectorByUUID(selected.uuid), "data-turbo-action", newValue)
+                          }}
+                        >
+                          <wa-option value="advance">advance{!selected.frame.attributes["data-turbo-action"] ? " (default)" : ""}</wa-option>
+                          <wa-option value="replace">replace</wa-option>
+                        </wa-select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
                 {#if selected.frame.referenceElements.length > 0}
                   <div class="pane-section-heading" onmouseenter={showAllTurboFrameConnections} onmouseleave={hideTurboFrameConnections} role="button" tabindex="0">
                     <span>Targeted by</span>
@@ -524,11 +553,11 @@
                   {/each}
                 {/if}
 
-                {#if Object.keys(selected.frame.attributes).filter((key) => !ignoredAttributes.includes(key)).length > 0}
+                {#if Object.keys(selected.frame.attributes).filter((key) => !ignoredAttributes.includes(key) && key !== "data-turbo-action").length > 0}
                   <div class="pane-section-heading">Attributes</div>
                   <table class="table table-sm w-100 turbo-table">
                     <tbody>
-                      {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key)) as [key, value]}
+                      {#each Object.entries(selected.frame.attributes).filter(([key]) => !ignoredAttributes.includes(key) && key !== "data-turbo-action") as [key, value]}
                         <tr>
                           <td><div class="code-keyword">{key}</div></td>
                           <td>{value}</td>
