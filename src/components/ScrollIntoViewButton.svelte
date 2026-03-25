@@ -7,19 +7,17 @@
   let { selector, elementPath, uuid, class: className, id, ...restProps } = $props()
 
   let mergedClass = $derived(`fs-400 ${className ?? ""}`.trim())
-  let buttonId = id ?? `scroll-into-view-button-${crypto.randomUUID()}`
-
-  if (uuid) {
-    selector = selectorByUUID(uuid)
-  }
+  const fallbackId = `scroll-into-view-button-${crypto.randomUUID()}`
+  let buttonId = $derived(id ?? fallbackId)
+  let mergedSelector = $derived(uuid ? selectorByUUID(uuid) : selector)
 
   const scrollAndHighlight = () => {
     let message = {
       action: PANEL_TO_BACKEND_MESSAGES.SCROLL_AND_HIGHLIGHT,
       source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
     }
-    if (selector) {
-      message.selector = selector
+    if (mergedSelector) {
+      message.selector = mergedSelector
     } else if (elementPath) {
       message.elementPath = elementPath
     }

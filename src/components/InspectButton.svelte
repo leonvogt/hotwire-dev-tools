@@ -5,9 +5,7 @@
   let { selector, elementPath, uuid, class: className, ...restProps } = $props()
 
   let mergedClass = $derived(`fs-400 ${className ?? ""}`.trim())
-  if (uuid) {
-    selector = selectorByUUID(uuid)
-  }
+  let mergedSelector = $derived(uuid ? selectorByUUID(uuid) : selector)
 </script>
 
-<IconButton {...restProps} class={mergedClass} name="inspect" library="custom" onclick={() => inspectElement(selector)}></IconButton>
+<IconButton {...restProps} class={mergedClass} name="inspect" library="custom" onclick={() => inspectElement(mergedSelector)}></IconButton>

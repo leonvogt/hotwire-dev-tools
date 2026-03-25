@@ -1,14 +1,15 @@
 <script>
+  import { untrack } from "svelte"
   import IconButton from "$uikit/IconButton.svelte"
   const VALUE_TYPES = ["string", "number", "boolean", "null", "undefined"]
 
   let { value, valueType, isEditing, onEdit, onSave, onCancel } = $props()
 
-  let editValue = $state(value)
+  let editValue = $state(untrack(() => value))
   let inputElement = $state(null)
   let measureElement = $state(null)
 
-  const type = VALUE_TYPES.includes(valueType) ? valueType : "string"
+  const type = $derived(VALUE_TYPES.includes(valueType) ? valueType : "string")
 
   $effect(() => {
     if (isEditing && inputElement && measureElement) {

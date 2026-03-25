@@ -7,15 +7,15 @@
     "format": "npx prettier --write ."
   },
   "dependencies": {
-    "@awesome.me/webawesome": "^3.0.0",
-    "@number-flow/svelte": "^0.3.9",
-    "esbuild": "^0.25.4",
+    "@awesome.me/webawesome": "^3.4.0",
+    "@number-flow/svelte": "^0.4.0",
+    "esbuild": "^0.27.4",
     "esbuild-svelte": "^0.9.3",
-    "fs-extra": "^11.3.0",
+    "fs-extra": "^11.3.4",
     "highlight.js": "^11.11.1",
     "mustache": "^4.2.0",
-    "prettier": "^3.5.3",
+    "prettier": "^3.8.1",
     "svelte": "^5.33.18",
-    "svelte-splitpanes": "^8.0.9"
+    "svelte-splitpanes": "8.0.9"
   }
 }
