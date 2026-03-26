@@ -293,7 +293,12 @@
               </div>
               <div class="d-flex justify-content-between align-items-center">
                 <div>{stream.action}</div>
-                <div>{stream.targetSelector}</div>
+                {#if stream.targetNotFound}
+                  <wa-tooltip for={`stream-target-${stream.uuid}`}>Target element not found in the DOM</wa-tooltip>
+                  <div class="error-text" id={`stream-target-${stream.uuid}`}>{stream.targetSelector}</div>
+                {:else}
+                  <div>{stream.targetSelector}</div>
+                {/if}
               </div>
             </div>
           {/each}

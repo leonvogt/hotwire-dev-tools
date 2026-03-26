@@ -61,14 +61,18 @@ class HotwireDevToolsInjectScript {
         const target = turboStream.getAttribute("target")
         const targets = turboStream.getAttribute("targets")
 
+        const targetSelector = target ? `#${target}` : targets
+        const targetNotFound = (target || targets) && !document.querySelector(targetSelector)
+
         const entry = {
           turboStreamContent: turboStream.outerHTML,
           action: turboStream.getAttribute("action"),
           target: target,
           targets: targets,
-          targetSelector: target ? `#${target}` : targets,
+          targetSelector: targetSelector,
           uuid: generateBufferUUID(),
           time: new Date().toLocaleTimeString(),
+          targetNotFound: !!targetNotFound,
         }
 
         const buffer = window.__hotwireDevToolsBuffer.turboStreams

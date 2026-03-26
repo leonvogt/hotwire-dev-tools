@@ -114,6 +114,7 @@ export function addTurboStream(turboStream) {
       targets: turboStream.targets,
       targetSelector: turboStream.targetSelector,
       turboStreamContent: turboStream.turboStreamContent,
+      targetNotFound: turboStream.targetNotFound,
     },
   ]
 }

@@ -362,7 +362,11 @@
 }
 
 .error-text-underline {
-  text-decoration: underline wavy #f14c4c;
+  text-decoration: underline wavy var(--wa-color-red-70);
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
+}
+
+.error-text {
+  color: var(--wa-color-red-70);
 }

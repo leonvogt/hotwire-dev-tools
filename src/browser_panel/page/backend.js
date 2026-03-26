@@ -302,6 +302,7 @@ function init() {
       const targetSelector = target ? `#${target}` : targets
       const uuid = generateUUID()
       const time = new Date().toLocaleTimeString()
+      const targetNotFound = (target || targets) && !document.querySelector(targetSelector)
 
       this._postMessage({
         type: BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED,
@@ -313,6 +314,7 @@ function init() {
           targetSelector: targetSelector,
           uuid: uuid,
           time: time,
+          targetNotFound: !!targetNotFound,
         },
       })
     }
