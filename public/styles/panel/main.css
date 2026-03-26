@@ -223,8 +223,11 @@ button.action-icon:active svg {
 
 .pane-footer {
   height: var(--pane-footer-height);
+  flex-shrink: 0;
   position: relative;
   background-color: var(--wa-color-surface-raised);
+  border-top: 1px solid var(--wa-color-surface-border);
+  margin-top: auto;
 }
 .pane-footer-title {
   text-align: center;
@@ -234,9 +237,9 @@ button.action-icon:active svg {
 
 .pane-scrollable-list {
   overflow-y: auto;
-  max-height: 100%;
   scrollbar-width: thin;
   flex: 1;
+  min-height: 0;
 }
 
 .pane-scrollable-list .entry-row {
@@ -433,11 +436,21 @@ wa-input[size="extra-small"] {
   --wa-form-control-height: 100%;
 }
 
-.pane-container wa-tab-group,
-.pane-container wa-tab-panel,
-.pane-container wa-tab-panel::part(base),
-.pane-container wa-tab-group::part(base),
+.pane-container wa-tab-group {
+  height: 100%;
+}
+.pane-container wa-tab-group::part(base) {
+  height: 100%;
+  padding: 0;
+}
 .pane-container wa-tab-group::part(body) {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+.pane-container wa-tab-panel,
+.pane-container wa-tab-panel::part(base) {
   height: 100%;
   padding: 0;
 }
