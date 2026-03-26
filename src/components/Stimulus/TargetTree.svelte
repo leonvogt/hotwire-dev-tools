@@ -7,20 +7,20 @@
   let { target } = $props()
 </script>
 
-<wa-tree class="w-100 stimulus-target-tree">
-  <wa-tree-item expanded>
-    <span>{target.key}</span>
+<div class="entry-row">
+  <div class="d-flex align-items-center">
+    <strong>{target.key}</strong>
     {#if target.elements.length === 0}
-      <small class="text-muted ms-2">(0)</small>
-    {:else}
-      {#each target.elements as element}
-        <wa-tree-item class="w-100" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
-          <div class="w-100 d-flex justify-content-between">
-            <StripedHtmlTag {element} />
-            <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
-          </div>
-        </wa-tree-item>
-      {/each}
+      <small class="text-muted ms-2" id={`target-empty-${target.key}`}>(0)</small>
+      <wa-tooltip for={`target-empty-${target.key}`}>No matching target elements found on the page</wa-tooltip>
     {/if}
-  </wa-tree-item>
-</wa-tree>
+  </div>
+</div>
+{#each target.elements as element}
+  <div class="entry-row detail-sub-row" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
+    <div class="d-flex justify-content-between align-items-center">
+      <StripedHtmlTag {element} />
+      <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
+    </div>
+  </div>
+{/each}

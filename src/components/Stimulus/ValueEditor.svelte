@@ -1,5 +1,5 @@
 <script>
-  import { untrack } from "svelte"
+  import { untrack, tick } from "svelte"
   import IconButton from "$uikit/IconButton.svelte"
   const VALUE_TYPES = ["string", "number", "boolean", "null", "undefined"]
 
@@ -13,7 +13,7 @@
 
   $effect(() => {
     if (isEditing && inputElement && measureElement) {
-      updateWidth()
+      tick().then(() => updateWidth())
     }
   })
 

@@ -2,7 +2,7 @@
   import NestedValue from "./NestedValue.svelte"
   import ValueEditor from "./ValueEditor.svelte"
 
-  let { data, path = [], editingStates, onEdit, onSave, onCancel } = $props()
+  let { data, path = [], depth = 1, editingStates, onEdit, onSave, onCancel } = $props()
 
   const isObject = (val) => typeof val === "object" && val !== null && !Array.isArray(val)
   const isArray = (val) => Array.isArray(val)
@@ -11,9 +11,9 @@
 
 {#if isObject(data)}
   {#each Object.entries(data) as [key, value]}
-    <wa-tree-item class="w-100">
+    <div class="entry-row detail-sub-row" style="--depth: {depth}">
       {#if isPrimitive(value)}
-        <div class="stimulus-value-editor-wrapper">
+        <div class="d-flex align-items-center gap-2 stimulus-value-editor-wrapper">
           <span>{key}:</span>
           <ValueEditor
             {value}
@@ -28,15 +28,17 @@
         {#if isArray(value)}
           <span class="text-muted ms-1">{value.length}</span>
         {/if}
-        <NestedValue data={value} path={[...path, key]} {editingStates} {onEdit} {onSave} {onCancel} />
       {/if}
-    </wa-tree-item>
+    </div>
+    {#if !isPrimitive(value)}
+      <NestedValue data={value} path={[...path, key]} depth={depth + 1} {editingStates} {onEdit} {onSave} {onCancel} />
+    {/if}
   {/each}
 {:else if isArray(data)}
   {#each data as item, i}
-    <wa-tree-item class="w-100">
+    <div class="entry-row detail-sub-row" style="--depth: {depth}">
       {#if isPrimitive(item)}
-        <div class="stimulus-value-editor-wrapper">
+        <div class="d-flex align-items-center gap-2 stimulus-value-editor-wrapper">
           <span>{i}:</span>
           <ValueEditor
             value={item}
@@ -51,8 +53,10 @@
         {#if isArray(item)}
           <span class="text-muted ms-1">Array [{item.length}]</span>
         {/if}
-        <NestedValue data={item} path={[...path, i]} {editingStates} {onEdit} {onSave} {onCancel} />
       {/if}
-    </wa-tree-item>
+    </div>
+    {#if !isPrimitive(item)}
+      <NestedValue data={item} path={[...path, i]} depth={depth + 1} {editingStates} {onEdit} {onSave} {onCancel} />
+    {/if}
   {/each}
 {/if}

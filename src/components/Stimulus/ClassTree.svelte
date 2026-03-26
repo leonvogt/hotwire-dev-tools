@@ -4,23 +4,23 @@
   let { klass } = $props()
 </script>
 
-<wa-tree class="stimulus-classes-tree">
-  <wa-tree-item expanded>
-    <span>{klass.key}</span>
+<div class="entry-row">
+  <div class="d-flex align-items-center">
+    <strong>{klass.key}</strong>
     {#if klass.classes.length === 0}
-      <small class="text-muted ms-2">(0)</small>
-    {:else}
-      {#each klass.classes as value}
-        <wa-tree-item class="w-100">
-          <div class="w-100 d-flex justify-content-between align-items-center">
-            <span class="class-value">{value}</span>
-            <CopyButton {value} />
-          </div>
-        </wa-tree-item>
-      {/each}
+      <small class="text-muted ms-2" id={`class-empty-${klass.key}`}>(0)</small>
+      <wa-tooltip for={`class-empty-${klass.key}`}>No matching classes found</wa-tooltip>
     {/if}
-  </wa-tree-item>
-</wa-tree>
+  </div>
+</div>
+{#each klass.classes as value}
+  <div class="entry-row detail-sub-row">
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="class-value">{value}</span>
+      <CopyButton {value} />
+    </div>
+  </div>
+{/each}
 
 <style>
   .class-value {

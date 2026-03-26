@@ -255,6 +255,9 @@ button.action-icon:active svg {
 .entry-row.leaf-node {
   --indent-size: 1.5rem;
 }
+.entry-row.detail-sub-row {
+  padding-left: calc(var(--depth, 1) * 1rem + 0.5rem);
+}
 .entry-row.disabled {
   color: var(--wa-color-text-quiet);
   cursor: not-allowed;
@@ -418,29 +421,9 @@ button.action-icon:active svg {
   padding: 0.25rem;
 }
 
-.stimulus-value-tree-item wa-button.small-icon-button {
-  font-size: 0.8rem;
-}
-
 .stimulus-value-editor-wrapper {
-  width: 100%;
   display: flex;
   gap: 0.5rem;
-  margin-right: 2rem;
-}
-
-
-/* Consistent hover and selection styles for wa-tree-items in the detail pane */
-.stimulus-detail-pane wa-tree-item::part(item):hover {
-  background-color: var(--wa-color-brand-fill-quiet);
-}
-.stimulus-detail-pane wa-tree-item[selected]::part(item) {
-  background-color: var(--wa-color-surface-default);
-  border-inline-start-color: var(--wa-color-surface-default);
-}
-
-wa-tree-item.w-100::part(label) {
-  width: 100%;
 }
 
 wa-tooltip .copy-icon:not(.copied) {

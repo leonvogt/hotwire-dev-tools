@@ -2,12 +2,14 @@
   import ValueEditor from "./ValueEditor.svelte"
   import NestedValue from "./NestedValue.svelte"
   import CopyButton from "$components/CopyButton.svelte"
+  import IconButton from "$uikit/IconButton.svelte"
   import { updateDataAttribute } from "../../browser_panel/messaging"
   import { capitalizeFirstChar, selectorByUUID } from "$utils/utils.js"
 
   let { valueObject, selected, dataAttribute } = $props()
 
   let editingStates = $state({})
+  let expanded = $state(true)
 
   const isComplex = (val) => typeof val === "object" && val !== null
   const isArray = (val) => Array.isArray(val)
@@ -77,67 +79,80 @@
   }
 </script>
 
-<div class="d-flex gap-2 mb-2 stimulus-value-tree-item">
-  <wa-tree class="w-100">
-    <wa-tree-item class="w-100" expanded>
-      {#if isComplex(valueObject.value)}
-        {valueObject.name}
+{#if isComplex(valueObject.value)}
+  <div class="entry-row">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <IconButton class="collapse-icon {expanded ? '' : 'rotated'}" name="chevron-down" onclick={() => (expanded = !expanded)}></IconButton>
+        <strong>{valueObject.name}</strong>
         {#if isArray(valueObject.value)}
           <span class="text-muted ms-1">Array ({valueObject.value.length})</span>
         {/if}
-        <NestedValue data={valueObject.value} {editingStates} onEdit={handleEdit} onSave={handleSave} onCancel={handleCancel} />
-      {:else}
-        <div class="stimulus-value-editor-wrapper">
-          <span>{valueObject.name}:</span>
-          <ValueEditor
-            value={String(valueObject.value)}
-            valueType={valueObject.type}
-            isEditing={editingStates["root"] || false}
-            onEdit={() => handleEdit(["root"])}
-            onSave={(newVal) => handleSave(["root"], newVal)}
-            onCancel={() => handleCancel(["root"])}
-          />
-        </div>
-      {/if}
-      {#if valueObject.value === valueObject.defaultValue}
-        <wa-badge id={`rich-tooltip-${valueObject.key}-default-value`} variant="neutral" appearance="outlined" size="small">DEFAULT</wa-badge>
-      {/if}
-      <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button info-button">
-        <wa-icon name="info" label="Info"></wa-icon>
-      </wa-button>
-    </wa-tree-item>
-  </wa-tree>
-
-  <wa-tooltip for={`rich-tooltip-${valueObject.key}`} trigger="click" style="--max-width: 100%;">
-    <div>
-      <div class="flex-center">Type: {valueObject.type}</div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span>{dataAttribute}</span>
-        <CopyButton value={dataAttribute} />
       </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span>{`this.${valueObject.name}`}</span>
-        <CopyButton value={`this.${valueObject.name}`} />
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span>{`this.has${capitalizeFirstChar(valueObject.name)}`}</span>
-        <CopyButton value={`this.has${capitalizeFirstChar(valueObject.name)}`} />
+      <div class="d-flex align-items-center">
+        {#if valueObject.value === valueObject.defaultValue}
+          <wa-badge id={`rich-tooltip-${valueObject.key}-default-value`} variant="neutral" appearance="outlined" size="small">DEFAULT</wa-badge>
+        {/if}
+        <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button info-button">
+          <wa-icon name="info" label="Info"></wa-icon>
+        </wa-button>
       </div>
     </div>
-  </wa-tooltip>
-
-  <wa-tooltip for={`rich-tooltip-${valueObject.key}-default-value`} style="--max-width: 100%;">
-    <div>
-      <div class="flex-center">Default: {valueObject.defaultValue}</div>
+  </div>
+  {#if expanded}
+    <NestedValue data={valueObject.value} {editingStates} onEdit={handleEdit} onSave={handleSave} onCancel={handleCancel} />
+  {/if}
+{:else}
+  <div class="entry-row">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2 stimulus-value-editor-wrapper">
+        <strong>{valueObject.name}:</strong>
+        <ValueEditor
+          value={String(valueObject.value)}
+          valueType={valueObject.type}
+          isEditing={editingStates["root"] || false}
+          onEdit={() => handleEdit(["root"])}
+          onSave={(newVal) => handleSave(["root"], newVal)}
+          onCancel={() => handleCancel(["root"])}
+        />
+      </div>
+      <div class="d-flex align-items-center">
+        {#if valueObject.value === valueObject.defaultValue}
+          <wa-badge id={`rich-tooltip-${valueObject.key}-default-value`} variant="neutral" appearance="outlined" size="small">DEFAULT</wa-badge>
+        {/if}
+        <wa-button id={`rich-tooltip-${valueObject.key}`} variant="neutral" appearance="plain" size="small" class="small-icon-button info-button">
+          <wa-icon name="info" label="Info"></wa-icon>
+        </wa-button>
+      </div>
     </div>
-  </wa-tooltip>
-</div>
+  </div>
+{/if}
+
+<wa-tooltip for={`rich-tooltip-${valueObject.key}`} trigger="click" style="--max-width: 100%;">
+  <div>
+    <div class="flex-center">Type: {valueObject.type}</div>
+    <div class="d-flex justify-content-between align-items-center">
+      <span>{dataAttribute}</span>
+      <CopyButton value={dataAttribute} />
+    </div>
+    <div class="d-flex justify-content-between align-items-center">
+      <span>{`this.${valueObject.name}`}</span>
+      <CopyButton value={`this.${valueObject.name}`} />
+    </div>
+    <div class="d-flex justify-content-between align-items-center">
+      <span>{`this.has${capitalizeFirstChar(valueObject.name)}`}</span>
+      <CopyButton value={`this.has${capitalizeFirstChar(valueObject.name)}`} />
+    </div>
+  </div>
+</wa-tooltip>
+
+<wa-tooltip for={`rich-tooltip-${valueObject.key}-default-value`} style="--max-width: 100%;">
+  <div>
+    <div class="flex-center">Default: {valueObject.defaultValue}</div>
+  </div>
+</wa-tooltip>
 
 <style>
-  wa-tree {
-    margin-right: 2rem;
-  }
-
   wa-badge {
     height: 1rem;
     padding: 0.7em 0.4em;
@@ -146,6 +161,5 @@
 
   wa-button.info-button {
     margin-bottom: 0.15rem;
-    margin-left: auto;
   }
 </style>
