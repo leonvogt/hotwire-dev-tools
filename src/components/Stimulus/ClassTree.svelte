@@ -12,7 +12,7 @@
     {:else}
       {#each klass.classes as value}
         <wa-tree-item class="w-100">
-          <div class="entry-row w-100 d-flex justify-content-between align-items-center">
+          <div class="w-100 d-flex justify-content-between align-items-center">
             <span class="class-value">{value}</span>
             <CopyButton {value} />
           </div>

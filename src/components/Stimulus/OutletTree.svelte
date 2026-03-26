@@ -13,7 +13,7 @@
     {:else}
       {#each outlet.elements as element}
         <wa-tree-item class="w-100">
-          <div class="entry-row w-100 d-flex justify-content-between">
+          <div class="w-100 d-flex justify-content-between">
             <StripedHtmlTag {element} />
             <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
           </div>

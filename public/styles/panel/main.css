@@ -312,20 +312,26 @@ button.action-icon:active svg {
 }
 
 .pane-section-heading {
-  font-size: 0.9em;
-  padding: 0.2em 0.2em;
-  background-color: #333842;
-  color: #ccc;
+  font-size: var(--fs-100);
   font-weight: 600;
-  margin-bottom: 0.25em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35em 0.5em;
+  color: var(--wa-color-text-quiet);
+  background-color: var(--wa-color-surface-lowered);
+  border-bottom: 1px solid var(--wa-color-surface-border);
+  user-select: none;
 }
 .pane-scrollable-list .pane-section-heading:not(:first-child) {
-  margin-top: 0.5em;
+  margin-top: 0;
 }
 
 .table td {
   border-bottom: 1px solid var(--wa-color-surface-border);
   table-layout: fixed;
+}
+.table tr:hover td {
+  background-color: var(--wa-color-brand-fill-quiet);
 }
 .table:focus-visible {
   outline: none;
@@ -423,15 +429,11 @@ button.action-icon:active svg {
   margin-right: 2rem;
 }
 
-.stimulus-outlet-tree,
-.stimulus-target-tree,
-.stimulus-classes-tree {
-  .entry-row {
-    margin-left: -1rem;
-  }
-}
 
-/* Remove default selection styles from wa-tree-item */
+/* Consistent hover and selection styles for wa-tree-items in the detail pane */
+.stimulus-detail-pane wa-tree-item::part(item):hover {
+  background-color: var(--wa-color-brand-fill-quiet);
+}
 .stimulus-detail-pane wa-tree-item[selected]::part(item) {
   background-color: var(--wa-color-surface-default);
   border-inline-start-color: var(--wa-color-surface-default);

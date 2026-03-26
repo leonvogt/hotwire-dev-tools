@@ -15,7 +15,7 @@
     {:else}
       {#each target.elements as element}
         <wa-tree-item class="w-100" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
-          <div class="entry-row w-100 d-flex justify-content-between">
+          <div class="w-100 d-flex justify-content-between">
             <StripedHtmlTag {element} />
             <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
           </div>

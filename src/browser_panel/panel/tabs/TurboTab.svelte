@@ -473,7 +473,7 @@
             {#if turboPermanentElements.length > 0}
               <div class="pane-section-heading">Permanent Elements ({turboPermanentElements.length})</div>
               {#each turboPermanentElements as element (element.uuid)}
-                <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
+                <div class="entry-row" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                   <div class="d-flex justify-content-between align-items-center">
                     <StripedHtmlTag {element} />
                     <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
@@ -485,7 +485,7 @@
             {#if turboTemporaryElements.length > 0}
               <div class="pane-section-heading">Temporary Elements ({turboTemporaryElements.length})</div>
               {#each turboTemporaryElements as element (element.uuid)}
-                <div class="entry-row p-2 border-bottom" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
+                <div class="entry-row" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                   <div class="d-flex justify-content-between align-items-center">
                     <StripedHtmlTag {element} />
                     <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
@@ -540,11 +540,11 @@
                 </table>
 
                 {#if selected.frame.referenceElements.length > 0}
-                  <div class="pane-section-heading" onmouseenter={showAllTurboFrameConnections} onmouseleave={hideTurboFrameConnections} role="button" tabindex="0">
-                    <span>Targeted by</span>
+                  <div class="pane-section-heading">
+                    <span>Targeted by ({selected.frame.referenceElements.length})</span>
                   </div>
                   {#each selected.frame.referenceElements as referenceElement}
-                    <div class="entry-row p-2 border-bottom" onmouseenter={() => showTurboFrameConnections(referenceElement)} onmouseleave={hideTurboFrameConnections} role="button" tabindex="0">
+                    <div class="entry-row" onmouseenter={() => showTurboFrameConnections(referenceElement)} onmouseleave={hideTurboFrameConnections} role="button" tabindex="0">
                       <div class="d-flex justify-content-between align-items-center">
                         <StripedHtmlTag element={referenceElement} />
                         <InspectButton class="btn-hoverable" uuid={referenceElement.uuid}></InspectButton>
@@ -604,7 +604,7 @@
                   </tbody>
                 </table>
 
-                <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+                <div class="pane-section-heading d-flex justify-content-between align-items-center">
                   <span>HTML</span>
                   <CopyButton value={selected.stream.turboStreamContent} />
                 </div>

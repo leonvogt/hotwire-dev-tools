@@ -209,7 +209,7 @@
       {#if selected.type === SELECTABLE_TYPES.TURBO_EVENT && selected.uuid}
         <div class="pane-scrollable-list">
           {#if selected.turboEvent.eventName === "turbo:before-stream-render"}
-            <div class="pane-section-heading d-flex justify-content-between align-items-center py-0">
+            <div class="pane-section-heading d-flex justify-content-between align-items-center">
               <span>HTML</span>
               <CopyButton value={selected.turboEvent.turboStreamContent} />
             </div>
