@@ -27,6 +27,7 @@ function init() {
     }
 
     start() {
+      this.flushEventBuffer()
       this.elementObserver.start()
       this.addEventListeners()
 
@@ -34,6 +35,24 @@ function init() {
       // So we send them manually on start.
       this.sendRegisteredStimulusControllers()
       this.sendTurboConfig()
+    }
+
+    flushEventBuffer() {
+      const buffer = window.__hotwireDevToolsBuffer
+      if (!buffer) return
+
+      // Send buffered Turbo Streams
+      if (buffer.turboStreams?.length > 0) {
+        buffer.turboStreams.forEach((turboStream) => {
+          this._postMessage({
+            type: BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED,
+            turboStream,
+          })
+        })
+      }
+
+      // Clear the buffer so inject_script stops buffering (backend handles events from now on)
+      window.__hotwireDevToolsBuffer = null
     }
 
     stop() {

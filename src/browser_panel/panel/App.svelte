@@ -68,7 +68,7 @@
       <nav class="navbar wa-brand">
         <button class:active={currentTab == "turbo-tab"} onclick={updateTab} data-tab-id="turbo-tab">Turbo</button>
         <button class:active={currentTab == "stimulus-tab"} onclick={updateTab} data-tab-id="stimulus-tab">Stimulus</button>
-        <button class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Log</button>
+        <button class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Logs</button>
 
         <button class="theme-toggle-btn" aria-label="Toggle Color Scheme" onclick={() => setTheme(currentTheme === "light" ? "dark" : "light")}>
           <wa-icon name="moon" variant="regular"></wa-icon>

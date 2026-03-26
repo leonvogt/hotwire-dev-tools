@@ -21,8 +21,8 @@ function proxy() {
     // It can happen, that the proxy gets loaded before the backend script is injected into the page.
     // For that case, we will try to send the INIT message multiple times.
     // The backend script stop listening for the INIT message after the first one gets received.
-    const MAX_ATTEMPTS = 10
-    const INTERVAL_MS = 100
+    const MAX_ATTEMPTS = 30
+    const INTERVAL_MS = 200
     let attempts = 0
 
     const intervalId = setInterval(() => {

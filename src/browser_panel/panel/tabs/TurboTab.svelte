@@ -126,7 +126,8 @@
   })
 
   const scrollIntoView = debounce((element) => {
-    element.scrollIntoView({ behavior: "smooth", block: "end" })
+    if (!shouldAutoScroll) return
+    element.scrollIntoView({ behavior: "instant", block: "end" })
   }, 10)
 
   const findFrameByUuid = (frames, uuid) => {
