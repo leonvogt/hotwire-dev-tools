@@ -303,24 +303,23 @@
             </div>
           {/each}
         </div>
-
-        <div class="pane-footer flex-center">
-          <div class="position-absolute end-0">
-            {#if turboStreams.length > 0}
-              <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
-            {/if}
-            {#if turboCables.length > 0}
-              <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
-              <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
-            {/if}
-          </div>
-        </div>
       {:else}
         <div class="no-entry-hint">
           <span>No Turbo Streams seen yet</span>
           <span>We'll keep looking</span>
         </div>
       {/if}
+      <div class="pane-footer flex-center">
+        <div class="position-absolute end-0">
+          {#if turboStreams.length > 0}
+            <IconButton name="trash" onclick={clearTurboStreams}></IconButton>
+          {/if}
+          {#if turboCables.length > 0}
+            <wa-tooltip for="turbo-cable-indication-icon">{`${connectedTurboCablesCount()} / ${turboCables.length} Turbo Stream WebSockets are connected`}</wa-tooltip>
+            <wa-icon name="circle" label="websocket-indication" id="turbo-cable-indication-icon" class:connected={connectedTurboCablesCount() == turboCables.length}></wa-icon>
+          {/if}
+        </div>
+      </div>
     </div>
   </Pane>
 
