@@ -328,14 +328,10 @@
       {@const selector = `#${frame.id}`}
       {@const hasChildren = frame.children && frame.children.length > 0}
       {@const isCollapsed = collapsedFrames[frame.uuid] || false}
-      {@const isLeafNode = !hasChildren && depth > 0}
-
       <div
-        class="d-flex justify-content-between align-items-center cursor-pointer entry-row"
+        class="d-flex justify-content-between align-items-center cursor-pointer entry-row tree-row"
         class:selected={selected.type === SELECTABLE_TYPES.TURBO_FRAME && selected.frame.id === frame.id}
         class:with-children={hasChildren}
-        class:leaf-node={isLeafNode}
-        class:ps-0={hasChildren && depth === 0}
         role="button"
         tabindex="0"
         style="--depth: {depth}"
@@ -346,9 +342,12 @@
         onmouseleave={() => hideHighlightOverlay()}
       >
         <div class="d-flex align-items-center">
-          {#if hasChildren}
-            <IconButton class="collapse-icon {isCollapsed ? 'rotated' : ''}" name="chevron-down" onclick={(event) => collapseEntryRows(frame.uuid, event, collapsedFrames, stickyFrames)}></IconButton>
-          {/if}
+          <span class="tree-indent" style="width: calc(var(--depth) * var(--tree-indent-size))"></span>
+          <span class="tree-toggle">
+            {#if hasChildren}
+              <IconButton class="collapse-icon {isCollapsed ? 'rotated' : ''}" name="chevron-down" onclick={(event) => collapseEntryRows(frame.uuid, event, collapsedFrames, stickyFrames)}></IconButton>
+            {/if}
+          </span>
           <StripedHtmlTag element={frame} />
           {#if !frame.hasUniqueId}
             <wa-tooltip for={`unique-id-warning-icon-${frame.uuid}`}>Warning: Multiple &lt;turbo-frame&gt; elements share the same ID</wa-tooltip>

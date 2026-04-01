@@ -255,8 +255,25 @@ button.action-icon:active svg {
   --minimum-base-padding: 0.5rem;
   padding-left: calc(var(--depth, 0) * var(--indent-size) + var(--minimum-base-padding));
 }
-.entry-row.leaf-node {
-  --indent-size: 1.5rem;
+/* Tree row layout for turbo frame pane */
+.entry-row.tree-row {
+  --tree-indent-size: 1rem;
+  --tree-toggle-width: 1.25rem;
+  padding-left: 0.25rem;
+  border-left: 3px solid transparent;
+}
+
+.tree-indent {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.tree-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tree-toggle-width);
+  flex-shrink: 0;
 }
 .entry-row.detail-sub-row {
   padding-left: calc(var(--depth, 1) * 1rem + 0.5rem);
@@ -277,7 +294,7 @@ button.action-icon:active svg {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: var(--wa-color-surface-raised);
+  background-color: var(--wa-color-surface-default);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -287,6 +304,9 @@ button.action-icon:active svg {
 .entry-row.selected {
   background-color: var(--wa-color-brand-fill-normal);
   border-left: 3px solid var(--wa-color-brand-fill-loud);
+}
+.entry-row.tree-row.selected {
+  border-left-color: var(--wa-color-brand-fill-loud);
 }
 
 .entry-row .btn-hoverable {
