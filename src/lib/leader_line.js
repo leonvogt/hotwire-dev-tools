@@ -215,10 +215,14 @@ var LeaderLine = (function () {
             if (((s = v / t), (r = [g(0, 0)]), 0 === i[0] && 0 === i[1] && 1 === i[2] && 1 === i[3])) for (h = s; h <= 1; h += s) r.push(g(h, h))
             else
               for (p = u = (h = s) / 10; p <= 1; p += u)
-                (d = p), (m = y = f = void 0), (f = (m = p * p) * p), (m *= 3 * (y = 1 - p)), h <= (c = { x: (d = 3 * (y * y) * p) * i[0] + m * i[2] + f, y: d * i[1] + m * i[3] + f }).x && (r.push(g(c.x, c.y)), (h += s))
+                ((d = p),
+                  (m = y = f = void 0),
+                  (f = (m = p * p) * p),
+                  (m *= 3 * (y = 1 - p)),
+                  h <= (c = { x: (d = 3 * (y * y) * p) * i[0] + m * i[2] + f, y: d * i[1] + m * i[3] + f }).x && (r.push(g(c.x, c.y)), (h += s)))
             r.push(g(1, 1))
           }
-          return E.push((o = { animId: S, frameCallback: e, duration: t, count: a, frames: r, reverse: !!o })), !1 !== l && be(o, l), S
+          return (E.push((o = { animId: S, frameCallback: e, duration: t, count: a, frames: r, reverse: !!o })), !1 !== l && be(o, l), S)
         },
         remove: function (n) {
           var a
@@ -259,7 +263,7 @@ var LeaderLine = (function () {
       ;(e.SVGPathElement.prototype.getPathData && e.SVGPathElement.prototype.setPathData) ||
         (function () {
           function i(e) {
-            ;(this._string = e), (this._currentIndex = 0), (this._endIndex = this._string.length), (this._prevCommand = null), this._skipOptionalSpaces()
+            ;((this._string = e), (this._currentIndex = 0), (this._endIndex = this._string.length), (this._prevCommand = null), this._skipOptionalSpaces())
           }
           var a = { Z: "Z", M: "M", L: "L", C: "C", Q: "Q", A: "A", H: "H", V: "V", S: "S", T: "T", z: "Z", m: "m", l: "l", c: "c", q: "q", a: "a", h: "h", v: "v", s: "s", t: "t" },
             o = -1 !== e.navigator.userAgent.indexOf("MSIE ")
@@ -336,11 +340,11 @@ var LeaderLine = (function () {
               )
                 return null
               for (var r = this._currentIndex; this._currentIndex < this._endIndex && "0" <= this._string[this._currentIndex] && this._string[this._currentIndex] <= "9"; ) this._currentIndex += 1
-              if (this._currentIndex !== r) for (var s = this._currentIndex - 1, u = 1; r <= s; ) (t += u * (this._string[s] - "0")), --s, (u *= 10)
+              if (this._currentIndex !== r) for (var s = this._currentIndex - 1, u = 1; r <= s; ) ((t += u * (this._string[s] - "0")), --s, (u *= 10))
               if (this._currentIndex < this._endIndex && "." === this._string[this._currentIndex]) {
                 if (((this._currentIndex += 1), this._currentIndex >= this._endIndex || this._string[this._currentIndex] < "0" || "9" < this._string[this._currentIndex])) return null
                 for (; this._currentIndex < this._endIndex && "0" <= this._string[this._currentIndex] && this._string[this._currentIndex] <= "9"; )
-                  (n *= 10), (a += (this._string.charAt(this._currentIndex) - "0") / n), (this._currentIndex += 1)
+                  ((n *= 10), (a += (this._string.charAt(this._currentIndex) - "0") / n), (this._currentIndex += 1))
               }
               if (
                 this._currentIndex !== l &&
@@ -356,10 +360,10 @@ var LeaderLine = (function () {
                 )
                   return null
                 for (; this._currentIndex < this._endIndex && "0" <= this._string[this._currentIndex] && this._string[this._currentIndex] <= "9"; )
-                  (e *= 10), (e += this._string[this._currentIndex] - "0"), (this._currentIndex += 1)
+                  ((e *= 10), (e += this._string[this._currentIndex] - "0"), (this._currentIndex += 1))
               }
               var h = t + a
-              return (h *= i), e && (h *= Math.pow(10, o * e)), l === this._currentIndex ? null : (this._skipOptionalSpacesOrDelimiter(), h)
+              return ((h *= i), e && (h *= Math.pow(10, o * e)), l === this._currentIndex ? null : (this._skipOptionalSpacesOrDelimiter(), h))
             },
             _parseArcFlag: function () {
               if (this._currentIndex >= this._endIndex) return null
@@ -370,7 +374,7 @@ var LeaderLine = (function () {
                 if ("1" !== t) return null
                 e = 1
               }
-              return this._skipOptionalSpacesOrDelimiter(), e
+              return (this._skipOptionalSpacesOrDelimiter(), e)
             },
           }
           function n(e) {
@@ -402,7 +406,7 @@ var LeaderLine = (function () {
             return (
               e.forEach(function (e) {
                 var t, n, a, i, o, l, r, s
-                "M" === e.type
+                ;("M" === e.type
                   ? ((r = e.values[0]), (s = e.values[1]), u.push({ type: "M", values: [r, s] }), (d = y = r), (f = m = s))
                   : "C" === e.type
                     ? ((o = e.values[0]),
@@ -464,10 +468,10 @@ var LeaderLine = (function () {
                                       ? (u.push({ type: "C", values: [d, f, r, s, r, s] }), (d = r), (f = s))
                                       : (d === r && f === s) ||
                                         b(d, f, r, s, n, a, i, o, l).forEach(function (e) {
-                                          u.push({ type: "C", values: e }), (d = r), (f = s)
+                                          ;(u.push({ type: "C", values: e }), (d = r), (f = s))
                                         }))
                                   : "Z" === e.type && (u.push(e), (d = y), (f = m)),
-                  (h = e.type)
+                  (h = e.type))
               }),
               u
             )
@@ -529,16 +533,16 @@ var LeaderLine = (function () {
                 x = []
               return (
                 c.forEach(function (e, t) {
-                  t % 2 ? x.push(h(c[t - 1], c[t], p).y) : x.push(h(c[t], c[t + 1], p).x), 6 === x.length && (E.push(x), (x = []))
+                  ;(t % 2 ? x.push(h(c[t - 1], c[t], p).y) : x.push(h(c[t], c[t + 1], p).x), 6 === x.length && (E.push(x), (x = [])))
                 }),
                 E
               )
             }
-          ;(e.SVGPathElement.prototype.setAttribute = function (e, t) {
-            "d" === e && ((this[d] = null), (this[f] = null)), s.call(this, e, t)
+          ;((e.SVGPathElement.prototype.setAttribute = function (e, t) {
+            ;("d" === e && ((this[d] = null), (this[f] = null)), s.call(this, e, t))
           }),
             (e.SVGPathElement.prototype.removeAttribute = function (e, t) {
-              "d" === e && ((this[d] = null), (this[f] = null)), u.call(this, e)
+              ;("d" === e && ((this[d] = null), (this[f] = null)), u.call(this, e))
             }),
             (e.SVGPathElement.prototype.getPathData = function (e) {
               if (e && e.normalize) {
@@ -603,7 +607,7 @@ var LeaderLine = (function () {
                   }),
                   s),
                 )
-                return (this[f] = l(e)), e
+                return ((this[f] = l(e)), e)
               }
               if (this[d]) return l(this[d])
               var s,
@@ -612,14 +616,14 @@ var LeaderLine = (function () {
                 p,
                 c,
                 t = n(this.getAttribute("d") || "")
-              return (this[d] = l(t)), t
+              return ((this[d] = l(t)), t)
             }),
             (e.SVGPathElement.prototype.setPathData = function (e) {
               if (0 === e.length) o ? this.setAttribute("d", "") : this.removeAttribute("d")
               else {
                 for (var t = "", n = 0, a = e.length; n < a; n += 1) {
                   var i = e[n]
-                  0 < n && (t += " "), (t += i.type), i.values && 0 < i.values.length && (t += " " + i.values.join(" "))
+                  ;(0 < n && (t += " "), (t += i.type), i.values && 0 < i.values.length && (t += " " + i.values.join(" ")))
                 }
                 this.setAttribute("d", t)
               }
@@ -694,8 +698,8 @@ var LeaderLine = (function () {
                 var n = this.points.getItem(t)
                 e.push({ type: 0 === t ? "M" : "L", values: [n.x, n.y] })
               }
-              return e.push({ type: "Z", values: [] }), e
-            })
+              return (e.push({ type: "Z", values: [] }), e)
+            }))
         })()
     },
     S =
@@ -727,13 +731,13 @@ var LeaderLine = (function () {
             function u() {
               var n = void 0,
                 e = void 0
-              s && (l.call(window, s), (s = null)),
+              ;(s && (l.call(window, s), (s = null)),
                 i.forEach(function (e) {
                   var t
                   ;(t = e.event) && ((e.event = null), e.listener(t), (n = !0))
                 }),
                 n ? ((r = Date.now()), (e = !0)) : Date.now() - r < a && (e = !0),
-                e && (s = o.call(window, u))
+                e && (s = o.call(window, u)))
             }
             function h(n) {
               var a = -1
@@ -750,7 +754,7 @@ var LeaderLine = (function () {
                 return -1 === h(e)
                   ? (i.push((t = { listener: e })),
                     function (e) {
-                      ;(t.event = e), s || u()
+                      ;((t.event = e), s || u())
                     })
                   : null
               },
@@ -765,7 +769,7 @@ var LeaderLine = (function () {
         Ee.o(e, t) || Object.defineProperty(e, t, { enumerable: !0, get: n })
       }),
       (Ee.r = function (e) {
-        "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(e, "__esModule", { value: !0 })
+        ;("undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(e, "__esModule", { value: !0 }))
       }),
       (Ee.t = function (t, e) {
         if ((1 & e && (t = Ee(t)), 8 & e)) return t
@@ -791,7 +795,7 @@ var LeaderLine = (function () {
             : function () {
                 return e
               }
-        return Ee.d(t, "a", t), t
+        return (Ee.d(t, "a", t), t)
       }),
       (Ee.o = function (e, t) {
         return Object.prototype.hasOwnProperty.call(e, t)
@@ -860,31 +864,31 @@ var LeaderLine = (function () {
   function Ee(e) {
     if (a[e]) return a[e].exports
     var t = (a[e] = { i: e, l: !1, exports: {} })
-    return n[e].call(t.exports, t, t.exports, Ee), (t.l = !0), t.exports
+    return (n[e].call(t.exports, t, t.exports, Ee), (t.l = !0), t.exports)
   }
   function xe() {
     var i = Date.now(),
       o = !1
-    e && (r.call(window, e), (e = null)),
+    ;(e && (r.call(window, e), (e = null)),
       E.forEach(function (e) {
         var t, n, a
         if (e.framesStart) {
           if ((t = i - e.framesStart) >= e.duration && e.count && e.loopsLeft <= 1)
-            return (a = e.frames[(e.lastFrame = e.reverse ? 0 : e.frames.length - 1)]), e.frameCallback(a.value, !0, a.timeRatio, a.outputRatio), void (e.framesStart = null)
+            return ((a = e.frames[(e.lastFrame = e.reverse ? 0 : e.frames.length - 1)]), e.frameCallback(a.value, !0, a.timeRatio, a.outputRatio), void (e.framesStart = null))
           if (t > e.duration) {
             if (((n = Math.floor(t / e.duration)), e.count)) {
-              if (n >= e.loopsLeft) return (a = e.frames[(e.lastFrame = e.reverse ? 0 : e.frames.length - 1)]), e.frameCallback(a.value, !0, a.timeRatio, a.outputRatio), void (e.framesStart = null)
+              if (n >= e.loopsLeft) return ((a = e.frames[(e.lastFrame = e.reverse ? 0 : e.frames.length - 1)]), e.frameCallback(a.value, !0, a.timeRatio, a.outputRatio), void (e.framesStart = null))
               e.loopsLeft -= n
             }
-            ;(e.framesStart += e.duration * n), (t = i - e.framesStart)
+            ;((e.framesStart += e.duration * n), (t = i - e.framesStart))
           }
-          e.reverse && (t = e.duration - t), (a = e.frames[(e.lastFrame = Math.round(t / v))]), !1 !== e.frameCallback(a.value, !1, a.timeRatio, a.outputRatio) ? (o = !0) : (e.framesStart = null)
+          ;(e.reverse && (t = e.duration - t), (a = e.frames[(e.lastFrame = Math.round(t / v))]), !1 !== e.frameCallback(a.value, !1, a.timeRatio, a.outputRatio) ? (o = !0) : (e.framesStart = null))
         }
       }),
-      o && (e = l.call(window, xe))
+      o && (e = l.call(window, xe)))
   }
   function be(e, t) {
-    ;(e.framesStart = Date.now()), null != t && (e.framesStart -= e.duration * (e.reverse ? 1 - t : t)), (e.loopsLeft = e.count), (e.lastFrame = null), xe()
+    ;((e.framesStart = Date.now()), null != t && (e.framesStart -= e.duration * (e.reverse ? 1 - t : t)), (e.loopsLeft = e.count), (e.lastFrame = null), xe())
   }
   function ke(t, n) {
     var e, a
@@ -909,7 +913,7 @@ var LeaderLine = (function () {
       n &&
       (he(n)
         ? Object.keys(n).reduce(function (e, t) {
-            return (e[t] = we(n[t])), e
+            return ((e[t] = we(n[t])), e)
           }, {})
         : Array.isArray(n)
           ? n.map(we)
@@ -925,7 +929,7 @@ var LeaderLine = (function () {
     function l(e) {
       var t = 1,
         e = m.exec(e)
-      return e && ((t = parseFloat(e[1])), e[2] ? (t = 0 <= t && t <= 100 ? t / 100 : 1) : (t < 0 || 1 < t) && (t = 1)), t
+      return (e && ((t = parseFloat(e[1])), e[2] ? (t = 0 <= t && t <= 100 ? t / 100 : 1) : (t < 0 || 1 < t) && (t = 1)), t)
     }
     return (
       (t = /^(rgba|hsla|hwb|gray|device\-cmyk)\s*\(([\s\S]+)\)$/i.exec(e))
@@ -954,12 +958,12 @@ var LeaderLine = (function () {
       a,
       i,
       o = {}
-    if (!(i = e.ownerDocument)) return console.error("Cannot get document that contains the element."), null
-    if (e.compareDocumentPosition(i) & Node.DOCUMENT_POSITION_DISCONNECTED) return console.error("A disconnected element was passed."), null
+    if (!(i = e.ownerDocument)) return (console.error("Cannot get document that contains the element."), null)
+    if (e.compareDocumentPosition(i) & Node.DOCUMENT_POSITION_DISCONNECTED) return (console.error("A disconnected element was passed."), null)
     for (a in (n = e.getBoundingClientRect())) o[a] = n[a]
     if (!t) {
-      if (!(i = i.defaultView)) return console.error("Cannot get window that contains the element."), null
-      ;(o.left += i.pageXOffset), (o.right += i.pageXOffset), (o.top += i.pageYOffset), (o.bottom += i.pageYOffset)
+      if (!(i = i.defaultView)) return (console.error("Cannot get window that contains the element."), null)
+      ;((o.left += i.pageXOffset), (o.right += i.pageXOffset), (o.top += i.pageYOffset), (o.bottom += i.pageYOffset))
     }
     return o
   }
@@ -968,10 +972,10 @@ var LeaderLine = (function () {
       a = [],
       i = e
     for (t = t || window; ; ) {
-      if (!(n = i.ownerDocument)) return console.error("Cannot get document that contains the element."), null
-      if (!(n = n.defaultView)) return console.error("Cannot get window that contains the element."), null
+      if (!(n = i.ownerDocument)) return (console.error("Cannot get document that contains the element."), null)
+      if (!(n = n.defaultView)) return (console.error("Cannot get window that contains the element."), null)
       if (n === t) break
-      if (!(i = n.frameElement)) return console.error("`baseWindow` was not found."), null
+      if (!(i = n.frameElement)) return (console.error("`baseWindow` was not found."), null)
       a.unshift(i)
     }
     return a
@@ -983,12 +987,12 @@ var LeaderLine = (function () {
       ? t.length
         ? (t.forEach(function (e, t) {
             var n = Ie(e, 0 < t)
-            ;(a += n.left),
+            ;((a += n.left),
               (i += n.top),
               (e = (t = e).ownerDocument.defaultView.getComputedStyle(t, "")),
               (n = { left: t.clientLeft + parseFloat(e.paddingLeft), top: t.clientTop + parseFloat(e.paddingTop) }),
               (a += n.left),
-              (i += n.top)
+              (i += n.top))
           }),
           ((t = Ie(e, !0)).left += a),
           (t.right += a),
@@ -1042,7 +1046,7 @@ var LeaderLine = (function () {
       p = (e = null == e || 1 < e ? 1 : e < 0 ? 0 : e) / 2
     return (
       [-0.1252, 0.1252, -0.3678, 0.3678, -0.5873, 0.5873, -0.7699, 0.7699, -0.9041, 0.9041, -0.9816, 0.9816].forEach(function (e, t) {
-        ;(r = l((s = p * e + p), n.x, a.x, i.x, o.x)), (s = l(s, n.y, a.y, i.y, o.y)), (s = r * r + s * s), (h += u[t] * Math.sqrt(s))
+        ;((r = l((s = p * e + p), n.x, a.x, i.x, o.x)), (s = l(s, n.y, a.y, i.y, o.y)), (s = r * r + s * s), (h += u[t] * Math.sqrt(s)))
       }),
       p * h
     )
@@ -1058,7 +1062,7 @@ var LeaderLine = (function () {
         e = t
           ? e.map(function (e) {
               e = { x: e.x, y: e.y }
-              return t(e), e
+              return (t(e), e)
             })
           : e
         ;(n = n || [{ type: "M", values: [e[0].x, e[0].y] }]).push(
@@ -1074,7 +1078,7 @@ var LeaderLine = (function () {
     return (
       e.forEach(function (e) {
         e = (2 === e.length ? Ae : Te).apply(null, e)
-        t.push(e), (n += e)
+        ;(t.push(e), (n += e))
       }),
       { segsLen: t, lenAll: n }
     )
@@ -1103,33 +1107,33 @@ var LeaderLine = (function () {
     e.events[t] && -1 < (a = e.events[t].indexOf(n)) && e.events[t].splice(a, 1)
   }
   function ze(e) {
-    t && clearTimeout(t),
+    ;(t && clearTimeout(t),
       me.push(e),
       (t = setTimeout(function () {
-        me.forEach(function (e) {
+        ;(me.forEach(function (e) {
           e()
         }),
-          (me = [])
-      }, 0))
+          (me = []))
+      }, 0)))
   }
   function je(e, t) {
     e.reflowTargets.indexOf(t) < 0 && e.reflowTargets.push(t)
   }
   function He(e) {
-    e.reflowTargets.forEach(function (e) {
+    ;(e.reflowTargets.forEach(function (e) {
       var n
-      ;(n = e),
+      ;((n = e),
         setTimeout(function () {
           var e = n.parentNode,
             t = n.nextSibling
           e.insertBefore(e.removeChild(n), t)
-        }, 0)
+        }, 0))
     }),
-      (e.reflowTargets = [])
+      (e.reflowTargets = []))
   }
   function Ue(e, t, n, a, i, o, l) {
     var r
-    "auto-start-reverse" === n
+    ;("auto-start-reverse" === n
       ? ("boolean" != typeof s && (t.setAttribute("orient", "auto-start-reverse"), (s = t.orientType.baseVal === SVGMarkerElement.SVG_MARKER_ORIENT_UNKNOWN)),
         s ? t.setAttribute("orient", n) : ((r = i.createSVGTransform()).setRotate(180, 0, 0), o.transform.baseVal.appendItem(r), t.setAttribute("orient", "auto"), (r = !0)))
       : (t.setAttribute("orient", n), !1 === s && o.transform.baseVal.clear()),
@@ -1137,7 +1141,7 @@ var LeaderLine = (function () {
       r ? ((t.x = -a.right), (t.y = -a.bottom)) : ((t.x = a.left), (t.y = a.top)),
       (t.width = a.width),
       (t.height = a.height),
-      ie && je(e, l)
+      ie && je(e, l))
   }
   function Ze(e, t) {
     return { prop: e ? "markerEnd" : "markerStart", orient: t ? (t.noRotate ? "0" : e ? "auto" : "auto-start-reverse") : null }
@@ -1201,7 +1205,7 @@ var LeaderLine = (function () {
       m = !1
     function S(e, t) {
       e = t === b ? { x: e.left + e.width / 2, y: e.top } : t === k ? { x: e.right, y: e.top + e.height / 2 } : t === L ? { x: e.left + e.width / 2, y: e.bottom } : { x: e.left, y: e.top + e.height / 2 }
-      return (e.socketId = t), e
+      return ((e.socketId = t), e)
     }
     function E(e) {
       return { x: e.x, y: e.y }
@@ -1283,7 +1287,7 @@ var LeaderLine = (function () {
           _.push([E(v[0]), E(v[1])])
           break
         case N:
-          ;(t = ("number" == typeof g[0] && 0 < g[0]) || ("number" == typeof g[1] && 0 < g[1])),
+          ;((t = ("number" == typeof g[0] && 0 < g[0]) || ("number" == typeof g[1] && 0 < g[1])),
             (u = ne * (t ? -1 : 1)),
             (h = Math.atan2(v[1].y - v[0].y, v[1].x - v[0].x)),
             (t = u - h),
@@ -1291,11 +1295,11 @@ var LeaderLine = (function () {
             (u = (Ae(v[0], v[1]) / Math.sqrt(2)) * te),
             (t = { x: v[0].x + Math.cos(t) * u, y: v[0].y + Math.sin(t) * u * -1 }),
             (u = { x: v[1].x + Math.cos(h) * u, y: v[1].y + Math.sin(h) * u * -1 }),
-            _.push([E(v[0]), t, u, E(v[1])])
+            _.push([E(v[0]), t, u, E(v[1])]))
           break
         case T:
         case W:
-          ;(o = [g[0], f.position_path === W ? 0 : g[1]]),
+          ;((o = [g[0], f.position_path === W ? 0 : g[1]]),
             (r = []),
             (s = []),
             v.forEach(function (e, t) {
@@ -1320,9 +1324,9 @@ var LeaderLine = (function () {
                           : e.socketId === L
                             ? { x: 0, y: (i = (i = (n.y - e.y) / 2) < a ? a : i) }
                             : { x: -(i = (i = (e.x - n.x) / 2) < a ? a : i), y: 0 })
-              ;(r[t] = e.x + i.x), (s[t] = e.y + i.y)
+              ;((r[t] = e.x + i.x), (s[t] = e.y + i.y))
             }),
-            _.push([E(v[0]), { x: r[0], y: s[0] }, { x: r[1], y: s[1] }, E(v[1])])
+            _.push([E(v[0]), { x: r[0], y: s[0] }, { x: r[1], y: s[1] }, E(v[1])]))
           break
         case B:
           !(function () {
@@ -1345,7 +1349,7 @@ var LeaderLine = (function () {
                 if (n === h(e.dirId)) throw new Error("Invalid dirId: " + n)
                 a.dirId = n
               } else a.dirId = e.dirId
-              return a.dirId === i ? (a.y -= t) : a.dirId === l ? (a.x += t) : a.dirId === r ? (a.y += t) : (a.x -= t), a
+              return (a.dirId === i ? (a.y -= t) : a.dirId === l ? (a.x += t) : a.dirId === r ? (a.y += t) : (a.x -= t), a)
             }
             function d(e, t) {
               return t.dirId === i ? e.y <= t.y : t.dirId === l ? e.x >= t.x : t.dirId === r ? e.y >= t.y : e.x <= t.x
@@ -1366,7 +1370,7 @@ var LeaderLine = (function () {
               v.forEach(function (e, t) {
                 var n = E(e),
                   a = g[t]
-                ;(e = Array.isArray(a)
+                ;((e = Array.isArray(a)
                   ? a[0] < 0
                     ? [o, -a[0]]
                     : 0 < a[0]
@@ -1384,7 +1388,7 @@ var LeaderLine = (function () {
                   (n.dirId = e[0]),
                   (a = e[1]),
                   s[t].push(n),
-                  (u[t] = c(n, a))
+                  (u[t] = c(n, a)))
               });
               (function () {
                 var e,
@@ -1409,7 +1413,7 @@ var LeaderLine = (function () {
                     : ((a = m(u[0], u[1], "x" === o[0] ? "y" : "x")),
                       s.forEach(function (e, t) {
                         var n = 0 === t ? 1 : 0
-                        e.push(u[t]), (u[t] = c(u[t], ee, 2 * ee <= a ? S(u[t], u[n], "x" === o[t] ? "y" : "x") : "x" === o[t] ? r : l))
+                        ;(e.push(u[t]), (u[t] = c(u[t], ee, 2 * ee <= a ? S(u[t], u[n], "x" === o[t] ? "y" : "x") : "x" === o[t] ? r : l)))
                       }))
                 } else {
                   if (n[0] && n[1]) return void (f(u[1], u[0]) ? s[1].push(u[1]) : f(u[0], u[1]) ? s[0].push(u[0]) : s[0].push("x" === o[0] ? { x: u[1].x, y: u[0].y } : { x: u[0].x, y: u[1].y }))
@@ -1424,21 +1428,20 @@ var LeaderLine = (function () {
                       s.forEach(function (e, t) {
                         var n = 0 === t ? 1 : 0,
                           a = m(i[t], i[n], o[t])
-                        a < ee && (u[t] = c(u[t], ee - a)), e.push(u[t]), (u[t] = c(u[t], ee, S(u[t], u[n], o[n])))
+                        ;(a < ee && (u[t] = c(u[t], ee - a)), e.push(u[t]), (u[t] = c(u[t], ee, S(u[t], u[n], o[n]))))
                       }))
                 }
                 return 1
               })();
-
             );
-            s[1].reverse(),
+            ;(s[1].reverse(),
               s[0].concat(s[1]).forEach(function (e, t) {
                 e = { x: e.x, y: e.y }
-                0 < t && _.push([n, e]), (n = e)
-              })
+                ;(0 < t && _.push([n, e]), (n = e))
+              }))
           })()
       }
-      ;(d = []),
+      ;((d = []),
         f.position_plugOverheadSE.forEach(function (e, t) {
           var n,
             a,
@@ -1487,7 +1490,7 @@ var LeaderLine = (function () {
         l.events.apl_position &&
           l.events.apl_position.forEach(function (e) {
             e(l, _)
-          })
+          }))
     }
     return m
   }
@@ -1546,7 +1549,7 @@ var LeaderLine = (function () {
       j,
       H,
       U = {}
-    t.line &&
+    ;(t.line &&
       (U.line =
         ((i = (n = e).options),
         (a = n.curStats),
@@ -1571,7 +1574,7 @@ var LeaderLine = (function () {
               r,
               s,
               u = p.plugSE[e]
-            ;(f = Xe(h, c.plug_enabledSE, e, u !== Y) || f),
+            ;((f = Xe(h, c.plug_enabledSE, e, u !== Y) || f),
               (f = Xe(h, c.plug_plugSE, e, u) || f),
               (f = Xe(h, c.plug_colorSE, e, (s = p.plugColorSE[e] || c.line_color), d.cur_plug_colorSE) || f),
               (f = Xe(h, c.plug_colorTraSE, e, Oe(s)[0] < 1) || f),
@@ -1589,7 +1592,7 @@ var LeaderLine = (function () {
                 : ((c.position_plugOverheadSE[e] = -c.line_strokeWidth / 2), (c.viewBox_plugBCircleSE[e] = l = r = 0)),
               Xe(h, c.attach_plugSideLenSE, e, l, d.cur_attach_plugSideLenSE),
               Xe(h, c.attach_plugBackLenSE, e, r, d.cur_attach_plugBackLenSE),
-              (c.capsMaskAnchor_enabledSE[e] = !c.plug_enabledSE[e])
+              (c.capsMaskAnchor_enabledSE[e] = !c.plug_enabledSE[e]))
           }),
           (f = Xe(h, c, "plug_enabled", c.plug_enabledSE[0] || c.plug_enabledSE[1]) || f))),
       (t.lineOutline || U.line) &&
@@ -1611,7 +1614,7 @@ var LeaderLine = (function () {
           [0, 1].forEach(function (e) {
             var t = u.plugOutline_plugSE[e],
               n = t !== Y ? X[q[t]] : null
-            ;(y = Xe(r, u.plugOutline_enabledSE, e, s.plugOutlineEnabledSE[e] && u.plug_enabled && u.plug_enabledSE[e] && !!n && !!n.outlineBase) || y),
+            ;((y = Xe(r, u.plugOutline_enabledSE, e, s.plugOutlineEnabledSE[e] && u.plug_enabled && u.plug_enabledSE[e] && !!n && !!n.outlineBase) || y),
               (y = Xe(r, u.plugOutline_colorSE, e, (t = s.plugOutlineColorSE[e] || u.lineOutline_color)) || y),
               (y = Xe(r, u.plugOutline_colorTraSE, e, Oe(t)[0] < 1) || y),
               n &&
@@ -1619,7 +1622,7 @@ var LeaderLine = (function () {
                 ((t = s.plugOutlineSizeSE[e]) > n.outlineMax && (t = n.outlineMax),
                 (t *= 2 * n.outlineBase),
                 (y = Xe(r, u.plugOutline_strokeWidthSE, e, t) || y),
-                (y = Xe(r, u.plugOutline_inStrokeWidthSE, e, u.plugOutline_colorTraSE[e] ? t - (se / (u.line_strokeWidth / ue.lineSize) / s.plugSizeSE[e]) * 2 : t / 2) || y))
+                (y = Xe(r, u.plugOutline_inStrokeWidthSE, e, u.plugOutline_colorTraSE[e] ? t - (se / (u.line_strokeWidth / ue.lineSize) / s.plugSizeSE[e]) * 2 : t / 2) || y)))
           }),
           y)),
       (t.faces || U.line || U.plug || U.lineOutline || U.plugOutline) &&
@@ -1644,7 +1647,7 @@ var LeaderLine = (function () {
               var e = g.plug_plugSE[n],
                 t = e !== Y ? X[q[e]] : null,
                 a = Ze(n, t)
-              Xe(m, _.plug_enabledSE, n, (S = g.plug_enabledSE[n]), v.apl_plug_enabledSE) && ((m.plugsFace.style[a.prop] = S ? "url(#" + m.plugMarkerIdSE[n] + ")" : "none"), (E = !0)),
+              ;(Xe(m, _.plug_enabledSE, n, (S = g.plug_enabledSE[n]), v.apl_plug_enabledSE) && ((m.plugsFace.style[a.prop] = S ? "url(#" + m.plugMarkerIdSE[n] + ")" : "none"), (E = !0)),
                 g.plug_enabledSE[n] &&
                   (Xe(m, _.plug_plugSE, n, e, v.apl_plug_plugSE) &&
                     ((m.plugFaceSE[n].href.baseVal = "#" + t.elmId), Ue(m, m.plugMarkerSE[n], a.orient, t.bBox, m.svg, m.plugMarkerShapeSE[n], m.plugsFace), (E = !0), oe && je(m, m.plugsFace)),
@@ -1663,13 +1666,13 @@ var LeaderLine = (function () {
                     (Xe(m, _.plugOutline_plugSE, n, e, v.apl_plugOutline_plugSE) &&
                       ((m.plugOutlineFaceSE[n].href.baseVal = m.plugMaskShapeSE[n].href.baseVal = m.plugOutlineMaskShapeSE[n].href.baseVal = "#" + t.elmId),
                       [m.plugMaskSE[n], m.plugOutlineMaskSE[n]].forEach(function (e) {
-                        ;(e.x.baseVal.value = t.bBox.left), (e.y.baseVal.value = t.bBox.top), (e.width.baseVal.value = t.bBox.width), (e.height.baseVal.value = t.bBox.height)
+                        ;((e.x.baseVal.value = t.bBox.left), (e.y.baseVal.value = t.bBox.top), (e.width.baseVal.value = t.bBox.width), (e.height.baseVal.value = t.bBox.height))
                       }),
                       (E = !0)),
                     Xe(m, _.plugOutline_colorSE, n, (S = g.plugOutline_colorSE[n]), v.apl_plugOutline_colorSE) &&
                       ((m.plugOutlineFaceSE[n].style.fill = S), (E = !0), ie && (je(m, m.lineMaskCaps), je(m, m.lineOutlineMaskCaps))),
                     Xe(m, _.plugOutline_strokeWidthSE, n, (S = g.plugOutline_strokeWidthSE[n]), v.apl_plugOutline_strokeWidthSE) && ((m.plugOutlineMaskShapeSE[n].style.strokeWidth = S + "px"), (E = !0)),
-                    Xe(m, _.plugOutline_inStrokeWidthSE, n, (S = g.plugOutline_inStrokeWidthSE[n]), v.apl_plugOutline_inStrokeWidthSE) && ((m.plugMaskShapeSE[n].style.strokeWidth = S + "px"), (E = !0))))
+                    Xe(m, _.plugOutline_inStrokeWidthSE, n, (S = g.plugOutline_inStrokeWidthSE[n]), v.apl_plugOutline_inStrokeWidthSE) && ((m.plugMaskShapeSE[n].style.strokeWidth = S + "px"), (E = !0)))))
             }),
           E)),
       (t.position || U.line || U.plug) && (U.position = Ke(e)),
@@ -1685,7 +1688,7 @@ var LeaderLine = (function () {
             (w.y1 = w.y2 = M[0][0].y),
             (k.path_pathData = b =
               Be(M, function (e) {
-                e.x < w.x1 && (w.x1 = e.x), e.y < w.y1 && (w.y1 = e.y), e.x > w.x2 && (w.x2 = e.x), e.y > w.y2 && (w.y2 = e.y)
+                ;(e.x < w.x1 && (w.x1 = e.x), e.y < w.y1 && (w.y1 = e.y), e.x > w.x2 && (w.x2 = e.x), e.y > w.y2 && (w.y2 = e.y))
               })),
             Fe(b, I.path_pathData) &&
               (x.linePath.setPathData(b),
@@ -1751,10 +1754,10 @@ var LeaderLine = (function () {
           R.caps_enabled &&
             ([0, 1].forEach(function (e) {
               var t
-              Xe(W, F.capsMaskAnchor_enabledSE, e, (B = R.capsMaskAnchor_enabledSE[e])) && ((W.capsMaskAnchorSE[e].style.display = B ? "inline" : "none"), (G = !0), re && je(W, W.lineMask)),
+              ;(Xe(W, F.capsMaskAnchor_enabledSE, e, (B = R.capsMaskAnchor_enabledSE[e])) && ((W.capsMaskAnchorSE[e].style.display = B ? "inline" : "none"), (G = !0), re && je(W, W.lineMask)),
                 R.capsMaskAnchor_enabledSE[e] &&
                   (Fe((t = R.capsMaskAnchor_pathDataSE[e]), F.capsMaskAnchor_pathDataSE[e]) && (W.capsMaskAnchorSE[e].setPathData(t), (F.capsMaskAnchor_pathDataSE[e] = t), (G = !0)),
-                  Xe(W, F.capsMaskAnchor_strokeWidthSE, e, (B = R.capsMaskAnchor_strokeWidthSE[e])) && ((W.capsMaskAnchorSE[e].style.strokeWidth = B + "px"), (G = !0)))
+                  Xe(W, F.capsMaskAnchor_strokeWidthSE, e, (B = R.capsMaskAnchor_strokeWidthSE[e])) && ((W.capsMaskAnchorSE[e].style.strokeWidth = B + "px"), (G = !0))))
             }),
             Xe(W, F, "capsMaskMarker_enabled", (B = R.capsMaskMarker_enabled)) && ((W.capsMaskLine.style.display = B ? "inline" : "none"), (G = !0)),
             R.capsMaskMarker_enabled &&
@@ -1762,7 +1765,7 @@ var LeaderLine = (function () {
                 var e = R.capsMaskMarker_plugSE[n],
                   t = e !== Y ? X[q[e]] : null,
                   a = Ze(n, t)
-                Xe(W, F.capsMaskMarker_enabledSE, n, (B = R.capsMaskMarker_enabledSE[n])) && ((W.capsMaskLine.style[a.prop] = B ? "url(#" + W.lineMaskMarkerIdSE[n] + ")" : "none"), (G = !0)),
+                ;(Xe(W, F.capsMaskMarker_enabledSE, n, (B = R.capsMaskMarker_enabledSE[n])) && ((W.capsMaskLine.style[a.prop] = B ? "url(#" + W.lineMaskMarkerIdSE[n] + ")" : "none"), (G = !0)),
                   R.capsMaskMarker_enabledSE[n] &&
                     (Xe(W, F.capsMaskMarker_plugSE, n, e) &&
                       ((W.capsMaskMarkerShapeSE[n].href.baseVal = "#" + t.elmId),
@@ -1772,7 +1775,7 @@ var LeaderLine = (function () {
                     ["markerWidth", "markerHeight"].forEach(function (e) {
                       var t = "capsMaskMarker_" + e + "SE"
                       Xe(W, F[t], n, (B = R[t][n])) && ((W.capsMaskMarkerSE[n][e].baseVal.value = B), (G = !0))
-                    }))
+                    })))
               }))),
         R.lineOutline_enabled &&
           ["x", "y"].forEach(function (e) {
@@ -1792,7 +1795,7 @@ var LeaderLine = (function () {
         })),
       (le || re) && U.line && !U.path && je(e, e.lineShape),
       le && U.plug && !U.line && je(e, e.plugsFace),
-      He(e)
+      He(e))
   }
   function et(e, t) {
     return { duration: (pe(e.duration) && 0 < e.duration ? e : t).duration, timing: g.validTiming(e.timing) ? e.timing : we(t.timing) }
@@ -1806,7 +1809,7 @@ var LeaderLine = (function () {
         o[e] = i[e]
       })
     }
-    ;(i.show_on = t),
+    ;((i.show_on = t),
       n && w[n] && ((i.show_effect = n), (i.show_animOptions = et(he(a) ? a : {}, w[n].defaultAnimOptions))),
       (l.show_on = i.show_on !== o.show_on),
       (l.show_effect = i.show_effect !== o.show_effect),
@@ -1815,7 +1818,7 @@ var LeaderLine = (function () {
         ? i.show_inAnim
           ? ((n = l.show_effect ? w[o.show_effect].stop(e, !0, !0) : w[o.show_effect].stop(e)), r(), w[o.show_effect].init(e, n))
           : l.show_on && (o.show_effect && l.show_effect && w[o.show_effect].stop(e, !0, !0), r(), w[o.show_effect].init(e))
-        : l.show_on && (r(), w[o.show_effect].start(e))
+        : l.show_on && (r(), w[o.show_effect].start(e)))
   }
   function nt(e, t, n) {
     n = { props: e, optionName: n }
@@ -1823,7 +1826,7 @@ var LeaderLine = (function () {
   }
   function at(n, a, e) {
     var i = n.attachments.indexOf(a)
-    ;-1 < i && n.attachments.splice(i, 1),
+    ;(-1 < i && n.attachments.splice(i, 1),
       a.boundTargets.some(function (e, t) {
         return e.props === n && (a.conf.unbind && a.conf.unbind(a, e), (i = t), !0)
       }) &&
@@ -1831,7 +1834,7 @@ var LeaderLine = (function () {
         e ||
           ze(function () {
             a.boundTargets.length || o(a)
-          }))
+          })))
   }
   function it(s, u) {
     var i,
@@ -1853,7 +1856,7 @@ var LeaderLine = (function () {
       g = {}
     function _(e, t, n, a, i) {
       var o = {}
-      return n ? (null != a ? ((o.container = e[n]), (o.key = a)) : ((o.container = e), (o.key = n))) : ((o.container = e), (o.key = t)), (o.default = i), (o.acceptsAuto = null == o.default), o
+      return (n ? (null != a ? ((o.container = e[n]), (o.key = a)) : ((o.container = e), (o.key = n))) : ((o.container = e), (o.key = t)), (o.default = i), (o.acceptsAuto = null == o.default), o)
     }
     function v(e, t, n, a, i, o, l) {
       var r,
@@ -1892,7 +1895,7 @@ var LeaderLine = (function () {
           a = !1
         if (n && (Me(n) || (a = I(n, "anchor"))) && n !== S.anchorSE[t]) {
           if ((!1 !== s.optionIsAttach.anchorSE[t] && at(s, _e[S.anchorSE[t]._id]), a && !nt(s, _e[n._id], e))) throw new Error("Can't bind attachment")
-          ;(S.anchorSE[t] = n), (s.optionIsAttach.anchorSE[t] = a), (i = g.position = !0)
+          ;((S.anchorSE[t] = n), (s.optionIsAttach.anchorSE[t] = a), (i = g.position = !0))
         }
       }),
       !S.anchorSE[0] || !S.anchorSE[1] || S.anchorSE[0] === S.anchorSE[1])
@@ -1911,7 +1914,7 @@ var LeaderLine = (function () {
     }
     function b(e) {
       var t = a.appendChild(y.createElementNS(ae, "marker"))
-      return (t.id = e), (t.markerUnits.baseVal = SVGMarkerElement.SVG_MARKERUNITS_STROKEWIDTH), t.viewBox.baseVal || t.setAttribute("viewBox", "0 0 0 0"), t
+      return ((t.id = e), (t.markerUnits.baseVal = SVGMarkerElement.SVG_MARKERUNITS_STROKEWIDTH), t.viewBox.baseVal || t.setAttribute("viewBox", "0 0 0 0"), t)
     }
     function k(e) {
       return (
@@ -1921,7 +1924,7 @@ var LeaderLine = (function () {
         e
       )
     }
-    i &&
+    ;(i &&
       (c = (function (e, t) {
         var n, a
         if (!(e = Ce(e)) || !(n = Ce(t))) throw new Error("Cannot get frames.")
@@ -1965,7 +1968,7 @@ var LeaderLine = (function () {
       ((o = a.appendChild(y.createElementNS(ae, "g"))).id = p = m + "-caps"),
       (n.capsMaskAnchorSE = [0, 1].map(function () {
         var e = o.appendChild(y.createElementNS(ae, "path"))
-        return (e.className.baseVal = C + "-caps-mask-anchor"), e
+        return ((e.className.baseVal = C + "-caps-mask-anchor"), e)
       })),
       (n.lineMaskMarkerIdSE = [m + "-caps-mask-marker-0", m + "-caps-mask-marker-1"]),
       (n.capsMaskMarkerSE = [0, 1].map(function (e) {
@@ -1973,7 +1976,7 @@ var LeaderLine = (function () {
       })),
       (n.capsMaskMarkerShapeSE = [0, 1].map(function (e) {
         e = n.capsMaskMarkerSE[e].appendChild(y.createElementNS(ae, "use"))
-        return (e.className.baseVal = C + "-caps-mask-marker-shape"), e
+        return ((e.className.baseVal = C + "-caps-mask-marker-shape"), e)
       })),
       (n.capsMaskLine = l = o.appendChild(y.createElementNS(ae, "use"))),
       (l.className.baseVal = C + "-caps-mask-line"),
@@ -2011,7 +2014,7 @@ var LeaderLine = (function () {
       })),
       (n.plugMaskShapeSE = [0, 1].map(function (e) {
         e = n.plugMaskSE[e].appendChild(y.createElementNS(ae, "use"))
-        return (e.className.baseVal = C + "-plug-mask-shape"), e
+        return ((e.className.baseVal = C + "-plug-mask-shape"), e)
       })),
       (d = []),
       (n.plugOutlineMaskSE = [0, 1].map(function (e) {
@@ -2019,12 +2022,12 @@ var LeaderLine = (function () {
       })),
       (n.plugOutlineMaskShapeSE = [0, 1].map(function (e) {
         e = n.plugOutlineMaskSE[e].appendChild(y.createElementNS(ae, "use"))
-        return (e.className.baseVal = C + "-plug-outline-mask-shape"), e
+        return ((e.className.baseVal = C + "-plug-outline-mask-shape"), e)
       })),
       (n.plugMarkerIdSE = [m + "-plug-marker-0", m + "-plug-marker-1"]),
       (n.plugMarkerSE = [0, 1].map(function (e) {
         e = b(n.plugMarkerIdSE[e])
-        return re && (e.markerUnits.baseVal = SVGMarkerElement.SVG_MARKERUNITS_USERSPACEONUSE), e
+        return (re && (e.markerUnits.baseVal = SVGMarkerElement.SVG_MARKERUNITS_USERSPACEONUSE), e)
       })),
       (n.plugMarkerShapeSE = [0, 1].map(function (e) {
         return n.plugMarkerSE[e].appendChild(y.createElementNS(ae, "g"))
@@ -2034,7 +2037,7 @@ var LeaderLine = (function () {
       })),
       (n.plugOutlineFaceSE = [0, 1].map(function (e) {
         var t = n.plugMarkerShapeSE[e].appendChild(y.createElementNS(ae, "use"))
-        return (t.style.mask = "url(#" + d[e] + ")"), (t.style.display = "none"), t
+        return ((t.style.mask = "url(#" + d[e] + ")"), (t.style.display = "none"), t)
       })),
       (n.plugsFace = l = n.face.appendChild(y.createElementNS(ae, "use"))),
       (l.className.baseVal = C + "-plugs-face"),
@@ -2077,12 +2080,12 @@ var LeaderLine = (function () {
           return 0 < e
         }) || g.line),
       ["startPlug", "endPlug"].forEach(function (e, t) {
-        ;(g.plug = v(S, u, e, F, "plugSE", t, ue.plugSE[t]) || g.plug),
+        ;((g.plug = v(S, u, e, F, "plugSE", t, ue.plugSE[t]) || g.plug),
           (g.plug = E(S, u, e + "Color", "string", "plugColorSE", t, null, null, !0) || g.plug),
           (g.plug =
             E(S, u, e + "Size", null, "plugSizeSE", t, ue.plugSizeSE[t], function (e) {
               return 0 < e
-            }) || g.plug)
+            }) || g.plug))
       }),
       (g.lineOutline = E(S, u, "outline", null, "lineOutlineEnabled", null, ue.lineOutlineEnabled) || g.lineOutline),
       (g.lineOutline = E(S, u, "outlineColor", null, "lineOutlineColor", null, ue.lineOutlineColor, null, !0) || g.lineOutline),
@@ -2091,12 +2094,12 @@ var LeaderLine = (function () {
           return 0 < e && e <= 0.48
         }) || g.lineOutline),
       ["startPlugOutline", "endPlugOutline"].forEach(function (e, t) {
-        ;(g.plugOutline = E(S, u, e, null, "plugOutlineEnabledSE", t, ue.plugOutlineEnabledSE[t]) || g.plugOutline),
+        ;((g.plugOutline = E(S, u, e, null, "plugOutlineEnabledSE", t, ue.plugOutlineEnabledSE[t]) || g.plugOutline),
           (g.plugOutline = E(S, u, e + "Color", "string", "plugOutlineColorSE", t, null, null, !0) || g.plugOutline),
           (g.plugOutline =
             E(S, u, e + "Size", null, "plugOutlineSizeSE", t, ue.plugOutlineSizeSE[t], function (e) {
               return 1 <= e
-            }) || g.plugOutline)
+            }) || g.plugOutline))
       }),
       ["startLabel", "endLabel", "middleLabel"].forEach(function (e, t) {
         var n,
@@ -2133,7 +2136,7 @@ var LeaderLine = (function () {
             o.optionsConf.forEach(function (e) {
               var t = e[0],
                 n = e[3]
-              null == e[4] || i[n] || (i[n] = []), ("function" == typeof t ? t : "id" === t ? v : E).apply(null, [i, a].concat(e.slice(1)))
+              ;(null == e[4] || i[n] || (i[n] = []), ("function" == typeof t ? t : "id" === t ? v : E).apply(null, [i, a].concat(e.slice(1))))
             }),
             i
           )
@@ -2155,7 +2158,7 @@ var LeaderLine = (function () {
           he(e) ? ((s.curStats[n] = !0), (t = s.curStats[i] = l(e)), o.anim && (s.curStats[i].animation = r(e))) : (t = s.curStats[n] = !!e) && ((s.curStats[i] = l({})), o.anim && (s.curStats[i].animation = r({}))),
           ke(t, S[a]) && ((S[a] = t), (g.effect = !0)))
       }),
-      $e(s, g)
+      $e(s, g))
   }
   function ot(e, t, n) {
     var a = {
@@ -2167,11 +2170,11 @@ var LeaderLine = (function () {
       events: {},
       reflowTargets: [],
     }
-    Ye(a.curStats, de),
+    ;(Ye(a.curStats, de),
       Ye(a.aplStats, de),
       Object.keys(Z).forEach(function (e) {
         var t = Z[e].stats
-        Ye(a.curStats, t), Ye(a.aplStats, t), (a.options[e] = !1)
+        ;(Ye(a.curStats, t), Ye(a.aplStats, t), (a.options[e] = !1))
       }),
       Ye(a.curStats, fe),
       Ye(a.aplStats, fe),
@@ -2184,19 +2187,19 @@ var LeaderLine = (function () {
       (n = n || {}),
       (e || t) && ((n = we(n)), e && (n.start = e), t && (n.end = t)),
       (a.isShown = a.aplStats.show_on = !n.hide),
-      this.setOptions(n)
+      this.setOptions(n))
   }
   function lt(n) {
     return function (e) {
       var t = {}
-      ;(t[n] = e), this.setOptions(t)
+      ;((t[n] = e), this.setOptions(t))
     }
   }
   function rt(e, t) {
     var n,
       a = { conf: e, curStats: {}, aplStats: {}, boundTargets: [] },
       i = {}
-    e.argOptions.every(function (e) {
+    ;(e.argOptions.every(function (e) {
       return !(!t.length || ("string" == typeof e.type ? typeof t[0] !== e.type : "function" != typeof e.type || !e.type(t[0]))) && ((i[e.optionName] = t.shift()), !0)
     }),
       (n = t.length && he(t[0]) ? we(t[0]) : {}),
@@ -2211,7 +2214,7 @@ var LeaderLine = (function () {
         },
       }),
       (a._id = this._id),
-      (e.init && !e.init(a, n)) || (_e[this._id] = a)
+      (e.init && !e.init(a, n)) || (_e[this._id] = a))
   }
   return (
     (Z = {
@@ -2244,15 +2247,15 @@ var LeaderLine = (function () {
           ],
         ],
         init: function (e) {
-          Ge(e, "apl_line_strokeWidth", Z.dash.update), (e.lineFace.style.strokeDashoffset = 0), Z.dash.update(e)
+          ;(Ge(e, "apl_line_strokeWidth", Z.dash.update), (e.lineFace.style.strokeDashoffset = 0), Z.dash.update(e))
         },
         remove: function (e) {
           var t = e.curStats
-          De(e, "apl_line_strokeWidth", Z.dash.update),
+          ;(De(e, "apl_line_strokeWidth", Z.dash.update),
             t.dash_animId && (g.remove(t.dash_animId), (t.dash_animId = null)),
             (e.lineFace.style.strokeDasharray = "none"),
             (e.lineFace.style.strokeDashoffset = 0),
-            Ye(e.aplStats, Z.dash.stats)
+            Ye(e.aplStats, Z.dash.stats))
         },
         update: function (t) {
           var e,
@@ -2260,7 +2263,7 @@ var LeaderLine = (function () {
             a = t.aplStats,
             i = a.dash_options,
             o = !1
-          ;(n.dash_len = i.len || 2 * a.line_strokeWidth),
+          ;((n.dash_len = i.len || 2 * a.line_strokeWidth),
             (n.dash_gap = i.gap || a.line_strokeWidth),
             (n.dash_maxOffset = n.dash_len + n.dash_gap),
             (o = Xe(t, a, "dash_len", n.dash_len) || o),
@@ -2283,7 +2286,7 @@ var LeaderLine = (function () {
                     e,
                   )),
                   (a.dash_animOptions = we(n.dash_animOptions))))
-              : a.dash_animOptions && (n.dash_animId && (g.remove(n.dash_animId), (n.dash_animId = null)), (t.lineFace.style.strokeDashoffset = 0), (a.dash_animOptions = null))
+              : a.dash_animOptions && (n.dash_animId && (g.remove(n.dash_animId), (n.dash_animId = null)), (t.lineFace.style.strokeDashoffset = 0), (a.dash_animOptions = null)))
         },
       },
       gradient: {
@@ -2296,7 +2299,7 @@ var LeaderLine = (function () {
           var a = e.baseWindow.document,
             t = e.defs,
             n = C + "-" + e._id + "-gradient"
-          ;(e.efc_gradient_gradient = t = t.appendChild(a.createElementNS(ae, "linearGradient"))),
+          ;((e.efc_gradient_gradient = t = t.appendChild(a.createElementNS(ae, "linearGradient"))),
             (t.id = n),
             (t.gradientUnits.baseVal = SVGUnitTypes.SVG_UNIT_TYPE_USERSPACEONUSE),
             [t.x1, t.y1, t.x2, t.y2].forEach(function (e) {
@@ -2316,15 +2319,15 @@ var LeaderLine = (function () {
             Ge(e, "apl_path", Z.gradient.update),
             (e.curStats.line_altColor = !0),
             (e.lineFace.style.stroke = "url(#" + n + ")"),
-            Z.gradient.update(e)
+            Z.gradient.update(e))
         },
         remove: function (e) {
-          e.efc_gradient_gradient && (e.defs.removeChild(e.efc_gradient_gradient), (e.efc_gradient_gradient = e.efc_gradient_stopSE = null)),
+          ;(e.efc_gradient_gradient && (e.defs.removeChild(e.efc_gradient_gradient), (e.efc_gradient_gradient = e.efc_gradient_stopSE = null)),
             De(e, "cur_plug_colorSE", Z.gradient.update),
             De(e, "apl_path", Z.gradient.update),
             (e.curStats.line_altColor = !1),
             (e.lineFace.style.stroke = e.curStats.line_color),
-            Ye(e.aplStats, Z.gradient.stats)
+            Ye(e.aplStats, Z.gradient.stats))
         },
         update: function (a) {
           var e,
@@ -2332,7 +2335,7 @@ var LeaderLine = (function () {
             o = a.aplStats,
             t = o.gradient_options,
             n = a.pathList.animVal || a.pathList.baseVal
-          ;[0, 1].forEach(function (e) {
+          ;([0, 1].forEach(function (e) {
             i.gradient_colorSE[e] = t.colorSE[e] || i.plug_colorSE[e]
           }),
             (e = n[0][0]),
@@ -2341,12 +2344,12 @@ var LeaderLine = (function () {
             (i.gradient_pointSE[1] = { x: e.x, y: e.y }),
             [0, 1].forEach(function (t) {
               var n
-              Xe(a, o.gradient_colorSE, t, (n = i.gradient_colorSE[t])) &&
+              ;(Xe(a, o.gradient_colorSE, t, (n = i.gradient_colorSE[t])) &&
                 (re ? ((n = Oe(n)), (a.efc_gradient_stopSE[t].style.stopColor = n[1]), (a.efc_gradient_stopSE[t].style.stopOpacity = n[0])) : (a.efc_gradient_stopSE[t].style.stopColor = n)),
                 ["x", "y"].forEach(function (e) {
                   ;(n = i.gradient_pointSE[t][e]) !== o.gradient_pointSE[t][e] && (a.efc_gradient_gradient[e + (t + 1)].baseVal.value = o.gradient_pointSE[t][e] = n)
-                })
-            })
+                }))
+            }))
         },
       },
       dropShadow: {
@@ -2410,7 +2413,7 @@ var LeaderLine = (function () {
                   (a = o.appendChild(e.createElementNS(ae, "feMerge"))).appendChild(e.createElementNS(ae, "feMergeNode")),
                   (a.appendChild(e.createElementNS(ae, "feMergeNode")).in1.baseVal = "SourceGraphic")),
               i)
-          ;["elmFilter", "elmOffset", "elmBlur", "styleFlood", "elmsAppend"].forEach(function (e) {
+          ;(["elmFilter", "elmOffset", "elmBlur", "styleFlood", "elmsAppend"].forEach(function (e) {
             t["efc_dropShadow_" + e] = s[e]
           }),
             s.elmsAppend.forEach(function (e) {
@@ -2418,11 +2421,11 @@ var LeaderLine = (function () {
             }),
             t.face.setAttribute("filter", "url(#" + r + ")"),
             Ge(t, "new_edge4viewBox", Z.dropShadow.adjustEdge),
-            Z.dropShadow.update(t)
+            Z.dropShadow.update(t))
         },
         remove: function (e) {
           var t = e.defs
-          e.efc_dropShadow_elmsAppend &&
+          ;(e.efc_dropShadow_elmsAppend &&
             (e.efc_dropShadow_elmsAppend.forEach(function (e) {
               t.removeChild(e)
             }),
@@ -2430,7 +2433,7 @@ var LeaderLine = (function () {
             De(e, "new_edge4viewBox", Z.dropShadow.adjustEdge),
             $e(e, {}),
             e.face.removeAttribute("filter"),
-            Ye(e.aplStats, Z.dropShadow.stats)
+            Ye(e.aplStats, Z.dropShadow.stats))
         },
         update: function (e) {
           var t,
@@ -2438,7 +2441,7 @@ var LeaderLine = (function () {
             a = e.curStats,
             i = e.aplStats,
             o = i.dropShadow_options
-          ;(a.dropShadow_dx = t = o.dx),
+          ;((a.dropShadow_dx = t = o.dx),
             Xe(e, i, "dropShadow_dx", t) && ((e.efc_dropShadow_elmOffset.dx.baseVal = t), (n = !0)),
             (a.dropShadow_dy = t = o.dy),
             Xe(e, i, "dropShadow_dy", t) && ((e.efc_dropShadow_elmOffset.dy.baseVal = t), (n = !0)),
@@ -2448,7 +2451,7 @@ var LeaderLine = (function () {
             (a.dropShadow_color = t = o.color),
             Xe(e, i, "dropShadow_color", t) && (e.efc_dropShadow_styleFlood.floodColor = t),
             (a.dropShadow_opacity = t = o.opacity),
-            Xe(e, i, "dropShadow_opacity", t) && (e.efc_dropShadow_styleFlood.floodOpacity = t)
+            Xe(e, i, "dropShadow_opacity", t) && (e.efc_dropShadow_styleFlood.floodOpacity = t))
         },
         adjustEdge: function (a, i) {
           var e,
@@ -2463,7 +2466,7 @@ var LeaderLine = (function () {
             ["x", "y"].forEach(function (e) {
               var t,
                 n = "dropShadow_" + e
-              ;(o[n] = t = i[e + "1"]), Xe(a, l, n, t) && (a.efc_dropShadow_elmFilter[e].baseVal.value = t)
+              ;((o[n] = t = i[e + "1"]), Xe(a, l, n, t) && (a.efc_dropShadow_elmFilter[e].baseVal.value = t))
             }))
         },
       },
@@ -2471,21 +2474,21 @@ var LeaderLine = (function () {
     Object.keys(Z).forEach(function (e) {
       var t = Z[e],
         n = t.stats
-      ;(n[e + "_enabled"] = { iniValue: !1 }), (n[e + "_options"] = { hasProps: !0 }), t.anim && ((n[e + "_animOptions"] = {}), (n[e + "_animId"] = {}))
+      ;((n[e + "_enabled"] = { iniValue: !1 }), (n[e + "_options"] = { hasProps: !0 }), t.anim && ((n[e + "_animOptions"] = {}), (n[e + "_animId"] = {})))
     }),
     (w = {
       none: {
         defaultAnimOptions: {},
         init: function (e, t) {
           var n = e.curStats
-          n.show_animId && (g.remove(n.show_animId), (n.show_animId = null)), w.none.start(e, t)
+          ;(n.show_animId && (g.remove(n.show_animId), (n.show_animId = null)), w.none.start(e, t))
         },
         start: function (e, t) {
           w.none.stop(e, !0)
         },
         stop: function (e, t, n) {
           var a = e.curStats
-          return (n = null != n ? n : e.aplStats.show_on), (a.show_inAnim = !1), t && Je(e, n), n ? 1 : 0
+          return ((n = null != n ? n : e.aplStats.show_on), (a.show_inAnim = !1), t && Je(e, n), n ? 1 : 0)
         },
       },
       fade: {
@@ -2493,7 +2496,7 @@ var LeaderLine = (function () {
         init: function (n, e) {
           var t = n.curStats,
             a = n.aplStats
-          t.show_animId && g.remove(t.show_animId),
+          ;(t.show_animId && g.remove(t.show_animId),
             (t.show_animId = g.add(
               function (e) {
                 return e
@@ -2507,17 +2510,17 @@ var LeaderLine = (function () {
               null,
               !1,
             )),
-            w.fade.start(n, e)
+            w.fade.start(n, e))
         },
         start: function (e, t) {
           var n,
             a = e.curStats
-          a.show_inAnim && (n = g.stop(a.show_animId)), Je(e, 1), (a.show_inAnim = !0), g.start(a.show_animId, !e.aplStats.show_on, null != t ? t : n)
+          ;(a.show_inAnim && (n = g.stop(a.show_animId)), Je(e, 1), (a.show_inAnim = !0), g.start(a.show_animId, !e.aplStats.show_on, null != t ? t : n))
         },
         stop: function (e, t, n) {
           var a,
             i = e.curStats
-          return (n = null != n ? n : e.aplStats.show_on), (a = i.show_inAnim ? g.stop(i.show_animId) : n ? 1 : 0), (i.show_inAnim = !1), t && ((e.svg.style.opacity = n ? "" : "0"), Je(e, n)), a
+          return ((n = null != n ? n : e.aplStats.show_on), (a = i.show_inAnim ? g.stop(i.show_animId) : n ? 1 : 0), (i.show_inAnim = !1), t && ((e.svg.style.opacity = n ? "" : "0"), Je(e, n)), a)
         },
       },
       draw: {
@@ -2529,7 +2532,7 @@ var LeaderLine = (function () {
             i = Re(o),
             l = i.segsLen,
             r = i.lenAll
-          t.show_animId && g.remove(t.show_animId),
+          ;(t.show_animId && g.remove(t.show_animId),
             (t.show_animId = g.add(
               function (e) {
                 var t,
@@ -2539,7 +2542,7 @@ var LeaderLine = (function () {
                 if (0 === e) n = [[o[0][0], o[0][0]]]
                 else if (1 === e) n = o
                 else {
-                  for (t = r * e, n = []; t >= l[++i]; ) n.push(o[i]), (t -= l[i])
+                  for (t = r * e, n = []; t >= l[++i]; ) (n.push(o[i]), (t -= l[i]))
                   t && (2 === (a = o[i]).length ? n.push([a[0], Ve(a[0], a[1], t / l[i])]) : ((e = Ne(a[0], a[1], a[2], a[3], We(a[0], a[1], a[2], a[3], t))), n.push([a[0], e.fromP1, e.fromP2, e])))
                 }
                 return n
@@ -2553,12 +2556,12 @@ var LeaderLine = (function () {
               null,
               !1,
             )),
-            w.draw.start(n, e)
+            w.draw.start(n, e))
         },
         start: function (e, t) {
           var n,
             a = e.curStats
-          a.show_inAnim && (n = g.stop(a.show_animId)), Je(e, 1), (a.show_inAnim = !0), Ge(e, "apl_position", w.draw.update), g.start(a.show_animId, !e.aplStats.show_on, null != t ? t : n)
+          ;(a.show_inAnim && (n = g.stop(a.show_animId)), Je(e, 1), (a.show_inAnim = !0), Ge(e, "apl_position", w.draw.update), g.start(a.show_animId, !e.aplStats.show_on, null != t ? t : n))
         },
         stop: function (e, t, n) {
           var a,
@@ -2572,7 +2575,7 @@ var LeaderLine = (function () {
           )
         },
         update: function (e) {
-          De(e, "apl_position", w.draw.update), e.curStats.show_inAnim ? w.draw.init(e, w.draw.stop(e)) : (e.aplStats.show_animOptions = {})
+          ;(De(e, "apl_position", w.draw.update), e.curStats.show_inAnim ? w.draw.init(e, w.draw.stop(e)) : (e.aplStats.show_animOptions = {}))
         },
       },
     }),
@@ -2689,15 +2692,15 @@ var LeaderLine = (function () {
       })
     }),
     (ot.prototype.setOptions = function (e) {
-      return it(Se[this._id], e), this
+      return (it(Se[this._id], e), this)
     }),
     (ot.prototype.position = function () {
-      return $e(Se[this._id], { position: !0 }), this
+      return ($e(Se[this._id], { position: !0 }), this)
     }),
     (ot.prototype.remove = function () {
       var t = Se[this._id],
         n = t.curStats
-      Object.keys(Z).forEach(function (e) {
+      ;(Object.keys(Z).forEach(function (e) {
         e += "_animId"
         n[e] && g.remove(n[e])
       }),
@@ -2706,13 +2709,13 @@ var LeaderLine = (function () {
           at(t, e)
         }),
         t.baseWindow && t.svg && t.baseWindow.document.body.removeChild(t.svg),
-        delete Se[this._id]
+        delete Se[this._id])
     }),
     (ot.prototype.show = function (e, t) {
-      return tt(Se[this._id], !0, e, t), this
+      return (tt(Se[this._id], !0, e, t), this)
     }),
     (ot.prototype.hide = function (e, t) {
-      return tt(Se[this._id], !1, e, t), this
+      return (tt(Se[this._id], !1, e, t), this)
     }),
     (o = function (t) {
       t &&
@@ -2745,26 +2748,26 @@ var LeaderLine = (function () {
         type: "anchor",
         argOptions: [{ optionName: "element", type: Me }],
         init: function (e, t) {
-          return (e.element = O.pointAnchor.checkElement(t.element)), (e.x = O.pointAnchor.parsePercent(t.x, !0) || [0.5, !0]), (e.y = O.pointAnchor.parsePercent(t.y, !0) || [0.5, !0]), !0
+          return ((e.element = O.pointAnchor.checkElement(t.element)), (e.x = O.pointAnchor.parsePercent(t.x, !0) || [0.5, !0]), (e.y = O.pointAnchor.parsePercent(t.y, !0) || [0.5, !0]), !0)
         },
         removeOption: function (e, t) {
           var n = t.props,
             a = {},
             i = e.element,
             e = n.options.anchorSE["start" === t.optionName ? 1 : 0]
-          i === e && (i = e === document.body ? new M(O.pointAnchor, [i]) : document.body), (a[t.optionName] = i), it(n, a)
+          ;(i === e && (i = e === document.body ? new M(O.pointAnchor, [i]) : document.body), (a[t.optionName] = i), it(n, a))
         },
         getBBoxNest: function (e, t) {
           var n = Le(e.element, t.baseWindow),
             a = n.width,
             t = n.height
-          return (n.width = n.height = 0), (n.left = n.right = n.left + e.x[0] * (e.x[1] ? a : 1)), (n.top = n.bottom = n.top + e.y[0] * (e.y[1] ? t : 1)), n
+          return ((n.width = n.height = 0), (n.left = n.right = n.left + e.x[0] * (e.x[1] ? a : 1)), (n.top = n.bottom = n.top + e.y[0] * (e.y[1] ? t : 1)), n)
         },
         parsePercent: function (e, t) {
           var n,
             a,
             i = !1
-          return pe(e) ? (a = e) : "string" == typeof e && (n = m.exec(e)) && n[2] && (i = 0 !== (a = parseFloat(n[1]) / 100)), null != a && (t || 0 <= a) ? [a, i] : null
+          return (pe(e) ? (a = e) : "string" == typeof e && (n = m.exec(e)) && n[2] && (i = 0 !== (a = parseFloat(n[1]) / 100)), null != a && (t || 0 <= a) ? [a, i] : null)
         },
         checkElement: function (e) {
           if (null == e) e = document.body
@@ -2820,7 +2823,7 @@ var LeaderLine = (function () {
               var e = a.curStats,
                 t = a.aplStats,
                 n = a.boundTargets.length ? a.boundTargets[0].props.curStats : null
-              ;(e.color = n = a.color || (n ? n.line_color : ue.lineColor)), Xe(a, t, "color", n) && (a.path.style.stroke = n)
+              ;((e.color = n = a.color || (n ? n.line_color : ue.lineColor)), Xe(a, t, "color", n) && (a.path.style.stroke = n))
             }),
             (a.updateShow = function () {
               Je(
@@ -2839,35 +2842,35 @@ var LeaderLine = (function () {
             e.color || Ge(t, "cur_line_color", e.updateColor),
             Ge(t, "svgShow", e.updateShow),
             ze(function () {
-              e.updateColor(), e.updateShow()
+              ;(e.updateColor(), e.updateShow())
             }),
             !0
           )
         },
         unbind: function (e, t) {
           t = t.props
-          e.color || De(t, "cur_line_color", e.updateColor),
+          ;(e.color || De(t, "cur_line_color", e.updateColor),
             De(t, "svgShow", e.updateShow),
             1 < e.boundTargets.length &&
               ze(function () {
-                e.updateColor(),
+                ;(e.updateColor(),
                   e.updateShow(),
                   O.areaAnchor.update(e) &&
                     e.boundTargets.forEach(function (e) {
                       $e(e.props, { position: !0 })
-                    })
-              })
+                    }))
+              }))
         },
         removeOption: function (e, t) {
           O.pointAnchor.removeOption(e, t)
         },
         remove: function (t) {
-          t.boundTargets.length &&
+          ;(t.boundTargets.length &&
             (console.error("LeaderLineAttachment was not unbound by remove"),
             t.boundTargets.forEach(function (e) {
               O.areaAnchor.unbind(t, e)
             })),
-            t.svg.parentNode.removeChild(t.svg)
+            t.svg.parentNode.removeChild(t.svg))
         },
         getStrokeWidth: function (e, t) {
           return (
@@ -2884,11 +2887,11 @@ var LeaderLine = (function () {
         getPathData: function (e, t) {
           var n = Le(e.element, t.baseWindow)
           return Be(e.curStats.pathListRel, function (e) {
-            ;(e.x += n.left), (e.y += n.top)
+            ;((e.x += n.left), (e.y += n.top))
           })
         },
         getBBoxNest: function (e, t) {
-          ;(t = Le(e.element, t.baseWindow)), (e = e.curStats.bBoxRel)
+          ;((t = Le(e.element, t.baseWindow)), (e = e.curStats.bBoxRel))
           return { left: e.left + t.left, top: e.top + t.top, right: e.right + t.left, bottom: e.bottom + t.top, width: e.width, height: e.height }
         },
         update: function (t) {
@@ -2923,7 +2926,7 @@ var LeaderLine = (function () {
           ) {
             switch (t.shape) {
               case "rect":
-                ;((c = { left: t.x[0] * (t.x[1] ? n.width : 1), top: t.y[0] * (t.y[1] ? n.height : 1), width: t.width[0] * (t.width[1] ? n.width : 1), height: t.height[0] * (t.height[1] ? n.height : 1) }).right =
+                ;(((c = { left: t.x[0] * (t.x[1] ? n.width : 1), top: t.y[0] * (t.y[1] ? n.height : 1), width: t.width[0] * (t.width[1] ? n.width : 1), height: t.height[0] * (t.height[1] ? n.height : 1) }).right =
                   c.left + c.width),
                   (c.bottom = c.top + c.height),
                   (p = S.strokeWidth / 2),
@@ -2964,10 +2967,10 @@ var LeaderLine = (function () {
                         { x: c.left - S.strokeWidth, y: c.top - S.strokeWidth },
                         { x: c.right + S.strokeWidth, y: c.bottom + S.strokeWidth },
                       ])),
-                  (S.bBoxRel = { left: h[0].x, top: h[0].y, right: h[1].x, bottom: h[1].y, width: h[1].x - h[0].x, height: h[1].y - h[0].y })
+                  (S.bBoxRel = { left: h[0].x, top: h[0].y, right: h[1].x, bottom: h[1].y, width: h[1].x - h[0].x, height: h[1].y - h[0].y }))
                 break
               case "circle":
-                ;(l = { left: t.x[0] * (t.x[1] ? n.width : 1), top: t.y[0] * (t.y[1] ? n.height : 1), width: t.width[0] * (t.width[1] ? n.width : 1), height: t.height[0] * (t.height[1] ? n.height : 1) }).width ||
+                ;((l = { left: t.x[0] * (t.x[1] ? n.width : 1), top: t.y[0] * (t.y[1] ? n.height : 1), width: t.width[0] * (t.width[1] ? n.width : 1), height: t.height[0] * (t.height[1] ? n.height : 1) }).width ||
                   l.height ||
                   (l.width = l.height = 10),
                   l.width || (l.width = l.height),
@@ -3004,15 +3007,15 @@ var LeaderLine = (function () {
                     { x: l.left - s, y: l.top - u },
                     { x: l.right + s, y: l.bottom + u },
                   ]),
-                  (S.bBoxRel = { left: e[0].x, top: e[0].y, right: e[1].x, bottom: e[1].y, width: e[1].x - e[0].x, height: e[1].y - e[0].y })
+                  (S.bBoxRel = { left: e[0].x, top: e[0].y, right: e[1].x, bottom: e[1].y, width: e[1].x - e[0].x, height: e[1].y - e[0].y }))
                 break
               case "polygon":
-                t.points.forEach(function (e) {
+                ;(t.points.forEach(function (e) {
                   var t = e.x[0] * (e.x[1] ? n.width : 1),
                     e = e.y[0] * (e.y[1] ? n.height : 1)
-                  i ? (t < i.left && (i.left = t), t > i.right && (i.right = t), e < i.top && (i.top = e), e > i.bottom && (i.bottom = e)) : (i = { left: t, right: t, top: e, bottom: e }),
+                  ;(i ? (t < i.left && (i.left = t), t > i.right && (i.right = t), e < i.top && (i.top = e), e > i.bottom && (i.bottom = e)) : (i = { left: t, right: t, top: e, bottom: e }),
                     o ? S.pathListRel.push([o, { x: t, y: e }]) : (S.pathListRel = []),
-                    (o = { x: t, y: e })
+                    (o = { x: t, y: e }))
                 }),
                   S.pathListRel.push([]),
                   (e = S.strokeWidth / 2),
@@ -3020,14 +3023,14 @@ var LeaderLine = (function () {
                     { x: i.left - e, y: i.top - e },
                     { x: i.right + e, y: i.bottom + e },
                   ]),
-                  (S.bBoxRel = { left: e[0].x, top: e[0].y, right: e[1].x, bottom: e[1].y, width: e[1].x - e[0].x, height: e[1].y - e[0].y })
+                  (S.bBoxRel = { left: e[0].x, top: e[0].y, right: e[1].x, bottom: e[1].y, width: e[1].x - e[0].x, height: e[1].y - e[0].y }))
             }
             v.pathListRel = v.bBoxRel = !0
           }
           return (
             (v.pathListRel || v.elementLeft || v.elementTop) &&
               (S.pathData = Be(S.pathListRel, function (e) {
-                ;(e.x += n.left), (e.y += n.top)
+                ;((e.x += n.left), (e.y += n.top))
               })),
             Xe(t, g, "strokeWidth", (a = S.strokeWidth)) && (t.path.style.strokeWidth = a + "px"),
             Fe((a = S.pathData), g.pathData) && (t.path.setPathData(a), (g.pathData = a), (v.pathData = !0)),
@@ -3095,7 +3098,7 @@ var LeaderLine = (function () {
             ["style", "hoverStyle"].forEach(function (e) {
               var n = p[e]
               a[e] = Object.keys(n).reduce(function (e, t) {
-                return (e[t] = n[t]), e
+                return ((e[t] = n[t]), e)
               }, {})
             }),
             "inline" === (n = a.element.ownerDocument.defaultView.getComputedStyle(a.element, "")).display ? (a.style.display = "inline-block") : "none" === n.display && (a.style.display = "block"),
@@ -3138,19 +3141,19 @@ var LeaderLine = (function () {
             (l = i.animOptions),
             (a.elmStyle = t = a.element.style),
             (a.mouseenter = function (e) {
-              ;(a.hoverStyleSave = p.getStyles(t, Object.keys(a.hoverStyle))),
+              ;((a.hoverStyleSave = p.getStyles(t, Object.keys(a.hoverStyle))),
                 p.setStyles(t, a.hoverStyle),
                 a.boundTargets.forEach(function (e) {
                   tt(e.props, !0, o, l)
                 }),
-                r && r(e)
+                r && r(e))
             }),
             (a.mouseleave = function (e) {
-              p.setStyles(t, a.hoverStyleSave),
+              ;(p.setStyles(t, a.hoverStyleSave),
                 a.boundTargets.forEach(function (e) {
                   tt(e.props, !1, o, l)
                 }),
-                r && r(e)
+                r && r(e))
             }),
             !0
           )
@@ -3174,7 +3177,7 @@ var LeaderLine = (function () {
                   ? (n.addEventListener("mouseenter", a, !1),
                     n.addEventListener("mouseleave", i, !1),
                     function () {
-                      n.removeEventListener("mouseenter", a, !1), n.removeEventListener("mouseleave", i, !1)
+                      ;(n.removeEventListener("mouseenter", a, !1), n.removeEventListener("mouseleave", i, !1))
                     })
                   : (console.warn("mouseenter and mouseleave events polyfill is enabled."),
                     n.addEventListener(
@@ -3190,14 +3193,14 @@ var LeaderLine = (function () {
                       }),
                     ),
                     function () {
-                      n.removeEventListener("mouseover", o, !1), n.removeEventListener("mouseout", l, !1)
+                      ;(n.removeEventListener("mouseover", o, !1), n.removeEventListener("mouseout", l, !1))
                     }))),
               (e.enabled = !0)),
             !0
           )
         },
         unbind: function (e, t) {
-          e.enabled && e.boundTargets.length <= 1 && (e.removeEventListener(), O.mouseHoverAnchor.setStyles(e.elmStyle, e.styleSave), (e.enabled = !1)), O.mouseHoverAnchor.llShow(t.props, !0, e.showEffectName)
+          ;(e.enabled && e.boundTargets.length <= 1 && (e.removeEventListener(), O.mouseHoverAnchor.setStyles(e.elmStyle, e.styleSave), (e.enabled = !1)), O.mouseHoverAnchor.llShow(t.props, !0, e.showEffectName))
         },
         removeOption: function (e, t) {
           O.pointAnchor.removeOption(e, t)
@@ -3213,11 +3216,11 @@ var LeaderLine = (function () {
           return Le(e.element, t.baseWindow)
         },
         llShow: function (e, t, n) {
-          w[n || e.curStats.show_effect].stop(e, !0, t), (e.aplStats.show_on = t)
+          ;(w[n || e.curStats.show_effect].stop(e, !0, t), (e.aplStats.show_on = t))
         },
         getStyles: function (n, e) {
           return e.reduce(function (e, t) {
-            return (e[t] = n[t]), e
+            return ((e[t] = n[t]), e)
           }, {})
         },
         setStyles: function (t, n) {
@@ -3289,7 +3292,7 @@ var LeaderLine = (function () {
           var n = e.curStats,
             a = e.aplStats,
             t = t.curStats
-          ;(n.color = t = e.color || t.line_color), Xe(e, a, "color", t) && (e.styleFill.fill = t)
+          ;((n.color = t = e.color || t.line_color), Xe(e, a, "color", t) && (e.styleFill.fill = t))
         },
         updateShow: function (e, t) {
           t = !0 === t.isShown
@@ -3297,7 +3300,7 @@ var LeaderLine = (function () {
         },
         adjustEdge: function (e, t, n) {
           n = { x1: t.x - n, y1: t.y - n, x2: t.x + t.width + n, y2: t.y + t.height + n }
-          n.x1 < e.x1 && (e.x1 = n.x1), n.y1 < e.y1 && (e.y1 = n.y1), n.x2 > e.x2 && (e.x2 = n.x2), n.y2 > e.y2 && (e.y2 = n.y2)
+          ;(n.x1 < e.x1 && (e.x1 = n.x1), n.y1 < e.y1 && (e.y1 = n.y1), n.x2 > e.x2 && (e.x2 = n.x2), n.y2 > e.y2 && (e.y2 = n.y2))
         },
         newText: function (e, t, n, a, i) {
           var o,
@@ -3307,7 +3310,7 @@ var LeaderLine = (function () {
             (r.textContent = e),
             [r.x, r.y].forEach(function (e) {
               var t = n.createSVGLength()
-              t.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_PX, 0), e.baseVal.initialize(t)
+              ;(t.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_PX, 0), e.baseVal.initialize(t))
             }),
             "boolean" != typeof h && (h = "paintOrder" in r.style),
             i && !h
@@ -3331,14 +3334,14 @@ var LeaderLine = (function () {
             r = i / 2 + (t || 0)
           if (r <= 0) return 2 === (n = e[0]).length ? Ve(n[0], n[1], 0) : Ne(n[0], n[1], n[2], n[3], 0)
           if (i <= r) return 2 === (n = e[e.length - 1]).length ? Ve(n[0], n[1], 1) : Ne(n[0], n[1], n[2], n[3], 1)
-          for (a = []; r > o[++l]; ) a.push(e[l]), (r -= o[l])
+          for (a = []; r > o[++l]; ) (a.push(e[l]), (r -= o[l]))
           return 2 === (n = e[l]).length ? Ve(n[0], n[1], r / o[l]) : Ne(n[0], n[1], n[2], n[3], We(n[0], n[1], n[2], n[3], r))
         },
         initSvg: function (t, n) {
           var e,
             a,
             i = O.captionLabel.newText(t.text, n.baseWindow.document, n.svg, C + "-captionLabel-" + t._id, t.outlineColor)
-          ;["elmPosition", "styleFill", "styleShow", "elmsAppend"].forEach(function (e) {
+          ;(["elmPosition", "styleFill", "styleShow", "elmsAppend"].forEach(function (e) {
             t[e] = i[e]
           }),
             (t.isShown = !1),
@@ -3358,7 +3361,7 @@ var LeaderLine = (function () {
             t.updateColor(n),
             t.refSocketXY ? t.updateSocketXY(n) : t.updatePath(n),
             re && $e(n, {}),
-            t.updateShow(n)
+            t.updateShow(n))
         },
         bind: function (e, t) {
           var n = t.props
@@ -3377,7 +3380,7 @@ var LeaderLine = (function () {
         },
         unbind: function (e, t) {
           var n = t.props
-          e.elmsAppend &&
+          ;(e.elmsAppend &&
             (e.elmsAppend.forEach(function (e) {
               n.svg.removeChild(e)
             }),
@@ -3387,12 +3390,12 @@ var LeaderLine = (function () {
             e.color || De(n, "cur_line_color", e.updateColor),
             e.refSocketXY ? (De(n, "apl_position", e.updateSocketXY), e.offset || (De(n, "cur_attach_plugSideLenSE", e.updateSocketXY), De(n, "cur_line_strokeWidth", e.updateSocketXY))) : De(n, "apl_path", e.updatePath),
             De(n, "svgShow", e.updateShow),
-            re && (De(n, "new_edge4viewBox", e.adjustEdge), $e(n, {}))
+            re && (De(n, "new_edge4viewBox", e.adjustEdge), $e(n, {})))
         },
         removeOption: function (e, t) {
           var n = t.props,
             a = {}
-          ;(a[t.optionName] = ""), it(n, a)
+          ;((a[t.optionName] = ""), it(n, a))
         },
         remove: function (t) {
           t.boundTargets.length &&
@@ -3444,10 +3447,10 @@ var LeaderLine = (function () {
                           i = { x: a[0], y: a[1] }
                           break
                         case "L":
-                          ;(n = { x: a[0], y: a[1] }), i && (e += Ae(i, n)), (i = n)
+                          ;((n = { x: a[0], y: a[1] }), i && (e += Ae(i, n)), (i = n))
                           break
                         case "C":
-                          ;(n = { x: a[4], y: a[5] }), i && (e += Te(i, { x: a[0], y: a[1] }, { x: a[2], y: a[3] }, n)), (i = n)
+                          ;((n = { x: a[4], y: a[5] }), i && (e += Te(i, { x: a[0], y: a[1] }, { x: a[2], y: a[3] }, n)), (i = n))
                       }
                       return e
                     }, 0)),
@@ -3514,7 +3517,6 @@ var LeaderLine = (function () {
                       for (
                         var l, r, s = Te(e, t, n, a) / o, u = 1 / (o < i ? (i / o) * s : s), h = [], p = 0;
                         (r = (90 - (l = Ne(e, t, n, a, p)).angle) * (Math.PI / 180)), h.push({ x: l.x + Math.cos(r) * i, y: l.y + Math.sin(r) * i * -1 }), !(1 <= p);
-
                       )
                         1 < (p += u) && (p = 1)
                       return h
@@ -3580,7 +3582,7 @@ var LeaderLine = (function () {
             a,
             i,
             o = O.pathLabel.newText(t.text, n.baseWindow.document, C + "-pathLabel-" + t._id, t.outlineColor)
-          ;["elmPosition", "elmPath", "elmOffset", "styleFill", "styleShow", "elmsAppend"].forEach(function (e) {
+          ;(["elmPosition", "elmPath", "elmOffset", "styleFill", "styleShow", "elmsAppend"].forEach(function (e) {
             t[e] = o[e]
           }),
             (t.isShown = !1),
@@ -3608,7 +3610,7 @@ var LeaderLine = (function () {
             t.updatePath(n),
             t.updateStartOffset(n),
             re && $e(n, {}),
-            t.updateShow(n)
+            t.updateShow(n))
         },
         bind: function (e, t) {
           var n = t.props
@@ -3626,7 +3628,7 @@ var LeaderLine = (function () {
         },
         unbind: function (e, t) {
           var n = t.props
-          e.elmsAppend &&
+          ;(e.elmsAppend &&
             (e.elmsAppend.forEach(function (e) {
               n.svg.removeChild(e)
             }),
@@ -3638,12 +3640,12 @@ var LeaderLine = (function () {
             De(n, "apl_path", e.updatePath),
             (2 === e.semIndex && !e.lineOffset) || De(n, "cur_attach_plugBackLenSE", e.updateStartOffset),
             De(n, "svgShow", e.updateShow),
-            re && (De(n, "new_edge4viewBox", e.adjustEdge), $e(n, {}))
+            re && (De(n, "new_edge4viewBox", e.adjustEdge), $e(n, {})))
         },
         removeOption: function (e, t) {
           var n = t.props,
             a = {}
-          ;(a[t.optionName] = ""), it(n, a)
+          ;((a[t.optionName] = ""), it(n, a))
         },
         remove: function (t) {
           t.boundTargets.length &&

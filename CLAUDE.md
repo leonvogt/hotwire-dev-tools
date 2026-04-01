@@ -52,6 +52,7 @@ Additionally, the extension has page-level features that work without opening De
 ### Backend Observers
 
 Each feature has a dedicated observer class in `src/page/observers/`:
+
 - `turbo_frame_observer.js` — tracks `<turbo-frame>` elements
 - `stimulus_observer.js` — tracks Stimulus controllers
 - `turbo_cable_observer.js` — tracks ActionCable subscriptions
@@ -62,6 +63,7 @@ All implement `matchElement()`, `elementMatched()`, `elementUnmatched()`.
 ### Message Types
 
 All message type constants live in `src/lib/constants.js`. Two directions:
+
 - `BACKEND_TO_PANEL_MESSAGES`: `SET_TURBO_FRAMES`, `SET_STIMULUS_DATA`, `TURBO_EVENT_RECEIVED`, etc.
 - `PANEL_TO_BACKEND_MESSAGES`: `HIGHLIGHT_ELEMENT`, `REFRESH_TURBO_FRAME`, `UPDATE_DATA_ATTRIBUTE`, etc.
 
@@ -84,6 +86,7 @@ $page/       → src/page/
 ### Svelte 5 Runes
 
 This project uses Svelte 5 rune syntax exclusively — no legacy Svelte 4 patterns:
+
 - `$state()` for reactive variables
 - `$props()` for component props
 - `$derived()` for computed values

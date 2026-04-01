@@ -37,16 +37,7 @@ const outputFileNames = {
 // Dev-only entry points (excluded from production builds)
 const devEntryPoints = ["./src/panel/dev.js"]
 
-const baseEntryPoints = [
-  "./src/page/content.js",
-  "./src/popup.js",
-  "./src/background.js",
-  "./src/page/inject_script.js",
-  "./src/panel/panel.js",
-  "./src/panel/register.js",
-  "./src/page/backend.js",
-  "./src/page/proxy.js",
-]
+const baseEntryPoints = ["./src/page/content.js", "./src/popup.js", "./src/background.js", "./src/page/inject_script.js", "./src/panel/panel.js", "./src/panel/register.js", "./src/page/backend.js", "./src/page/proxy.js"]
 
 const esbuildConfig = {
   entryPoints: production ? baseEntryPoints : [...baseEntryPoints, ...devEntryPoints],

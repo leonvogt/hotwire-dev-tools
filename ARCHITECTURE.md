@@ -46,19 +46,16 @@ The goal is to align both parts and use a single source of truth for the state a
 **Component Responsibilities**
 
 1. **DevTools Panel**: The user interface shown in browser DevTools.
-
    - Built with Svelte
    - Communicates with background script via Chrome extension ports
    - Renders and updates based on events from the inspected page
 
 2. **Background Script**: Central coordination script that runs persistently.
-
    - Maintains connections between DevTools panel and proxy
    - Routes messages between components
    - Handles tab and lifecycle events
 
 3. **Proxy**: Content script injected into the page context.
-
    - Bridges the extension world and page world
    - Translates port-based communication to window.postMessage
    - Has access to DOM but not page JavaScript context
