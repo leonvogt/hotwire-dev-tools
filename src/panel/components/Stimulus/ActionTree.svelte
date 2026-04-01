@@ -1,8 +1,8 @@
 <script>
-  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
+  import StripedHtmlTag from "$components/StripedHtmlTag.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import IconButton from "$uikit/IconButton.svelte"
-  import { addHighlightOverlay, hideHighlightOverlay, dispatchEvent } from "$src/browser_panel/messaging"
+  import { addHighlightOverlay, hideHighlightOverlay, dispatchEvent } from "$panel/messaging"
   import { selectorByUUID } from "$utils/utils.js"
 
   let { action } = $props()

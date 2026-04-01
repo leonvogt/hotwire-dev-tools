@@ -1,9 +1,9 @@
 <script>
   import "$uikit/webawesome.svelte.js"
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
-  import { orientation, handleResize } from "../theme.svelte.js"
-  import { connection } from "../State.svelte.js"
-  import { refreshAllState } from "../messaging.js"
+  import { orientation, handleResize } from "./theme.svelte.js"
+  import { connection } from "./State.svelte.js"
+  import { refreshAllState } from "./messaging.js"
   import StimulusTab from "./tabs/StimulusTab.svelte"
   import TurboTab from "./tabs/TurboTab.svelte"
   import LogsTab from "./tabs/LogsTab.svelte"

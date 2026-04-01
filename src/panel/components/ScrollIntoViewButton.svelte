@@ -1,6 +1,6 @@
 <script>
   import IconButton from "$uikit/IconButton.svelte"
-  import { panelPostMessage } from "$src/browser_panel/messaging.js"
+  import { panelPostMessage } from "$panel/messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { selectorByUUID } from "$utils/utils.js"
 

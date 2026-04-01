@@ -29,23 +29,23 @@ const browserSpecificSettings = {
 }
 
 const outputFileNames = {
-  "content.js": "hotwire_dev_tools_content.js",
-  "popup.js": "hotwire_dev_tools_popup.js",
-  "inject_script.js": "hotwire_dev_tools_inject_script.js",
+  "content.js": { newName: "hotwire_dev_tools_content.js", moveToDistRoot: true },
+  "popup.js": { newName: "hotwire_dev_tools_popup.js" },
+  "inject_script.js": { newName: "hotwire_dev_tools_inject_script.js", moveToDistRoot: true },
 }
 
 // Dev-only entry points (excluded from production builds)
-const devEntryPoints = ["./src/browser_panel/panel/dev.js"]
+const devEntryPoints = ["./src/panel/dev.js"]
 
 const baseEntryPoints = [
-  "./src/content.js",
+  "./src/page/content.js",
   "./src/popup.js",
   "./src/background.js",
-  "./src/inject_script.js",
-  "./src/browser_panel/panel/panel.js",
-  "./src/browser_panel/panel/register.js",
-  "./src/browser_panel/page/backend.js",
-  "./src/browser_panel/proxy.js",
+  "./src/page/inject_script.js",
+  "./src/panel/panel.js",
+  "./src/panel/register.js",
+  "./src/page/backend.js",
+  "./src/page/proxy.js",
 ]
 
 const esbuildConfig = {
@@ -66,9 +66,11 @@ const esbuildConfig = {
   alias: {
     $src: path.resolve(__dirname, "src"),
     $uikit: path.resolve(__dirname, "src/uikit"),
-    $components: path.resolve(__dirname, "src/components"),
+    $components: path.resolve(__dirname, "src/panel/components"),
     $utils: path.resolve(__dirname, "src/utils"),
     $lib: path.resolve(__dirname, "src/lib"),
+    $panel: path.resolve(__dirname, "src/panel"),
+    $page: path.resolve(__dirname, "src/page"),
   },
   plugins: [
     sveltePlugin({
@@ -82,10 +84,13 @@ const esbuildConfig = {
             const outputFiles = Object.keys(result.metafile.outputs)
             for (const outputFile of outputFiles) {
               const originalName = path.basename(outputFile)
-              const newName = outputFileNames[originalName]
+              const config = outputFileNames[originalName]
 
-              if (newName) {
-                const newPath = path.join(path.dirname(outputFile), newName)
+              if (config) {
+                const newName = typeof config === "string" ? config : config.newName
+                const moveToDistRoot = typeof config === "object" && config.moveToDistRoot
+                const targetDir = moveToDistRoot ? "./public/dist" : path.dirname(outputFile)
+                const newPath = path.join(targetDir, newName)
                 await fs.rename(outputFile, newPath)
                 console.log(`Renamed ${originalName} to ${newName}`)
               }
@@ -111,10 +116,10 @@ async function generateManifest() {
 async function cleanupDevFiles() {
   const devFiles = [
     path.join(__dirname, "public", "dev.html"),
-    path.join(__dirname, "public", "dist", "browser_panel", "panel", "dev.js"),
-    path.join(__dirname, "public", "dist", "browser_panel", "panel", "dev.js.map"),
-    path.join(__dirname, "public", "dist", "browser_panel", "panel", "dev.css"),
-    path.join(__dirname, "public", "dist", "browser_panel", "panel", "dev.css.map"),
+    path.join(__dirname, "public", "dist", "panel", "dev.js"),
+    path.join(__dirname, "public", "dist", "panel", "dev.js.map"),
+    path.join(__dirname, "public", "dist", "panel", "dev.css"),
+    path.join(__dirname, "public", "dist", "panel", "dev.css.map"),
   ]
 
   for (const file of devFiles) {

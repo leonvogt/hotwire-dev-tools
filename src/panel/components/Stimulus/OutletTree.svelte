@@ -1,7 +1,7 @@
 <script>
-  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
+  import StripedHtmlTag from "$components/StripedHtmlTag.svelte"
   import InspectButton from "$components/InspectButton.svelte"
-  import { addHighlightOverlay, hideHighlightOverlay } from "$src/browser_panel/messaging"
+  import { addHighlightOverlay, hideHighlightOverlay } from "$panel/messaging"
   import { selectorByUUID } from "$utils/utils.js"
 
   let { outlet } = $props()

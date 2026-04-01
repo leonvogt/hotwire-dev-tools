@@ -2,16 +2,16 @@
   import { Pane, Splitpanes } from "svelte-splitpanes"
 
   import { TURBO_EVENTS, TURBO_EVENTS_GROUPED } from "$lib/constants.js"
-  import { addHighlightOverlayByPath, hideHighlightOverlay } from "../../messaging.js"
-  import { getTurboEvents, clearTurboEvents } from "../../State.svelte.js"
+  import { addHighlightOverlayByPath, hideHighlightOverlay } from "../messaging.js"
+  import { getTurboEvents, clearTurboEvents } from "../State.svelte.js"
   import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
-  import { horizontalPanes } from "../../theme.svelte.js"
+  import { horizontalPanes } from "../theme.svelte.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
 
   import IconButton from "$uikit/IconButton.svelte"
   import CopyButton from "$components/CopyButton.svelte"
-  import HTMLRenderer from "$src/browser_panel/HTMLRenderer.svelte"
-  import StripedHtmlTag from "$src/components/StripedHtmlTag.svelte"
+  import HTMLRenderer from "$panel/HTMLRenderer.svelte"
+  import StripedHtmlTag from "$components/StripedHtmlTag.svelte"
 
   const SELECTABLE_TYPES = {
     TURBO_EVENT: "turbo-event",

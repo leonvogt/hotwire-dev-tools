@@ -4,9 +4,9 @@
 
 import App from "./App.svelte"
 import { mount } from "svelte"
-import { connection } from "../State.svelte.js"
+import { connection } from "./State.svelte.js"
 
-import { panelPostMessage, handleBackendToPanelMessage, devToolPanelName } from "../messaging"
+import { panelPostMessage, handleBackendToPanelMessage, devToolPanelName } from "./messaging"
 import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
 
 // Mount Svelte app
@@ -85,7 +85,7 @@ function createConnection() {
 
 function injectBackendScript() {
   const scriptId = "hotwire-dev-tools-backend-script"
-  const scriptURL = chrome.runtime.getURL("/dist/browser_panel/page/backend.js")
+  const scriptURL = chrome.runtime.getURL("/dist/page/backend.js")
 
   const injectionScript = `
     (function() {

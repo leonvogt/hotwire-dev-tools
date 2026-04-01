@@ -4,9 +4,11 @@
     "paths": {
       "$src/*": ["src/*"],
       "$uikit/*": ["src/uikit/*"],
-      "$components/*": ["src/components/*"],
+      "$components/*": ["src/panel/components/*"],
       "$utils/*": ["src/utils/*"],
-      "$lib/*": ["src/lib/*"]
+      "$lib/*": ["src/lib/*"],
+      "$panel/*": ["src/panel/*"],
+      "$page/*": ["src/page/*"]
     }
   },
   "include": ["src/**/*"]

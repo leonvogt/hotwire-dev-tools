@@ -3,7 +3,7 @@
   import NestedValue from "./NestedValue.svelte"
   import CopyButton from "$components/CopyButton.svelte"
   import IconButton from "$uikit/IconButton.svelte"
-  import { updateDataAttribute } from "../../browser_panel/messaging"
+  import { updateDataAttribute } from "$panel/messaging"
   import { capitalizeFirstChar, selectorByUUID } from "$utils/utils.js"
 
   let { valueObject, selected, dataAttribute } = $props()

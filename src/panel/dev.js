@@ -14,7 +14,7 @@ import {
   setTurboConfig,
   addTurboEvent,
   addTurboStream,
-} from "../State.svelte.js"
+} from "./State.svelte.js"
 
 // Mock Chrome APIs for standalone development
 window.chrome = {

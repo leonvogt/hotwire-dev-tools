@@ -4,7 +4,7 @@ import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/hi
 import { TURBO_EVENTS } from "$lib/constants"
 
 import Devtool from "$lib/devtool"
-import DetailPanel from "$components/detail_panel"
+import DetailPanel from "$page/detail_panel"
 import DOMScanner from "$utils/dom_scanner"
 import DiagnosticsChecker from "$lib/diagnostics_checker"
 

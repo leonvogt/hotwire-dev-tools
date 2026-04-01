@@ -52,7 +52,7 @@
         "styles/hotwire_dev_tools_detail_panel.css",
         "panel.html",
         "register.html",
-        "dist/browser_panel/page/backend.js"
+        "dist/page/backend.js"
       ],
       "matches": ["<all_urls>"]
     }

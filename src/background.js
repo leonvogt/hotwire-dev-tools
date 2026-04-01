@@ -2,7 +2,7 @@
 // from the browser devtools panel and the backend.
 // It sets up a two-way communication channel between the devtools panel and the backend script.
 
-import { isDevToolPanel, devToolPanelNameToTabId } from "./browser_panel/messaging"
+import { isDevToolPanel, devToolPanelNameToTabId } from "$panel/messaging"
 import { PORT_IDENTIFIERS } from "$lib/constants"
 
 let ports = {}
@@ -56,7 +56,7 @@ chrome.runtime.onConnect.addListener(async (port) => {
     try {
       await chrome.scripting.executeScript({
         target: { tabId: tabId },
-        files: ["dist/browser_panel/proxy.js"],
+        files: ["dist/page/proxy.js"],
       })
     } catch (error) {
       console.error(`Failed to inject script for tabId ${tabId}:`, error)
