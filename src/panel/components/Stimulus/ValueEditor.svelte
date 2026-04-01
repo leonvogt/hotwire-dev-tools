@@ -12,14 +12,9 @@
   const type = $derived(VALUE_TYPES.includes(valueType) ? valueType : "string")
 
   $effect(() => {
+    editValue // track editValue so this re-runs on input changes
     if (isEditing && inputElement && measureElement) {
       tick().then(() => updateWidth())
-    }
-  })
-
-  $effect(() => {
-    if (editValue !== undefined && isEditing) {
-      updateWidth()
     }
   })
 
@@ -28,17 +23,8 @@
 
     const value = editValue?.toString() || inputElement.placeholder || "W"
     measureElement.textContent = value
-    const width = measureElement.offsetWidth
-
-    const wrapper = inputElement.closest(".input-wrapper")
-    const maxWidth = wrapper?.parentElement?.offsetWidth || Infinity
-
-    const finalWidth = Math.min(width, maxWidth - 40) // -40px for buttons
-    inputElement.style.width = `${finalWidth}px`
-
-    if (wrapper) {
-      wrapper.style.width = `${finalWidth}px`
-    }
+    const width = Math.ceil(measureElement.getBoundingClientRect().width) + 12
+    inputElement.style.width = `${width}px`
   }
 
   const handleSubmit = (e) => {
@@ -64,12 +50,12 @@
   }
 
   const handleInput = (e) => {
-    editValue = e.target.value
+    editValue = type === "number" ? e.target.valueAsNumber : e.target.value
   }
 </script>
 
 {#if isEditing}
-  <form class="d-flex gap-2 w-100" onsubmit={handleSubmit}>
+  <form class="d-flex gap-2" onsubmit={handleSubmit}>
     <div class="input-wrapper">
       <input bind:this={inputElement} class="auto-width-input" value={editValue} type={type === "null" || type === "undefined" ? "text" : type} oninput={handleInput} />
       <span bind:this={measureElement} class="size-measure"></span>
@@ -106,7 +92,7 @@
     min-width: 2.5rem;
     max-width: 100%;
     width: auto;
-    transition: all 0.15s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
     line-height: 1.4;
     height: 1.2rem;
   }
