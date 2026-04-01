@@ -54,16 +54,16 @@
       updatedValue = setNestedValue(valueObject.value, path, newValue)
     } else {
       // For primitive values at root level
-      if (valueObject.type === "Number") {
+      if (valueObject.type.toLowerCase() === "number") {
         updatedValue = Number(newValue)
-      } else if (valueObject.type === "Boolean") {
+      } else if (valueObject.type.toLowerCase() === "boolean") {
         updatedValue = newValue === "true" || newValue === true
       } else {
         updatedValue = newValue
       }
     }
 
-    const serializedValue = serializeValue(updatedValue, valueObject.type)
+    const serializedValue = serializeValue(updatedValue, valueObject.type.toLowerCase())
 
     updateDataAttribute(selectorByUUID(selected.uuid), dataAttribute, serializedValue)
 
@@ -108,8 +108,8 @@
       <div class="d-flex align-items-center gap-2 stimulus-value-editor-wrapper">
         <strong>{valueObject.name}:</strong>
         <ValueEditor
-          value={String(valueObject.value)}
-          valueType={valueObject.type}
+          value={valueObject.type.toLowerCase() === "boolean" ? valueObject.value : String(valueObject.value)}
+          valueType={valueObject.type.toLowerCase()}
           isEditing={editingStates["root"] || false}
           onEdit={() => handleEdit(["root"])}
           onSave={(newVal) => handleSave(["root"], newVal)}

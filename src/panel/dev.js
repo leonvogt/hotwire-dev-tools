@@ -164,9 +164,9 @@ function loadMockData() {
       tagName: "div",
       attributes: { id: "main-dropdown", class: "dropdown is-active", "data-controller": "dropdown" },
       values: [
-        { key: "open", name: "openValue", type: "Boolean", defaultValue: false, value: true },
-        { key: "placement", name: "placementValue", type: "String", defaultValue: "bottom", value: "bottom-start" },
-        { key: "offset", name: "offsetValue", type: "Number", defaultValue: 0, value: 8 },
+        { key: "open", name: "openValue", type: "boolean", defaultValue: false, value: true },
+        { key: "placement", name: "placementValue", type: "string", defaultValue: "bottom", value: "bottom-start" },
+        { key: "offset", name: "offsetValue", type: "number", defaultValue: 0, value: 8 },
       ],
       targets: [
         {
@@ -232,8 +232,8 @@ function loadMockData() {
       tagName: "div",
       attributes: { id: "secondary-dropdown", class: "dropdown", "data-controller": "dropdown" },
       values: [
-        { key: "open", name: "openValue", type: "Boolean", defaultValue: false, value: false },
-        { key: "placement", name: "placementValue", type: "String", defaultValue: "bottom", value: "bottom-end" },
+        { key: "open", name: "openValue", type: "boolean", defaultValue: false, value: false },
+        { key: "placement", name: "placementValue", type: "string", defaultValue: "bottom", value: "bottom-end" },
       ],
       targets: [
         {
@@ -264,8 +264,8 @@ function loadMockData() {
       tagName: "dialog",
       attributes: { class: "modal modal-lg", "data-controller": "modal" },
       values: [
-        { key: "backdrop", name: "backdropValue", type: "String", defaultValue: "true", value: "static" },
-        { key: "keyboard", name: "keyboardValue", type: "Boolean", defaultValue: true, value: false },
+        { key: "backdrop", name: "backdropValue", type: "string", defaultValue: "true", value: "static" },
+        { key: "keyboard", name: "keyboardValue", type: "boolean", defaultValue: true, value: false },
       ],
       targets: [
         {
@@ -314,8 +314,8 @@ function loadMockData() {
       tagName: "button",
       attributes: { id: "copy-btn", class: "btn btn-sm", "data-controller": "clipboard" },
       values: [
-        { key: "content", name: "contentValue", type: "String", defaultValue: "", value: "Hello, World!" },
-        { key: "successDuration", name: "successDurationValue", type: "Number", defaultValue: 1500, value: 2000 },
+        { key: "content", name: "contentValue", type: "string", defaultValue: "", value: "Hello, World!" },
+        { key: "successDuration", name: "successDurationValue", type: "number", defaultValue: 1500, value: 2000 },
       ],
       targets: [],
       outlets: [],
