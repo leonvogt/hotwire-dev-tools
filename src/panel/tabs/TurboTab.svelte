@@ -636,10 +636,10 @@
 
 <style>
   #turbo-cable-indication-icon {
-    color: var(--wa-color-danger-fill-loud);
+    color: #ef4444;
   }
   #turbo-cable-indication-icon.connected {
-    color: var(--wa-color-success-fill-loud);
+    color: #22c55e;
   }
 
   /* To prevent flickering when reloading async Turbo Frames */
