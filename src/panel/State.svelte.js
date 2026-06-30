@@ -25,6 +25,7 @@ let turboCables = $state([])
 let turboStreams = $state([])
 let turboEvents = $state([])
 let stimulusData = $state([])
+let stimulusApiAvailable = $state(true)
 let registeredStimulusIdentifiers = $state([])
 let turboPermanentElements = $state([])
 let turboTemporaryElements = $state([])
@@ -46,12 +47,17 @@ export function getTurboCables() {
   return turboCables
 }
 
-export function setStimulusData(data, url) {
+export function setStimulusData(data, url, apiAvailable) {
   stimulusData = data
+  stimulusApiAvailable = apiAvailable
 }
 
 export function getStimulusData() {
   return stimulusData
+}
+
+export function isStimulusApiAvailable() {
+  return stimulusApiAvailable
 }
 
 export function setRegisteredStimulusIdentifiers(identifiers, url) {

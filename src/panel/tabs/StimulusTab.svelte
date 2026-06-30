@@ -9,7 +9,7 @@
   import ActionTree from "$components/Stimulus/ActionTree.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import StripedHtmlTag from "$components/StripedHtmlTag.svelte"
-  import { getStimulusData, getRegisteredStimulusIdentifiers } from "../State.svelte.js"
+  import { getStimulusData, getRegisteredStimulusIdentifiers, isStimulusApiAvailable } from "../State.svelte.js"
   import { handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
   import { addHighlightOverlay, hideHighlightOverlay } from "$panel/messaging"
   import { getDevtoolInstance } from "$lib/devtool.js"
@@ -291,8 +291,17 @@
             {/if}
             {#if selected.controller.values.length === 0 && selected.controller.targets.length === 0 && selected.controller.outlets.length === 0 && selected.controller.classes.length === 0 && selected.controller.actions.length === 0}
               <div class="no-entry-hint">
-                <span>No details available</span>
-                <span>This controller has no values, targets, outlets, classes or actions</span>
+                {#if isStimulusApiAvailable()}
+                  <span>No details available</span>
+                  <span>This controller has no values, targets, outlets, classes or actions</span>
+                {:else}
+                  <span>No details available. <code>window.Stimulus</code> is not defined.</span>
+                  <span class="mt-3">
+                    To enable controller inspection, expose the Stimulus application on the <code>window</code> object:
+                  </span>
+                  <span><code>const application = Application.start()</code></span>
+                  <span><code>window.Stimulus = application</code></span>
+                {/if}
               </div>
             {/if}
           </div>

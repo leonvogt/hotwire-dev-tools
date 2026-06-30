@@ -23,7 +23,7 @@ export const handleBackendToPanelMessage = (message, port) => {
       setPort(port)
       break
     case BACKEND_TO_PANEL_MESSAGES.SET_STIMULUS_DATA:
-      setStimulusData(message.stimulusData, message.url)
+      setStimulusData(message.stimulusData, message.url, message.stimulusApiAvailable)
       setPort(port)
       break
     case BACKEND_TO_PANEL_MESSAGES.SET_REGISTERED_STIMULUS_IDENTIFIERS:

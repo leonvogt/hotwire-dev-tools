@@ -235,6 +235,7 @@ function init() {
     sendStimulusData = debounce(() => {
       this._postMessage({
         stimulusData: this.observers.stimulus.getStimulusData(),
+        stimulusApiAvailable: !!window.Stimulus,
         url: btoa(window.location.href),
         type: BACKEND_TO_PANEL_MESSAGES.SET_STIMULUS_DATA,
       })
