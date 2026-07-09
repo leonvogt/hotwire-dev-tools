@@ -28,6 +28,12 @@ export const inspectElement = (selector) => {
   chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector('${selector}'))`)
 }
 
+export const inspectElementByPath = (path) => {
+  if (!path) return
+  const resolveElement = `(() => { let el = document.documentElement; for (const index of ${JSON.stringify(path)}) { el = el && el.children[index] } return el })()`
+  chrome.devtools.inspectedWindow.eval(`inspect(${resolveElement})`)
+}
+
 export const stringifyHTMLElementTag = (element, createClosingTag = true) => {
   if (!(element instanceof Element)) {
     throw new Error("Expected an Element")

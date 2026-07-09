@@ -407,6 +407,21 @@ button.action-icon:active svg {
   min-width: 1.25rem;
 }
 
+.navbar button.warnings-tab {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+}
+
+.warnings-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--wa-color-yellow-60);
+  flex-shrink: 0;
+}
+
 /* Web Awesome Overrides */
 .wa-dark {
   --wa-color-surface-default: #282c34;
