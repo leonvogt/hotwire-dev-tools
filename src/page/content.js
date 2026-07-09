@@ -1,7 +1,8 @@
-import { debounce } from "$utils/utils.js"
+import { debounce, getElementFromIndexPath } from "$utils/utils.js"
 import { turboStreamTargetElements } from "$utils/turbo_utils"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
 import { TURBO_EVENTS } from "$lib/constants"
+import { getSilencedWarnings } from "$lib/silenced_warnings_storage"
 
 import Devtool from "$lib/devtool"
 import DetailPanel from "$page/detail_panel"
@@ -28,7 +29,8 @@ loadScriptInRealWorld("dist/hotwire_dev_tools_inject_script.js")
 const LOCATION_ORIGIN = window.location.origin
 const devTool = new Devtool(LOCATION_ORIGIN)
 const detailPanel = new DetailPanel(devTool)
-const diagnosticsChecker = new DiagnosticsChecker(devTool)
+const diagnosticsChecker = new DiagnosticsChecker()
+const loggedWarningIds = new Set()
 
 const highlightTurboFrames = () => {
   const badgeClass = "hotwire-dev-tools-turbo-frame-info-badge"
@@ -175,10 +177,21 @@ const consoleLogTurboStream = (event) => {
   console.log(message, turboStream)
 }
 
-const checkForWarnings = debounce(() => {
-  if (devTool.options.logWarnings) {
-    diagnosticsChecker.checkForWarnings()
-  }
+const checkForWarnings = debounce(async () => {
+  if (!devTool.options.logWarnings) return
+
+  const warnings = diagnosticsChecker.collect(devTool.registeredStimulusControllers)
+  const silencedWarnings = await getSilencedWarnings(LOCATION_ORIGIN)
+
+  warnings.forEach((warning) => {
+    if (silencedWarnings.includes(warning.id)) return
+    if (loggedWarningIds.has(warning.id)) return
+    loggedWarningIds.add(warning.id)
+
+    const element = warning.element?.elementPath ? getElementFromIndexPath(warning.element.elementPath) : null
+    const extraArgs = element ? [element] : []
+    console.warn(`Hotwire Dev Tools: ${warning.message}`, ...extraArgs)
+  })
 }, 150)
 
 const handleTurboFrameBadgeClick = (event) => {
@@ -301,7 +314,7 @@ window.addEventListener("turbo:frame-render", handleTurboFrameRender)
 
 // Listen for option changes made in the popup
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (changes.options?.newValue || changes[LOCATION_ORIGIN]?.newValue) {
+  if (changes.options?.newValue || changes[LOCATION_ORIGIN]?.newValue || changes.silencedWarnings) {
     document.dispatchEvent(new CustomEvent("hotwire-dev-tools:options-changed"))
   }
 })

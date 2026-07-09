@@ -6,6 +6,7 @@ import TurboCableObserver from "./observers/turbo_cable_observer.js"
 import StimulusObserver from "./observers/stimulus_observer.js"
 import TurboAttributeElementsObserver from "./observers/turbo_attribute_elements_observer.js"
 import ElementObserver from "./observers/element_observer.js"
+import DiagnosticsChecker from "$lib/diagnostics_checker.js"
 import LeaderLine from "$lib/leader_line.js"
 
 // This is the backend script which interacts with the page's DOM.
@@ -24,6 +25,7 @@ function init() {
       }
 
       this.elementObserver = new ElementObserver(document, this)
+      this.diagnosticsChecker = new DiagnosticsChecker()
     }
 
     start() {
@@ -35,6 +37,7 @@ function init() {
       // So we send them manually on start.
       this.sendRegisteredStimulusControllers()
       this.sendTurboConfig()
+      this.sendWarnings()
     }
 
     flushEventBuffer() {
@@ -152,15 +155,18 @@ function init() {
     // Delegate methods
     turboFramesChanged() {
       this.sendTurboFrames()
+      this.sendWarnings()
     }
     turboCableChanged() {
       this.sendTurboCableData()
     }
     stimulusDataChanged() {
       this.sendStimulusData()
+      this.sendWarnings()
     }
     turboPermanentElementsChanged() {
       this.sendTurboPermanentElements()
+      this.sendWarnings()
     }
     turboTemporaryElementsChanged() {
       this.sendTurboTemporaryElements()
@@ -284,6 +290,15 @@ function init() {
       })
     }, 200)
 
+    sendWarnings = debounce(() => {
+      const registeredStimulusControllers = Array.from(window.Stimulus?.router.modulesByIdentifier.keys() || [])
+      this._postMessage({
+        warnings: this.diagnosticsChecker.collect(registeredStimulusControllers),
+        url: btoa(window.location.href),
+        type: BACKEND_TO_PANEL_MESSAGES.SET_WARNINGS,
+      })
+    }, 200)
+
     sendAllState() {
       this.sendTurboFrames()
       this.sendTurboCableData()
@@ -292,6 +307,7 @@ function init() {
       this.sendTurboPermanentElements()
       this.sendTurboTemporaryElements()
       this.sendTurboConfig()
+      this.sendWarnings()
     }
 
     handleIncomingTurboStream = (event) => {

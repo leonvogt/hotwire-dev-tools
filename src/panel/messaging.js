@@ -1,5 +1,5 @@
 import { PANEL_TO_BACKEND_MESSAGES, BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS, HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "$lib/constants"
-import { setTurboFrames, setTurboCables, setStimulusData, setRegisteredStimulusIdentifiers, setTurboPermanentElements, setTurboTemporaryElements, setTurboConfig, addTurboStream, addTurboEvent } from "./State.svelte.js"
+import { setTurboFrames, setTurboCables, setStimulusData, setRegisteredStimulusIdentifiers, setTurboPermanentElements, setTurboTemporaryElements, setTurboConfig, setWarnings, addTurboStream, addTurboEvent } from "./State.svelte.js"
 
 function setPort(port) {
   if (!window.__HotwireDevTools) {
@@ -42,6 +42,10 @@ export const handleBackendToPanelMessage = (message, port) => {
       setTurboConfig(message.turboConfig, message.url)
       setPort(port)
       break
+    case BACKEND_TO_PANEL_MESSAGES.SET_WARNINGS:
+      setWarnings(message.warnings, message.url)
+      setPort(port)
+      break
     case BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED:
       addTurboStream(message.turboStream)
       setPort(port)
@@ -61,7 +65,7 @@ export const handleBackendToPanelMessage = (message, port) => {
 // Panel -> Backend messages
 export const panelPostMessage = (message) => {
   if (window.__HotwireDevTools?.port) {
-    window.__HotwireDevTools.port.postMessage(message)
+    window.__HotwireDevTools.port.postMessage(JSON.parse(JSON.stringify(message)))
   } else {
     console.warn(`Unable to post message from panel, message: ${JSON.stringify(message)}`)
   }

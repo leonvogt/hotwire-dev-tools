@@ -15,10 +15,21 @@ export const BACKEND_TO_PANEL_MESSAGES = {
   SET_TURBO_PERMANENT_ELEMENTS: "set-turbo-permanent-elements",
   SET_TURBO_TEMPORARY_ELEMENTS: "set-turbo-temporary-elements",
   SET_TURBO_CONFIG: "set-turbo-config",
+  SET_WARNINGS: "set-warnings",
   TURBO_STREAM_RECEIVED: "turbo-stream-received",
   TURBO_EVENT_RECEIVED: "turbo-event-received",
   HEALTH_CHECK_RESPONSE: "health-check-response",
 }
+
+export const WARNING_TYPES = {
+  DUPLICATE_TURBO_FRAME: "duplicate-turbo-frame",
+  UNREGISTERED_STIMULUS_CONTROLLER: "unregistered-stimulus-controller",
+  STIMULUS_TARGET_OUTSIDE_CONTROLLER: "stimulus-target-outside-controller",
+  TURBO_PERMANENT_ELEMENT_MISSING_ID: "turbo-permanent-element-missing-id",
+  TURBO_PERMANENT_ELEMENT_DUPLICATE_ID: "turbo-permanent-element-duplicate-id",
+}
+
+export const SILENCED_WARNINGS_STORAGE_KEY = "silencedWarnings"
 
 export const PANEL_TO_BACKEND_MESSAGES = {
   // Triggered by the Proxy

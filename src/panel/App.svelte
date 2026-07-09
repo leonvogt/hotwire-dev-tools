@@ -2,17 +2,19 @@
   import "$uikit/webawesome.svelte.js"
   import { getDevtoolInstance, setDevtoolInstance } from "$lib/devtool.js"
   import { orientation, handleResize } from "./theme.svelte.js"
-  import { connection } from "./State.svelte.js"
+  import { connection, getActiveWarningCount } from "./State.svelte.js"
   import { refreshAllState } from "./messaging.js"
   import StimulusTab from "./tabs/StimulusTab.svelte"
   import TurboTab from "./tabs/TurboTab.svelte"
   import LogsTab from "./tabs/LogsTab.svelte"
+  import WarningsTab from "./tabs/WarningsTab.svelte"
 
   setDevtoolInstance()
   const devTool = getDevtoolInstance()
   let devToolOptionsLoaded = $state(false)
   let currentTab = $state("turbo-tab")
   let currentTheme = $state("light")
+  let warningCount = $derived(getActiveWarningCount())
 
   const initializeDevToolOptions = async () => {
     await devTool.setOptions()
@@ -32,7 +34,7 @@
   }
 
   const updateTab = (event) => {
-    const tabId = event.target.dataset.tabId
+    const tabId = event.currentTarget.dataset.tabId
     if (!tabId || currentTab === tabId) return
 
     currentTab = tabId
@@ -69,6 +71,12 @@
         <button class:active={currentTab == "turbo-tab"} onclick={updateTab} data-tab-id="turbo-tab">Turbo</button>
         <button class:active={currentTab == "stimulus-tab"} onclick={updateTab} data-tab-id="stimulus-tab">Stimulus</button>
         <button class:active={currentTab == "logs-tab"} onclick={updateTab} data-tab-id="logs-tab">Logs</button>
+        <button class="warnings-tab" class:active={currentTab == "warnings-tab"} onclick={updateTab} data-tab-id="warnings-tab">
+          <span>Warnings</span>
+          {#if warningCount > 0}
+            <span class="warnings-dot" role="status" aria-label={`${warningCount} ${warningCount === 1 ? "warning" : "warnings"}`}></span>
+          {/if}
+        </button>
 
         <button class="theme-toggle-btn" aria-label="Toggle Color Scheme" onclick={() => setTheme(currentTheme === "light" ? "dark" : "light")}>
           <wa-icon name="moon" variant="regular"></wa-icon>
@@ -85,6 +93,10 @@
 
       <div id="logs-tab" class="tab-content" class:active={currentTab == "logs-tab"}>
         <LogsTab />
+      </div>
+
+      <div id="warnings-tab" class="tab-content" class:active={currentTab == "warnings-tab"}>
+        <WarningsTab />
       </div>
     </div>
   </main>

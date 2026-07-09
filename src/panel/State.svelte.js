@@ -1,3 +1,9 @@
+import {
+  getSilencedWarnings as fetchSilencedWarnings,
+  silenceWarning as storageSilenceWarning,
+  unsilenceWarning as storageUnsilenceWarning,
+} from "$lib/silenced_warnings_storage"
+
 export function createConnectionState() {
   let connectedToBackend = $state(false)
   let isPermanentlyDisconnected = $state(false)
@@ -30,6 +36,9 @@ let registeredStimulusIdentifiers = $state([])
 let turboPermanentElements = $state([])
 let turboTemporaryElements = $state([])
 let turboConfig = $state({})
+let warnings = $state([])
+let warningsOrigin = $state(null)
+let silencedWarningIds = $state([])
 
 export function setTurboFrames(frames, url) {
   turboFrames = frames
@@ -90,6 +99,66 @@ export function setTurboConfig(config, url) {
 
 export function getTurboConfig() {
   return turboConfig
+}
+
+function originFromUrl(url) {
+  if (!url) return null
+  try {
+    return new URL(atob(url)).origin
+  } catch {
+    return null
+  }
+}
+
+async function loadSilencedWarnings(origin) {
+  const silenced = await fetchSilencedWarnings(origin)
+  // Guard against out-of-order resolution: only apply if the origin is still current.
+  if (origin === warningsOrigin) {
+    silencedWarningIds = silenced
+  }
+}
+
+export function setWarnings(newWarnings, url) {
+  warnings = newWarnings || []
+
+  const origin = originFromUrl(url)
+  if (origin && origin !== warningsOrigin) {
+    warningsOrigin = origin
+    loadSilencedWarnings(origin)
+  }
+}
+
+export function getActiveWarnings() {
+  return warnings.filter((warning) => !silencedWarningIds.includes(warning.id))
+}
+
+export function getSilencedWarnings() {
+  return warnings.filter((warning) => silencedWarningIds.includes(warning.id))
+}
+
+export function getActiveWarningCount() {
+  return getActiveWarnings().length
+}
+
+export async function silenceWarning(warningId) {
+  if (!silencedWarningIds.includes(warningId)) {
+    silencedWarningIds = [...silencedWarningIds, warningId]
+  }
+  if (warningsOrigin) await storageSilenceWarning(warningId, warningsOrigin)
+}
+
+export async function unsilenceWarning(warningId) {
+  silencedWarningIds = silencedWarningIds.filter((id) => id !== warningId)
+  if (warningsOrigin) await storageUnsilenceWarning(warningId, warningsOrigin)
+}
+
+// Keep the panel's silenced set in sync if warnings are muted elsewhere (e.g. the popup or another DevTools window).
+if (typeof chrome !== "undefined" && chrome.storage?.onChanged) {
+  chrome.storage.onChanged.addListener((changes) => {
+    if (changes.silencedWarnings && warningsOrigin) {
+      loadSilencedWarnings(warningsOrigin)
+    }
+  })
 }
 
 export function addTurboEvent(event) {

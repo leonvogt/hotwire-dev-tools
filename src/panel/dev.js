@@ -12,6 +12,7 @@ import {
   setTurboPermanentElements,
   setTurboTemporaryElements,
   setTurboConfig,
+  setWarnings,
   addTurboEvent,
   addTurboStream,
 } from "./State.svelte.js"
@@ -407,4 +408,38 @@ function loadMockData() {
     targetSelector: "#old-notification",
     turboStreamContent: "",
   })
+
+  // Mock Warnings
+  setWarnings(
+    [
+      {
+        id: "duplicate-turbo-frame:notifications",
+        type: "duplicate-turbo-frame",
+        severity: "warning",
+        title: "Duplicate Turbo Frame ID 'notifications'",
+        message: "Multiple Turbo Frames with the same ID 'notifications' detected. This can cause unexpected behavior. Ensure that each Turbo Frame has a unique ID.",
+        docsUrl: null,
+        element: { elementPath: [1, 1, 3], tagName: "turbo-frame", attributes: { id: "notifications", src: "/notifications" }, id: "notifications" },
+      },
+      {
+        id: "unregistered-stimulus-controller:carousel",
+        type: "unregistered-stimulus-controller",
+        severity: "warning",
+        title: "Unregistered Stimulus controller 'carousel'",
+        message: "The Stimulus controller 'carousel' does not appear to be registered. Learn more about registering Stimulus controllers here: https://stimulus.hotwired.dev/handbook/installing.",
+        docsUrl: "https://stimulus.hotwired.dev/handbook/installing",
+        element: { elementPath: [1, 1, 5], tagName: "div", attributes: { class: "carousel-container", "data-controller": "carousel" }, id: null },
+      },
+      {
+        id: "turbo-permanent-element-missing-id",
+        type: "turbo-permanent-element-missing-id",
+        severity: "warning",
+        title: "Turbo Permanent Element without an ID",
+        message: "Turbo Permanent Element detected without an ID. Turbo Permanent Elements must have a unique ID to work correctly.",
+        docsUrl: null,
+        element: { elementPath: [1, 1, 7], tagName: "div", attributes: { class: "flash-messages", "data-turbo-permanent": "" }, id: null },
+      },
+    ],
+    btoa("http://localhost:3000/"),
+  )
 }
