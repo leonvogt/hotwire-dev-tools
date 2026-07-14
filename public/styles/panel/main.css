@@ -1,42 +1,3 @@
-/* Importing fonts */
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700,700i");
-
-@font-face {
-  font-family: "AirbnbCereal";
-  src: url("../../fonts/AirbnbCereal_W_Bd.otf") format("opentype");
-  font-weight: bold;
-}
-
-@font-face {
-  font-family: "AirbnbCereal";
-  src: url("../../fonts/AirbnbCereal_W_Bk.otf") format("opentype");
-  font-weight: 300;
-}
-
-@font-face {
-  font-family: "AirbnbCereal";
-  src: url("../../fonts/AirbnbCereal_W_Blk.otf") format("opentype");
-  font-weight: 900;
-}
-
-@font-face {
-  font-family: "AirbnbCereal";
-  src: url("../../fonts/AirbnbCereal_W_Lt.otf") format("opentype");
-  font-weight: 200;
-}
-
-@font-face {
-  font-family: "AirbnbCereal";
-  src: url("../../fonts/AirbnbCereal_W_Md.otf") format("opentype");
-  font-weight: 500;
-}
-
-@font-face {
-  font-family: "AirbnbCereal";
-  src: url("../../fonts/AirbnbCereal_W_XBd.otf") format("opentype");
-  font-weight: 800;
-}
-
 /* General */
 :root {
   --color-tag: #80a3e6;
@@ -54,7 +15,7 @@
   --fs-800: 1.875rem;
   --fs-900: 2.25rem;
 
-  --font-family-monospace: "AirbnbCereal", monospace;
+  --font-family-monospace: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, "Liberation Mono", monospace;
 
   --wa-border-width-scale: 1;
   --wa-space-scale: 0.625;
@@ -64,7 +25,7 @@
 
 body {
   margin: 0;
-  font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--wa-font-family-body, system-ui, sans-serif);
   font-size: var(--fs-400);
   font-weight: 400;
   line-height: 1.4;
