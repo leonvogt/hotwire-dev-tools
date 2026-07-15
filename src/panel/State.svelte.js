@@ -1,8 +1,4 @@
-import {
-  getSilencedWarnings as fetchSilencedWarnings,
-  silenceWarning as storageSilenceWarning,
-  unsilenceWarning as storageUnsilenceWarning,
-} from "$lib/silenced_warnings_storage"
+import { getSilencedWarnings as fetchSilencedWarnings, silenceWarning as storageSilenceWarning, unsilenceWarning as storageUnsilenceWarning } from "$lib/silenced_warnings_storage"
 
 export function createConnectionState() {
   let connectedToBackend = $state(false)

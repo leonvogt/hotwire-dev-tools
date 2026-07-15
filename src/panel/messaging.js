@@ -1,5 +1,16 @@
 import { PANEL_TO_BACKEND_MESSAGES, BACKEND_TO_PANEL_MESSAGES, PORT_IDENTIFIERS, HOTWIRE_DEV_TOOLS_PANEL_SOURCE } from "$lib/constants"
-import { setTurboFrames, setTurboCables, setStimulusData, setRegisteredStimulusIdentifiers, setTurboPermanentElements, setTurboTemporaryElements, setTurboConfig, setWarnings, addTurboStream, addTurboEvent } from "./State.svelte.js"
+import {
+  setTurboFrames,
+  setTurboCables,
+  setStimulusData,
+  setRegisteredStimulusIdentifiers,
+  setTurboPermanentElements,
+  setTurboTemporaryElements,
+  setTurboConfig,
+  setWarnings,
+  addTurboStream,
+  addTurboEvent,
+} from "./State.svelte.js"
 
 function setPort(port) {
   if (!window.__HotwireDevTools) {
