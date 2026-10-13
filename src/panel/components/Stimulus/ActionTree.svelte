@@ -2,17 +2,16 @@
   import StripedHtmlTag from "$components/StripedHtmlTag.svelte"
   import InspectButton from "$components/InspectButton.svelte"
   import IconButton from "$uikit/IconButton.svelte"
-  import { addHighlightOverlay, hideHighlightOverlay, dispatchEvent } from "$panel/messaging"
-  import { selectorByUUID } from "$utils/utils.js"
+  import { addHighlightOverlayByUUID, hideHighlightOverlay, dispatchEvent } from "$panel/messaging"
 
   let { action } = $props()
 
   const triggerAction = () => {
-    dispatchEvent(selectorByUUID(action.element.uuid), action.eventName, action.keyFilter)
+    dispatchEvent(action.element.uuid, action.eventName, action.keyFilter)
   }
 </script>
 
-<div class="entry-row" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(action.element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
+<div class="entry-row" role="button" tabindex="0" onmouseenter={() => addHighlightOverlayByUUID(action.element.uuid)} onmouseleave={() => hideHighlightOverlay()}>
   <div class="d-flex justify-content-between align-items-center py-2">
     <div class="d-flex flex-column">
       <div class="d-flex align-items-center gap-2">

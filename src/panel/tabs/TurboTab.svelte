@@ -10,20 +10,21 @@
   import HTMLRenderer from "$panel/HTMLRenderer.svelte"
   import StripedHtmlTag from "$components/StripedHtmlTag.svelte"
   import { getTurboFrames, getTurboCables, getTurboStreams, clearTurboStreams, getTurboPermanentElements, getTurboTemporaryElements, getTurboConfig } from "../State.svelte.js"
-  import { checkIfAtBottom, scrollToBottom, handleKeyboardNavigation, selectorByUUID, debounce } from "$utils/utils.js"
-  import { panelPostMessage, addHighlightOverlay, hideHighlightOverlay, updateDataAttribute } from "../messaging.js"
+  import { checkIfAtBottom, scrollToBottom, handleKeyboardNavigation, debounce } from "$utils/utils.js"
+  import { panelPostMessage, addHighlightOverlay, addHighlightOverlayByUUID, hideHighlightOverlay, updateDataAttribute } from "../messaging.js"
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../theme.svelte.js"
   import * as Icons from "$utils/icons.js"
   import { collapseEntryRows, toggleStickyParent, checkStickyVisibility } from "$src/utils/collapsible.js"
+  import { turboStreamTargetLabel } from "$utils/turbo_utils.js"
 
   const SELECTABLE_TYPES = {
     TURBO_FRAME: "turbo-frame",
     TURBO_STREAM: "turbo-stream",
   }
   const turboStreamAnimationDuration = 50
-  const ignoredAttributes = ["id", "data-hotwire-dev-tools-id", "style"]
+  const ignoredAttributes = ["id", "style"]
 
   const devTool = getDevtoolInstance()
   let options = $state(devTool.options)
@@ -72,8 +73,8 @@
   $effect(() => {
     const currentFrames = turboFrames
     const isStreamSelected = selected.type === SELECTABLE_TYPES.TURBO_STREAM
-    const selectedFrameMissing = !findFrameByUuid(currentFrames, selected.uuid)
-    const shouldSelectFirstFrame = currentFrames.length > 0 && !isStreamSelected && selectedFrameMissing
+    const updatedFrame = findSelectedFrame(currentFrames)
+    const shouldSelectFirstFrame = currentFrames.length > 0 && !isStreamSelected && !updatedFrame
 
     if (shouldSelectFirstFrame) {
       selected = {
@@ -84,10 +85,10 @@
       }
     } else if (selected.type === SELECTABLE_TYPES.TURBO_FRAME) {
       // Update the selected frame if it has changed
-      const updatedFrame = findFrameByUuid(currentFrames, selected.uuid)
       if (updatedFrame && updatedFrame !== selected.frame) {
         selected = {
           ...selected,
+          uuid: updatedFrame.uuid,
           frame: updatedFrame,
         }
       }
@@ -130,17 +131,25 @@
     element.scrollIntoView({ behavior: "instant", block: "end" })
   }, 10)
 
-  const findFrameByUuid = (frames, uuid) => {
+  const findFrame = (frames, predicate) => {
     for (const frame of frames) {
-      if (frame.uuid === uuid) {
+      if (predicate(frame)) {
         return frame
       }
       if (frame.children && frame.children.length > 0) {
-        const found = findFrameByUuid(frame.children, uuid)
+        const found = findFrame(frame.children, predicate)
         if (found) return found
       }
     }
     return null
+  }
+
+  const findSelectedFrame = (frames) => {
+    const frame = findFrame(frames, (frame) => frame.uuid === selected.uuid)
+    if (frame || !selected.frame?.id) return frame
+
+    // The frame got replaced (e.g. Turbo cache restore), so match by id instead
+    return findFrame(frames, (frame) => frame.id === selected.frame.id)
   }
 
   const setSelectedTurboFrame = (frame) => {
@@ -182,30 +191,26 @@
   }
 
   const showTurboFrameConnections = (triggerElement) => {
-    if (selected.type !== SELECTABLE_TYPES.TURBO_FRAME || !selected.uuid) return
+    if (selected.type !== SELECTABLE_TYPES.TURBO_FRAME || !selected.uuid || !triggerElement) return
 
-    const triggerSelector = triggerElement ? selectorByUUID(triggerElement.uuid) : null
-
-    addHighlightOverlay(`${triggerSelector}, ${selectorByUUID(selected.uuid)}`)
+    addHighlightOverlayByUUID(triggerElement.uuid, selected.uuid)
     panelPostMessage({
       action: PANEL_TO_BACKEND_MESSAGES.SHOW_TURBO_FRAME_CONNECTIONS,
       source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
       turboFrameId: selected.frame.id,
-      triggerSelector: triggerSelector,
+      uuids: [triggerElement.uuid],
     })
   }
 
   const showAllTurboFrameConnections = () => {
     if (selected.type !== SELECTABLE_TYPES.TURBO_FRAME || !selected.uuid) return
-    const triggerElements = selected.frame.referenceElements
-    const selectors = triggerElements.map((el) => selectorByUUID(el.uuid))
-    selectors.push(selectorByUUID(selected.uuid))
-    addHighlightOverlay(selectors.join(", "))
+    const triggerUUIDs = selected.frame.referenceElements.map((el) => el.uuid)
+    addHighlightOverlayByUUID(...triggerUUIDs, selected.uuid)
     panelPostMessage({
       action: PANEL_TO_BACKEND_MESSAGES.SHOW_TURBO_FRAME_CONNECTIONS,
       source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
       turboFrameId: selected.frame.id,
-      triggerSelector: `[data-turbo-frame='${selected.frame.id}']`,
+      selector: `[data-turbo-frame='${selected.frame.id}']`,
     })
   }
 
@@ -295,9 +300,9 @@
                 <div>{stream.action}</div>
                 {#if stream.targetNotFound}
                   <wa-tooltip for={`stream-target-${stream.uuid}`}>Target element not found in the DOM</wa-tooltip>
-                  <div class="error-text" id={`stream-target-${stream.uuid}`}>{stream.targetSelector}</div>
+                  <div class="error-text" id={`stream-target-${stream.uuid}`}>{turboStreamTargetLabel(stream.target, stream.targets)}</div>
                 {:else}
-                  <div>{stream.targetSelector}</div>
+                  <div>{turboStreamTargetLabel(stream.target, stream.targets)}</div>
                 {/if}
               </div>
             </div>
@@ -325,7 +330,6 @@
 
   <Pane class="turbo-frame-pane full-pane" size={options.turboPaneDimensions?.frames || 35} minSize={20}>
     {#snippet turboFrameRow(frame, depth = 0)}
-      {@const selector = `#${frame.id}`}
       {@const hasChildren = frame.children && frame.children.length > 0}
       {@const isCollapsed = collapsedFrames[frame.uuid] || false}
       <div
@@ -338,7 +342,7 @@
         data-frame-uuid={frame.uuid}
         onclick={() => setSelectedTurboFrame(frame)}
         onkeydown={handleFrameListKeyboardNavigation}
-        onmouseenter={() => addHighlightOverlay(selector)}
+        onmouseenter={() => addHighlightOverlayByUUID(frame.uuid)}
         onmouseleave={() => hideHighlightOverlay()}
       >
         <div class="d-flex align-items-center">
@@ -358,7 +362,7 @@
           {#if frame.attributes.busy !== undefined}
             <wa-spinner></wa-spinner>
           {/if}
-          <InspectButton class="btn-hoverable me-2" {selector}></InspectButton>
+          <InspectButton class="btn-hoverable me-2" uuid={frame.uuid}></InspectButton>
         </div>
       </div>
 
@@ -477,7 +481,7 @@
             {#if turboPermanentElements.length > 0}
               <div class="pane-section-heading">Permanent Elements ({turboPermanentElements.length})</div>
               {#each turboPermanentElements as element (element.uuid)}
-                <div class="entry-row" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
+                <div class="entry-row" onmouseenter={() => addHighlightOverlayByUUID(element.uuid)} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                   <div class="d-flex justify-content-between align-items-center">
                     <StripedHtmlTag {element} />
                     <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
@@ -489,7 +493,7 @@
             {#if turboTemporaryElements.length > 0}
               <div class="pane-section-heading">Temporary Elements ({turboTemporaryElements.length})</div>
               {#each turboTemporaryElements as element (element.uuid)}
-                <div class="entry-row" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
+                <div class="entry-row" onmouseenter={() => addHighlightOverlayByUUID(element.uuid)} onmouseleave={() => hideHighlightOverlay()} role="button" tabindex="0">
                   <div class="d-flex justify-content-between align-items-center">
                     <StripedHtmlTag {element} />
                     <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>
@@ -532,7 +536,7 @@
                           value={selected.frame.attributes["data-turbo-action"] || "advance"}
                           onchange={(e) => {
                             const newValue = e.target.value
-                            updateDataAttribute(selectorByUUID(selected.uuid), "data-turbo-action", newValue)
+                            updateDataAttribute(selected.uuid, "data-turbo-action", newValue)
                           }}
                         >
                           <wa-option value="advance">advance{!selected.frame.attributes["data-turbo-action"] ? " (default)" : ""}</wa-option>
@@ -597,7 +601,7 @@
                       <td>Target</td>
                       <td>
                         <div class="d-flex justify-content-between align-items-center">
-                          <span>{selected.stream.targetSelector}</span>
+                          <span>{turboStreamTargetLabel(selected.stream.target, selected.stream.targets)}</span>
                           <div>
                             <ScrollIntoViewButton selector={selected.stream.targetSelector}></ScrollIntoViewButton>
                             <InspectButton selector={selected.stream.targetSelector}></InspectButton>
@@ -619,7 +623,7 @@
               <div class="pane-footer flex-center">
                 <div class="pane-footer-title mono-font">
                   {selected.stream.action}
-                  {selected.stream.targetSelector}
+                  {turboStreamTargetLabel(selected.stream.target, selected.stream.targets)}
                 </div>
               </div>
             {:else}

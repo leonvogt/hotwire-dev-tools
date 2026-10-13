@@ -25,7 +25,12 @@ export const loadCSS = async (url) => {
 }
 
 export const inspectElement = (selector) => {
-  chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector('${selector}'))`)
+  chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector(${JSON.stringify(selector)}))`)
+}
+
+export const inspectElementByUUID = (uuid) => {
+  if (!uuid) return
+  chrome.devtools.inspectedWindow.eval(`inspect(window.HotwireDevToolsBackend?.getElementByUUID(${JSON.stringify(uuid)}))`)
 }
 
 export const inspectElementByPath = (path) => {
@@ -40,7 +45,6 @@ export const stringifyHTMLElementTag = (element, createClosingTag = true) => {
   }
 
   const attributes = Array.from(element.attributes)
-    .filter(({ name }) => name !== "data-hotwire-dev-tools-id")
     .map((attr) => `${attr.name}="${attr.value}"`)
     .join(" ")
 
@@ -117,25 +121,6 @@ export const handleKeyboardNavigation = (event, collection, currentIndex) => {
   return newIndex
 }
 
-export const getUUIDFromElement = (element) => {
-  const uuid = element.getAttribute("data-hotwire-dev-tools-id")
-  return uuid || null
-}
-
-export const setUUIDToElement = (element) => {
-  const uuid = generateUUID()
-  element.setAttribute("data-hotwire-dev-tools-id", uuid)
-  return uuid
-}
-
-export const ensureUUIDOnElement = (element) => {
-  let uuid = getUUIDFromElement(element)
-  if (!uuid) {
-    uuid = setUUIDToElement(element)
-  }
-  return uuid
-}
-
 export const getElementPath = (element) => {
   const path = []
   while (element && element.parentElement) {
@@ -180,10 +165,6 @@ export const capitalizeFirstChar = (str) => {
     return str
   }
   return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
-export const selectorByUUID = (uuid) => {
-  return `[data-hotwire-dev-tools-id="${uuid}"]`
 }
 
 export const serializeAttributes = (element) => {

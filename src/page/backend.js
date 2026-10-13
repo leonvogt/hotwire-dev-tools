@@ -1,12 +1,14 @@
 import { HOTWIRE_DEV_TOOLS_PROXY_SOURCE, HOTWIRE_DEV_TOOLS_BACKEND_SOURCE, BACKEND_TO_PANEL_MESSAGES, PANEL_TO_BACKEND_MESSAGES, TURBO_EVENTS } from "$lib/constants"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
 import { debounce, generateUUID, getElementPath, getElementFromIndexPath, stringifyHTMLElementTag, safeStringifyEventDetail } from "$utils/utils"
+import { turboStreamTargetSelector, turboStreamTargetElements } from "$utils/turbo_utils"
 import TurboFrameObserver from "./observers/turbo_frame_observer.js"
 import TurboCableObserver from "./observers/turbo_cable_observer.js"
 import StimulusObserver from "./observers/stimulus_observer.js"
 import TurboAttributeElementsObserver from "./observers/turbo_attribute_elements_observer.js"
 import ElementObserver from "./observers/element_observer.js"
 import DiagnosticsChecker from "$lib/diagnostics_checker.js"
+import { getElementByUUID } from "./element_registry.js"
 import LeaderLine from "$lib/leader_line.js"
 
 // This is the backend script which interacts with the page's DOM.
@@ -213,12 +215,9 @@ function init() {
       let action
       let targetSelector
       if (eventName === "turbo:before-stream-render") {
-        const target = event.target.getAttribute("target")
-        const targets = event.target.getAttribute("targets")
-
         turboStreamContent = event.target.outerHTML
         action = event.target.getAttribute("action")
-        targetSelector = target ? `#${target}` : targets
+        targetSelector = turboStreamTargetSelector(event.target)
       }
 
       this._postMessage({
@@ -316,10 +315,10 @@ function init() {
       const action = turboStream.getAttribute("action")
       const target = turboStream.getAttribute("target")
       const targets = turboStream.getAttribute("targets")
-      const targetSelector = target ? `#${target}` : targets
+      const targetSelector = turboStreamTargetSelector(turboStream)
       const uuid = generateUUID()
       const time = new Date().toLocaleTimeString()
-      const targetNotFound = (target || targets) && !document.querySelector(targetSelector)
+      const targetNotFound = (target || targets) && turboStreamTargetElements(turboStream).length === 0
 
       this._postMessage({
         type: BACKEND_TO_PANEL_MESSAGES.TURBO_STREAM_RECEIVED,
@@ -356,13 +355,13 @@ function init() {
       }
     }
 
-    showTurboFrameConnections(turboFrameId, triggerSelector) {
+    showTurboFrameConnections(turboFrameId, triggers) {
       this.removeTurboFrameConnections()
-      if (!turboFrameId || !triggerSelector) {
+      if (!turboFrameId || !triggers) {
         return
       }
 
-      document.querySelectorAll(triggerSelector).forEach((trigger) => {
+      triggers.forEach((trigger) => {
         const turboFrame = document.getElementById(trigger.dataset.turboFrame)
         if (turboFrame) {
           new LeaderLine(trigger, turboFrame)
@@ -374,11 +373,24 @@ function init() {
       document.querySelectorAll(".leader-line").forEach((line) => line.remove())
     }
 
+    // Called by the panel via `inspectedWindow.eval` to inspect an element
+    getElementByUUID(uuid) {
+      return getElementByUUID(uuid)
+    }
+
     getElementsByPayload(payload) {
-      if (payload.elementPath) {
-        return [getElementFromIndexPath(payload.elementPath)]
+      if (payload.uuids) {
+        return payload.uuids.map((uuid) => getElementByUUID(uuid)).filter(Boolean)
+      } else if (payload.elementPath) {
+        const element = getElementFromIndexPath(payload.elementPath)
+        return element ? [element] : []
       } else if (payload.selector) {
-        return document.querySelectorAll(payload.selector)
+        try {
+          return document.querySelectorAll(payload.selector)
+        } catch {
+          console.warn(`Hotwire DevTools Backend: Invalid selector "${payload.selector}"`)
+          return []
+        }
       }
       return null
     }
@@ -491,17 +503,16 @@ function init() {
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.SCROLL_AND_HIGHLIGHT: {
-        const elements = devtoolsBackend.getElementsByPayload(e.data.payload)
+        const element = devtoolsBackend.getElementsByPayload(e.data.payload)?.[0]
 
-        if (elements) {
-          const element = elements[0]
+        if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "center" })
           addHighlightOverlayToElements(element)
           setTimeout(() => {
             removeHighlightOverlay()
           }, 1000)
         } else {
-          console.warn("Element not found for selector:", "${selector}")
+          console.warn("Hotwire DevTools Backend: Element not found for scroll into view")
         }
         break
       }
@@ -521,9 +532,9 @@ function init() {
       }
       case PANEL_TO_BACKEND_MESSAGES.SHOW_TURBO_FRAME_CONNECTIONS: {
         const turboFrameId = e.data.payload.turboFrameId
-        const triggerSelector = e.data.payload.triggerSelector
+        const triggers = devtoolsBackend.getElementsByPayload(e.data.payload)
 
-        devtoolsBackend.showTurboFrameConnections(turboFrameId, triggerSelector)
+        devtoolsBackend.showTurboFrameConnections(turboFrameId, triggers)
         break
       }
       case PANEL_TO_BACKEND_MESSAGES.HIDE_TURBO_FRAME_CONNECTIONS: {

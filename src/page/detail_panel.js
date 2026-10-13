@@ -1,5 +1,5 @@
 import { getMetaContent, debounce } from "$utils/utils"
-import { turboStreamTargetElements } from "$utils/turbo_utils"
+import { turboStreamTargetElements, turboStreamTargetSelector, turboStreamTargetLabel, targetElementsByQuery } from "$utils/turbo_utils"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
 import DOMScanner from "$utils/dom_scanner"
 import * as Icons from "$utils/icons"
@@ -61,11 +61,15 @@ export default class DetailPanel {
   addTurboStreamToDetailPanel = (event) => {
     if (!this.devTool.options.detailPanel.show || !this.isTabEnabled(TURBO_STREAM_TAB_ID)) return
 
+    const streamTab = this.shadowRoot.getElementById(TURBO_STREAM_TAB_ID)
+    if (!streamTab) return
+
     const turboStream = event.target
     const action = turboStream.getAttribute("action")
     const target = turboStream.getAttribute("target")
     const targets = turboStream.getAttribute("targets")
-    const targetSelector = target ? `#${target}` : targets
+    const targetSelector = turboStreamTargetSelector(turboStream)
+    const targetLabel = turboStreamTargetLabel(target, targets)
     const targetElements = turboStreamTargetElements(turboStream)
     const time = new Date().toLocaleTimeString()
 
@@ -82,14 +86,13 @@ export default class DetailPanel {
       </div>
       <div class="hotwire-dev-tools-entry-content">
         <span class="text-ellipsis" title="${action}">${action}</span>
-        <span class="text-ellipsis" title="${targetSelector || ""}">${targetSelector || ""}</span>
+        <span class="text-ellipsis" title="${targetLabel || ""}">${targetLabel || ""}</span>
       </div>
       <div class="hotwire-dev-tools-entry-details turbo-streams d-none">
         <pre><code class="language-html">${turboStreamContent}</code></pre>
       </div>
     `
 
-    const streamTab = this.shadowRoot.getElementById(TURBO_STREAM_TAB_ID)
     streamTab.prepend(entry)
     streamTab.querySelector(".hotwire-dev-tools-no-entry")?.remove()
 
@@ -181,7 +184,8 @@ export default class DetailPanel {
 
   #handleMouseEnterTurboStream = (event) => {
     const selector = event.currentTarget.dataset.targetSelector
-    const elements = document.querySelectorAll(selector)
+    if (!selector) return
+    const elements = targetElementsByQuery(selector)
     addHighlightOverlayToElements(elements, this.devTool.options.turbo.highlightFramesOutlineColor)
   }
 

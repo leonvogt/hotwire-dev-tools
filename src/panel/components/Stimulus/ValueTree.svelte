@@ -4,7 +4,7 @@
   import CopyButton from "$components/CopyButton.svelte"
   import IconButton from "$uikit/IconButton.svelte"
   import { updateDataAttribute } from "$panel/messaging"
-  import { capitalizeFirstChar, selectorByUUID } from "$utils/utils.js"
+  import { capitalizeFirstChar } from "$utils/utils.js"
 
   let { valueObject, selected, dataAttribute } = $props()
 
@@ -65,7 +65,7 @@
 
     const serializedValue = serializeValue(updatedValue, valueObject.type.toLowerCase())
 
-    updateDataAttribute(selectorByUUID(selected.uuid), dataAttribute, serializedValue)
+    updateDataAttribute(selected.uuid, dataAttribute, serializedValue)
 
     editingStates[path.join(".")] = false
   }

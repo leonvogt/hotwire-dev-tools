@@ -1,4 +1,5 @@
-import { ensureUUIDOnElement, getUUIDFromElement, serializeAttributes } from "$utils/utils.js"
+import { serializeAttributes } from "$utils/utils.js"
+import { getElementUUID } from "$page/element_registry.js"
 
 export default class TurboAttributeElementsObserver {
   constructor(delegate) {
@@ -23,7 +24,7 @@ export default class TurboAttributeElementsObserver {
   elementMatched(element) {
     if (!element || !element.hasAttribute) return
 
-    const uuid = ensureUUIDOnElement(element)
+    const uuid = getElementUUID(element)
     const isPermanent = element.hasAttribute("data-turbo-permanent")
     const isTemporary = element.hasAttribute("data-turbo-temporary")
 
@@ -45,25 +46,22 @@ export default class TurboAttributeElementsObserver {
   }
 
   elementUnmatched(element) {
-    const uuid = getUUIDFromElement(element)
+    const uuid = getElementUUID(element)
+    let changed = false
 
-    if (uuid) {
-      let changed = false
+    if (this.permanentElements.has(uuid)) {
+      this.permanentElements.delete(uuid)
+      changed = true
+    }
 
-      if (this.permanentElements.has(uuid)) {
-        this.permanentElements.delete(uuid)
-        changed = true
-      }
+    if (this.temporaryElements.has(uuid)) {
+      this.temporaryElements.delete(uuid)
+      changed = true
+    }
 
-      if (this.temporaryElements.has(uuid)) {
-        this.temporaryElements.delete(uuid)
-        changed = true
-      }
-
-      if (changed) {
-        this.delegate.turboPermanentElementsChanged()
-        this.delegate.turboTemporaryElementsChanged()
-      }
+    if (changed) {
+      this.delegate.turboPermanentElementsChanged()
+      this.delegate.turboTemporaryElementsChanged()
     }
   }
 
@@ -71,23 +69,21 @@ export default class TurboAttributeElementsObserver {
     if (!element || !element.hasAttribute) return
 
     if (attributeName === "data-turbo-permanent" || attributeName === "data-turbo-temporary") {
-      const uuid = getUUIDFromElement(element)
+      const uuid = getElementUUID(element)
 
-      if (uuid) {
-        // Remove from both maps first
-        const wasPermanent = this.permanentElements.has(uuid)
-        const wasTemporary = this.temporaryElements.has(uuid)
+      // Remove from both maps first
+      const wasPermanent = this.permanentElements.has(uuid)
+      const wasTemporary = this.temporaryElements.has(uuid)
 
-        this.permanentElements.delete(uuid)
-        this.temporaryElements.delete(uuid)
+      this.permanentElements.delete(uuid)
+      this.temporaryElements.delete(uuid)
 
-        // Re-add if element still matches
-        if (this.matchElement(element)) {
-          this.elementMatched(element)
-        } else if (wasPermanent || wasTemporary) {
-          this.delegate.turboPermanentElementsChanged()
-          this.delegate.turboTemporaryElementsChanged()
-        }
+      // Re-add if element still matches
+      if (this.matchElement(element)) {
+        this.elementMatched(element)
+      } else if (wasPermanent || wasTemporary) {
+        this.delegate.turboPermanentElementsChanged()
+        this.delegate.turboTemporaryElementsChanged()
       }
     }
   }
@@ -96,7 +92,7 @@ export default class TurboAttributeElementsObserver {
     return {
       type: type,
       id: element.id || null,
-      uuid: getUUIDFromElement(element),
+      uuid: getElementUUID(element),
       attributes: serializeAttributes(element),
       tagName: element.tagName.toLowerCase(),
     }

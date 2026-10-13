@@ -1,3 +1,13 @@
+// `target` is an id, which isn't always a valid selector (e.g. "1_comments")
+export const turboStreamTargetSelector = (turboStream) => {
+  const target = turboStream.getAttribute("target")
+  return target ? `#${CSS.escape(target)}` : turboStream.getAttribute("targets")
+}
+
+export const turboStreamTargetLabel = (target, targets) => {
+  return target ? `#${target}` : targets
+}
+
 export const turboStreamTargetElements = (turboStream) => {
   const target = turboStream.getAttribute("target")
   const targets = turboStream.getAttribute("targets")
@@ -7,7 +17,7 @@ export const turboStreamTargetElements = (turboStream) => {
   } else if (targets) {
     return targetElementsByQuery(targets)
   } else {
-    ;[]
+    return []
   }
 }
 
@@ -22,7 +32,12 @@ export const targetElementsById = (target) => {
 }
 
 export const targetElementsByQuery = (targets) => {
-  const elements = document.querySelectorAll(targets)
+  let elements
+  try {
+    elements = document.querySelectorAll(targets)
+  } catch {
+    return []
+  }
 
   if (elements.length !== 0) {
     return Array.prototype.slice.call(elements)

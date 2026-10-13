@@ -1,4 +1,5 @@
-import { ensureUUIDOnElement, getUUIDFromElement, serializeAttributes } from "$utils/utils.js"
+import { serializeAttributes } from "$utils/utils.js"
+import { getElementUUID } from "$page/element_registry.js"
 
 export default class TurboFrameObserver {
   constructor(delegate) {
@@ -17,7 +18,7 @@ export default class TurboFrameObserver {
   }
 
   elementMatched(element) {
-    const uuid = ensureUUIDOnElement(element)
+    const uuid = getElementUUID(element)
 
     if (!this.frames.has(uuid)) {
       const frameData = this.buildFrameData(element)
@@ -27,7 +28,7 @@ export default class TurboFrameObserver {
   }
 
   elementUnmatched(element) {
-    const uuid = getUUIDFromElement(element)
+    const uuid = getElementUUID(element)
 
     if (this.frames.has(uuid)) {
       this.frames.delete(uuid)
@@ -37,7 +38,7 @@ export default class TurboFrameObserver {
 
   elementAttributeChanged(element, attributeName, oldValue) {
     if (this.matchElement(element)) {
-      const uuid = getUUIDFromElement(element)
+      const uuid = getElementUUID(element)
       if (this.frames.has(uuid)) {
         const frameData = this.frames.get(uuid)
         const newValue = element.getAttribute(attributeName)
@@ -55,13 +56,13 @@ export default class TurboFrameObserver {
   buildFrameData(element) {
     return {
       id: element.id,
-      uuid: getUUIDFromElement(element),
+      uuid: getElementUUID(element),
       attributes: serializeAttributes(element),
       hasUniqueId: document.querySelectorAll(`turbo-frame[id='${element.id}']`).length === 1,
       tagName: element.tagName.toLowerCase(),
       referenceElements: Array.from(document.querySelectorAll(`[data-turbo-frame='${element.id}']`)).map((element) => {
         return {
-          uuid: ensureUUIDOnElement(element),
+          uuid: getElementUUID(element),
           attributes: serializeAttributes(element),
           tagName: element.tagName.toLowerCase(),
         }
@@ -83,8 +84,8 @@ export default class TurboFrameObserver {
         const parentElement = element.parentElement?.closest("turbo-frame")
 
         if (parentElement) {
-          const parentUUID = getUUIDFromElement(parentElement)
-          if (parentUUID && this.frames.has(parentUUID)) {
+          const parentUUID = getElementUUID(parentElement)
+          if (this.frames.has(parentUUID)) {
             this.frames.get(parentUUID).children.push(frameData)
           } else {
             // Parent exists but not in our tracking => add as root

@@ -1,4 +1,5 @@
-import { ensureUUIDOnElement, getUUIDFromElement, capitalizeFirstChar, serializeAttributes } from "$utils/utils.js"
+import { capitalizeFirstChar, serializeAttributes } from "$utils/utils.js"
+import { getElementUUID } from "$page/element_registry.js"
 
 export default class StimulusObserver {
   constructor(delegate) {
@@ -28,7 +29,7 @@ export default class StimulusObserver {
       .map((id) => id.trim())
       .filter((id) => id.length > 0)
 
-    const uuid = ensureUUIDOnElement(element)
+    const uuid = getElementUUID(element)
     if (!this.controllerElements.has(uuid)) {
       this.controllerElements.set(uuid, [])
     }
@@ -40,7 +41,7 @@ export default class StimulusObserver {
   }
 
   elementUnmatched(element) {
-    const uuid = getUUIDFromElement(element)
+    const uuid = getElementUUID(element)
 
     if (this.controllerElements.has(uuid)) {
       this.controllerElements.delete(uuid)
@@ -50,7 +51,7 @@ export default class StimulusObserver {
 
   elementAttributeChanged(element, attributeName, oldValue) {
     if (this.matchElement(element)) {
-      const uuid = getUUIDFromElement(element)
+      const uuid = getElementUUID(element)
       if (this.controllerElements.has(uuid)) {
         const newControllerElementData = this.controllerElements.get(uuid).map((controllerData) => {
           return this.buildStimulusElementData(element, controllerData.identifier)
@@ -65,7 +66,7 @@ export default class StimulusObserver {
     const controller = window.Stimulus?.getControllerForElementAndIdentifier(element, identifier)
     return {
       id: element.id,
-      uuid: getUUIDFromElement(element),
+      uuid: getElementUUID(element),
       identifier: identifier,
       attributes: serializeAttributes(element),
       tagName: element.tagName.toLowerCase(),
@@ -105,7 +106,7 @@ export default class StimulusObserver {
         elements: Array.from(targets).map((target) => {
           return {
             id: target.id,
-            uuid: ensureUUIDOnElement(target),
+            uuid: getElementUUID(target),
             attributes: serializeAttributes(target),
             tagName: target.tagName.toLowerCase(),
           }
@@ -129,7 +130,7 @@ export default class StimulusObserver {
         elements: Array.from(outlets).map((outlet) => {
           return {
             id: outlet.id,
-            uuid: ensureUUIDOnElement(outlet.element),
+            uuid: getElementUUID(outlet.element),
             attributes: serializeAttributes(outlet.element),
             tagName: outlet.element.tagName.toLowerCase(),
           }
@@ -168,7 +169,7 @@ export default class StimulusObserver {
           attributes: serializeAttributes(action.element),
           tagName: action.element.tagName.toLowerCase(),
           classes: Array.from(action.element.classList),
-          uuid: ensureUUIDOnElement(action.element),
+          uuid: getElementUUID(action.element),
         },
         keyFilter: action.keyFilter || null,
         eventTarget: action.eventTargetName || "element",

@@ -1,8 +1,7 @@
 <script>
   import InspectButton from "$components/InspectButton.svelte"
   import StripedHtmlTag from "$components/StripedHtmlTag.svelte"
-  import { addHighlightOverlay, hideHighlightOverlay } from "$panel/messaging"
-  import { selectorByUUID } from "$utils/utils.js"
+  import { addHighlightOverlayByUUID, hideHighlightOverlay } from "$panel/messaging"
 
   let { target } = $props()
 </script>
@@ -17,7 +16,7 @@
   </div>
 </div>
 {#each target.elements as element}
-  <div class="entry-row detail-sub-row" role="button" tabindex="0" onmouseenter={() => addHighlightOverlay(selectorByUUID(element.uuid))} onmouseleave={() => hideHighlightOverlay()}>
+  <div class="entry-row detail-sub-row" role="button" tabindex="0" onmouseenter={() => addHighlightOverlayByUUID(element.uuid)} onmouseleave={() => hideHighlightOverlay()}>
     <div class="d-flex justify-content-between align-items-center">
       <StripedHtmlTag {element} />
       <InspectButton class="btn-hoverable" uuid={element.uuid}></InspectButton>

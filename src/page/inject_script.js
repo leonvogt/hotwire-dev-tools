@@ -2,6 +2,8 @@
 // The purpose is to access the page's `window` object, which is inaccessible from the content script
 // We gather details about the current page and sends them back to the content script via `window.postMessage`
 
+import { turboStreamTargetSelector, turboStreamTargetElements } from "$utils/turbo_utils"
+
 const MAX_BUFFER_SIZE = 500
 
 const generateBufferUUID = () => {
@@ -61,8 +63,8 @@ class HotwireDevToolsInjectScript {
         const target = turboStream.getAttribute("target")
         const targets = turboStream.getAttribute("targets")
 
-        const targetSelector = target ? `#${target}` : targets
-        const targetNotFound = (target || targets) && !document.querySelector(targetSelector)
+        const targetSelector = turboStreamTargetSelector(turboStream)
+        const targetNotFound = (target || targets) && turboStreamTargetElements(turboStream).length === 0
 
         const entry = {
           turboStreamContent: turboStream.outerHTML,

@@ -10,8 +10,8 @@
   import InspectButton from "$components/InspectButton.svelte"
   import StripedHtmlTag from "$components/StripedHtmlTag.svelte"
   import { getStimulusData, getRegisteredStimulusIdentifiers, isStimulusApiAvailable } from "../State.svelte.js"
-  import { handleKeyboardNavigation, selectorByUUID } from "$utils/utils.js"
-  import { addHighlightOverlay, hideHighlightOverlay } from "$panel/messaging"
+  import { handleKeyboardNavigation } from "$utils/utils.js"
+  import { addHighlightOverlay, addHighlightOverlayByUUID, hideHighlightOverlay } from "$panel/messaging"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../theme.svelte.js"
   import CopyButton from "$components/CopyButton.svelte"
@@ -42,10 +42,13 @@
     registeredStimulusIdentifiers = getRegisteredStimulusIdentifiers()
   })
 
+  let previousStimulusControllers = []
+
   $effect(() => {
     const currentData = stimulusControllers
 
-    const instance = currentData.find((n) => n.uuid === selected.uuid && n.identifier === selected.identifier)
+    const instance = findSelectedInstance(currentData, previousStimulusControllers)
+    previousStimulusControllers = currentData
     const selectedInstanceMissing = selected.uuid && !instance
     const shouldSelectFirstController = currentData.length > 0 && (!selected.identifier || selectedInstanceMissing)
 
@@ -54,10 +57,26 @@
       setSelectedController(instance)
     } else if (selected.uuid && instance && instance !== selected.controller) {
       // Update selected controller reference, to store the latest data
+      selected.uuid = instance.uuid
       selected.controller = instance
       selected.identifier = instance.identifier
     }
   })
+
+  const findSelectedInstance = (instances, previousInstances) => {
+    const hasSelectedIdentifier = (n) => n.identifier === selected.identifier
+    const instance = instances.find((n) => hasSelectedIdentifier(n) && n.uuid === selected.uuid)
+    if (instance || !selected.uuid) return instance
+
+    // The element got replaced (e.g. Turbo cache restore), so match by id or position instead
+    const candidates = instances.filter(hasSelectedIdentifier)
+    const sameId = selected.controller?.id && candidates.find((n) => n.id === selected.controller.id)
+    if (sameId) return sameId
+
+    const previousIndex = previousInstances.filter(hasSelectedIdentifier).findIndex((n) => n.uuid === selected.uuid)
+    if (previousIndex === -1) return undefined
+    return candidates[Math.min(previousIndex, candidates.length - 1)]
+  }
 
   const getStimulusInstances = (identifier) => {
     return stimulusControllers.filter((n) => n.identifier === identifier)
@@ -222,7 +241,7 @@
                 tabindex="0"
                 onclick={() => setSelectedController(instance)}
                 onkeydown={handleInstancesKeyboardNavigation}
-                onmouseenter={() => addHighlightOverlay(selectorByUUID(instance.uuid))}
+                onmouseenter={() => addHighlightOverlayByUUID(instance.uuid)}
                 onmouseleave={() => hideHighlightOverlay()}
               >
                 <div class="d-table-row">

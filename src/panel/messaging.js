@@ -103,6 +103,14 @@ export const addHighlightOverlay = (selector) => {
   })
 }
 
+export const addHighlightOverlayByUUID = (...uuids) => {
+  panelPostMessage({
+    action: PANEL_TO_BACKEND_MESSAGES.HIGHLIGHT_ELEMENT,
+    source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
+    uuids: uuids,
+  })
+}
+
 export const addHighlightOverlayByPath = (elementPath) => {
   panelPostMessage({
     action: PANEL_TO_BACKEND_MESSAGES.HIGHLIGHT_ELEMENT,
@@ -118,11 +126,11 @@ export const hideHighlightOverlay = () => {
   })
 }
 
-export const updateDataAttribute = (selector, key, value) => {
+export const updateDataAttribute = (uuid, key, value) => {
   panelPostMessage({
     action: PANEL_TO_BACKEND_MESSAGES.UPDATE_DATA_ATTRIBUTE,
     source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-    selector: selector,
+    uuids: [uuid],
     key: key,
     value: value,
   })
@@ -135,11 +143,11 @@ export const refreshAllState = () => {
   })
 }
 
-export const dispatchEvent = (selector, eventName, keyFilter = null) => {
+export const dispatchEvent = (uuid, eventName, keyFilter = null) => {
   panelPostMessage({
     action: PANEL_TO_BACKEND_MESSAGES.DISPATCH_EVENT,
     source: HOTWIRE_DEV_TOOLS_PANEL_SOURCE,
-    selector: selector,
+    uuids: [uuid],
     eventName: eventName,
     keyFilter: keyFilter,
   })
