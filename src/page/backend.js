@@ -19,27 +19,24 @@ function init() {
     EVENTS_FOR_TURBO_CONFIG = ["turbo:load", "turbo:render"]
 
     constructor() {
+      this.diagnosticsChecker = new DiagnosticsChecker()
+    }
+
+    start() {
+      this.flushEventBuffer()
+
+      // Fresh state on every (re)start, as the DOM might have changed while stopped
       this.observers = {
         turboFrame: new TurboFrameObserver(this),
         turboCable: new TurboCableObserver(this),
         stimulus: new StimulusObserver(this),
         turboAttributes: new TurboAttributeElementsObserver(this),
       }
-
       this.elementObserver = new ElementObserver(document, this)
-      this.diagnosticsChecker = new DiagnosticsChecker()
-    }
-
-    start() {
-      this.flushEventBuffer()
       this.elementObserver.start()
       this.addEventListeners()
 
-      // The following wouldn't send because they aren't connected to a observer.
-      // So we send them manually on start.
-      this.sendRegisteredStimulusControllers()
-      this.sendTurboConfig()
-      this.sendWarnings()
+      this.sendAllState()
     }
 
     flushEventBuffer() {
@@ -63,6 +60,9 @@ function init() {
     stop() {
       this.elementObserver.stop()
       document.removeEventListener("turbo:before-stream-render", this.handleIncomingTurboStream)
+      TURBO_EVENTS.forEach((eventName) => {
+        window.removeEventListener(eventName, this.handleTurboEvent)
+      })
       this.EVENTS_FOR_TURBO_CONFIG.forEach((eventName) => {
         window.removeEventListener(eventName, this.sendTurboConfig)
       })
@@ -72,18 +72,20 @@ function init() {
       document.addEventListener("turbo:before-stream-render", this.handleIncomingTurboStream, { passive: true })
 
       TURBO_EVENTS.forEach((eventName) => {
-        window.addEventListener(eventName, (event) => {
-          // For some unknown reason, we can't use the event itself in Safari, without loosing custom properties, like event.detail.
-          // The only hacky workaround that seems to work is to use a setTimeout with some delay. (Issue#73)
-          setTimeout(() => {
-            this.sendTurboEvent(eventName, event)
-          }, 100)
-        })
+        window.addEventListener(eventName, this.handleTurboEvent)
       })
 
       this.EVENTS_FOR_TURBO_CONFIG.forEach((eventName) => {
         window.addEventListener(eventName, this.sendTurboConfig, { passive: true })
       })
+    }
+
+    handleTurboEvent = (event) => {
+      // For some unknown reason, we can't use the event itself in Safari, without loosing custom properties, like event.detail.
+      // The only hacky workaround that seems to work is to use a setTimeout with some delay. (Issue#73)
+      setTimeout(() => {
+        this.sendTurboEvent(event.type, event)
+      }, 100)
     }
 
     // ElementObserver delegate methods

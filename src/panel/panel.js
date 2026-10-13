@@ -15,6 +15,7 @@ export default mount(App, { target: document.querySelector("#app") })
 
 let lastBackendMessageAt
 let currentPort = null
+let connectedDocumentTimeOrigin = null
 let isConnecting = false
 let connectionAttempts = 0
 let healthCheckInterval = null
@@ -36,6 +37,7 @@ async function connect() {
 
   try {
     await injectBackendScript()
+    connectedDocumentTimeOrigin = await getDocumentTimeOrigin()
     currentPort = createConnection()
     console.log(`Connected successfully (attempt ${connectionAttempts})`)
     connection.connectedToBackend = true
@@ -112,6 +114,13 @@ function injectBackendScript() {
   })
 }
 
+// Unique per document, unlike the URL
+function getDocumentTimeOrigin() {
+  return new Promise((resolve) => {
+    chrome.devtools.inspectedWindow.eval("performance.timeOrigin", (result, error) => resolve(error ? null : result))
+  })
+}
+
 function reconnect() {
   if (connectionAttempts >= maxConnectionAttempts) {
     console.error("Reconnect - Max reconnection attempts reached. Stopping retries.")
@@ -125,7 +134,10 @@ function reconnect() {
 }
 
 function setupReconnectionHandlers() {
-  chrome.devtools.network.onNavigated.addListener(() => {
+  chrome.devtools.network.onNavigated.addListener(async () => {
+    // Chrome also fires this for same-document navigations (e.g. Turbo Drive), where the connection keeps working
+    if (currentPort && connectedDocumentTimeOrigin && (await getDocumentTimeOrigin()) === connectedDocumentTimeOrigin) return
+
     console.log("Page navigated, reconnecting...")
     connection.connectedToBackend = false
     cleanup()
