@@ -8,6 +8,7 @@ node_modules/
 /public/dev.html
 
 # Release files
+/release
 public.zip
 public.crx
 public.pem

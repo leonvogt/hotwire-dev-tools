@@ -13,6 +13,7 @@ npm run dev              # Watch mode (Chrome, default)
 npm run build            # Production build (Chrome)
 npm run build firefox    # Production build for Firefox
 npm run build safari     # Production build for Safari
+npm run release 1.2.3    # Bump version (manifest + Xcode), build all zips into release/, commit + tag
 npm run dev:panel        # Watch mode + serve public/ on :3333 (for UI dev without reloading extension)
 npm run lint             # Check formatting with Prettier
 npm run format           # Auto-fix formatting with Prettier
