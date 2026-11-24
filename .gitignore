@@ -9,6 +9,7 @@ node_modules/
 
 # Release files
 /release
+/docs/screenshots/raw
 public.zip
 public.crx
 public.pem

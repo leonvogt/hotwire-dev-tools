@@ -2,9 +2,9 @@
 
 # Hotwire Dev Tools
 
-**Hotwire Dev Tools is a browser extension designed to help developers inspect their Turbo and Stimulus applications.**
+**Hotwire Dev Tools is a browser extension to inspect and debug Turbo and Stimulus applications.**
 
-<img alt="screenshot" src="https://res.cloudinary.com/dlvuixik3/image/upload/v1750143707/6bee3a30-3545-48ea-b80f-054d0ef25bf2_xmdeg2.png" width="800px" height="auto">
+<img alt="Hotwire Dev Tools – Turbo tab" src="docs/screenshots/turbo.png" width="800px" height="auto">
 
 [![Firefox](https://img.shields.io/badge/Firefox-FF7139?style=for-the-badge&logo=Firefox-Browser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/hotwire-dev-tools/)
 [![Google Chrome](https://img.shields.io/badge/Google%20Chrome-4285F4?style=for-the-badge&logo=GoogleChrome&logoColor=white)](https://chromewebstore.google.com/detail/hotwire-dev-tools/phdobjkbablgffmmgnjbmfbbofnbkajc)
@@ -14,22 +14,47 @@
 
 ## Features
 
-**Turbo**:
+The extension adds a **Hotwire** panel to your browser's DevTools.  
+Hover any element in the panel to highlight it on the page, scroll to it, or jump to it in the Elements panel.
 
-- Highlight Turbo Frames
-- Monitor incoming Turbo Streams
-- Display Turbo context information (Turbo Drive enabled, morphing enabled, ...)
-- Log all Turbo related events
-- Log warning when a Turbo Frame ID is not unique
-- Log warning when an element has `data-turbo-permanent` but no ID or a non-unique ID
+### Turbo
+
+- Tree of all Turbo Frames, including nested frames, their attributes and the links and forms that target them
+- Reload a single Turbo Frame from the panel
+- Live feed of incoming Turbo Streams with action, target and HTML, including streams rendered before the panel was opened
+- Flags Turbo Streams whose target doesn't exist on the page
+- Connection status of Turbo Stream WebSockets
+- Current Turbo settings: Turbo Drive, visit control, cache control and link prefetch
+- Elements with `data-turbo-permanent` and `data-turbo-temporary`
+
+### Stimulus
+
+- All Stimulus controllers on the page
+- Inspect and edit values live
+- Targets, outlets, classes and actions of each controller
+- Trigger controller actions from the panel
+- Flags controllers that aren't registered in `window.Stimulus`
+
+### Logs
+
+- Every Turbo event (`turbo:load`, `turbo:frame-load`, `turbo:before-fetch-request`, …) with filter and details
+
+### Warnings
+
+- Duplicate Turbo Frame IDs
+- `data-controller` without a registered Stimulus controller
+- Stimulus targets outside their controller
+- `data-turbo-permanent` elements without an ID or with a duplicate ID
+- Mute single warnings per site
+
+### On-page tools
+
+These work without opening DevTools and are configured in the extension popup:
+
+- Highlight Turbo Frames and Stimulus controllers on the page
 - Highlight Turbo Frame changes
-
-**Stimulus**:
-
-- Highlight Stimulus controllers
-- List all Stimulus controllers on the page
-- Log warning when a `data-controller` doesn't match any registered controller
-- Log warning when a Stimulus target is not nested within the corresponding controller
+- In-page detail panel with Stimulus controllers, Turbo Frames and Turbo Streams
+- Log Turbo Streams, Turbo events and warnings to the browser console
 
 ## Installation
 
@@ -41,8 +66,9 @@ The extension can be installed at:
 
 ## Usage
 
-Once installed, click the extension icon (or press Alt+Shift+S) to open the DevTools options.  
-From there, you can enable/disable the features you want to use.
+**DevTools panel:** Open your browser's DevTools (on Safari: Develop → Show Web Inspector) and select the **Hotwire** tab.
+
+**On-page tools:** Click the extension icon (or press Alt+Shift+S) and enable the features you want to use.
 
 > [!NOTE]
 > On Firefox you may need to select "Always allow on example.com" to enable the extension on your site
@@ -52,6 +78,7 @@ From there, you can enable/disable the features you want to use.
 - Fork the project locally
 - `npm install`
 - `npm run dev` - to build the extension and watch for changes
+- `npm run dev:panel` - to work on the DevTools panel UI with mock data at http://localhost:3333/dev.html, without reloading the extension
 - `npm run build` - to bundle the extension into static files for production
 - `npm run format` - to format changes with Prettier
 
@@ -108,4 +135,4 @@ Please run `npm run format` prior to submitting pull requests.
 
 ---
 
-This Dev Tool were inspired by [turbo-devtool](https://github.com/lcampanari/turbo-devtools) and [turbo_boost-devtools](https://github.com/hopsoft/turbo_boost-devtools) 🙌
+This Dev Tool was inspired by [turbo-devtool](https://github.com/lcampanari/turbo-devtools) and [turbo_boost-devtools](https://github.com/hopsoft/turbo_boost-devtools) 🙌
