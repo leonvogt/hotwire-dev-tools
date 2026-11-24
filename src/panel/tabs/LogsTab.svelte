@@ -4,7 +4,7 @@
   import { TURBO_EVENTS, TURBO_EVENTS_GROUPED } from "$lib/constants.js"
   import { addHighlightOverlayByPath, hideHighlightOverlay } from "../messaging.js"
   import { getTurboEvents, clearTurboEvents } from "../State.svelte.js"
-  import { debounce, handleKeyboardNavigation } from "$utils/utils.js"
+  import { debounce, handleKeyboardNavigation, SERIALIZED_TYPE_KEY } from "$utils/utils.js"
   import { horizontalPanes } from "../theme.svelte.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
 
@@ -184,7 +184,11 @@
 
   <Pane class="turbo-detail-pane full-pane" size={options.turboPaneDimensions?.details || 50} minSize={20}>
     {#snippet valueViewer(value, key = null)}
-      {#if typeof value === "object" && value !== null}
+      {#if value?.[SERIALIZED_TYPE_KEY] === "element"}
+        <HTMLRenderer htmlString={value.html} />
+      {:else if value?.[SERIALIZED_TYPE_KEY] === "function"}
+        <span class="detail-function text-muted">ƒ {value.name}()</span>
+      {:else if typeof value === "object" && value !== null}
         {#if Array.isArray(value)}
           {#each value as item, i}
             <p class="m-0">
@@ -274,5 +278,9 @@
 <style>
   .turbo-events-table {
     table-layout: fixed;
+  }
+
+  .detail-function {
+    font-family: var(--font-family-monospace);
   }
 </style>

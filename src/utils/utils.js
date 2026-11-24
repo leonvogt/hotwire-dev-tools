@@ -126,19 +126,26 @@ export const getElementFromIndexPath = (path) => {
   return element
 }
 
+export const SERIALIZED_TYPE_KEY = "__hotwireDevToolsType"
+
 export const safeStringifyEventDetail = (detail) => {
   const seen = new WeakSet()
   return JSON.parse(
     JSON.stringify(detail, (key, value) => {
+      if (value instanceof Element) {
+        return { [SERIALIZED_TYPE_KEY]: "element", html: stringifyHTMLElementTag(value, false) }
+      }
+      if (typeof value === "function") {
+        return { [SERIALIZED_TYPE_KEY]: "function", name: value.name || key }
+      }
+      if (value instanceof Error) {
+        return `${value.name}: ${value.message}`
+      }
       if (typeof value === "object" && value !== null) {
         if (seen.has(value)) {
           return "[Circular Reference]"
         }
         seen.add(value)
-      }
-      // Remove problematic DOM elements and functions
-      if (value instanceof HTMLElement || typeof value === "function") {
-        return "[Object]"
       }
       return value
     }),
