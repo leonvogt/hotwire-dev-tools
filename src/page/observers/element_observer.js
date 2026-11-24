@@ -68,6 +68,8 @@ export default class ElementObserver {
     } else if (mutation.type === "attributes") {
       this.processAttributeChange(mutation.target, mutation.attributeName, mutation.oldValue)
     }
+
+    this.delegate.mutationProcessed?.(mutation)
   }
 
   processRemovedNodes(nodes) {

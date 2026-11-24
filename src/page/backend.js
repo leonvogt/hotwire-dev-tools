@@ -156,6 +156,12 @@ function init() {
       }
     }
 
+    mutationProcessed(mutation) {
+      if (this.observers.stimulus.isAffectedByMutation(mutation)) {
+        this.stimulusDataChanged()
+      }
+    }
+
     // Delegate methods
     turboFramesChanged() {
       this.sendTurboFrames()

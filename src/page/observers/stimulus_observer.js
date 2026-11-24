@@ -1,20 +1,23 @@
 import { capitalizeFirstChar, serializeAttributes } from "$utils/utils.js"
 import { getElementUUID } from "$page/element_registry.js"
 
+const STIMULUS_ATTRIBUTE = /^data-(controller|action|.+-(target|value|class|outlet))$/
+
 export default class StimulusObserver {
   constructor(delegate) {
     this.delegate = delegate
-    this.controllerElements = new Map() // UUID -> [controller data]
+    this.controllerElements = new Map() // UUID -> element
   }
 
-  matchElement(element) {
-    const controllerValue = element.dataset?.controller
-    if (controllerValue === undefined) return false
-    const identifiers = controllerValue
+  identifiersFor(element) {
+    return (element.dataset?.controller || "")
       .split(" ")
       .map((id) => id.trim())
       .filter((id) => id.length > 0)
-    return identifiers.length > 0
+  }
+
+  matchElement(element) {
+    return this.identifiersFor(element).length > 0
   }
 
   matchElementsInTree(tree) {
@@ -24,42 +27,37 @@ export default class StimulusObserver {
   }
 
   elementMatched(element) {
-    const identifiers = (element.dataset.controller || "")
-      .split(" ")
-      .map((id) => id.trim())
-      .filter((id) => id.length > 0)
-
-    const uuid = getElementUUID(element)
-    if (!this.controllerElements.has(uuid)) {
-      this.controllerElements.set(uuid, [])
-    }
-    identifiers.forEach((identifier) => {
-      const controllerData = this.buildStimulusElementData(element, identifier)
-      this.controllerElements.get(uuid).push(controllerData)
-    })
+    this.controllerElements.set(getElementUUID(element), element)
     this.delegate.stimulusDataChanged()
   }
 
   elementUnmatched(element) {
-    const uuid = getElementUUID(element)
-
-    if (this.controllerElements.has(uuid)) {
-      this.controllerElements.delete(uuid)
+    if (this.controllerElements.delete(getElementUUID(element))) {
       this.delegate.stimulusDataChanged()
     }
   }
 
-  elementAttributeChanged(element, attributeName, oldValue) {
-    if (this.matchElement(element)) {
-      const uuid = getElementUUID(element)
-      if (this.controllerElements.has(uuid)) {
-        const newControllerElementData = this.controllerElements.get(uuid).map((controllerData) => {
-          return this.buildStimulusElementData(element, controllerData.identifier)
-        })
-        this.controllerElements.set(uuid, newControllerElementData)
-        this.delegate.stimulusDataChanged()
-      }
+  elementAttributeChanged(element) {
+    if (this.controllerElements.has(getElementUUID(element))) {
+      this.delegate.stimulusDataChanged()
     }
+  }
+
+  // Actions and targets live on descendants of the controller element, so their
+  // addition or removal never reaches elementMatched/elementUnmatched.
+  isAffectedByMutation(mutation) {
+    if (this.controllerElements.size === 0) return false
+
+    if (mutation.type === "attributes") {
+      return STIMULUS_ATTRIBUTE.test(mutation.attributeName)
+    }
+
+    if (mutation.type === "childList") {
+      const nodes = [...mutation.addedNodes, ...mutation.removedNodes]
+      return nodes.some((node) => node.nodeType === Node.ELEMENT_NODE) && !!mutation.target.closest?.("[data-controller]")
+    }
+
+    return false
   }
 
   buildStimulusElementData(element, identifier) {
@@ -75,7 +73,6 @@ export default class StimulusObserver {
       outlets: this.buildControllerOutlets(controller),
       classes: this.buildControllerClasses(controller),
       actions: this.buildControllerActions(controller),
-      element,
     }
   }
 
@@ -179,21 +176,8 @@ export default class StimulusObserver {
     })
   }
 
+  // Built lazily so the snapshot reflects Stimulus' state after it processed the same mutations
   getStimulusData() {
-    const allControllers = []
-
-    this.controllerElements.forEach((controllersData) => {
-      controllersData.forEach((controllerData) => {
-        allControllers.push(controllerData)
-      })
-    })
-
-    // Remove DOM elements before sending
-    const stripDOMElements = (data) => {
-      const { element, ...cleanData } = data
-      return cleanData
-    }
-
-    return allControllers.map((controller) => stripDOMElements(controller))
+    return Array.from(this.controllerElements.values()).flatMap((element) => this.identifiersFor(element).map((identifier) => this.buildStimulusElementData(element, identifier)))
   }
 }
