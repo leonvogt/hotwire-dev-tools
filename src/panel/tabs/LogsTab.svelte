@@ -33,6 +33,11 @@
   $effect(() => {
     turboEvents = getTurboEvents()
 
+    if (turboEvents.length === 0 && selected.uuid !== null) {
+      selected = { type: null, uuid: null, turboEvent: null }
+      return
+    }
+
     const shouldSelectFirstEvent = turboEvents.length > 0 && selected.uuid === null
     if (shouldSelectFirstEvent) {
       selected = {
@@ -57,8 +62,6 @@
 
   const handleEventListKeyboardNavigation = (event) => {
     if (!turboEvents.length) return
-    event.preventDefault() // Prevents automatic browser scrolling
-
     const currentIndex = turboEvents.findIndex((e) => e.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboEvents, currentIndex)
     if (newIndex === undefined) return
@@ -73,10 +76,9 @@
     }, 10)
   }
 
-  const handleFilterToggle = (event) => {
-    const { value } = event.target
+  const handleFilterToggle = (value) => {
     if (value === "all") {
-      turboEventsFilter = TURBO_EVENTS
+      turboEventsFilter = [...TURBO_EVENTS]
     } else {
       const isActive = turboEventsFilter.includes(value)
       if (isActive) {
@@ -108,9 +110,16 @@
     })
   }
 
-  const preventDropdownClose = (dropdown) => {
+  // wa-select covers both mouse and keyboard selection and lets us keep the dropdown open
+  const filterMenu = (dropdown) => {
     dropdown?.addEventListener("wa-select", (event) => {
       event.preventDefault()
+      const { item } = event.detail
+      if (item.dataset.group) {
+        handleFilterGroupToggle(item.dataset.group)
+      } else {
+        handleFilterToggle(item.value)
+      }
     })
   }
 </script>
@@ -147,26 +156,17 @@
         </div>
         <div class="pane-footer flex-center">
           <div class="position-absolute end-0">
-            <wa-dropdown use:preventDropdownClose>
+            <wa-dropdown use:filterMenu>
               <wa-button slot="trigger" class="small-icon-button" variant="neutral" appearance="plain">
                 <wa-icon name="filter" label="filter"></wa-icon>
               </wa-button>
               {#each Object.entries(TURBO_EVENTS_GROUPED) as [groupName, events]}
-                <wa-dropdown-item role="button" tabindex="0" onkeyup={() => handleFilterGroupToggle(groupName)} onclick={() => handleFilterGroupToggle(groupName)}>
+                <wa-dropdown-item data-group={groupName}>
                   <strong>{groupName}</strong>
                 </wa-dropdown-item>
 
                 {#each events as event}
-                  <wa-dropdown-item
-                    class="turbo-event-menu-item"
-                    type="checkbox"
-                    role="button"
-                    tabindex="0"
-                    onkeyup={(e) => handleFilterToggle(e)}
-                    onclick={(e) => handleFilterToggle(e)}
-                    value={event}
-                    checked={turboEventsFilter.includes(event)}>{event}</wa-dropdown-item
-                  >
+                  <wa-dropdown-item class="turbo-event-menu-item" type="checkbox" value={event} checked={turboEventsFilter.includes(event)}>{event}</wa-dropdown-item>
                 {/each}
               {/each}
             </wa-dropdown>

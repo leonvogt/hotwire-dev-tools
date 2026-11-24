@@ -39,8 +39,6 @@
 
   const handleWarningListKeyboardNavigation = (event) => {
     if (!allWarnings.length) return
-    event.preventDefault() // Prevents automatic browser scrolling
-
     const currentIndex = allWarnings.findIndex((warning) => warning.id === selectedWarning?.id)
     const newIndex = handleKeyboardNavigation(event, allWarnings, currentIndex)
     if (newIndex === undefined) return

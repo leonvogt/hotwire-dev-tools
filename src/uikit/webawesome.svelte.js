@@ -15,14 +15,17 @@ import "@awesome.me/webawesome/dist/components/input/input.js"
 import "@awesome.me/webawesome/dist/components/switch/switch.js"
 import "@awesome.me/webawesome/dist/components/tab-group/tab-group.js"
 
-// Set WebAwesome base path to point to the correct location of the WebAwesome icons
-import { setBasePath, registerIconLibrary } from "@awesome.me/webawesome/dist/webawesome.js"
-setBasePath("/dist")
+import { registerIconLibrary } from "@awesome.me/webawesome/dist/webawesome.js"
+import { icons } from "$utils/icons.js"
 
-// Register our custom icons
-registerIconLibrary("custom", {
+// Replaces Web Awesome's default library, which would fetch icons from the Font Awesome CDN
+registerIconLibrary("default", {
   resolver: (name) => {
-    return `/icons/${name}.svg`
+    if (!icons[name]) {
+      console.warn(`Hotwire Dev Tools: Icon "${name}" is missing in src/utils/icons.js`)
+      return ""
+    }
+    return `data:image/svg+xml,${encodeURIComponent(icons[name])}`
   },
   mutator: (svg) => svg.setAttribute("fill", "currentColor"),
 })

@@ -17,4 +17,4 @@
   }
 </script>
 
-<IconButton {...restProps} class={mergedClass} name="inspect" library="custom" onclick={inspect}></IconButton>
+<IconButton {...restProps} class={mergedClass} name="inspect" onclick={inspect}></IconButton>

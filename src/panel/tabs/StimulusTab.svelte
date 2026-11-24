@@ -106,9 +106,8 @@
 
   const handleIdentifiersKeyboardNavigation = (event) => {
     if (!uniqueIdentifiers.length) return
-    event.preventDefault() // Prevents automatic browser scrolling
-
     if (event.key === "ArrowRight") {
+      event.preventDefault()
       document.querySelector(".stimulus-controller-list-pane .entry-row.selected").focus()
       return
     }
@@ -130,9 +129,8 @@
   const handleInstancesKeyboardNavigation = (event) => {
     const instances = getStimulusInstances(selected.identifier)
     if (!instances.length) return
-    event.preventDefault() // Prevents automatic browser scrolling
-
     if (event.key === "ArrowLeft") {
+      event.preventDefault()
       document.querySelector(".stimulus-identifiers-list-pane .entry-row.selected").focus()
       return
     }
@@ -286,25 +284,25 @@
             {/if}
             {#if selected.controller.targets.length > 0}
               <div class="pane-section-heading">Targets</div>
-              {#each selected.controller.targets.sort((a, b) => a.elements?.length < b.elements?.length) as target (selected.uuid + selected.identifier + target.name)}
+              {#each [...selected.controller.targets].sort((a, b) => (b.elements?.length ?? 0) - (a.elements?.length ?? 0)) as target (selected.uuid + selected.identifier + target.name)}
                 <TargetTree {target} {selected} />
               {/each}
             {/if}
             {#if selected.controller.outlets.length > 0}
               <div class="pane-section-heading">Outlets</div>
-              {#each selected.controller.outlets.sort((a, b) => a.elements?.length < b.elements?.length) as outlet (selected.uuid + selected.identifier + outlet.name)}
+              {#each [...selected.controller.outlets].sort((a, b) => (b.elements?.length ?? 0) - (a.elements?.length ?? 0)) as outlet (selected.uuid + selected.identifier + outlet.name)}
                 <OutletTree {outlet} {selected} />
               {/each}
             {/if}
             {#if selected.controller.classes.length > 0}
               <div class="pane-section-heading">Classes</div>
-              {#each selected.controller.classes.sort((a, b) => a.classes?.length < b.classes?.length) as klass (selected.uuid + selected.identifier + klass.name)}
+              {#each [...selected.controller.classes].sort((a, b) => (b.classes?.length ?? 0) - (a.classes?.length ?? 0)) as klass (selected.uuid + selected.identifier + klass.name)}
                 <ClassTree {klass} {selected} />
               {/each}
             {/if}
             {#if selected.controller.actions.length > 0}
               <div class="pane-section-heading">Actions</div>
-              {#each selected.controller.actions as action (selected.uuid + selected.identifier + action.descriptor)}
+              {#each selected.controller.actions as action (selected.uuid + selected.identifier + action.descriptor + action.element?.uuid)}
                 <ActionTree {action} {selected} />
               {/each}
             {/if}

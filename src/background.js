@@ -46,7 +46,6 @@ chrome.runtime.onConnect.addListener(async (port) => {
       const activeTabId = await getActiveTab()
       if (activeTabId) {
         tabId = activeTabId
-        console.log(`Using active tab ID ${tabId} for Safari`)
       } else {
         console.warn("Could not determine active tab ID, skipping script injection")
         return
@@ -89,29 +88,15 @@ chrome.runtime.onConnect.addListener(async (port) => {
 
 // For each tab, 2-way forward messages, devtools <-> backend.
 function doublePipe(tabId, devtools, backend) {
-  console.log(devtools.name, backend.name)
-  devtools.onMessage.addListener(lOne)
-  function lOne(message) {
-    if (message.event === "log") {
-      return console.log(`tab ${tabId}`, message.payload)
-    }
-    console.log("devtools -> backend", message)
-    backend.postMessage(message)
-  }
+  const forwardToBackend = (message) => backend.postMessage(message)
+  const forwardToDevtools = (message) => devtools.postMessage(message)
 
-  backend.onMessage.addListener(lTwo)
-  function lTwo(message) {
-    if (message.event === "log") {
-      return console.log(`tab ${tabId}`, message.payload)
-    }
-    console.log(`${tabId} backend -> devtools`, message)
-    devtools.postMessage(message)
-  }
+  devtools.onMessage.addListener(forwardToBackend)
+  backend.onMessage.addListener(forwardToDevtools)
 
   function shutdown() {
-    console.log(`tab ${tabId} disconnected.`)
-    devtools.onMessage.removeListener(lOne)
-    backend.onMessage.removeListener(lTwo)
+    devtools.onMessage.removeListener(forwardToBackend)
+    backend.onMessage.removeListener(forwardToDevtools)
     devtools.disconnect()
     backend.disconnect()
     resetPortsForTab(tabId)
@@ -119,6 +104,4 @@ function doublePipe(tabId, devtools, backend) {
 
   devtools.onDisconnect.addListener(shutdown)
   backend.onDisconnect.addListener(shutdown)
-
-  console.log(`tab ${tabId} connected.`)
 }

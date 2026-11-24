@@ -157,10 +157,17 @@ if (typeof chrome !== "undefined" && chrome.storage?.onChanged) {
   })
 }
 
+const MAX_LOG_ENTRIES = 1000
+
+function appendCapped(list, entry) {
+  const kept = list.length >= MAX_LOG_ENTRIES ? list.slice(list.length - MAX_LOG_ENTRIES + 1) : list
+  return [...kept, entry]
+}
+
 export function addTurboEvent(event) {
   const exists = turboEvents.some((e) => e.uuid === event.uuid)
   if (exists) return
-  turboEvents = [...turboEvents, event]
+  turboEvents = appendCapped(turboEvents, event)
 }
 
 export function getTurboEvents() {
@@ -175,19 +182,16 @@ export function addTurboStream(turboStream) {
   const exists = turboStreams.some((stream) => stream.uuid === turboStream.uuid)
   if (exists) return
 
-  turboStreams = [
-    ...turboStreams,
-    {
-      uuid: turboStream.uuid,
-      time: turboStream.time,
-      action: turboStream.action,
-      target: turboStream.target,
-      targets: turboStream.targets,
-      targetSelector: turboStream.targetSelector,
-      turboStreamContent: turboStream.turboStreamContent,
-      targetNotFound: turboStream.targetNotFound,
-    },
-  ]
+  turboStreams = appendCapped(turboStreams, {
+    uuid: turboStream.uuid,
+    time: turboStream.time,
+    action: turboStream.action,
+    target: turboStream.target,
+    targets: turboStream.targets,
+    targetSelector: turboStream.targetSelector,
+    turboStreamContent: turboStream.turboStreamContent,
+    targetNotFound: turboStream.targetNotFound,
+  })
 }
 
 export function getTurboStreams() {

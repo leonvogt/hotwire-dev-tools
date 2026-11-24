@@ -211,7 +211,7 @@ const handleIncomingTurboStream = (event) => {
 
 const handleWindowMessage = (event) => {
   if (event.origin !== LOCATION_ORIGIN) return
-  if (event.data.source !== "inject") return
+  if (event.data?.source !== "inject") return
 
   switch (event.data.message) {
     case "stimulusController":

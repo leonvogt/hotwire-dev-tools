@@ -55,7 +55,8 @@
     } else {
       // For primitive values at root level
       if (valueObject.type.toLowerCase() === "number") {
-        updatedValue = Number(newValue)
+        // An empty string removes the attribute, so Stimulus falls back to the default value
+        updatedValue = newValue === "" ? "" : Number(newValue)
       } else if (valueObject.type.toLowerCase() === "boolean") {
         updatedValue = newValue === "true" || newValue === true
       } else {

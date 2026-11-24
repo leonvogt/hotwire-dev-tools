@@ -79,7 +79,7 @@
         </button>
 
         <button class="theme-toggle-btn" aria-label="Toggle Color Scheme" onclick={() => setTheme(currentTheme === "light" ? "dark" : "light")}>
-          <wa-icon name="moon" variant="regular"></wa-icon>
+          <wa-icon name="moon"></wa-icon>
         </button>
       </nav>
 

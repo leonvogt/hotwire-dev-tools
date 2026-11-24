@@ -6,4 +6,4 @@
   const { htmlString } = $props()
 </script>
 
-{@html hljs.highlight(htmlString, { language: "html" }).value}
+{@html hljs.highlight(htmlString ?? "", { language: "html" }).value}

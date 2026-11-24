@@ -50,7 +50,7 @@
   }
 
   const handleInput = (e) => {
-    editValue = type === "number" ? e.target.valueAsNumber : e.target.value
+    editValue = type === "number" && e.target.value !== "" ? e.target.valueAsNumber : e.target.value
   }
 </script>
 
@@ -63,7 +63,7 @@
     <wa-button class="small-icon-button" variant="neutral" appearance="plain" type="submit" onkeydown={handleSubmit} role="button" tabindex="0">
       <wa-icon name="check"></wa-icon>
     </wa-button>
-    <IconButton name="xmark" onclick={handleCancel} onkeydown={handleCancel} role="button" tabindex="0"></IconButton>
+    <IconButton name="xmark" onclick={handleCancel}></IconButton>
   </form>
 {:else if type === "boolean"}
   <wa-switch checked={value} onchange={(e) => onSave(e.target.checked)}></wa-switch>

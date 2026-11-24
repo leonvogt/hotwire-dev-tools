@@ -104,24 +104,16 @@ async function generateManifest() {
   }
 }
 
-async function cleanupDevFiles() {
-  const devFiles = [
-    path.join(__dirname, "public", "dev.html"),
-    path.join(__dirname, "public", "dist", "panel", "dev.js"),
-    path.join(__dirname, "public", "dist", "panel", "dev.js.map"),
-    path.join(__dirname, "public", "dist", "panel", "dev.css"),
-    path.join(__dirname, "public", "dist", "panel", "dev.css.map"),
-  ]
+const devHtmlSourcePath = path.join(__dirname, "src", "panel", "dev.html")
+const devHtmlOutputPath = path.join(__dirname, "public", "dev.html")
 
-  for (const file of devFiles) {
-    try {
-      if (await fs.pathExists(file)) {
-        await fs.remove(file)
-        console.log(`Removed dev file: ${path.basename(file)}`)
-      }
-    } catch (err) {
-      // Ignore errors if file doesn't exist
-    }
+async function prepareOutputDir() {
+  await fs.emptyDir(path.join(__dirname, "public", "dist"))
+
+  if (production) {
+    await fs.remove(devHtmlOutputPath)
+  } else {
+    await fs.copy(devHtmlSourcePath, devHtmlOutputPath)
   }
 }
 
@@ -131,15 +123,13 @@ const buildAndWatch = async () => {
 }
 
 async function buildProject() {
+  await prepareOutputDir()
   await generateManifest()
 
   if (process.argv.includes("--watch")) {
     buildAndWatch()
   } else {
     await esbuild.build(esbuildConfig)
-    if (production) {
-      await cleanupDevFiles()
-    }
   }
 }
 

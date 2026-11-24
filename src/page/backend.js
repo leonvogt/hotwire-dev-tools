@@ -348,8 +348,8 @@ function init() {
     }
 
     refreshTurboFrame(id) {
-      const frame = document.querySelector(`turbo-frame#${id}`)
-      if (frame) {
+      const frame = document.getElementById(id)
+      if (frame?.localName === "turbo-frame") {
         frame.reload()
         this.sendTurboFrames()
       } else {
@@ -460,7 +460,7 @@ function init() {
   window.addEventListener("message", handshake)
 
   function handshake(e) {
-    if (e.data.source === HOTWIRE_DEV_TOOLS_PROXY_SOURCE && e.data.payload === PANEL_TO_BACKEND_MESSAGES.INIT) {
+    if (e.data?.source === HOTWIRE_DEV_TOOLS_PROXY_SOURCE && e.data.payload === PANEL_TO_BACKEND_MESSAGES.INIT) {
       window.removeEventListener("message", handshake)
       window.addEventListener("message", handleMessages)
       devtoolsBackend.start()
@@ -468,7 +468,7 @@ function init() {
   }
 
   function handleMessages(e) {
-    if (e.data.source !== HOTWIRE_DEV_TOOLS_PROXY_SOURCE) {
+    if (e.data?.source !== HOTWIRE_DEV_TOOLS_PROXY_SOURCE) {
       return
     }
     if (e.data.payload === PANEL_TO_BACKEND_MESSAGES.SHUTDOWN) {
@@ -477,7 +477,7 @@ function init() {
       devtoolsBackend.stop()
       return
     }
-    switch (e.data.payload.action) {
+    switch (e.data.payload?.action) {
       case PANEL_TO_BACKEND_MESSAGES.HEALTH_CHECK: {
         devtoolsBackend.respondToHealthCheck()
         break

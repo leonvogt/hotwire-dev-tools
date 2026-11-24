@@ -15,7 +15,7 @@
   import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants.js"
   import { getDevtoolInstance } from "$lib/devtool.js"
   import { horizontalPanes } from "../theme.svelte.js"
-  import * as Icons from "$utils/icons.js"
+  import { icons } from "$utils/icons.js"
   import { collapseEntryRows, toggleStickyParent, checkStickyVisibility } from "$src/utils/collapsible.js"
   import { turboStreamTargetLabel } from "$utils/turbo_utils.js"
 
@@ -62,7 +62,7 @@
   })
 
   $effect(() => {
-    turboFrames = getTurboFrames().sort((a, b) => a.id.localeCompare(b.id))
+    turboFrames = [...getTurboFrames()].sort((a, b) => a.id.localeCompare(b.id))
     turboStreams = getTurboStreams()
     turboCables = getTurboCables()
     turboPermanentElements = getTurboPermanentElements()
@@ -72,9 +72,10 @@
 
   $effect(() => {
     const currentFrames = turboFrames
-    const isStreamSelected = selected.type === SELECTABLE_TYPES.TURBO_STREAM
+    const isStreamSelected = selected.type === SELECTABLE_TYPES.TURBO_STREAM && turboStreams.some((stream) => stream.uuid === selected.uuid)
     const updatedFrame = findSelectedFrame(currentFrames)
     const shouldSelectFirstFrame = currentFrames.length > 0 && !isStreamSelected && !updatedFrame
+    const selectionIsGone = selected.type !== null && !isStreamSelected && !updatedFrame
 
     if (shouldSelectFirstFrame) {
       selected = {
@@ -83,6 +84,8 @@
         frame: currentFrames[0],
         stream: null,
       }
+    } else if (selectionIsGone) {
+      selected = { type: null, uuid: null, frame: null, stream: null }
     } else if (selected.type === SELECTABLE_TYPES.TURBO_FRAME) {
       // Update the selected frame if it has changed
       if (updatedFrame && updatedFrame !== selected.frame) {
@@ -224,8 +227,6 @@
 
   const handleFrameListKeyboardNavigation = (event) => {
     if (!turboFrames.length) return
-    event.preventDefault() // Prevents automatic browser scrolling
-
     const currentIndex = turboFrames.findIndex((frame) => frame.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboFrames, currentIndex)
     if (newIndex === undefined) return
@@ -242,8 +243,6 @@
 
   const handleStreamListKeyboardNavigation = (event) => {
     if (!turboStreams.length) return
-    event.preventDefault() // Prevents automatic browser scrolling
-
     const currentIndex = turboStreams.findIndex((stream) => stream.uuid === selected.uuid)
     const newIndex = handleKeyboardNavigation(event, turboStreams, currentIndex)
     if (newIndex === undefined) return
@@ -583,7 +582,7 @@
                 {#if selected.frame.attributes.src}
                   <div class="position-absolute end-0 me-2">
                     <button class="btn-icon action-icon" onclick={() => refreshTurboFrame(selected.frame.id)} aria-label="Refresh Turbo Frames List">
-                      {@html Icons.refresh}
+                      {@html icons.refresh}
                     </button>
                   </div>
                 {/if}

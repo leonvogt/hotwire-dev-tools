@@ -5,6 +5,7 @@ node_modules/
 # Build files
 /public/dist
 /public/manifest.json
+/public/dev.html
 
 # Release files
 public.zip

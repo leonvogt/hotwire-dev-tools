@@ -2,7 +2,7 @@ import { getMetaContent, debounce } from "$utils/utils"
 import { turboStreamTargetElements, turboStreamTargetSelector, turboStreamTargetLabel, targetElementsByQuery } from "$utils/turbo_utils"
 import { addHighlightOverlayToElements, removeHighlightOverlay } from "$utils/highlight"
 import DOMScanner from "$utils/dom_scanner"
-import * as Icons from "$utils/icons"
+import { icons } from "$utils/icons"
 
 import hljs from "highlight.js/lib/core"
 import xml from "highlight.js/lib/languages/xml"
@@ -234,8 +234,8 @@ export default class DetailPanel {
           ${this.tabs.map((tab) => `<button class="hotwire-dev-tools-tablink ${this.currentTab === tab.id ? "active" : ""}" data-tab-id="${tab.id}">${tab.label}</button>`).join("")}
         </div>
         <button class="hotwire-dev-tools-collapse-button">
-          <span class="collapse-icon">${Icons.xmark}</span>
-          <span class="expand-icon">${Icons.arrowUp}</span>
+          <span class="collapse-icon">${icons.xmark}</span>
+          <span class="expand-icon">${icons["arrow-up"]}</span>
         </button>
       </div>
     `
@@ -301,7 +301,7 @@ export default class DetailPanel {
       entries.push(`
         <div class="${className}" data-turbo-frame-id="${frame.id}" title="${title}">
           <span>${frame.id}</span>
-          ${frame.hasAttribute("src") ? `<span class="frame-with-src" title="Asynchronous Turbo Frame - ${frame.getAttribute("src")}">${Icons.clock}</span>` : ""}
+          ${frame.hasAttribute("src") ? `<span class="frame-with-src" title="Asynchronous Turbo Frame - ${frame.getAttribute("src")}">${icons.clock}</span>` : ""}
         </div>
       `)
     })
@@ -420,7 +420,7 @@ export default class DetailPanel {
       enabledTabs.push({ id: TURBO_STREAM_TAB_ID, label: "Streams", content: this.turboSteamTabContent })
     }
     if (enabledTabs.length > 0) {
-      enabledTabs.push({ id: INFO_TAB_ID, label: Icons.info, content: this.infoTabContent })
+      enabledTabs.push({ id: INFO_TAB_ID, label: icons.info, content: this.infoTabContent })
     }
 
     return enabledTabs
