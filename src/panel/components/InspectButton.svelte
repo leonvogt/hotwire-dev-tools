@@ -1,6 +1,6 @@
 <script>
   import IconButton from "$uikit/IconButton.svelte"
-  import { inspectElement, inspectElementByPath, inspectElementByUUID } from "$utils/utils.js"
+  import { inspectElement, inspectElementByPath, inspectElementByUUID } from "$panel/inspected_window.js"
 
   let { selector, elementPath, uuid, class: className, ...restProps } = $props()
 

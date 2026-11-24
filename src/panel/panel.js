@@ -7,6 +7,7 @@ import { mount } from "svelte"
 import { connection } from "./State.svelte.js"
 
 import { panelPostMessage, handleBackendToPanelMessage, devToolPanelName } from "./messaging"
+import { evalInInspectedWindow, inspectedTabId } from "./inspected_window"
 import { HOTWIRE_DEV_TOOLS_PANEL_SOURCE, PANEL_TO_BACKEND_MESSAGES } from "$lib/constants"
 
 // Mount Svelte app
@@ -68,7 +69,7 @@ async function connect() {
 
 function createConnection() {
   const port = chrome.runtime.connect({
-    name: devToolPanelName(chrome.devtools.inspectedWindow.tabId),
+    name: devToolPanelName(inspectedTabId()),
   })
 
   port.onDisconnect.addListener(() => {
@@ -85,7 +86,7 @@ function createConnection() {
   return port
 }
 
-function injectBackendScript() {
+async function injectBackendScript() {
   const scriptId = "hotwire-dev-tools-backend-script"
   const scriptURL = chrome.runtime.getURL("/dist/page/backend.js")
 
@@ -103,22 +104,16 @@ function injectBackendScript() {
     })()
   `
 
-  return new Promise((resolve, reject) => {
-    chrome.devtools.inspectedWindow.eval(injectionScript, (result, error) => {
-      if (error) {
-        reject(new Error(`Injection failed: ${error.description || error.message}`))
-      } else {
-        resolve()
-      }
-    })
-  })
+  const { exceptionInfo } = await evalInInspectedWindow(injectionScript)
+  if (exceptionInfo) {
+    throw new Error(`Injection failed: ${exceptionInfo.description || exceptionInfo.message || exceptionInfo.value}`)
+  }
 }
 
 // Unique per document, unlike the URL
-function getDocumentTimeOrigin() {
-  return new Promise((resolve) => {
-    chrome.devtools.inspectedWindow.eval("performance.timeOrigin", (result, error) => resolve(error ? null : result))
-  })
+async function getDocumentTimeOrigin() {
+  const { result, exceptionInfo } = await evalInInspectedWindow("performance.timeOrigin")
+  return exceptionInfo ? null : result
 }
 
 function reconnect() {
@@ -146,7 +141,7 @@ function setupReconnectionHandlers() {
 
   if (__IS_CHROME__) {
     chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-      if (tabId === chrome.devtools.inspectedWindow.tabId && changeInfo.status === "complete" && !currentPort) {
+      if (tabId === inspectedTabId() && changeInfo.status === "complete" && !currentPort) {
         console.log("Tab reloaded, reconnecting...")
         connection.connectedToBackend = false
         cleanup()

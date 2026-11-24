@@ -1,6 +1,7 @@
 export const HOTWIRE_DEV_TOOLS_PROXY_SOURCE = "hotwire-dev-tools-proxy"
 export const HOTWIRE_DEV_TOOLS_PANEL_SOURCE = "hotwire-dev-tools-panel"
 export const HOTWIRE_DEV_TOOLS_BACKEND_SOURCE = "hotwire-dev-tools-backend"
+export const INSPECTED_WINDOW_EVAL_MESSAGE = "hotwire-dev-tools-inspected-window-eval"
 
 export const PORT_IDENTIFIERS = {
   PROXY: "proxy",

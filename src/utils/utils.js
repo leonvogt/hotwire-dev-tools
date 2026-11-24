@@ -24,21 +24,6 @@ export const loadCSS = async (url) => {
     .catch((error) => console.error("Hotwire Dev Tools: Error loading CSS", error))
 }
 
-export const inspectElement = (selector) => {
-  chrome.devtools.inspectedWindow.eval(`inspect(document.querySelector(${JSON.stringify(selector)}))`)
-}
-
-export const inspectElementByUUID = (uuid) => {
-  if (!uuid) return
-  chrome.devtools.inspectedWindow.eval(`inspect(window.HotwireDevToolsBackend?.getElementByUUID(${JSON.stringify(uuid)}))`)
-}
-
-export const inspectElementByPath = (path) => {
-  if (!path) return
-  const resolveElement = `(() => { let el = document.documentElement; for (const index of ${JSON.stringify(path)}) { el = el && el.children[index] } return el })()`
-  chrome.devtools.inspectedWindow.eval(`inspect(${resolveElement})`)
-}
-
 export const stringifyHTMLElementTag = (element, createClosingTag = true) => {
   if (!(element instanceof Element)) {
     throw new Error("Expected an Element")
