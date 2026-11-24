@@ -69,10 +69,8 @@ From there, you can enable/disable the features you want to use.
 The easiest way is to make use of the [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/) tool:
 
 ```bash
-npm install --global web-ext
-
 cd public
-web-ext run
+npx web-ext run
 ```
 
 That will open a new Firefox instance with the extension installed and hot reloading enabled.
